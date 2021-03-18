@@ -6,6 +6,7 @@ import credentials from '../keys'
 function Home() {
 
   const [artist, setArtist] = useState('')
+  const [spotifyToken, setToken] = useState('')
 
   useEffect(() => {
     spotifyAuthorization()
@@ -24,7 +25,8 @@ function Home() {
       }
     })
       .then(response => {
-        console.log(response.data);
+        setToken(response.data.access_token)
+        console.log(response.data.access_token);
       })
       .catch(error => {
         console.log(error);
@@ -33,13 +35,27 @@ function Home() {
 
   const handleArtistSearch = () => {
     console.log(artist)
+    axios({
+      method: 'get',
+      url: `https://api.spotify.com/v1/search?q=${artist}&type=artist`,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${spotifyToken}`
+      }
+    })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   return (
     <div className="main-div">
       <h1> This is the Home Page biatch </h1>
-      <input type="text" onChange={(e) => setArtist(e.target.value)}/>
-      <button onClick={() => handleArtistSearch(artist)}> Search artist </button>
+      <input type="text" onChange={(e) => setArtist(e.target.value.trim().replace(" ", "+"))}/>
+      <button onClick={() => handleArtistSearch()}> Search artist </button>
     </div>
   );
 }
