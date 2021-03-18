@@ -3,6 +3,8 @@ import axios from 'axios'
 import querystring from 'querystring'
 import credentials from '../keys'
 
+import SearchItem from "../components/SearchItem"
+
 function Home() {
 
   const [spotifyToken, setToken] = useState('')
@@ -12,6 +14,8 @@ function Home() {
   useEffect(() => {
     spotifyAuthorization()
   }, []);
+
+  useEffect(() => console.log(searchData));
 
   const spotifyAuthorization = () => {
     console.log(credentials.id + ':' + credentials.secret)
@@ -49,7 +53,6 @@ function Home() {
         setSearchData({artists: response.data.artists.items, 
           albums: response.data.albums.items, 
           tracks: response.data.tracks.items})
-        console.log(searchData)
       })
       .catch(error => {
         console.log(error);
@@ -62,23 +65,18 @@ function Home() {
       <input type="text" onChange={(e) => setQuery(e.target.value.trim().replace(" ", "+"))}/>
       <button onClick={() => handleSearch()}> Search something </button>
       <h3> Artists </h3>
-      <ul>
         {searchData.artists.map((e) => {
-          return <li key={e.id}> {e.name} </li>
+          console.log(e)
+          return <SearchItem key={e.id} element={e}/>
         })}
-      </ul>
       <h3> Albums </h3>
-      <ul>
         {searchData.albums.map((e) => {
-          return <li key={e.id}> {e.name} </li>
+          return <SearchItem key={e.id} element={e}/>
         })}
-      </ul>
       <h3> Tracks </h3>
-      <ul>
         {searchData.tracks.map((e) => {
-          return <li key={e.id}> {e.name} </li>
+          return <SearchItem key={e.id} element={e}/>
         })}
-      </ul>
       
     </div>
   );
