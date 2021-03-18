@@ -5,8 +5,9 @@ import credentials from '../keys'
 
 function Home() {
 
-  const [artist, setArtist] = useState('')
   const [spotifyToken, setToken] = useState('')
+  const [query, setQuery] = useState('')
+  const [searchData, setSearchData] = useState({artists: [], albums: [], tracks: []})
 
   useEffect(() => {
     spotifyAuthorization()
@@ -33,18 +34,22 @@ function Home() {
       });
   }
 
-  const handleArtistSearch = () => {
-    console.log(artist)
+  const handleSearch = () => {
+    console.log(query)
     axios({
       method: 'get',
-      url: `https://api.spotify.com/v1/search?q=${artist}&type=artist`,
+      url: `https://api.spotify.com/v1/search?q=${query}&type=artist,track,album`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${spotifyToken}`
       }
     })
       .then(response => {
-        console.log(response.data);
+        console.log(response.data)
+        setSearchData({artists: response.data.artists.items, 
+          albums: response.data.albums.items, 
+          tracks: response.data.tracks.items})
+        console.log(searchData)
       })
       .catch(error => {
         console.log(error);
@@ -54,8 +59,27 @@ function Home() {
   return (
     <div className="main-div">
       <h1> This is the Home Page biatch </h1>
-      <input type="text" onChange={(e) => setArtist(e.target.value.trim().replace(" ", "+"))}/>
-      <button onClick={() => handleArtistSearch()}> Search artist </button>
+      <input type="text" onChange={(e) => setQuery(e.target.value.trim().replace(" ", "+"))}/>
+      <button onClick={() => handleSearch()}> Search something </button>
+      <h3> Artists </h3>
+      <ul>
+        {searchData.artists.map((e) => {
+          return <li key={e.id}> {e.name} </li>
+        })}
+      </ul>
+      <h3> Albums </h3>
+      <ul>
+        {searchData.albums.map((e) => {
+          return <li key={e.id}> {e.name} </li>
+        })}
+      </ul>
+      <h3> Tracks </h3>
+      <ul>
+        {searchData.tracks.map((e) => {
+          return <li key={e.id}> {e.name} </li>
+        })}
+      </ul>
+      
     </div>
   );
 }
