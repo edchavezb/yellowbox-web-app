@@ -1,0 +1,9 @@
+.itemCard {
+    width: 8%;
+    margin: 1%;
+    background-color: aqua;
+}
+
+.itemImage {
+    width: 80%;
+}

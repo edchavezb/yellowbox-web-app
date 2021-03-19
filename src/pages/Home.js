@@ -4,6 +4,7 @@ import querystring from 'querystring'
 import credentials from '../keys'
 
 import SearchItem from "../components/SearchItem"
+import styles from "./Home.module.css"
 
 function Home() {
 
@@ -15,7 +16,7 @@ function Home() {
     spotifyAuthorization()
   }, []);
 
-  useEffect(() => console.log(searchData));
+  useEffect(() => console.log(searchData), [searchData]);
 
   const spotifyAuthorization = () => {
     console.log(credentials.id + ':' + credentials.secret)
@@ -65,19 +66,24 @@ function Home() {
       <input type="text" onChange={(e) => setQuery(e.target.value.trim().replace(" ", "+"))}/>
       <button onClick={() => handleSearch()}> Search something </button>
       <h3> Artists </h3>
+      <div className={styles.resultsContainer}>
         {searchData.artists.map((e) => {
           console.log(e)
           return <SearchItem key={e.id} element={e}/>
         })}
+      </div>
       <h3> Albums </h3>
+      <div className={styles.resultsContainer}>
         {searchData.albums.map((e) => {
           return <SearchItem key={e.id} element={e}/>
         })}
+      </div>
       <h3> Tracks </h3>
+      <div className={styles.resultsContainer}>
         {searchData.tracks.map((e) => {
           return <SearchItem key={e.id} element={e}/>
         })}
-      
+      </div>
     </div>
   );
 }
