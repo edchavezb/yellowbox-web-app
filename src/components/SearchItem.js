@@ -11,7 +11,7 @@ function SearchItem(props){
             <div className={styles.imageContainer}>
                 <img className={styles.itemImage} src={itemCoverArt}></img>
             </div>
-            <div> {props.element.name} </div>
+            <div className={styles.name}> {props.element.name} </div>
         </div>
     )
 }
