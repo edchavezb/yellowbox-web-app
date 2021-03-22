@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import querystring from 'querystring'
 import credentials from '../keys'
@@ -9,18 +10,15 @@ import styles from "./Home.module.css"
 
 function Search(props) {
 
+  const params = useParams()
   const [spotifyToken, setToken] = useState('')
-  const [query, setQuery] = useState('')
   const [searchData, setSearchData] = useState({artists: [], albums: [], tracks: []})
 
+
   useEffect(() => {
-    spotifyAuthorization()
-  }, []);
-  
-  useEffect(() => {
-    setQuery(props.match.params.query)
-    handleSearch()
-  });
+    console.log(params.query)
+    handleSearch(params.query)
+  }, [params]);
 
   useEffect(() => console.log(searchData), [searchData]);
 
@@ -45,8 +43,8 @@ function Search(props) {
       });
   }
 
-  const handleSearch = () => {
-    console.log(query)
+  const handleSearch = (query) => {
+    spotifyAuthorization()
     axios({
       method: 'get',
       url: `https://api.spotify.com/v1/search?q=${query}&type=artist,track,album`,

@@ -8,7 +8,9 @@ function SearchItem(props){
 
     return (
         <div className={styles.itemCard}>
-            <img className={styles.itemImage} src={itemCoverArt}></img>
+            <div className={styles.imageContainer}>
+                <img className={styles.itemImage} src={itemCoverArt}></img>
+            </div>
             <div> {props.element.name} </div>
         </div>
     )
