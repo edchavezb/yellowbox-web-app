@@ -1,0 +1,26 @@
+#layout {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 200px auto;
+    grid-template-rows: 80px auto;
+    grid-template-areas: 
+    "header header"
+    "sidebar main"
+}
+
+#header {
+    background-color: rgb(15, 15, 15);
+    grid-area: header;
+}
+
+#sideBar {
+    background-color: rgb(15, 15, 15);
+    grid-area: sidebar;
+}
+
+#mainView {
+    background-color: rgb(26, 26, 26);
+    grid-area: main;
+    padding: 20px 30px;
+    color: #ffffff
+}
