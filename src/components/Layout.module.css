@@ -11,6 +11,56 @@
 #header {
     background-color: rgb(15, 15, 15);
     grid-area: header;
+    display: flex;
+}
+
+#logoSide {
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#logoContainer {
+    font-size: 3em;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+#headerTools {
+    flex-grow: 1;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0px 30px
+}
+
+#searchBox {
+    width: 200px;
+    height: 35px;
+    background-color: #ffffff;
+    border-radius: 500px;
+    display: flex;
+    align-items: center;
+    padding: 0px 15px
+}
+
+#inputWrapper {
+    flex-grow: 1;
+}
+
+#searchInput {
+    width: 100;
+    border: 0px
+}
+
+#searchInput:focus {
+    outline: none;
+}
+
+#searchIcon {
+    width: 15px
 }
 
 #sideBar {

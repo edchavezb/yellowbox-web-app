@@ -6,7 +6,7 @@ import credentials from '../keys'
 
 import SearchItem from "../components/SearchItem"
 
-import styles from "./Home.module.css"
+import styles from "./SearchResults.module.css"
 
 function Search(props) {
 
@@ -16,7 +16,6 @@ function Search(props) {
 
 
   useEffect(() => {
-    console.log(params.query)
     handleSearch(params.query)
   }, [params]);
 
