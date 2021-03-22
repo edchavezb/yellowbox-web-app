@@ -1,9 +1,8 @@
 .itemCard {
     width: 14%;
     margin: 1.33%;
-    background-color: aqua;
 }
 
 .itemImage {
-    width: 80%;
+    width: 100%;
 }

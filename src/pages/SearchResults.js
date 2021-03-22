@@ -7,7 +7,7 @@ import SearchItem from "../components/SearchItem"
 
 import styles from "./Home.module.css"
 
-function Home() {
+function Search(props) {
 
   const [spotifyToken, setToken] = useState('')
   const [query, setQuery] = useState('')
@@ -16,6 +16,11 @@ function Home() {
   useEffect(() => {
     spotifyAuthorization()
   }, []);
+  
+  useEffect(() => {
+    setQuery(props.match.params.query)
+    handleSearch()
+  });
 
   useEffect(() => console.log(searchData), [searchData]);
 
@@ -63,8 +68,7 @@ function Home() {
 
   return (
     <div className="main-div">
-      <h1> Welcome to Yellowbox </h1>
-
+      <h1> Is this what you're looking for? </h1>
       <h3> Artists </h3>
       <div className={styles.resultsContainer}>
         {searchData.artists.map((e) => {
@@ -88,4 +92,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Search;
