@@ -4,9 +4,9 @@ import axios from 'axios'
 import querystring from 'querystring'
 import credentials from '../keys'
 
-import SearchItem from "../components/SearchItem"
+import SearchResults from "../components/SearchResults"
 
-import styles from "./SearchResults.module.css"
+import styles from "./Search.module.css"
 
 function Search(props) {
 
@@ -66,25 +66,9 @@ function Search(props) {
   return (
     <div className="main-div">
       <h1> Is this what you're looking for? </h1>
-      <h3> Artists </h3>
-      <div className={styles.resultsContainer}>
-        {searchData.artists.slice(0,12).map((e) => {
-          console.log(e)
-          return <SearchItem key={e.id} element={e}/>
-        })}
-      </div>
-      <h3> Albums </h3>
-      <div className={styles.resultsContainer}>
-        {searchData.albums.slice(0,12).map((e) => {
-          return <SearchItem key={e.id} element={e}/>
-        })}
-      </div>
-      <h3> Tracks </h3>
-      <div className={styles.resultsContainer}>
-        {searchData.tracks.slice(0,12).map((e) => {
-          return <SearchItem key={e.id} element={e}/>
-        })}
-      </div>
+      <SearchResults type="Artists" data={searchData.artists.slice(0,12)}/>
+      <SearchResults type="Albums" data={searchData.albums.slice(0,12)}/>
+      <SearchResults type="Tracks" data={searchData.tracks.slice(0,12)}/>
     </div>
   );
 }

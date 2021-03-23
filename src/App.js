@@ -4,11 +4,9 @@ import './App.css';
 
 import Layout from "./components/Layout";
 import Home from "./pages/Home"
-import Search from "./pages/SearchResults"
+import Search from "./pages/Search"
 
 function App() {
-
-  const [route, setRoute] = useState("/")
 
   return (
     <Router>
