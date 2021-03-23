@@ -1,0 +1,47 @@
+#mainPanel {
+    color: #ffffff;
+    padding: 20px 10px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+#user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#userImage {
+    width: 42px;
+}
+
+#userName {
+    margin-left: 5px;
+    font-weight: bold;
+    font-size: .8em;
+}
+
+#boxesTitle {
+    margin: 15px 0px 10px 0px
+}
+
+#boxList {
+    padding: 0px 10px;
+}
+
+.boxLink {
+    display: block;
+    margin: 4px 0px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.boxLink, .boxLink:link:active:visited {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.linkDragOver {
+    composes: boxLink;
+    background-color: rgb(54, 54, 54);
+}

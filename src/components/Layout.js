@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
+import SideBar from "./SideBar"
 import styles from "./Layout.module.css";
 
 function Layout(props) {
@@ -30,7 +31,9 @@ function Layout(props) {
         </div>
 
       </section>
-      <section id={styles.sideBar}></section>
+      <section id={styles.sideBar}>
+        <SideBar userName="Pablo Alboran" boxes={props.userBoxes}/>
+      </section>
       <section id={styles.mainView}>
         {props.children}
       </section>

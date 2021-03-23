@@ -12,6 +12,7 @@
     background-color: rgb(15, 15, 15);
     grid-area: header;
     display: flex;
+    border-bottom: 1px solid gray
 }
 
 #logoSide {
