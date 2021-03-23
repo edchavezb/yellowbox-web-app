@@ -22,9 +22,14 @@
 }
 
 #logoContainer {
-    font-size: 3em;
+    font-size: 2.5em;
     color: #ffffff;
     font-weight: bold;
+}
+
+#logo {
+    height: .7em;
+    border-radius: .1em;
 }
 
 #headerTools {

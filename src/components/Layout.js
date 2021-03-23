@@ -17,7 +17,7 @@ function Layout(props) {
       <section id={styles.header}>
         <div id={styles.logoSide}>
           <div id={styles.logoContainer}>
-            YBX
+            <img id={styles.logo} src="/logoybx.png"></img> YBX
           </div>
         </div>
         <div id={styles.headerTools}>
