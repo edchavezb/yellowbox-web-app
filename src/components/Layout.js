@@ -24,7 +24,8 @@ function Layout(props) {
         <div id={styles.headerTools}>
           <div id={styles.searchBox}>
             <div id={styles.inputWrapper}>
-              <input id={styles.searchInput} type="text" onChange={(e) => setInput(e.target.value.trim().replace(" ", "%20"))} />
+              <input id={styles.searchInput} type="text" onChange={(e) => setInput(e.target.value.trim().replace(" ", "%20"))} 
+                onFocus={() => {if(input) history.push(`/search/${input}`)}}/>
             </div>
             <img id={styles.searchIcon} src="/icons/search.svg"></img>
           </div>
