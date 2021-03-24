@@ -7,10 +7,18 @@ function Header(props) {
 
   const [input, setInput] = useState("");
   const history = useHistory();
+  const dispatch = props.dispatch;
 
   useEffect(() => {
     if (input) history.push(`/search/${input}`)
   }, [input])
+
+  const handleCreateBox = () => {
+    const highestId = parseInt(props.boxes[props.boxes.length - 1].id)
+    const newId = (highestId + 1).toString()
+    const newBox = {id: newId, name: "New Box", artists: [], albums: [], tracks: []}
+    dispatch({type: "ADD_BOX", payload: {newBox: newBox}})
+  }
 
   return (
     <div id={styles.header}> 
@@ -26,6 +34,9 @@ function Header(props) {
                 onFocus={() => {if(input) history.push(`/search/${input}`)}}/>
             </div>
             <img id={styles.searchIcon} src="/icons/search.svg"></img>
+          </div>
+          <div id={styles.newButton} onClick={() => handleCreateBox()}>
+            <img id={styles.plusIcon} src="/icons/plus.svg"></img>
           </div>
         </div>
     </div>

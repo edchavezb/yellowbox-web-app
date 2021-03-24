@@ -31,7 +31,7 @@ function App() {
       case 'UPDATE_BOX':
       return state.map((item, index) => index === action.payload.target ? action.payload.updatedBox : item)
       case 'ADD_BOX':
-      return state.map((item, index) => index === action.payload.target ? action.payload.updatedBox : item)
+      return [...state, action.payload.newBox]
       case 'DELETE_BOX':
       return state.map((item, index) => index === action.payload.target ? action.payload.updatedBox : item)
     }

@@ -27,7 +27,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 0px 30px
+    padding: 0px 25px
 }
 
 #searchBox {
@@ -55,4 +55,24 @@
 
 #searchIcon {
     width: 15px
+}
+
+#newButton {
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    margin: 0px 5px;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#newButton:hover {
+    background-color: #ffffff;
+}
+
+#plusIcon {
+    width: 50%
 }
