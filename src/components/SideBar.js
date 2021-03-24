@@ -35,8 +35,8 @@ function SideBar(props) {
     e.target.className = styles.boxLink
     const data = JSON.parse(e.dataTransfer.getData("data"))
     console.log(data)
-    console.log(e.target.id)
-    updateBox(data, e.target.id)
+    console.log(e.currentTarget.id)
+    updateBox(data, e.currentTarget.id)
   }
 
   return (
