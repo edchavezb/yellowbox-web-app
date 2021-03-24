@@ -7,9 +7,26 @@ function SideBar(props) {
 
   const dispatch = props.dispatch;
 
-  const updateBox = (draggedData, targetBox) => {
+  const addToBox = (draggedData, targetBoxId) => {
+    const targetIndex = props.boxes.findIndex(box => box.id === targetBoxId)
+    const targetBox = {...props.boxes.find(box => box.id === targetBoxId)}
+    let updatedBox = {}
+    switch (draggedData.type) {
+      case "album" :
+        const updatedAlbums = [...targetBox.albums, draggedData]
+        updatedBox = {...targetBox, albums: updatedAlbums}
+      break;
+      case "artist" :
+        const updatedArtists = [...targetBox.artists, draggedData]
+        updatedBox = {...targetBox, artists: updatedArtists}
+      break;
+      case "track" :
+        const updatedTracks = [...targetBox.tracks, draggedData]
+        updatedBox = {...targetBox, tracks: updatedTracks}
+      break;
+    }
     console.log("Dispatch call")
-    dispatch({type: draggedData.type, payload: {item: draggedData, target: targetBox}})
+    dispatch({type: "UPDATE_BOX", payload: {updatedBox: updatedBox, target: targetIndex}})
   }
 
   const handleDragEnter = (e) => {
@@ -36,7 +53,7 @@ function SideBar(props) {
     const data = JSON.parse(e.dataTransfer.getData("data"))
     console.log(data)
     console.log(e.currentTarget.id)
-    updateBox(data, e.currentTarget.id)
+    addToBox(data, e.currentTarget.id)
   }
 
   return (
