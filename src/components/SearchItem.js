@@ -9,7 +9,7 @@ function SearchItem(props){
 
     const handleDrag = (e, data) => {
         console.log(data)
-        e.dataTransfer.setData("data", data)
+        e.dataTransfer.setData("data", JSON.stringify(data))
     }
 
     return (

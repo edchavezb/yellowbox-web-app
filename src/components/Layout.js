@@ -32,7 +32,7 @@ function Layout(props) {
 
       </section>
       <section id={styles.sideBar}>
-        <SideBar userName="Pablo Alboran" boxes={props.userBoxes}/>
+        <SideBar userName="Pablo Alboran" boxes={props.userBoxes} dispatch={props.dispatch}/>
       </section>
       <section id={styles.mainView}>
         {props.children}

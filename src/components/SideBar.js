@@ -5,6 +5,13 @@ import styles from "./SideBar.module.css";
 
 function SideBar(props) {
 
+  const dispatch = props.dispatch;
+
+  const updateBox = (draggedData, targetBox) => {
+    console.log("Dispatch call")
+    dispatch({type: draggedData.type, payload: {item: draggedData, target: targetBox}})
+  }
+
   const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -17,9 +24,19 @@ function SideBar(props) {
     e.target.className = styles.boxLink
   }
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.target.className = styles.boxLink
+    const data = JSON.parse(e.dataTransfer.getData("data"))
+    console.log(data)
+    console.log(e.target.id)
+    updateBox(data, e.target.id)
   }
 
   return (
@@ -32,9 +49,10 @@ function SideBar(props) {
         <h4 id={styles.boxesTitle}> Your Boxes </h4>
         {props.boxes.map((box) => {
           return (
-            <Link className={styles.boxLink} key={box.id} to={`/box/${box.id}`} 
+            <Link className={styles.boxLink} id={box.id} key={box.id} to={`/box/${box.id}`} 
               onDragEnter={(e) => handleDragEnter(e)} 
               onDragLeave={(e) => handleDragLeave(e)}
+              onDragOver={(e) => handleDragOver(e)}
               onDrop={(e) => handleDrop(e)}>
                 <span> {box.name} </span>
             </Link>
