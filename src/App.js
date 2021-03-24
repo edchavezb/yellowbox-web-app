@@ -27,17 +27,18 @@ function App() {
   ]
 
   const updateBoxReducer = (state, action) => {
+    const targetIndex = state.findIndex(box => box.id === action.payload.target)
     const targetBox = {...state.find(box => box.id === action.payload.target)}
     switch (action.type) {
       case 'album':
         const updatedAlbums = [...targetBox.albums, action.payload.item]
-      return [...state.filter(box => box.id !== action.payload.target), {...targetBox, albums: updatedAlbums}]
+      return state.map((item, index) => index === targetIndex ? {...targetBox, albums: updatedAlbums} : item)
       case 'artist':
         const updatedArtists = [...targetBox.artists, action.payload.item]
-      return [...state.filter(box => box.id !== action.payload.target), {...targetBox, artists: updatedArtists}]
+      return state.map((item, index) => index === targetIndex ? {...targetBox, artists: updatedArtists} : item)
       case 'track':
         const updatedTracks = [...targetBox.tracks, action.payload.item]
-      return [...state.filter(box => box.id !== action.payload.target), {...targetBox, tracks: updatedTracks}]
+      return state.map((item, index) => index === targetIndex ? {...targetBox, tracks: updatedTracks} : item)
     }
   }
 
