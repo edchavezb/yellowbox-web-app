@@ -10,7 +10,7 @@ function Layout(props) {
   return (
     <div id={styles.layout}>
       <section id={styles.headerWrapper}>
-        <Header boxes={props.userBoxes} dispatch={props.dispatch}/>
+        <Header boxes={props.userBoxes} toggleModal={props.toggle} dispatch={props.dispatch}/>
       </section>
       <section id={styles.sideBar}>
         <SideBar userName="Pablo Alboran" boxes={props.userBoxes} dispatch={props.dispatch}/>

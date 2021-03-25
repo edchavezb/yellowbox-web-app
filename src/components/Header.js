@@ -8,6 +8,7 @@ function Header(props) {
   const [input, setInput] = useState("");
   const history = useHistory();
   const dispatch = props.dispatch;
+  const toggleModal = props.toggleModal
 
   useEffect(() => {
     if (input) history.push(`/search/${input}`)
@@ -35,7 +36,7 @@ function Header(props) {
             </div>
             <img id={styles.searchIcon} src="/icons/search.svg"></img>
           </div>
-          <div id={styles.newButton} onClick={() => handleCreateBox()}>
+          <div id={styles.newButton} onClick={() => toggleModal({visible: true, type:"New Box"})}>
             <img id={styles.plusIcon} src="/icons/plus.svg"></img>
           </div>
         </div>
