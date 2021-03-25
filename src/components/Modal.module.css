@@ -16,7 +16,6 @@
     background-color: rgb(26, 26, 26);;
     color: #ffffff;
     border-radius: 5px;
-    font-weight: bold;
 }
 
 #modalHeader {
@@ -32,6 +31,7 @@
     align-items: center;
     flex-grow: 1;
     font-size: 1.5em;
+    font-weight: bold;
 }
 
 #closeModal {
@@ -48,5 +48,22 @@
 }
 
 #modalBody {
-    padding: 20px 15px;
+    padding: 20px 30px 0px 30px;
+}
+
+#newBoxForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.formElement {
+    margin: 5px 0px
+}
+
+#modalFooter {
+    height: 50px;
+    padding: 0px 30px 10px 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }

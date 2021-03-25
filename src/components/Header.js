@@ -7,19 +7,11 @@ function Header(props) {
 
   const [input, setInput] = useState("");
   const history = useHistory();
-  const dispatch = props.dispatch;
   const toggleModal = props.toggleModal
 
   useEffect(() => {
     if (input) history.push(`/search/${input}`)
   }, [input])
-
-  const handleCreateBox = () => {
-    const highestId = parseInt(props.boxes[props.boxes.length - 1].id)
-    const newId = (highestId + 1).toString()
-    const newBox = {id: newId, name: "New Box", artists: [], albums: [], tracks: []}
-    dispatch({type: "ADD_BOX", payload: {newBox: newBox}})
-  }
 
   return (
     <div id={styles.header}> 

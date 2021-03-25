@@ -16,6 +16,7 @@ function App() {
       name: "Favoritos Espanol",
       available: "public",
       creator: "eKDNF346",
+      description: "Mis favoritos en el espanol",
       artists: [],
       albums: [],
       tracks: []
@@ -25,6 +26,7 @@ function App() {
       name: "Top 2020",
       available: "public",
       creator: "eKDNF346",
+      description: "Top albums from 2020",
       artists: [],
       albums: [],
       tracks: []
@@ -52,7 +54,7 @@ function App() {
 
   return (
     <Router>
-      <Modal toggle={setModal} visible={modal.visible} type={modal.type} />
+      <Modal toggle={setModal} visible={modal.visible} type={modal.type} userBoxes={boxes} dispatch={dispatchBoxUpdates} />
       <Layout userBoxes={boxes} toggle={setModal} dispatch={dispatchBoxUpdates}>
         <Route exact path="/" component={Home} />
         <Route path="/search/:query" component={Search} />
