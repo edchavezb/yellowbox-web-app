@@ -52,8 +52,8 @@ function App() {
 
   return (
     <Router>
-      {modal.visible ? <Modal toggle={setModal} type={modal.type} /> : ""}
-      <Layout userBoxes={boxes} toggle={(params) => setModal({...params})} dispatch={dispatchBoxUpdates}>
+      <Modal toggle={setModal} visible={modal.visible} type={modal.type} />
+      <Layout userBoxes={boxes} toggle={setModal} dispatch={dispatchBoxUpdates}>
         <Route exact path="/" component={Home} />
         <Route path="/search/:query" component={Search} />
         <Route path="/box/:id" render={(props) => <BoxDetail {...props} userBoxes={boxes}/>} />

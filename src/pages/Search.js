@@ -22,7 +22,6 @@ function Search(props) {
   useEffect(() => console.log(searchData), [searchData]);
 
   const spotifyAuthorization = () => {
-    console.log(credentials.id + ':' + credentials.secret)
     axios({
       method: 'post',
       url: 'https://accounts.spotify.com/api/token',
@@ -35,7 +34,6 @@ function Search(props) {
     })
       .then(response => {
         setToken(response.data.access_token)
-        console.log(response.data.access_token);
       })
       .catch(error => {
         console.log(error);

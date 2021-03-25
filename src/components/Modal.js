@@ -7,22 +7,22 @@ function Modal(props) {
 
   const hideModal = props.toggle
 
-  return (
-    <div id={styles.modalDiv}> 
-      <div id={styles.modalPanel}>
-        <div id={styles.modalHeader}>
-          <div id={styles.modalTitle}> {props.type} </div>
-          <div id={styles.closeModal} onClick={() => hideModal({visible: false, type:""})}>
-            <img id={styles.closeIcon} src="/icons/close.svg"/>
+  if (props.visible === true){
+    return (
+      <div id={styles.modalDiv}> 
+        <div id={styles.modalPanel}>
+          <div id={styles.modalHeader}>
+            <div id={styles.modalTitle}> {props.type} </div>
+            <div id={styles.closeModal} onClick={() => hideModal({visible: false, type:""})}>
+              <img id={styles.closeIcon} src="/icons/close.svg"/>
+            </div>
+          </div>
+          <div id={styles.modalBody}>
           </div>
         </div>
-        <div id={styles.modalBody}>
-        </div>
       </div>
-    </div>
-  );
-
-  
+    );
+  } else return ""
 }
 
 export default Modal;
