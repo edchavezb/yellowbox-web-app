@@ -1,0 +1,32 @@
+#boxUtilities {
+    height: 30px;
+    padding: 0px 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.includeButton {
+    width: 20px;
+    height: 20px;
+    margin: 0px 2px;
+    background-color: gray;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.includeButtonPressed {
+    composes: includeButton;
+    opacity: 50%
+}
+
+#includeTitle {
+    margin-right: 5px;
+}
+
+.buttonIcon {
+    width: 70%
+}
