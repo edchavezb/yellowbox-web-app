@@ -23,7 +23,7 @@ function BoxSection(props) {
     <div className={styles.sectionPanel}>
       <div className={styles.sectionUtilities}>
         <img className={styles.sectionIcon} src={sectionIconSrc}></img>
-        <span> {props.type} </span>
+        <span> {props.type} ({props.data.length}) </span>
       </div>
       <div className={styles.itemContainer}>
         {props.data.map((e) => {
