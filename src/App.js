@@ -13,10 +13,10 @@ function App() {
   const defaultBoxes = [
     {
       id: "1234",
-      name: "Favoritos Espanol",
+      name: "Favoritos Español",
       available: "public",
       creator: "eKDNF346",
-      description: "Mis favoritos en el espanol",
+      description: "Mis favoritos en el español",
       artists: [],
       albums: [],
       tracks: []

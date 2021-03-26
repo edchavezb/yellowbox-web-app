@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import SearchResults from "../components/SearchResults"
+import BoxSection from '../components/BoxSection';
 import styles from "./BoxDetail.module.css";
 
 function BoxDetail(props) {
@@ -13,9 +13,10 @@ function BoxDetail(props) {
   return (
     <div id={styles.mainPanel}>
       <h2> {box.name} </h2>
-      <SearchResults type="Artists" data={box.artists}/>
-      <SearchResults type="Albums" data={box.albums}/>
-      <SearchResults type="Tracks" data={box.tracks}/>
+      <p> {box.description} </p>
+      {box.artists.length ? <BoxSection type="Artists" data={box.artists}/> : ""}
+      {box.albums.length ? <BoxSection type="Albums" data={box.albums}/> : ""}
+      {box.tracks.length ? <BoxSection type="Tracks" data={box.tracks}/> : ""}
     </div>
   )
 }
