@@ -30,3 +30,11 @@
 .buttonIcon {
     width: 70%
 }
+
+#includeToggler {
+    display: flex;
+}
+
+#noInclude {
+    display: none;
+}
