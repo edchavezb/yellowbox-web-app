@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import AnimateHeight from 'react-animate-height';
 
 import SearchItem from "./SearchItem"
 import styles from "./BoxSection.module.css";
 
 function BoxSection(props) {
+
+  const [height, setHeight] = useState("auto")
+
+  useEffect(() => {
+    const heightProp = props.visible ? "auto" : 0
+    setHeight(heightProp)
+  }, [props.visible])
 
   let sectionIconSrc = ""
 
@@ -20,7 +28,7 @@ function BoxSection(props) {
   }
 
   return (
-    props.visible ?
+    <AnimateHeight duration={250} height={height}>
       <div className={styles.sectionPanel}>
         <div className={styles.sectionUtilities}>
           <img className={styles.sectionIcon} src={sectionIconSrc}></img>
@@ -32,7 +40,7 @@ function BoxSection(props) {
           })}
         </div>
       </div>
-    : ""
+    </AnimateHeight>
   )
 }
 
