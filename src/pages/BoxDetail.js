@@ -32,9 +32,32 @@ function BoxDetail(props) {
         : ""}
       <h2> {boxCopy.name} </h2>
       <p> {boxCopy.description} </p>
-      {boxCopy.artists.length ? <BoxSection type="Artists" data={boxCopy.artists} visible={visibility.artists} /> : ""}
-      {boxCopy.albums.length ? <BoxSection type="Albums" data={boxCopy.albums} visible={visibility.albums} /> : ""}
-      {boxCopy.tracks.length ? <BoxSection type="Tracks" data={boxCopy.tracks} visible={visibility.tracks} /> : ""}
+      {boxCopy.artists.length ? 
+        <BoxSection 
+          type="Artists" 
+          data={boxCopy.artists} 
+          primSorting={boxCopy.primarySorting.artists}
+          view={boxCopy.view.artists}
+          visible={visibility.artists} />
+        : ""}
+      {boxCopy.albums.length ? 
+        <BoxSection 
+          type="Albums" 
+          data={boxCopy.albums}
+          primSorting={boxCopy.primarySorting.albums}
+          secSorting={boxCopy.secondarySorting.albums}
+          view={boxCopy.view.albums}
+          visible={visibility.albums} /> 
+        : ""}
+      {boxCopy.tracks.length ? 
+        <BoxSection 
+          type="Tracks" 
+          data={boxCopy.tracks}
+          primSorting={boxCopy.primarySorting.tracks}
+          secSorting={boxCopy.secondarySorting.tracks}
+          view={boxCopy.view.tracks}
+          visible={visibility.tracks} /> 
+        : ""}
       {boxNotEmpty ? "" : <h3> You have not added any items to this box yet. Start by searching some music you like! </h3>}
     </div>
   )

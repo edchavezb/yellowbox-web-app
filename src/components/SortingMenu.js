@@ -23,6 +23,7 @@ function SortingMenu(props) {
       secondarySorting: secSorting,
       view: view,
     }
+    console.log(boxCopy)
     console.log(updatedBox)
     dispatch({ type: "UPDATE_BOX", payload: { updatedBox: updatedBox, target: targetIndex }})
     toggleModal({ visible: false, type: "", boxId:"" })
@@ -62,13 +63,12 @@ function SortingMenu(props) {
                   let newSorting = {}
                   newSorting[section] = e.target.value
                   setPrimSorting(state => ({...state, ...newSorting}))
-                  const secSortingSelect = e.target.closest("div").querySelector(".sec-sorting")
-                  secSortingSelect.selectedIndex = 0
+                  if (section !== "artists") e.target.closest("div").querySelector(".sec-sorting").selectedIndex = 0
                 }}> 
                 <option value="custom"> Custom </option>
                 {section === "artists" ? <option value="name"> Name </option> : ""}
-                {section !== "artists" ? <option value="title"> Title </option> : ""}
-                {section !== "artists" ? <option value="year"> Release Year </option> : ""}
+                {section !== "artists" ? <option value="name"> Title </option> : ""}
+                {section !== "artists" ? <option value="date"> Release Date </option> : ""}
                 {section !== "artists" ? <option value="artist"> Artist </option> : ""}
               </select> 
               

@@ -13,17 +13,44 @@ function BoxSection(props) {
     setHeight(heightProp)
   }, [props.visible])
 
+  const sortData = () => {
+    if (props.primSorting === "name") {
+      
+    } else if (props.primSorting === "date") {
+
+    } else if (props.primSorting === "artist") {
+
+    }
+
+    return props.data
+    
+  }
+
   let sectionIconSrc = ""
+  let sortedData = []
 
   switch (props.type) {
     case "Artists":
       sectionIconSrc = "/icons/artist.svg"
+      sortedData = props.primSorting === "name" ? 
+        [...props.data].sort((a, b) => {
+          if (a.name.toUpperCase() < b.name.toUpperCase()) {
+            return -1;
+          }
+          if (a.name.toUpperCase() > b.name.toUpperCase()) {
+            return 1;
+          }
+          return 0;
+        }) 
+        : props.data;
       break;
     case "Albums":
       sectionIconSrc = "/icons/album.svg"
+      sortedData = props.data
       break;
     case "Tracks":
       sectionIconSrc = "/icons/song.svg"
+      sortedData = props.data
       break;
   }
 
@@ -35,7 +62,7 @@ function BoxSection(props) {
           <span> {props.type} ({props.data.length}) </span>
         </div>
         <div className={styles.itemContainer}>
-          {props.data.map((e) => {
+          {sortedData.map((e) => {
             return <SearchItem key={e.id} element={e} />
           })}
         </div>
