@@ -38,3 +38,8 @@
 #noInclude {
     display: none;
 }
+
+#sortingButton {
+    background-color: black;
+    color: white;
+}

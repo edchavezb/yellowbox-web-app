@@ -8,6 +8,8 @@ function BoxUtilities(props) {
   const singleTypeBox = props.singleTypeBox
   const visibility = props.visibility
   const setVisibility = props.setVisibility
+  const boxSorting = props.boxSorting
+  const setBoxSorting = props.setBoxSorting
 
   const handleSectionVisibility = e => {
     const section = e.currentTarget.getAttribute("handles")
@@ -40,6 +42,7 @@ function BoxUtilities(props) {
           </div>
           : ""}
       </div>
+      <button id={styles.sortingButton}> Sorting Options </button>
     </div>
   )
 }

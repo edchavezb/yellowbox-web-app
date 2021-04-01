@@ -19,7 +19,17 @@ function App() {
       description: "Mis favoritos en el español",
       artists: [],
       albums: [],
-      tracks: []
+      tracks: [],
+      sorting: {
+        artists: "custom",
+        albums: "custom", 
+        tracks: "custom"
+      },
+      sectionVisibility: {
+        artists: true,
+        albums: true, 
+        tracks: true
+      }
     },
     {
       id: "2454",
@@ -29,7 +39,17 @@ function App() {
       description: "Top albums from 2020",
       artists: [],
       albums: [],
-      tracks: []
+      tracks: [],
+      sorting: {
+        artists: "custom",
+        albums: "custom", 
+        tracks: "custom"
+      },
+      sectionVisibility: {
+        artists: true,
+        albums: true, 
+        tracks: true
+      }
     }
   ]
 
@@ -46,7 +66,7 @@ function App() {
 
   const [boxes, dispatchBoxUpdates] = useReducer(updateBoxes, defaultBoxes)
 
-  const [modal, setModal] = useState({visible: false, type: ""})
+  const [modal, setModal] = useState({visible: false, type: "", box: ""})
 
   useEffect(() => {
     console.log(boxes)
@@ -54,11 +74,11 @@ function App() {
 
   return (
     <Router>
-      <Modal toggle={setModal} visible={modal.visible} type={modal.type} userBoxes={boxes} dispatch={dispatchBoxUpdates} />
-      <Layout userBoxes={boxes} toggle={setModal} dispatch={dispatchBoxUpdates}>
+      <Modal toggle={setModal} visible={modal.visible} type={modal.type} box={modal.box} userBoxes={boxes} dispatch={dispatchBoxUpdates} />
+      <Layout userBoxes={boxes} toggleModal={setModal} dispatch={dispatchBoxUpdates}>
         <Route exact path="/" component={Home} />
         <Route path="/search/:query" component={Search} />
-        <Route path="/box/:id" render={(props) => <BoxDetail {...props} userBoxes={boxes}/>} />
+        <Route path="/box/:id" render={(props) => <BoxDetail {...props} userBoxes={boxes} toggleModal={setModal}/>} />
       </Layout>
     </Router>
   );
