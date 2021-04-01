@@ -66,7 +66,7 @@ function App() {
 
   const [boxes, dispatchBoxUpdates] = useReducer(updateBoxes, defaultBoxes)
 
-  const [modal, setModal] = useState({visible: false, type: "", box: ""})
+  const [modal, setModal] = useState({visible: false, type: "", boxId: ""})
 
   useEffect(() => {
     console.log(boxes)
@@ -74,7 +74,7 @@ function App() {
 
   return (
     <Router>
-      <Modal toggle={setModal} visible={modal.visible} type={modal.type} box={modal.box} userBoxes={boxes} dispatch={dispatchBoxUpdates} />
+      <Modal toggleModal={setModal} visible={modal.visible} type={modal.type} boxId={modal.boxId} userBoxes={boxes} dispatch={dispatchBoxUpdates} />
       <Layout userBoxes={boxes} toggleModal={setModal} dispatch={dispatchBoxUpdates}>
         <Route exact path="/" component={Home} />
         <Route path="/search/:query" component={Search} />

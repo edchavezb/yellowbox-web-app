@@ -2,49 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
 import styles from "./Modal.module.css";
+import SortingMenu from "./SortingMenu";
+import NewBoxMenu from "./NewBoxMenu"
 
 function Modal(props) {
 
-  const toggleModal = props.toggle;
+  const userBoxes = props.userBoxes
+  const toggleModal = props.toggleModal;
   const dispatch = props.dispatch;
+  const boxId = props.boxId;
 
-  const [boxDetails, setBoxDetails] = useState({boxName: "", boxDesc: "", avail: "public"})
-  
   let modalBody = ""
-  let buttonText = ""
-  let action = null
-
-  const handleCreateBox = () => {
-    const highestId = parseInt(props.userBoxes[props.userBoxes.length - 1].id)
-    const newId = (highestId + 1).toString()
-    const newBox = {
-      id: newId, 
-      name: boxDetails.boxName, 
-      description: boxDetails.boxDesc, 
-      available: boxDetails.avail, 
-      artists: [], 
-      albums: [], 
-      tracks: []
-    }
-    dispatch({type: "ADD_BOX", payload: {newBox: newBox}})
-    toggleModal({visible: false, type:""})
-  }
 
   switch(props.type){
     case "New Box" :
-      modalBody = 
-      <div id={styles.modalBody}>
-        <form id={styles.newBoxForm}>
-          <label className={styles.formElement} htmlFor="box-name"> Name </label>
-          <input className={styles.formElement} type="text" name="box-name" id={styles.boxName} 
-            onChange={(e) => setBoxDetails(state => ({ ...state, boxName: e.target.value.trim()}))}/>
-          <label className={styles.formElement} htmlFor="box-description"> Description </label>
-          <textarea className={styles.formElement} name="box-description" id={styles.boxDesc} rows="3" resize="none" 
-            onChange={(e) => setBoxDetails(state => ({ ...state, boxDesc: e.target.value.trim()}))}/>
-        </form>
-      </div>
-      buttonText = "Create"
-      action = handleCreateBox
+      modalBody = <NewBoxMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} />
+    break;
+    case "Sorting Options" :
+      modalBody = <SortingMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} />
     break;
   }
 
@@ -54,14 +29,11 @@ function Modal(props) {
         <div id={styles.modalPanel}>
           <div id={styles.modalHeader}>
             <div id={styles.modalTitle}> {props.type} </div>
-            <div id={styles.closeModal} onClick={() => toggleModal({visible: false, type:""})}>
+            <div id={styles.closeModal} onClick={() => toggleModal({visible: false, type:"", boxId:""})}>
               <img id={styles.closeIcon} src="/icons/close.svg"/>
             </div>
           </div>
           {modalBody}
-          <div id={styles.modalFooter}>
-            <button onClick={() => action()}> {buttonText} </button>
-          </div>
         </div>
       </div>
     );

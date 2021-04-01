@@ -7,13 +7,13 @@ import styles from "./BoxDetail.module.css";
 
 function BoxDetail(props) {
 
+  const toggleModal = props.toggleModal
   const params = useParams()
   const boxCopy = {...props.userBoxes.find(box => box.id === params.id)}
   const boxNotEmpty = boxCopy.albums.length > 0 || boxCopy.artists.length > 0 || boxCopy.tracks.length > 0;
-  const singleTypeBox = [boxCopy.albums, boxCopy.artists, boxCopy.tracks].filter((box) => box.length > 0).length === 1
+  const singleTypeBox = [boxCopy.albums, boxCopy.artists, boxCopy.tracks].filter((section) => section.length > 0).length === 1
 
   const [visibility, setVisibility] = useState({...boxCopy.sectionVisibility})
-  const [boxSorting, setBoxSorting] = useState({...boxCopy.sorting})
 
   useEffect(() => {
     console.log(visibility)
@@ -27,8 +27,8 @@ function BoxDetail(props) {
           singleTypeBox={singleTypeBox} 
           visibility={visibility} 
           setVisibility={setVisibility}
-          boxSorting={boxSorting}
-          setBoxSorting={setBoxSorting}/> 
+          toggleModal={toggleModal}
+          /> 
         : ""}
       <h2> {boxCopy.name} </h2>
       <p> {boxCopy.description} </p>

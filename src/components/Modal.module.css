@@ -46,24 +46,3 @@
     width: 50%;
     fill: white;
 }
-
-#modalBody {
-    padding: 20px 30px 0px 30px;
-}
-
-#newBoxForm {
-    display: flex;
-    flex-direction: column;
-}
-
-.formElement {
-    margin: 5px 0px
-}
-
-#modalFooter {
-    height: 50px;
-    padding: 0px 30px 10px 30px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
