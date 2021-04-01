@@ -23,7 +23,7 @@ function NewBoxMenu(props) {
       tracks: []
     }
     dispatch({ type: "ADD_BOX", payload: { newBox: newBox } })
-    toggleModal({ visible: false, type: "" })
+    toggleModal({ visible: false, type: "", boxId:"" })
   }
 
   return (

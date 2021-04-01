@@ -20,10 +20,19 @@ function App() {
       artists: [],
       albums: [],
       tracks: [],
-      sorting: {
+      primarySorting: {
         artists: "custom",
         albums: "custom", 
         tracks: "custom"
+      },
+      secondarySorting: {
+        albums: "none", 
+        tracks: "none"
+      },
+      view: {
+        artists: "grid",
+        albums: "grid",
+        tracks: "grid"
       },
       sectionVisibility: {
         artists: true,
@@ -40,10 +49,19 @@ function App() {
       artists: [],
       albums: [],
       tracks: [],
-      sorting: {
+      primarySorting: {
         artists: "custom",
         albums: "custom", 
         tracks: "custom"
+      },
+      secondarySorting: {
+        albums: "none", 
+        tracks: "none"
+      },
+      view: {
+        artists: "list",
+        albums: "grid",
+        tracks: "grid"
       },
       sectionVisibility: {
         artists: true,
