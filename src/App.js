@@ -20,24 +20,27 @@ function App() {
       artists: [],
       albums: [],
       tracks: [],
-      primarySorting: {
-        artists: "custom",
-        albums: "custom", 
-        tracks: "custom"
-      },
-      secondarySorting: {
-        albums: "none", 
-        tracks: "none"
-      },
-      view: {
-        artists: "grid",
-        albums: "grid",
-        tracks: "grid"
-      },
-      ascendingOrder: {
-        artists: false,
-        albums: true,
-        tracks: false
+      sectionSorting: {
+        artists: {
+          primarySorting: "custom",
+          view: "list",
+          ascendingOrder: false,
+          subSections: false
+        },
+        albums: {
+          primarySorting: "custom",
+          secondarySorting: "none",
+          view: "grid",
+          ascendingOrder: false,
+          subSections: false
+        },
+        tracks: {
+          primarySorting: "custom",
+          secondarySorting: "none",
+          view: "grid",
+          ascendingOrder: false,
+          subSections: false
+        }
       },
       sectionVisibility: {
         artists: true,
@@ -54,24 +57,27 @@ function App() {
       artists: [],
       albums: [],
       tracks: [],
-      primarySorting: {
-        artists: "custom",
-        albums: "custom", 
-        tracks: "custom"
-      },
-      secondarySorting: {
-        albums: "none", 
-        tracks: "none"
-      },
-      view: {
-        artists: "list",
-        albums: "grid",
-        tracks: "grid"
-      },
-      ascendingOrder: {
-        artists: false,
-        albums: true,
-        tracks: true
+      sectionSorting: {
+        artists: {
+          primarySorting: "custom",
+          view: "list",
+          ascendingOrder: false,
+          subSections: true
+        },
+        albums: {
+          primarySorting: "custom",
+          secondarySorting: "none",
+          view: "grid",
+          ascendingOrder: false,
+          subSections: false
+        },
+        tracks: {
+          primarySorting: "custom",
+          secondarySorting: "none",
+          view: "grid",
+          ascendingOrder: false,
+          subSections: false
+        }
       },
       sectionVisibility: {
         artists: true,

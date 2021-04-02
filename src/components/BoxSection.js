@@ -16,6 +16,8 @@ function BoxSection(props) {
   const singleFactorSort = (array, sortFactor, ascending) => {
     if (sortFactor === "custom") return array
 
+    console.log(ascending)
+
     const sortOrderFactor = ascending ? 1 : -1;
 
     array.sort((a, b) => {
@@ -34,6 +36,8 @@ function BoxSection(props) {
 
   const twoFactorSort = (array, type, sortFactorOne, sortFactorTwo, ascending) => {
     if (sortFactorOne === "custom") return array
+
+    console.log(ascending)
 
     const sortOrderFactor = ascending ? 1 : -1;
 
@@ -118,15 +122,15 @@ function BoxSection(props) {
   switch (props.type) {
     case "Artists":
       sectionIconSrc = "/icons/artist.svg"
-      sortedData = singleFactorSort([...props.data], props.primSorting, props.ascending)
+      sortedData = singleFactorSort([...props.data], props.sorting.primarySorting, props.sorting.ascendingOrder)
       break;
     case "Albums":
       sectionIconSrc = "/icons/album.svg"
-      sortedData = twoFactorSort([...props.data], props.type, props.primSorting, props.secSorting, props.ascending)
+      sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, props.sorting.secondarySorting, props.sorting.ascendingOrder)
       break;
     case "Tracks":
       sectionIconSrc = "/icons/song.svg"
-      sortedData = twoFactorSort([...props.data], props.type, props.primSorting, props.secSorting, props.ascending)
+      sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, props.sorting.secondarySorting, props.sorting.ascendingOrder)
       break;
   }
 

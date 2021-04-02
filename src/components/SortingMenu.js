@@ -11,17 +11,14 @@ function SortingMenu(props) {
   const boxCopy = JSON.parse(JSON.stringify(props.userBoxes.find(box => box.id === props.boxId)))
   const boxSections = {artists: boxCopy.artists, albums: boxCopy.albums, tracks: boxCopy.tracks}
   const nonEmptySections = Object.keys(boxSections).filter((section) => boxSections[section].length > 0)
+  const boxSorting = boxCopy.sectionSorting
 
-  const [primSorting, setPrimSorting] = useState({artists: boxCopy.primarySorting.artists, albums: boxCopy.primarySorting.albums, tracks: boxCopy.primarySorting.tracks})
-  const [secSorting, setSecSorting] = useState({albums: boxCopy.secondarySorting.albums, tracks: boxCopy.secondarySorting.tracks})
-  const [view, setView] = useState({artists: boxCopy.view.artists, albums: boxCopy.view.albums, tracks: boxCopy.view.tracks})
+  const [sorting, setSorting] = useState({...boxSorting})
 
   const handleUpdateSorting = () => {
     const updatedBox = {
       ...boxCopy,
-      primarySorting: primSorting,
-      secondarySorting: secSorting,
-      view: view,
+      sectionSorting: sorting
     }
     console.log(boxCopy)
     console.log(updatedBox)
@@ -30,10 +27,8 @@ function SortingMenu(props) {
   }
 
   useEffect(() => {
-    console.log(primSorting)
-    console.log(secSorting)
-    console.log(view)
-  }, [primSorting, secSorting, view]) 
+    console.log(sorting)
+  }, [sorting]) 
 
   return (
     <div id={styles.modalBody}>
@@ -45,12 +40,14 @@ function SortingMenu(props) {
               <span> {section.charAt(0).toUpperCase() + section.slice(1)} </span>
 
               <label htmlFor="view"> View as </label>
-              <select name="view" defaultValue={boxCopy.view[section]} 
+              <select name="view" defaultValue={boxSorting[section].view} 
                 onChange={e => {
-                  let newView = {}
-                  newView[section] = e.target.value
-                  console.log(newView)
-                  setView(state => ({...state, ...newView})) 
+                  let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
+                  let updatedSection = {...sectionCopy, view: e.target.value}
+                  let newSortingObject = {}
+                  newSortingObject[section] = updatedSection
+                  console.log(newSortingObject)
+                  setSorting(state => ({...state, ...newSortingObject})) 
                 }}> 
                   <option value="grid"> Grid </option>
                   <option value="list"> List </option>
@@ -58,11 +55,16 @@ function SortingMenu(props) {
               </select>
 
               <label htmlFor="sorting"> Sort by </label>
-              <select name="sorting" defaultValue={boxCopy.primarySorting[section]}
+              <select name="sorting" defaultValue={boxSorting[section].primarySorting}
                 onChange={e => {
-                  let newSorting = {}
-                  newSorting[section] = e.target.value
-                  setPrimSorting(state => ({...state, ...newSorting}))
+                  let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
+                  console.log(sectionCopy)
+                  let updatedSection = {...sectionCopy, primarySorting: e.target.value}
+                  console.log(updatedSection)
+                  let newSortingObject = {}
+                  newSortingObject[section] = updatedSection
+                  console.log(newSortingObject)
+                  setSorting(state => ({...state, ...newSortingObject})) 
                   if (section !== "artists") e.target.closest("div").querySelector(".sec-sorting").selectedIndex = 0
                 }}> 
                 <option value="custom"> Custom </option>
@@ -78,29 +80,59 @@ function SortingMenu(props) {
               {section !== "artists" ? 
               <div>
                 <label htmlFor="sec-sorting"> then by </label>
-                <select className="sec-sorting" name="sec-sorting" disabled={primSorting[section] === "custom"} defaultValue={boxCopy.secondarySorting[section]}
+                <select className="sec-sorting" name="sec-sorting" disabled={sorting[section].primarySorting === "custom"} defaultValue={boxSorting[section].secondarySorting}
                   onChange={e => {
-                    let newSorting = {}
-                    newSorting[section] = e.target.value
-                    setSecSorting(state => ({...state, ...newSorting}))
+                    let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
+                    let updatedSection = {...sectionCopy, secondarySorting: e.target.value}
+                    let newSortingObject = {}
+                    newSortingObject[section] = updatedSection
+                    console.log(newSortingObject)
+                    setSorting(state => ({...state, ...newSortingObject})) 
                   }}
                   >
                   <option value="none" disabled hidden> Select... </option> 
-                  <option value="name" hidden={primSorting[section] === "name"}> Title </option>
-                  <option value="release_date" hidden={primSorting[section] === "release_date"}> Release Date </option>
-                  <option value="artist" hidden={primSorting[section] === "artist"}> Artist </option>
-                  {section === "tracks" ? <option value="album" hidden={primSorting[section] === "album"}> Album </option> : ""}
-                  {section === "tracks" ? <option value="duration" hidden={primSorting[section] === "duration"}> Duration </option> : ""}
-                  {section === "tracks" ? <option value="track_number" hidden={primSorting[section] === "track_number"}> Track Number </option> : ""}
+                  <option value="name" hidden={sorting[section].primarySorting === "name"}> Title </option>
+                  <option value="release_date" hidden={sorting[section].primarySorting === "release_date"}> Release Date </option>
+                  <option value="artist" hidden={sorting[section].primarySorting === "artist"}> Artist </option>
+                  {section === "tracks" ? <option value="album" hidden={sorting[section].primarySorting === "album"}> Album </option> : ""}
+                  {section === "tracks" ? <option value="duration" hidden={sorting[section].primarySorting === "duration"}> Duration </option> : ""}
+                  {section === "tracks" ? <option value="track_number" hidden={sorting[section].primarySorting === "track_number"}> Track Number </option> : ""}
                 </select> 
               </div>
               : ""}
 
-              <input type="checkbox" name="ascending"></input>
-              <label htmlFor="ascending"> Show sub-sections </label>
-
-              <input type="checkbox" name="sub-section"></input>
-              <label htmlFor="sub-section"> Show sub-sections </label>
+              <label htmlFor="order"> Sort order </label>
+              <select name="order" defaultValue={boxSorting[section].ascendingOrder.toString()}
+                onChange={e => {
+                  const booleanValue = e.target.value === "true"
+                  let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
+                  let updatedSection = {...sectionCopy, ascendingOrder: booleanValue}
+                  let newSortingObject = {}
+                  newSortingObject[section] = updatedSection
+                  console.log(newSortingObject)
+                  setSorting(state => ({...state, ...newSortingObject})) 
+                }}
+                > 
+                <option value="true"> Ascending </option>
+                <option value="false"> Descending </option>
+              </select>
+              
+              {section !== "artists" ? 
+                <div>
+                  <input type="checkbox" name="sub-section" defaultChecked={boxSorting[section].subSections}
+                    onChange={e => {
+                      console.log(e.target.checked)
+                      let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
+                      let updatedSection = {...sectionCopy, subSections: e.target.checked}
+                      let newSortingObject = {}
+                      newSortingObject[section] = updatedSection
+                      console.log(newSortingObject)
+                      setSorting(state => ({...state, ...newSortingObject})) 
+                    }}
+                  />
+                  <label htmlFor="sub-section"> Show sub-sections </label>
+                </div>
+              : ""}
 
             </div>
           )
