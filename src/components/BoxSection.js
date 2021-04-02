@@ -13,103 +13,54 @@ function BoxSection(props) {
     setHeight(heightProp)
   }, [props.visible])
 
-  const singleFactorSort = (array, sortFactor, ascending) => {
-    if (sortFactor === "custom") return array
-
-    console.log(ascending)
-
-    const sortOrderFactor = ascending ? 1 : -1;
-
-    array.sort((a, b) => {
-      if (a[sortFactor].toUpperCase() < b[sortFactor].toUpperCase()) {
-        return -1 * sortOrderFactor;
-      }
-      else if (a[sortFactor].toUpperCase() > b[sortFactor].toUpperCase()) {
-        return 1 * sortOrderFactor;
-      }
-      return 0;
-    }) 
-
-    return array
-    
-  }
-
   const twoFactorSort = (array, type, sortFactorOne, sortFactorTwo, ascending) => {
     if (sortFactorOne === "custom") return array
-
-    console.log(ascending)
-
     const sortOrderFactor = ascending ? 1 : -1;
 
     array.sort((a, b) => {
-      let factorOneInA = ""
-      let factorOneInB = ""
-      let factorTwoInA = ""
-      let factorTwoInB = ""
+      const [factorOneInA, factorOneInB] = getComparables(a, b, type, sortFactorOne)
+      const [factorTwoInA, factorTwoInB] = sortFactorTwo ? getComparables(a, b, type, sortFactorTwo) : ["", ""]
 
-      switch (sortFactorOne) {
-        case "release_date":
-          factorOneInA = type === "Tracks" ? new Date(a.album["release_date"]): new Date(a["release_date"])
-          factorOneInB = type === "Tracks" ? new Date(b.album["release_date"]): new Date(b["release_date"])
-        break;
-        case "artist":
-          factorOneInA = a.artists[0].name.toUpperCase()
-          factorOneInB = b.artists[0].name.toUpperCase()
-        break;
-        case "name":
-          factorOneInA = a.name.toUpperCase()
-          factorOneInB = b.name.toUpperCase()
-        break;
-        case "album":
-          factorOneInA = a.album.name.toUpperCase()
-          factorOneInB = b.album.name.toUpperCase()
-        break;
-        case "duration":
-          factorOneInA = a["duration_ms"]
-          factorOneInB = b["duration_ms"]
-        break;
-        case "track_number":
-          factorOneInA = a["track_number"]
-          factorOneInB = b["track_number"]
-        break;
-      }
+      function getComparables(a, b, t, sortFactor){
+        let factorInA, factorInB
 
-      switch (sortFactorTwo) {
-        case "release_date":
-          factorTwoInA = type === "Tracks" ? new Date(a.album["release_date"]): new Date(a["release_date"])
-          factorTwoInB = type === "Tracks" ? new Date(b.album["release_date"]): new Date(b["release_date"])
-        break
-        case "artist":
-          factorTwoInA = a.artists[0].name.toUpperCase()
-          factorTwoInB = b.artists[0].name.toUpperCase()
-        break
-        case "name":
-          factorTwoInA = a.name.toUpperCase()
-          factorTwoInB = b.name.toUpperCase()
-        break
-        case "album":
-          factorOneInA = a.album.name.toUpperCase()
-          factorOneInB = b.album.name.toUpperCase()
-        break;
-        case "duration":
-          factorOneInA = a["duration_ms"]
-          factorOneInB = b["duration_ms"]
-        break;
-        case "track_number":
-          factorOneInA = a["track_number"]
-          factorOneInB = b["track_number"]
-        break;
+        switch (sortFactor) {
+          case "release_date":
+            factorInA = t === "Tracks" ? new Date(a.album["release_date"]): new Date(a["release_date"])
+            factorInB = t === "Tracks" ? new Date(b.album["release_date"]): new Date(b["release_date"])
+          break;
+          case "artist":
+            factorInA = a.artists[0].name.toUpperCase()
+            factorInB = b.artists[0].name.toUpperCase()
+          break;
+          case "name":
+            factorInA = a.name.toUpperCase()
+            factorInB = b.name.toUpperCase()
+          break;
+          case "album":
+            factorInA = a.album.name.toUpperCase()
+            factorInB = b.album.name.toUpperCase()
+          break;
+          case "duration":
+            factorInA = a["duration_ms"]
+            factorInB = b["duration_ms"]
+          break;
+          case "track_number":
+            factorInA = a["track_number"]
+            factorInB = b["track_number"]
+          break;
+        }
+
+        return [factorInA, factorInB]
       }
 
       if (factorOneInA < factorOneInB) return -1 * sortOrderFactor;
       else if (factorOneInA > factorOneInB) return 1 * sortOrderFactor; 
-      else {
-        
+      else if (sortFactorTwo){
         if(factorTwoInA < factorTwoInB) return -1 * sortOrderFactor;
         else if (factorTwoInA > factorTwoInB) return 1 * sortOrderFactor;
-        return 0
-
       }
+      return 0
     }) 
 
     return array
@@ -122,7 +73,7 @@ function BoxSection(props) {
   switch (props.type) {
     case "Artists":
       sectionIconSrc = "/icons/artist.svg"
-      sortedData = singleFactorSort([...props.data], props.sorting.primarySorting, props.sorting.ascendingOrder)
+      sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, undefined, props.sorting.ascendingOrder)
       break;
     case "Albums":
       sectionIconSrc = "/icons/album.svg"

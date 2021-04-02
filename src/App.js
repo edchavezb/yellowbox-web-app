@@ -104,6 +104,7 @@ function App() {
 
   useEffect(() => {
     console.log(boxes)
+    console.log(JSON.stringify(boxes[1].artists))
   }, [boxes])
 
   return (
