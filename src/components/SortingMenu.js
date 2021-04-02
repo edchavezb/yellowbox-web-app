@@ -70,6 +70,9 @@ function SortingMenu(props) {
                 {section !== "artists" ? <option value="name"> Title </option> : ""}
                 {section !== "artists" ? <option value="release_date"> Release Date </option> : ""}
                 {section !== "artists" ? <option value="artist"> Artist </option> : ""}
+                {section === "tracks" ? <option value="album"> Album </option> : ""}
+                {section === "tracks" ? <option value="duration"> Duration </option> : ""}
+                {section === "tracks" ? <option value="track_number"> Track Number </option> : ""}
               </select> 
               
               {section !== "artists" ? 
@@ -83,12 +86,18 @@ function SortingMenu(props) {
                   }}
                   >
                   <option value="none" disabled hidden> Select... </option> 
-                  <option value="name" disabled={primSorting[section] === "name"} hidden={primSorting[section] === "name"}> Title </option>
-                  <option value="release_date" disabled={primSorting[section] === "release_date"} hidden={primSorting[section] === "release_date"}> Release Date </option>
-                  <option value="artist" disabled={primSorting[section] === "artist"} hidden={primSorting[section] === "artist"}> Artist </option>
+                  <option value="name" hidden={primSorting[section] === "name"}> Title </option>
+                  <option value="release_date" hidden={primSorting[section] === "release_date"}> Release Date </option>
+                  <option value="artist" hidden={primSorting[section] === "artist"}> Artist </option>
+                  {section === "tracks" ? <option value="album" hidden={primSorting[section] === "album"}> Album </option> : ""}
+                  {section === "tracks" ? <option value="duration" hidden={primSorting[section] === "duration"}> Duration </option> : ""}
+                  {section === "tracks" ? <option value="track_number" hidden={primSorting[section] === "track_number"}> Track Number </option> : ""}
                 </select> 
               </div>
               : ""}
+
+              <input type="checkbox" name="ascending"></input>
+              <label htmlFor="ascending"> Show sub-sections </label>
 
               <input type="checkbox" name="sub-section"></input>
               <label htmlFor="sub-section"> Show sub-sections </label>

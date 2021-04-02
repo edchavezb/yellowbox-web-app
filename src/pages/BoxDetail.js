@@ -38,6 +38,7 @@ function BoxDetail(props) {
           data={boxCopy.artists} 
           primSorting={boxCopy.primarySorting.artists}
           view={boxCopy.view.artists}
+          ascending={boxCopy.ascendingOrder.artists}
           visible={visibility.artists} />
         : ""}
       {boxCopy.albums.length ? 
@@ -47,6 +48,7 @@ function BoxDetail(props) {
           primSorting={boxCopy.primarySorting.albums}
           secSorting={boxCopy.secondarySorting.albums}
           view={boxCopy.view.albums}
+          ascending={boxCopy.ascendingOrder.albums}
           visible={visibility.albums} /> 
         : ""}
       {boxCopy.tracks.length ? 
@@ -56,6 +58,7 @@ function BoxDetail(props) {
           primSorting={boxCopy.primarySorting.tracks}
           secSorting={boxCopy.secondarySorting.tracks}
           view={boxCopy.view.tracks}
+          ascending={boxCopy.ascendingOrder.tracks}
           visible={visibility.tracks} /> 
         : ""}
       {boxNotEmpty ? "" : <h3> You have not added any items to this box yet. Start by searching some music you like! </h3>}

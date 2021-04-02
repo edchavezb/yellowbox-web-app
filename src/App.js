@@ -34,6 +34,11 @@ function App() {
         albums: "grid",
         tracks: "grid"
       },
+      ascendingOrder: {
+        artists: false,
+        albums: true,
+        tracks: false
+      },
       sectionVisibility: {
         artists: true,
         albums: true, 
@@ -62,6 +67,11 @@ function App() {
         artists: "list",
         albums: "grid",
         tracks: "grid"
+      },
+      ascendingOrder: {
+        artists: false,
+        albums: true,
+        tracks: true
       },
       sectionVisibility: {
         artists: true,

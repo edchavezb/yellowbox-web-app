@@ -13,15 +13,17 @@ function BoxSection(props) {
     setHeight(heightProp)
   }, [props.visible])
 
-  const singleFactorSort = (array, sortFactor) => {
+  const singleFactorSort = (array, sortFactor, ascending) => {
     if (sortFactor === "custom") return array
+
+    const sortOrderFactor = ascending ? 1 : -1;
 
     array.sort((a, b) => {
       if (a[sortFactor].toUpperCase() < b[sortFactor].toUpperCase()) {
-        return -1;
+        return -1 * sortOrderFactor;
       }
       else if (a[sortFactor].toUpperCase() > b[sortFactor].toUpperCase()) {
-        return 1;
+        return 1 * sortOrderFactor;
       }
       return 0;
     }) 
@@ -30,9 +32,10 @@ function BoxSection(props) {
     
   }
 
-  const twoFactorSort = (array, type, sortFactorOne, sortFactorTwo) => {
-    console.log("Called two factor sort", array, type, sortFactorOne, sortFactorTwo)
+  const twoFactorSort = (array, type, sortFactorOne, sortFactorTwo, ascending) => {
     if (sortFactorOne === "custom") return array
+
+    const sortOrderFactor = ascending ? 1 : -1;
 
     array.sort((a, b) => {
       let factorOneInA = ""
@@ -44,15 +47,27 @@ function BoxSection(props) {
         case "release_date":
           factorOneInA = type === "Tracks" ? new Date(a.album["release_date"]): new Date(a["release_date"])
           factorOneInB = type === "Tracks" ? new Date(b.album["release_date"]): new Date(b["release_date"])
-        break
+        break;
         case "artist":
           factorOneInA = a.artists[0].name.toUpperCase()
           factorOneInB = b.artists[0].name.toUpperCase()
-        break
+        break;
         case "name":
           factorOneInA = a.name.toUpperCase()
           factorOneInB = b.name.toUpperCase()
-        break
+        break;
+        case "album":
+          factorOneInA = a.album.name.toUpperCase()
+          factorOneInB = b.album.name.toUpperCase()
+        break;
+        case "duration":
+          factorOneInA = a["duration_ms"]
+          factorOneInB = b["duration_ms"]
+        break;
+        case "track_number":
+          factorOneInA = a["track_number"]
+          factorOneInB = b["track_number"]
+        break;
       }
 
       switch (sortFactorTwo) {
@@ -68,14 +83,26 @@ function BoxSection(props) {
           factorTwoInA = a.name.toUpperCase()
           factorTwoInB = b.name.toUpperCase()
         break
+        case "album":
+          factorOneInA = a.album.name.toUpperCase()
+          factorOneInB = b.album.name.toUpperCase()
+        break;
+        case "duration":
+          factorOneInA = a["duration_ms"]
+          factorOneInB = b["duration_ms"]
+        break;
+        case "track_number":
+          factorOneInA = a["track_number"]
+          factorOneInB = b["track_number"]
+        break;
       }
 
-      if (factorOneInA < factorOneInB) return -1;
-      else if (factorOneInA > factorOneInB) return 1; 
+      if (factorOneInA < factorOneInB) return -1 * sortOrderFactor;
+      else if (factorOneInA > factorOneInB) return 1 * sortOrderFactor; 
       else {
         
-        if(factorTwoInA < factorTwoInB) return -1
-        else if (factorTwoInA > factorTwoInB) return 1
+        if(factorTwoInA < factorTwoInB) return -1 * sortOrderFactor;
+        else if (factorTwoInA > factorTwoInB) return 1 * sortOrderFactor;
         return 0
 
       }
@@ -91,15 +118,15 @@ function BoxSection(props) {
   switch (props.type) {
     case "Artists":
       sectionIconSrc = "/icons/artist.svg"
-      sortedData = singleFactorSort([...props.data], props.primSorting)
+      sortedData = singleFactorSort([...props.data], props.primSorting, props.ascending)
       break;
     case "Albums":
       sectionIconSrc = "/icons/album.svg"
-      sortedData = twoFactorSort([...props.data], props.type, props.primSorting, props.secSorting)
+      sortedData = twoFactorSort([...props.data], props.type, props.primSorting, props.secSorting, props.ascending)
       break;
     case "Tracks":
       sectionIconSrc = "/icons/song.svg"
-      sortedData = twoFactorSort([...props.data], props.type, props.primSorting, props.secSorting)
+      sortedData = twoFactorSort([...props.data], props.type, props.primSorting, props.secSorting, props.ascending)
       break;
   }
 
