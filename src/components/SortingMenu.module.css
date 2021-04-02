@@ -13,8 +13,29 @@
 
 #modalFooter {
     height: 50px;
-    padding: 0px 30px 10px 30px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
+}
+
+.sortingRow {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.rowNameSpan {
+    width: 75px;
+    font-weight: bold;
+}
+
+.formInput {
+    margin-right: 10px;
+}
+
+select {
+    width: 100px
+}
+
+label {
+    margin-right: 5px;
 }

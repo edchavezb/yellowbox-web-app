@@ -37,48 +37,52 @@ function SortingMenu(props) {
           return (
             <div className={styles.sortingRow} key={section}> 
 
-              <span> {section.charAt(0).toUpperCase() + section.slice(1)} </span>
+              <span className={styles.rowNameSpan}> {section.charAt(0).toUpperCase() + section.slice(1)} </span>
 
-              <label htmlFor="view"> View as </label>
-              <select name="view" defaultValue={boxSorting[section].view} 
-                onChange={e => {
-                  let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
-                  let updatedSection = {...sectionCopy, view: e.target.value}
-                  let newSortingObject = {}
-                  newSortingObject[section] = updatedSection
-                  console.log(newSortingObject)
-                  setSorting(state => ({...state, ...newSortingObject})) 
-                }}> 
-                  <option value="grid"> Grid </option>
-                  <option value="list"> List </option>
-                  <option value="details"> Details </option>
-              </select>
+              <div className={styles.formInput}>
+                <label htmlFor="view"> View as </label>
+                <select name="view" defaultValue={boxSorting[section].view}  
+                  onChange={e => {
+                    let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
+                    let updatedSection = {...sectionCopy, view: e.target.value}
+                    let newSortingObject = {}
+                    newSortingObject[section] = updatedSection
+                    console.log(newSortingObject)
+                    setSorting(state => ({...state, ...newSortingObject})) 
+                  }}> 
+                    <option value="grid"> Grid </option>
+                    <option value="list"> List </option>
+                    <option value="details"> Details </option>
+                </select>
+              </div>
 
-              <label htmlFor="sorting"> Sort by </label>
-              <select name="sorting" defaultValue={boxSorting[section].primarySorting}
-                onChange={e => {
-                  let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
-                  console.log(sectionCopy)
-                  let updatedSection = {...sectionCopy, primarySorting: e.target.value}
-                  console.log(updatedSection)
-                  let newSortingObject = {}
-                  newSortingObject[section] = updatedSection
-                  console.log(newSortingObject)
-                  setSorting(state => ({...state, ...newSortingObject})) 
-                  if (section !== "artists") e.target.closest("div").querySelector(".sec-sorting").selectedIndex = 0
-                }}> 
-                <option value="custom"> Custom </option>
-                {section === "artists" ? <option value="name"> Name </option> : ""}
-                {section !== "artists" ? <option value="name"> Title </option> : ""}
-                {section !== "artists" ? <option value="release_date"> Release Date </option> : ""}
-                {section !== "artists" ? <option value="artist"> Artist </option> : ""}
-                {section === "tracks" ? <option value="album"> Album </option> : ""}
-                {section === "tracks" ? <option value="duration"> Duration </option> : ""}
-                {section === "tracks" ? <option value="track_number"> Track Number </option> : ""}
-              </select> 
+              <div className={styles.formInput}>
+                <label htmlFor="sorting"> Sort by </label>
+                <select name="sorting" defaultValue={boxSorting[section].primarySorting}
+                  onChange={e => {
+                    let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
+                    console.log(sectionCopy)
+                    let updatedSection = {...sectionCopy, primarySorting: e.target.value}
+                    console.log(updatedSection)
+                    let newSortingObject = {}
+                    newSortingObject[section] = updatedSection
+                    console.log(newSortingObject)
+                    setSorting(state => ({...state, ...newSortingObject})) 
+                    if (section !== "artists") e.target.closest("div").nextElementSibling.querySelector(".sec-sorting").selectedIndex = 0
+                  }}> 
+                  <option value="custom"> Custom </option>
+                  {section === "artists" ? <option value="name"> Name </option> : ""}
+                  {section !== "artists" ? <option value="name"> Title </option> : ""}
+                  {section !== "artists" ? <option value="release_date"> Release Date </option> : ""}
+                  {section !== "artists" ? <option value="artist"> Artist </option> : ""}
+                  {section === "tracks" ? <option value="album"> Album </option> : ""}
+                  {section === "tracks" ? <option value="duration"> Duration </option> : ""}
+                  {section === "tracks" ? <option value="track_number"> Track Number </option> : ""}
+                </select> 
+              </div>
               
               {section !== "artists" ? 
-              <div>
+              <div className={styles.formInput}>
                 <label htmlFor="sec-sorting"> then by </label>
                 <select className="sec-sorting" name="sec-sorting" disabled={sorting[section].primarySorting === "custom"} defaultValue={boxSorting[section].secondarySorting}
                   onChange={e => {
@@ -101,24 +105,26 @@ function SortingMenu(props) {
               </div>
               : ""}
 
-              <label htmlFor="order"> Sort order </label>
-              <select name="order" defaultValue={boxSorting[section].ascendingOrder.toString()}
-                onChange={e => {
-                  const booleanValue = e.target.value === "true"
-                  let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
-                  let updatedSection = {...sectionCopy, ascendingOrder: booleanValue}
-                  let newSortingObject = {}
-                  newSortingObject[section] = updatedSection
-                  console.log(newSortingObject)
-                  setSorting(state => ({...state, ...newSortingObject})) 
-                }}
-                > 
-                <option value="true"> Ascending </option>
-                <option value="false"> Descending </option>
-              </select>
+              <div className={styles.formInput}>
+                <label htmlFor="order"> Order </label>
+                <select name="order" defaultValue={boxSorting[section].ascendingOrder.toString()} disabled={sorting[section].primarySorting === "custom"}
+                  onChange={e => {
+                    const booleanValue = e.target.value === "true"
+                    let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
+                    let updatedSection = {...sectionCopy, ascendingOrder: booleanValue}
+                    let newSortingObject = {}
+                    newSortingObject[section] = updatedSection
+                    console.log(newSortingObject)
+                    setSorting(state => ({...state, ...newSortingObject})) 
+                  }}
+                  > 
+                  <option value="true"> Ascending </option>
+                  <option value="false"> Descending </option>
+                </select>
+              </div>
               
               {section !== "artists" ? 
-                <div>
+                <div className={styles.formInput}>
                   <input type="checkbox" name="sub-section" defaultChecked={boxSorting[section].subSections}
                     onChange={e => {
                       console.log(e.target.checked)
