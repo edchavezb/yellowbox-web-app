@@ -20,7 +20,34 @@ function NewBoxMenu(props) {
       available: boxDetails.avail,
       artists: [],
       albums: [],
-      tracks: []
+      tracks: [],
+      sectionSorting: {
+        artists: {
+          primarySorting: "custom",
+          view: "list",
+          ascendingOrder: false,
+          subSections: false
+        },
+        albums: {
+          primarySorting: "custom",
+          secondarySorting: "none",
+          view: "grid",
+          ascendingOrder: false,
+          subSections: false
+        },
+        tracks: {
+          primarySorting: "custom",
+          secondarySorting: "none",
+          view: "grid",
+          ascendingOrder: false,
+          subSections: false
+        }
+      },
+      sectionVisibility: {
+        artists: true,
+        albums: true, 
+        tracks: true
+      }
     }
     dispatch({ type: "ADD_BOX", payload: { newBox: newBox } })
     toggleModal({ visible: false, type: "", boxId:"" })
