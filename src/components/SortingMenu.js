@@ -68,7 +68,7 @@ function SortingMenu(props) {
                 <option value="custom"> Custom </option>
                 {section === "artists" ? <option value="name"> Name </option> : ""}
                 {section !== "artists" ? <option value="name"> Title </option> : ""}
-                {section !== "artists" ? <option value="date"> Release Date </option> : ""}
+                {section !== "artists" ? <option value="release_date"> Release Date </option> : ""}
                 {section !== "artists" ? <option value="artist"> Artist </option> : ""}
               </select> 
               
@@ -83,8 +83,8 @@ function SortingMenu(props) {
                   }}
                   >
                   <option value="none" disabled hidden> Select... </option> 
-                  <option value="title" disabled={primSorting[section] === "title"} hidden={primSorting[section] === "title"}> Title </option>
-                  <option value="year" disabled={primSorting[section] === "year"} hidden={primSorting[section] === "year"}> Release Year </option>
+                  <option value="name" disabled={primSorting[section] === "name"} hidden={primSorting[section] === "name"}> Title </option>
+                  <option value="release_date" disabled={primSorting[section] === "release_date"} hidden={primSorting[section] === "release_date"}> Release Date </option>
                   <option value="artist" disabled={primSorting[section] === "artist"} hidden={primSorting[section] === "artist"}> Artist </option>
                 </select> 
               </div>
