@@ -9,7 +9,7 @@ function BoxDetail(props) {
 
   const toggleModal = props.toggleModal
   const params = useParams()
-  const boxCopy = {...props.userBoxes.find(box => box.id === params.id)}
+  const boxCopy = JSON.parse(JSON.stringify(props.userBoxes.find(box => box.id === params.id)))
   const boxNotEmpty = boxCopy.albums.length > 0 || boxCopy.artists.length > 0 || boxCopy.tracks.length > 0;
   const singleTypeBox = [boxCopy.albums, boxCopy.artists, boxCopy.tracks].filter((section) => section.length > 0).length === 1
 

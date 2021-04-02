@@ -8,7 +8,7 @@ function SortingMenu(props) {
   const toggleModal = props.toggleModal;
   const dispatch = props.dispatch;
   const targetIndex = props.userBoxes.findIndex(box => box.id === props.boxId)
-  const boxCopy = {...props.userBoxes.find(box => box.id === props.boxId)}
+  const boxCopy = JSON.parse(JSON.stringify(props.userBoxes.find(box => box.id === props.boxId)))
   const boxSections = {artists: boxCopy.artists, albums: boxCopy.albums, tracks: boxCopy.tracks}
   const nonEmptySections = Object.keys(boxSections).filter((section) => boxSections[section].length > 0)
 
