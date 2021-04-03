@@ -29,6 +29,30 @@ function SideBar(props) {
     dispatch({type: "UPDATE_BOX", payload: {updatedBox: updatedBox, target: targetIndex}})
   }
 
+  const extractCrucialData = (data) => {
+    let extractedData = {}
+    switch(data.type){
+      case "artist" : {
+        const {external_urls, id, images, name, popularity, type, uri} = data
+        extractedData = {external_urls, id, images, name, popularity, type, uri}
+      break;
+      }
+      case "album" : {
+        const {album_type, artists, external_urls, id, images, name, release_date, type, uri} = data
+        extractedData = {album_type, artists, external_urls, id, images, name, release_date, type, uri}
+      break;
+      }
+      case "track" : {
+        const {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri} = data
+        extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri}
+      break;
+      }
+      default :
+        extractedData = data
+    }
+    return extractedData
+  }
+
   const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -51,9 +75,10 @@ function SideBar(props) {
     e.stopPropagation();
     e.target.className = styles.boxLink
     const data = JSON.parse(e.dataTransfer.getData("data"))
+    const crucialData = extractCrucialData(data)
     console.log(data)
     console.log(e.currentTarget.id)
-    addToBox(data, e.currentTarget.id)
+    addToBox(crucialData, e.currentTarget.id)
   }
 
   return (
