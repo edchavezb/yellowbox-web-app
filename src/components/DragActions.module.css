@@ -4,12 +4,11 @@
 
 #actionsActive {
     position: fixed;
-    top: 40%;
-    right: 10px;
-    width: 80px;
-    height: 220px;
+    top: 85%;
+    right: 33%;
+    width: 220px;
+    height: 80px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
@@ -17,8 +16,26 @@
 .dragActionsButton {
     width: 50px;
     height: 50px;
-    margin: 5px 0px;
+    margin: 0px 5px;
     border-radius: 50%;
     box-sizing: border-box;
-    background-color: rgb(230, 39, 39);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.idleColor {
+    background-color: rgb(224, 224, 224);
+}
+
+.dragOverColor {
+    background-color: rgb(224, 224, 224, 0.5);
+}
+
+#deleteImg {
+    width: 70%
+}
+
+#addToImg {
+    width: 45%
 }
