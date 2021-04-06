@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 
-import SearchItem from "./SearchItem"
+import BoxItem from "./BoxItem"
+import DragActions from "./DragActions"
 import styles from "./BoxSection.module.css";
 
 function BoxSection(props) {
 
   const [height, setHeight] = useState("auto")
+  const [elementDragging, setElementDragging] = useState(false)
 
   useEffect(() => {
     const heightProp = props.visible ? "auto" : 0
@@ -87,6 +89,7 @@ function BoxSection(props) {
 
   return (
     <AnimateHeight duration={250} height={height}>
+      <DragActions elementDragging={elementDragging} />
       <div className={styles.sectionPanel}>
         <div className={styles.sectionUtilities}>
           <img className={styles.sectionIcon} src={sectionIconSrc}></img>
@@ -94,7 +97,7 @@ function BoxSection(props) {
         </div>
         <div className={styles.itemContainer}>
           {sortedData.map((e) => {
-            return <SearchItem key={e.id} element={e} />
+            return <BoxItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
           })}
         </div>
       </div>

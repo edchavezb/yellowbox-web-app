@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import SearchItem from "./SearchItem"
+import SearchItem from "./BoxItem"
 import styles from "./SearchResults.module.css";
 
 function SearchResults(props){

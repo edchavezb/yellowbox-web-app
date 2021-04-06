@@ -23,5 +23,6 @@
     background-color: rgb(26, 26, 26);
     grid-area: main;
     padding: 20px 30px;
-    color: #ffffff
+    color: #ffffff;
+    position: relative;
 }

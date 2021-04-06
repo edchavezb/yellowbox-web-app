@@ -44,14 +44,14 @@ function BoxDetail(props) {
           type="Albums" 
           data={boxCopy.albums}
           sorting={boxCopy.sectionSorting.albums}
-          visible={visibility.albums} /> 
+          visible={visibility.albums}  /> 
         : ""}
       {boxCopy.tracks.length ? 
         <BoxSection 
           type="Tracks" 
           data={boxCopy.tracks}
           sorting={boxCopy.sectionSorting.tracks}
-          visible={visibility.tracks} /> 
+          visible={visibility.tracks}  /> 
         : ""}
       {boxNotEmpty ? "" : <h3> You have not added any items to this box yet. Start by searching some music you like! </h3>}
     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from "./SearchItem.module.css";
+import styles from "./BoxItem.module.css";
 
 function SearchItem(props){
     const elementImages = props.element.type === "track" ? props.element.album.images : props.element.images
@@ -10,10 +10,15 @@ function SearchItem(props){
     const handleDrag = (e, data) => {
         console.log(data)
         e.dataTransfer.setData("data", JSON.stringify(data))
+        if(props.livesInBox) props.setElementDragging(true)
+    }
+
+    const handleDragEnd = () => {
+        if(props.livesInBox) props.setElementDragging(false)
     }
 
     return (
-        <div draggable onDragStart={(e) => handleDrag(e, props.element)} className={styles.itemCard}>
+        <div draggable onDragStart={(e) => handleDrag(e, props.element)} onDragEnd={() => handleDragEnd()} className={styles.itemCard}>
             <div className={styles.imageContainer}>
                 <img draggable="false" className={styles.itemImage} src={itemCoverArt}></img>
             </div>
