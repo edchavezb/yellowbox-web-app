@@ -28,7 +28,7 @@ function DragActions(props) {
     e.stopPropagation();
     const data = JSON.parse(e.dataTransfer.getData("data"))
     const action = e.currentTarget.getAttribute("action")
-    toggleModal({visible: true, type: action, boxId: props.boxId})
+    toggleModal({visible: true, type: action, boxId: props.boxId, itemData: data})
   }
 
   return (

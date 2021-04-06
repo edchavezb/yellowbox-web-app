@@ -117,7 +117,7 @@ function App() {
 
   return (
     <Router>
-      <Modal toggleModal={setModal} visible={modal.visible} type={modal.type} boxId={modal.boxId} userBoxes={boxes} dispatch={dispatchBoxUpdates} />
+      <Modal toggleModal={setModal} visible={modal.visible} type={modal.type} boxId={modal.boxId} userBoxes={boxes} dispatch={dispatchBoxUpdates} itemData={modal.itemData} />
       <Layout userBoxes={boxes} toggleModal={setModal} dispatch={dispatchBoxUpdates}>
         <Route exact path="/" component={Home} />
         <Route path="/search/:query" component={Search} />

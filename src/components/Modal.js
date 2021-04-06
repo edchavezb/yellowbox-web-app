@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import styles from "./Modal.module.css";
 import SortingMenu from "./SortingMenu";
 import NewBoxMenu from "./NewBoxMenu"
+import DeletePrompt from "./DeletePrompt"
 
 function Modal(props) {
 
@@ -22,7 +23,7 @@ function Modal(props) {
       modalBody = <SortingMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} />
     break;
     case "Delete Item" :
-      modalBody = <div> Hello my friend </div>
+      modalBody = <DeletePrompt toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={props.itemData} />
     break;
   }
 
