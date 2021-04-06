@@ -28,6 +28,7 @@ function DragActions(props) {
     e.stopPropagation();
     const data = JSON.parse(e.dataTransfer.getData("data"))
     const action = e.currentTarget.getAttribute("action")
+    e.currentTarget.className = `${styles.dragActionsButton} ${styles.idleColor}`
     toggleModal({visible: true, type: action, boxId: props.boxId, itemData: data})
   }
 
