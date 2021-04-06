@@ -21,6 +21,9 @@ function Modal(props) {
     case "Sorting Options" :
       modalBody = <SortingMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} />
     break;
+    case "Delete Item" :
+      modalBody = <div> Hello my friend </div>
+    break;
   }
 
   if (props.visible === true){

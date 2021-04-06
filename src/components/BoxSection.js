@@ -7,6 +7,8 @@ import styles from "./BoxSection.module.css";
 
 function BoxSection(props) {
 
+  const toggleModal = props.toggleModal
+
   const [height, setHeight] = useState("auto")
   const [elementDragging, setElementDragging] = useState(false)
 
@@ -23,13 +25,13 @@ function BoxSection(props) {
       const [factorOneInA, factorOneInB] = getComparables(a, b, type, sortFactorOne)
       const [factorTwoInA, factorTwoInB] = sortFactorTwo ? getComparables(a, b, type, sortFactorTwo) : ["", ""]
 
-      function getComparables(a, b, t, sortFactor){
+      function getComparables(a, b, type, sortFactor){
         let factorInA, factorInB
 
         switch (sortFactor) {
           case "release_date":
-            factorInA = t === "Tracks" ? new Date(a.album["release_date"]): new Date(a["release_date"])
-            factorInB = t === "Tracks" ? new Date(b.album["release_date"]): new Date(b["release_date"])
+            factorInA = type === "Tracks" ? new Date(a.album["release_date"]): new Date(a["release_date"])
+            factorInB = type === "Tracks" ? new Date(b.album["release_date"]): new Date(b["release_date"])
           break;
           case "artist":
             factorInA = a.artists[0].name.toUpperCase()
@@ -89,7 +91,6 @@ function BoxSection(props) {
 
   return (
     <AnimateHeight duration={250} height={height}>
-      <DragActions elementDragging={elementDragging} />
       <div className={styles.sectionPanel}>
         <div className={styles.sectionUtilities}>
           <img className={styles.sectionIcon} src={sectionIconSrc}></img>
@@ -101,6 +102,7 @@ function BoxSection(props) {
           })}
         </div>
       </div>
+      <DragActions elementDragging={elementDragging} toggleModal={toggleModal} boxId={props.box.id} />
     </AnimateHeight>
   )
 }

@@ -107,6 +107,14 @@ function App() {
     console.log(JSON.stringify(boxes[0].artists))
   }, [boxes])
 
+  useEffect(() => {
+    if (modal.visible) {
+      document.documentElement.style.overflowY = 'hidden';
+    } else {
+      document.documentElement.style.overflowY = 'auto';
+    }
+  }, [modal])
+
   return (
     <Router>
       <Modal toggleModal={setModal} visible={modal.visible} type={modal.type} boxId={modal.boxId} userBoxes={boxes} dispatch={dispatchBoxUpdates} />

@@ -4,6 +4,8 @@ import styles from "./DragActions.module.css";
 
 function DragActions(props) {
 
+  const toggleModal = props.toggleModal
+
   const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -25,18 +27,20 @@ function DragActions(props) {
     e.preventDefault();
     e.stopPropagation();
     const data = JSON.parse(e.dataTransfer.getData("data"))
+    const action = e.currentTarget.getAttribute("action")
+    toggleModal({visible: true, type: action, boxId: props.boxId})
   }
 
   return (
     <div id={props.elementDragging ? styles.actionsActive : styles.actionsHidden}>
-      <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.delete} action="delete"
+      <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.delete} action="Delete Item"
         onDragEnter={(e) => handleDragEnter(e)} 
         onDragLeave={(e) => handleDragLeave(e)}
         onDragOver={(e) => handleDragOver(e)}
         onDrop={(e) => handleDrop(e)}> 
         <img id={styles.deleteImg} src="/icons/delete.svg"></img> 
       </div>
-      <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.addTo} action="add-to"
+      <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.addTo} action="Add Item To"
         onDragEnter={(e) => handleDragEnter(e)} 
         onDragLeave={(e) => handleDragLeave(e)}
         onDragOver={(e) => handleDragOver(e)}

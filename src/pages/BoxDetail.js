@@ -34,24 +34,30 @@ function BoxDetail(props) {
       <p> {boxCopy.description} </p>
       {boxCopy.artists.length ? 
         <BoxSection 
-          type="Artists" 
+          type="Artists"
+          box={boxCopy}
           data={boxCopy.artists} 
           sorting={boxCopy.sectionSorting.artists}
-          visible={visibility.artists} />
+          visible={visibility.artists}
+          toggleModal={toggleModal} />
         : ""}
       {boxCopy.albums.length ? 
         <BoxSection 
           type="Albums" 
+          box={boxCopy} 
           data={boxCopy.albums}
           sorting={boxCopy.sectionSorting.albums}
-          visible={visibility.albums}  /> 
+          visible={visibility.albums}
+          toggleModal={toggleModal}  /> 
         : ""}
       {boxCopy.tracks.length ? 
         <BoxSection 
           type="Tracks" 
+          box={boxCopy} 
           data={boxCopy.tracks}
           sorting={boxCopy.sectionSorting.tracks}
-          visible={visibility.tracks}  /> 
+          visible={visibility.tracks}
+          toggleModal={toggleModal}  /> 
         : ""}
       {boxNotEmpty ? "" : <h3> You have not added any items to this box yet. Start by searching some music you like! </h3>}
     </div>
