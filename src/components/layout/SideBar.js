@@ -24,6 +24,7 @@ function SideBar(props) {
         const updatedTracks = [...targetBox.tracks, draggedData]
         updatedBox = {...targetBox, tracks: updatedTracks}
       break;
+      default :
     }
     console.log("Dispatch call")
     dispatch({type: "UPDATE_BOX", payload: {updatedBox: updatedBox, target: targetIndex}})
@@ -34,17 +35,17 @@ function SideBar(props) {
     switch(data.type){
       case "artist" : {
         const {external_urls, id, images, name, popularity, type, uri} = data
-        extractedData = {external_urls, id, images, name, popularity, type, uri}
+        extractedData = {external_urls, id, images, name, popularity, type, uri, subSection: "default"}
       break;
       }
       case "album" : {
         const {album_type, artists, external_urls, id, images, name, release_date, type, uri} = data
-        extractedData = {album_type, artists, external_urls, id, images, name, release_date, type, uri}
+        extractedData = {album_type, artists, external_urls, id, images, name, release_date, type, uri, subSection: "default"}
       break;
       }
       case "track" : {
         const {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri} = data
-        extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri}
+        extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSection: "default"}
       break;
       }
       default :
