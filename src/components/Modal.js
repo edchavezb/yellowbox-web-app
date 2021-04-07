@@ -29,6 +29,7 @@ function Modal(props) {
     case "Add To" :
       modalBody = <AddToMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={props.itemData} />
     break;
+    default:
   }
 
   if (props.visible === true){
@@ -38,7 +39,7 @@ function Modal(props) {
           <div id={styles.modalHeader}>
             <div id={styles.modalTitle}> {props.type} </div>
             <div id={styles.closeModal} onClick={() => toggleModal({visible: false, type:"", boxId:"", itemData: ""})}>
-              <img id={styles.closeIcon} src="/icons/close.svg"/>
+              <img id={styles.closeIcon} alt="Close modal" src="/icons/close.svg"/>
             </div>
           </div>
           {modalBody}

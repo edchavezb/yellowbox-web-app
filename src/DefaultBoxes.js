@@ -34,7 +34,10 @@ const defaultBoxes = [
       artists: true,
       albums: true,
       tracks: true
-    }
+    },
+    subSections : [
+      {type: "artist", name: "Da Worst"}
+    ]
   },
   {
     id: "2454",

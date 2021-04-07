@@ -20,6 +20,7 @@ function DeletePrompt(props) {
     case "track":
       sectionType = "tracks"
     break;
+    default:
   }
 
   const handleDeleteItem = () => {
