@@ -40,7 +40,7 @@ function DeletePrompt(props) {
       </div>
       <div id={styles.modalFooter}>
         <button onClick={() => handleDeleteItem()}> Yes, delete item </button>
-        <button onClick={() => toggleModal({ visible: false, type: "", boxId:"" })}> Cancel </button>
+        <button onClick={() => toggleModal({ visible: false, type: "", boxId:"", itemData: "" })}> Cancel </button>
       </div>
     </div>
   )

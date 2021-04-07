@@ -41,7 +41,7 @@ function DragActions(props) {
         onDrop={(e) => handleDrop(e)}> 
         <img id={styles.deleteImg} src="/icons/delete.svg"></img> 
       </div>
-      <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.addTo} action="Add Item To"
+      <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.addTo} action="Add To"
         onDragEnter={(e) => handleDragEnter(e)} 
         onDragLeave={(e) => handleDragLeave(e)}
         onDragOver={(e) => handleDragOver(e)}

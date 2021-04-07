@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import './App.css';
 
-import Layout from "./components/Layout";
+import Layout from "./components/layout/Layout";
 import Home from "./pages/Home"
 import Search from "./pages/Search"
 import BoxDetail from "./pages/BoxDetail"
