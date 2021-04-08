@@ -4,6 +4,7 @@ import AnimateHeight from 'react-animate-height';
 import BoxItem from "./BoxItem"
 import DragActions from "./DragActions"
 import styles from "./BoxSection.module.css";
+import { isPropertyAccessExpression } from 'typescript';
 
 function BoxSection(props) {
 
@@ -53,6 +54,7 @@ function BoxSection(props) {
             factorInA = a["track_number"]
             factorInB = b["track_number"]
           break;
+          default:
         }
 
         return [factorInA, factorInB]
@@ -73,34 +75,53 @@ function BoxSection(props) {
 
   let sectionIconSrc = ""
   let sortedData = []
+  let subSectionList = []
 
   switch (props.type) {
     case "Artists":
       sectionIconSrc = "/icons/artist.svg"
       sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, undefined, props.sorting.ascendingOrder)
+      subSectionList = props.box.subSections.filter(s => s.type === "artist").reduce((acc, curr) => [...acc, curr.name], []).sort()
+      console.log(subSectionList)
       break;
     case "Albums":
       sectionIconSrc = "/icons/album.svg"
       sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, props.sorting.secondarySorting, props.sorting.ascendingOrder)
+      subSectionList = props.box.subSections.filter(s => s.type === "album").reduce((acc, curr) => [...acc, curr.name], []).sort()
       break;
     case "Tracks":
       sectionIconSrc = "/icons/song.svg"
       sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, props.sorting.secondarySorting, props.sorting.ascendingOrder)
+      subSectionList = props.box.subSections.filter(s => s.type === "track").reduce((acc, curr) => [...acc, curr.name], []).sort()
       break;
+      default:
   }
 
   return (
     <AnimateHeight duration={250} height={height}>
       <div className={styles.sectionPanel}>
         <div className={styles.sectionUtilities}>
-          <img className={styles.sectionIcon} src={sectionIconSrc}></img>
+          <img className={styles.sectionIcon} src={sectionIconSrc} alt="Section icon"></img>
           <span> {props.type} ({props.data.length}) </span>
         </div>
         <div className={styles.itemContainer}>
-          {sortedData.map((e) => {
+          {sortedData.filter(e => e.subSection === "default").map((e) => {
             return <BoxItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
           })}
         </div>
+        {subSectionList.map(s => {
+          const itemsMatch = sortedData.filter(e => e.subSection === s)
+          return itemsMatch.length > 0 ? 
+          <div className={styles.subSection} key={s}>
+            <div className={styles.subSectionName}> {s} </div>
+            <div className={styles.itemContainer}>
+              {itemsMatch.map((e) => {
+                return <BoxItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
+              })}
+            </div>
+          </div>
+          : ""
+        })}
       </div>
       <DragActions elementDragging={elementDragging} toggleModal={toggleModal} boxId={props.box.id} />
     </AnimateHeight>
