@@ -21,6 +21,6 @@
     flex-wrap: wrap;
 }
 
-.subSectionName {
-    padding: 0px 10px
+.hidden {
+    display: none;
 }

@@ -1,0 +1,8 @@
+.itemContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.subSectionName {
+    padding: 0px 10px
+}

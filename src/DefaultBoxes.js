@@ -36,7 +36,7 @@ const defaultBoxes = [
       tracks: true
     },
     subSections : [
-      {type: "artist", name: "Da Worst"}
+      {type: "artists", name: "Da Worst"}
     ]
   },
   {
@@ -76,8 +76,8 @@ const defaultBoxes = [
       tracks: true
     },
     subSections : [
-      {type: "artist", name: "Da Best"},
-      {type: "artist", name: "Super hits"},
+      {type: "artists", name: "Da Best"},
+      {type: "artists", name: "Super hits"},
     ]
   }
 ];
