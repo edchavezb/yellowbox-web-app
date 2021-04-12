@@ -16,7 +16,16 @@
     height: 15px
 }
 
-.itemContainer {
+.sectionWithSubs {
+    
+}
+
+.sectionNoSubs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.defaultSubSection {
     display: flex;
     flex-wrap: wrap;
 }

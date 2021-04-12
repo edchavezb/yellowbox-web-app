@@ -3,6 +3,11 @@
     flex-wrap: wrap;
 }
 
+.subSection {
+    margin-bottom: 15px;
+}
+
 .subSectionName {
     padding: 0px 10px
 }
+

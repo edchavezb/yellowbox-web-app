@@ -66,6 +66,16 @@ function BoxSection(props) {
     return array
   }
 
+  const showSubSections = (array) => {
+    return array.map(s => {
+      const itemsMatch = props.sorting.primarySorting === "custom" ? 
+        sortedData.filter(e => e.subSection === s) 
+        : sortedData.filter(e => getProperty(e, props.type, props.sorting.primarySorting) === s)
+      return <SubSection itemsMatch={itemsMatch} subName={s} setElementDragging={setElementDragging}/>
+    })
+  } 
+
+
   let sectionIconSrc = ""
   const sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, props.sorting.secondarySorting, props.sorting.ascendingOrder)
   const subSectionList = props.sorting.primarySorting === "custom" ? 
@@ -93,15 +103,24 @@ function BoxSection(props) {
           <img className={styles.sectionIcon} src={sectionIconSrc} alt="Section icon"></img>
           <span> {props.type} ({props.data.length}) </span>
         </div>
-        <div className={props.sorting.primarySorting === "custom" ? styles.itemContainer : styles.hidden}>
-          {sortedData.filter(e => e.subSection === "default").map((e) => {
-            return <BoxItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
-          })}
-        </div>
-        {subSectionList.map(s => {
-          const itemsMatch = props.sorting.primarySorting === "custom" ? sortedData.filter(e => e.subSection === s) : sortedData.filter(e => getProperty(e, props.type, props.sorting.primarySorting) === s)
-          return <SubSection itemsMatch={itemsMatch} subName={s} setElementDragging={setElementDragging}/>
-        })}
+
+        {props.sorting.subSections ? 
+          <div className={styles.sectionWithSubs}>
+            <div className={props.sorting.primarySorting === "custom" ? styles.defaultSubSection : styles.hidden}>
+              {sortedData.filter(e => e.subSection === "default").map((e) => {
+                return <BoxItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
+              })}
+            </div>
+            {showSubSections(subSectionList)}
+          </div>
+        : 
+          <div className={styles.sectionNoSubs}>
+              {sortedData.map((e) => {
+                return <BoxItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
+              })}
+          </div>
+        }
+
       </div>
       <DragActions elementDragging={elementDragging} toggleModal={toggleModal} boxId={props.box.id} />
     </AnimateHeight>

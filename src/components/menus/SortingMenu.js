@@ -72,6 +72,7 @@ function SortingMenu(props) {
                   }}> 
                   <option value="custom"> Custom </option>
                   {section === "artists" ? <option value="name"> Name </option> : ""}
+                  {section !== "albums" ? <option value="popularity"> Popularity </option> : ""}
                   {section !== "artists" ? <option value="name"> Title </option> : ""}
                   {section !== "artists" ? <option value="release_date"> Release Date </option> : ""}
                   {section !== "artists" ? <option value="artist"> Artist </option> : ""}
@@ -81,7 +82,6 @@ function SortingMenu(props) {
                 </select> 
               </div>
               
-              {section !== "artists" ? 
               <div className={styles.formInput}>
                 <label htmlFor="sec-sorting"> then by </label>
                 <select className="sec-sorting" name="sec-sorting" disabled={sorting[section].primarySorting === "custom"} defaultValue={boxSorting[section].secondarySorting}
@@ -95,15 +95,16 @@ function SortingMenu(props) {
                   }}
                   >
                   <option value="none" disabled hidden> Select... </option> 
-                  <option value="name" hidden={sorting[section].primarySorting === "name"}> Title </option>
-                  <option value="release_date" hidden={sorting[section].primarySorting === "release_date"}> Release Date </option>
-                  <option value="artist" hidden={sorting[section].primarySorting === "artist"}> Artist </option>
+                  {section === "artists" ? <option value="name" hidden={sorting[section].primarySorting === "name"}> Name </option> : ""}
+                  {section !== "artists" ? <option value="name" hidden={sorting[section].primarySorting === "name"}> Title </option> : ""}
+                  {section !== "artists" ? <option value="release_date" hidden={sorting[section].primarySorting === "release_date"}> Release Date </option> : ""}
+                  {section !== "artists" ? <option value="artist" hidden={sorting[section].primarySorting === "artist"}> Artist </option> : ""}
+                  {section !== "albums" ? <option value="popularity" hidden={sorting[section].primarySorting === "popularity"}> Popularity </option> : ""}
                   {section === "tracks" ? <option value="album" hidden={sorting[section].primarySorting === "album"}> Album </option> : ""}
                   {section === "tracks" ? <option value="duration" hidden={sorting[section].primarySorting === "duration"}> Duration </option> : ""}
                   {section === "tracks" ? <option value="track_number" hidden={sorting[section].primarySorting === "track_number"}> Track Number </option> : ""}
                 </select> 
               </div>
-              : ""}
 
               <div className={styles.formInput}>
                 <label htmlFor="order"> Order </label>
@@ -123,22 +124,21 @@ function SortingMenu(props) {
                 </select>
               </div>
               
-              {section !== "artists" ? 
-                <div className={styles.formInput}>
-                  <input type="checkbox" name="sub-section" defaultChecked={boxSorting[section].subSections}
-                    onChange={e => {
-                      console.log(e.target.checked)
-                      let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
-                      let updatedSection = {...sectionCopy, subSections: e.target.checked}
-                      let newSortingObject = {}
-                      newSortingObject[section] = updatedSection
-                      console.log(newSortingObject)
-                      setSorting(state => ({...state, ...newSortingObject})) 
-                    }}
-                  />
-                  <label htmlFor="sub-section"> Show sub-sections </label>
-                </div>
-              : ""}
+
+              <div className={styles.formInput}>
+                <input type="checkbox" name="sub-section" defaultChecked={boxSorting[section].subSections}
+                  onChange={e => {
+                    console.log(e.target.checked)
+                    let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
+                    let updatedSection = {...sectionCopy, subSections: e.target.checked}
+                    let newSortingObject = {}
+                    newSortingObject[section] = updatedSection
+                    console.log(newSortingObject)
+                    setSorting(state => ({...state, ...newSortingObject})) 
+                  }}
+                />
+                <label htmlFor="sub-section"> Show sub-sections </label>
+              </div>
 
             </div>
           )
