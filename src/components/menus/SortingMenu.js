@@ -72,7 +72,6 @@ function SortingMenu(props) {
                   }}> 
                   <option value="custom"> Custom </option>
                   {section === "artists" ? <option value="name"> Name </option> : ""}
-                  {section !== "albums" ? <option value="popularity"> Popularity </option> : ""}
                   {section !== "artists" ? <option value="name"> Title </option> : ""}
                   {section !== "artists" ? <option value="release_date"> Release Date </option> : ""}
                   {section !== "artists" ? <option value="artist"> Artist </option> : ""}
