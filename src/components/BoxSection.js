@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 
-import SubSection from "./SubSection"
+import SubSection from "./box-views/SubSection"
 import GridView from "./box-views/GridView"
 import ListView from "./box-views/ListView"
 import DetailView from "./box-views/DetailView"

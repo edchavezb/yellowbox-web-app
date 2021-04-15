@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import GridItem from "./box-views/GridItem"
+import GridItem from "./GridItem"
 import styles from "./SubSection.module.css";
 
 function SubSection(props) {
