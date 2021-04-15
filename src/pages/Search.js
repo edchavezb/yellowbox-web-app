@@ -64,9 +64,9 @@ function Search(props) {
   return (
     <div className="main-div">
       <h1> Is this what you're looking for? </h1>
-      <SearchResults type="Artists" data={searchData.artists.slice(0,12)}/>
-      <SearchResults type="Albums" data={searchData.albums.slice(0,12)}/>
-      <SearchResults type="Tracks" data={searchData.tracks.slice(0,12)}/>
+      <SearchResults type="Artists" data={searchData.artists.slice(0,12)} toggleModal={props.toggleModal}/>
+      <SearchResults type="Albums" data={searchData.albums.slice(0,12)} toggleModal={props.toggleModal} />
+      <SearchResults type="Tracks" data={searchData.tracks.slice(0,12)} toggleModal={props.toggleModal}/>
     </div>
   );
 }

@@ -68,7 +68,7 @@ function BoxSection(props) {
       const itemsMatch = props.sorting.primarySorting === "custom" ? 
         sortedData.filter(e => e.subSection === s) 
         : sortedData.filter(e => getProperty(e, props.type, props.sorting.primarySorting) === s)
-      return <SubSection itemsMatch={itemsMatch} subName={s} viewType={props.sorting.view} toggleModal={toggleModal}/>
+      return <SubSection itemsMatch={itemsMatch} page="box" subName={s} viewType={props.sorting.view} toggleModal={toggleModal}/>
     })
   } 
 

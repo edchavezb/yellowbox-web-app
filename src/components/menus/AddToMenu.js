@@ -12,7 +12,7 @@ function AddToMenu(props) {
 
   const [addType, setAddType] = useState("box")
   const [addBox, setAddBox] = useState(userBoxes[0].id)
-  const [addSub, setAddSub] = useState(currentBox.subSections[0].name)
+  const [addSub, setAddSub] = useState(currentBox.subSections ? currentBox.subSections[0].name : "")
 
   useEffect(() => {
     console.log(addType)
@@ -51,9 +51,10 @@ function AddToMenu(props) {
         <label htmlFor="add-type"> Add this item to </label>
         <select name="add-type" defaultValue={addType} onChange={(e) => setAddType(e.target.value)}>
           <option value="box"> another box in your collection </option>
-          <option value="subsection"> a sub-section of this box </option>
+          <option value="subsection" hidden={props.page === "search"} > a sub-section of this box </option>
         </select>
       </div>
+
       {addType === "box" ? 
         <div id={styles.boxSelect}>
           <label htmlFor="box-select"> Select a box </label>
@@ -63,7 +64,10 @@ function AddToMenu(props) {
             })}
           </select>
         </div>
-        :
+        : ""
+      }
+
+      {addType === "subsection" ? 
         <div id={styles.subSectionSelect}>
           <label htmlFor="subsection-select"> Select a subsection </label>
           <select name="subsection-select" defaultValue={currentBox.subSections[0].name} onChange={(e) => setAddSub(e.target.value)}>
@@ -72,7 +76,9 @@ function AddToMenu(props) {
             })}
           </select>
         </div>
+        : ""
       }
+
       <div id={styles.modalFooter}>
         <button onClick={() => handleAddItem()}> Add item </button>
       </div>

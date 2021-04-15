@@ -29,24 +29,27 @@ function DragActions(props) {
     const data = JSON.parse(e.dataTransfer.getData("data"))
     const action = e.currentTarget.getAttribute("action")
     e.currentTarget.className = `${styles.dragActionsButton} ${styles.idleColor}`
-    toggleModal({visible: true, type: action, boxId: props.boxId, itemData: data})
+    toggleModal({visible: true, type: action, boxId: props.boxId, itemData: data, page: props.page})
   }
 
   return (
     <div id={props.elementDragging ? styles.actionsActive : styles.actionsHidden}>
-      <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.delete} action="Delete Item"
-        onDragEnter={(e) => handleDragEnter(e)} 
-        onDragLeave={(e) => handleDragLeave(e)}
-        onDragOver={(e) => handleDragOver(e)}
-        onDrop={(e) => handleDrop(e)}> 
-        <img id={styles.deleteImg} src="/icons/delete.svg"></img> 
-      </div>
+      {props.page === "box" ?
+        <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.delete} action="Delete Item"
+          onDragEnter={(e) => handleDragEnter(e)} 
+          onDragLeave={(e) => handleDragLeave(e)}
+          onDragOver={(e) => handleDragOver(e)}
+          onDrop={(e) => handleDrop(e)}> 
+          <img id={styles.deleteImg} alt="Delete item" src="/icons/delete.svg"></img> 
+        </div>
+        : ""
+      }
       <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.addTo} action="Add To"
         onDragEnter={(e) => handleDragEnter(e)} 
         onDragLeave={(e) => handleDragLeave(e)}
         onDragOver={(e) => handleDragOver(e)}
         onDrop={(e) => handleDrop(e)}> 
-        <img id={styles.addToImg} src="/icons/plus.svg"></img> 
+        <img id={styles.addToImg} alt="Add item" src="/icons/plus.svg"></img> 
       </div>
     </div>
   )

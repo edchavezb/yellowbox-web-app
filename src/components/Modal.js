@@ -27,7 +27,7 @@ function Modal(props) {
       modalBody = <DeletePrompt toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={props.itemData} />
     break;
     case "Add To" :
-      modalBody = <AddToMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={props.itemData} />
+      modalBody = <AddToMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={props.itemData} page={props.page}/>
     break;
     default:
   }
