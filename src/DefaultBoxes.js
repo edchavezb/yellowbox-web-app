@@ -12,21 +12,21 @@ const defaultBoxes = [
       artists: {
         primarySorting: "custom",
         view: "grid",
-        ascendingOrder: false,
+        ascendingOrder: true,
         subSections: false
       },
       albums: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
-        ascendingOrder: false,
+        ascendingOrder: true,
         subSections: false
       },
       tracks: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
-        ascendingOrder: false,
+        ascendingOrder: true,
         subSections: false
       }
     },
@@ -52,21 +52,21 @@ const defaultBoxes = [
       artists: {
         primarySorting: "custom",
         view: "grid",
-        ascendingOrder: false,
+        ascendingOrder: true,
         subSections: true
       },
       albums: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
-        ascendingOrder: false,
+        ascendingOrder: true,
         subSections: false
       },
       tracks: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
-        ascendingOrder: false,
+        ascendingOrder: true,
         subSections: false
       }
     },

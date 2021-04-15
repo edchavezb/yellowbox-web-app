@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-import GridItem from "./GridItem"
+import GridView from "./GridView"
+import ListView from "./ListView"
+import DetailView from "./DetailView"
 import styles from "./SubSection.module.css";
 
 function SubSection(props) {
@@ -8,13 +10,28 @@ function SubSection(props) {
   const subName = props.subName
   console.log(itemsMatch)
 
+  const displayView = (data, page, isCustom) => {
+    let sectionView = ""
+    switch (props.viewType){
+      case "grid":
+        sectionView = <GridView data={data} page={page} customSorting={isCustom} setElementDragging={props.setElementDragging}/>
+      break;
+      case "list":
+        sectionView = <ListView data={data} page={page} customSorting={isCustom} setElementDragging={props.setElementDragging}/>
+      break;
+      case "detail":
+        sectionView = <DetailView data={data} page={page} customSorting={isCustom} setElementDragging={props.setElementDragging}/>
+      break;
+      default:
+    }
+    return sectionView
+  }
+
   return (itemsMatch.length > 0 ?
     <div className={styles.subSection} key={subName}>
-      <div className={styles.subSectionName}> {subName} </div>
+      {!props.default ? <div className={styles.subSectionName}> {subName} </div> : "" }
       <div className={styles.itemContainer}>
-        {itemsMatch.map((e) => {
-          return <GridItem key={e.id} element={e} livesInBox={true} setElementDragging={props.setElementDragging} />
-        })}
+        {displayView(itemsMatch, props.page, props.customSorting)}
       </div>
     </div>
     : "")

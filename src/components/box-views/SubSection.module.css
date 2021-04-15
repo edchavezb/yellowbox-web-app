@@ -1,6 +1,5 @@
 .itemContainer {
-    display: flex;
-    flex-wrap: wrap;
+    display: block
 }
 
 .subSection {
