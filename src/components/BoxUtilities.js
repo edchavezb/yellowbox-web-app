@@ -26,17 +26,17 @@ function BoxUtilities(props) {
         <span id={styles.includeTitle}> Include </span>
         {box.artists.length ?
           <div className={visibility.artists ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} handles="artists">
-            <img className={styles.buttonIcon} src="/icons/artist.svg" />
+            <img className={styles.buttonIcon} alt="Toggle artists" src="/icons/artists.svg" />
           </div>
           : ""}
         {box.albums.length ?
           <div className={visibility.albums ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} handles="albums">
-            <img className={styles.buttonIcon} src="/icons/album.svg" />
+            <img className={styles.buttonIcon} alt="Toggle albums" src="/icons/albums.svg" />
           </div>
           : ""}
         {box.tracks.length ?
           <div className={visibility.tracks ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} handles="tracks">
-            <img className={styles.buttonIcon} src="/icons/song.svg" />
+            <img className={styles.buttonIcon} alt="Toggle songs" src="/icons/tracks.svg" />
           </div>
           : ""}
       </div>
