@@ -21,13 +21,11 @@
 }
 
 .sectionNoSubs {
-    display: flex;
-    flex-wrap: wrap;
+    display: block;
 }
 
 .defaultSubSection {
-    display: flex;
-    flex-wrap: wrap;
+    display: block;
 }
 
 .hidden {

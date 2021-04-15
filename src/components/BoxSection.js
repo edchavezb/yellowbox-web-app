@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 
 import SubSection from "./SubSection"
-import GridItem from "./box-views/GridItem"
+import GridView from "./box-views/GridView"
+import ListView from "./box-views/ListView"
+import DetailView from "./box-views/DetailView"
 import DragActions from "./DragActions"
 import styles from "./BoxSection.module.css";
 
@@ -66,6 +68,23 @@ function BoxSection(props) {
     return array
   }
 
+  const displayView = (data, isSubSection, sortingType) => {
+    let sectionView = ""
+    switch (props.sorting.view){
+      case "grid":
+        sectionView = <GridView data={data} isSubSection={isSubSection} sortingType={sortingType} setElementDragging={setElementDragging}/>
+      break;
+      case "list":
+        sectionView = <ListView data={data} isSubSection={isSubSection} sortingType={sortingType} setElementDragging={setElementDragging}/>
+      break;
+      case "detail":
+        sectionView = <DetailView data={data} isSubSection={isSubSection} sortingType={sortingType} setElementDragging={setElementDragging}/>
+      break;
+      default:
+    }
+    return sectionView
+  }
+
   const showSubSections = (array) => {
     return array.map(s => {
       const itemsMatch = props.sorting.primarySorting === "custom" ? 
@@ -74,7 +93,6 @@ function BoxSection(props) {
       return <SubSection itemsMatch={itemsMatch} subName={s} setElementDragging={setElementDragging}/>
     })
   } 
-
 
   let sectionIconSrc = ""
   const sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, props.sorting.secondarySorting, props.sorting.ascendingOrder)
@@ -107,17 +125,13 @@ function BoxSection(props) {
         {props.sorting.subSections ? 
           <div className={styles.sectionWithSubs}>
             <div className={props.sorting.primarySorting === "custom" ? styles.defaultSubSection : styles.hidden}>
-              {sortedData.filter(e => e.subSection === "default").map((e) => {
-                return <GridItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
-              })}
+              {displayView(sortedData.filter(e => e.subSection === "default"), "box", props.sorting.primarySorting)}
             </div>
             {showSubSections(subSectionList)}
           </div>
         : 
           <div className={styles.sectionNoSubs}>
-              {sortedData.map((e) => {
-                return <GridItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
-              })}
+              {displayView(sortedData, "box", props.sorting.primarySorting)}
           </div>
         }
 

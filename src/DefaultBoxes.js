@@ -11,7 +11,7 @@ const defaultBoxes = [
     sectionSorting: {
       artists: {
         primarySorting: "custom",
-        view: "list",
+        view: "grid",
         ascendingOrder: false,
         subSections: false
       },
@@ -51,7 +51,7 @@ const defaultBoxes = [
     sectionSorting: {
       artists: {
         primarySorting: "custom",
-        view: "list",
+        view: "grid",
         ascendingOrder: false,
         subSections: true
       },
