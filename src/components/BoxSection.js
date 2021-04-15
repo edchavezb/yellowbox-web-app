@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 
 import SubSection from "./box-views/SubSection"
-import DragActions from "./DragActions"
 import styles from "./BoxSection.module.css";
 
 function BoxSection(props) {
@@ -10,7 +9,6 @@ function BoxSection(props) {
   const toggleModal = props.toggleModal
 
   const [height, setHeight] = useState("auto")
-  const [elementDragging, setElementDragging] = useState(false)
 
   useEffect(() => {
     const heightProp = props.visible ? "auto" : 0
@@ -70,7 +68,7 @@ function BoxSection(props) {
       const itemsMatch = props.sorting.primarySorting === "custom" ? 
         sortedData.filter(e => e.subSection === s) 
         : sortedData.filter(e => getProperty(e, props.type, props.sorting.primarySorting) === s)
-      return <SubSection itemsMatch={itemsMatch} subName={s} viewType={props.sorting.view} setElementDragging={setElementDragging}/>
+      return <SubSection itemsMatch={itemsMatch} subName={s} viewType={props.sorting.view} toggleModal={toggleModal}/>
     })
   } 
 
@@ -92,18 +90,32 @@ function BoxSection(props) {
         {props.sorting.subSections ? 
           <div className={styles.sectionWithSubs}>
             <div className={props.sorting.primarySorting === "custom" ? styles.defaultSubSection : styles.hidden}>
-              <SubSection itemsMatch={sortedData.filter(e => e.subSection === "default")} viewType={props.sorting.view} default={true} page="box" customSorting={props.sorting.primarySorting === "custom"} setElementDragging={setElementDragging}/>
+              <SubSection 
+                itemsMatch={sortedData.filter(e => e.subSection === "default")} 
+                viewType={props.sorting.view} 
+                default={true} 
+                page="box" 
+                customSorting={props.sorting.primarySorting === "custom"} 
+                toggleModal={toggleModal} 
+                boxId={props.box.id}
+              />
             </div>
             {showSubSections(subSectionList)}
           </div>
         : 
           <div className={styles.sectionNoSubs}>
-            <SubSection itemsMatch={sortedData} viewType={props.sorting.view} default={true} page="box" customSorting={props.sorting.primarySorting === "custom"} setElementDragging={setElementDragging}/>
+            <SubSection 
+              itemsMatch={sortedData} 
+              viewType={props.sorting.view} 
+              default={true} 
+              page="box" 
+              customSorting={props.sorting.primarySorting === "custom"} 
+              toggleModal={toggleModal} 
+              boxId={props.box.id} />
           </div>
         }
 
       </div>
-      <DragActions elementDragging={elementDragging} toggleModal={toggleModal} boxId={props.box.id} />
     </AnimateHeight>
   )
 }

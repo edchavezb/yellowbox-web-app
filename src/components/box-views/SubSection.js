@@ -14,13 +14,13 @@ function SubSection(props) {
     let sectionView = ""
     switch (props.viewType){
       case "grid":
-        sectionView = <GridView data={data} page={page} customSorting={isCustom} setElementDragging={props.setElementDragging}/>
+        sectionView = <GridView data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
       break;
       case "list":
-        sectionView = <ListView data={data} page={page} customSorting={isCustom} setElementDragging={props.setElementDragging}/>
+        sectionView = <ListView data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
       break;
       case "detail":
-        sectionView = <DetailView data={data} page={page} customSorting={isCustom} setElementDragging={props.setElementDragging}/>
+        sectionView = <DetailView data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
       break;
       default:
     }

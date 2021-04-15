@@ -10,11 +10,11 @@ function GridItem(props){
     const handleDrag = (e, data) => {
         console.log(data)
         e.dataTransfer.setData("data", JSON.stringify(data))
-        if(props.livesInBox) props.setElementDragging(true)
+        props.setElementDragging(true)
     }
 
     const handleDragEnd = () => {
-        if(props.livesInBox) props.setElementDragging(false)
+        props.setElementDragging(false)
     }
 
     return (
