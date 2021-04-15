@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import BoxItem from "./BoxItem"
+import GridItem from "./box-views/GridItem"
 import styles from "./SubSection.module.css";
 
 function SubSection(props) {
@@ -13,7 +13,7 @@ function SubSection(props) {
       <div className={styles.subSectionName}> {subName} </div>
       <div className={styles.itemContainer}>
         {itemsMatch.map((e) => {
-          return <BoxItem key={e.id} element={e} livesInBox={true} setElementDragging={props.setElementDragging} />
+          return <GridItem key={e.id} element={e} livesInBox={true} setElementDragging={props.setElementDragging} />
         })}
       </div>
     </div>

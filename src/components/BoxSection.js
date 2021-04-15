@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 
 import SubSection from "./SubSection"
-import BoxItem from "./BoxItem"
+import GridItem from "./box-views/GridItem"
 import DragActions from "./DragActions"
 import styles from "./BoxSection.module.css";
 
@@ -108,7 +108,7 @@ function BoxSection(props) {
           <div className={styles.sectionWithSubs}>
             <div className={props.sorting.primarySorting === "custom" ? styles.defaultSubSection : styles.hidden}>
               {sortedData.filter(e => e.subSection === "default").map((e) => {
-                return <BoxItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
+                return <GridItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
               })}
             </div>
             {showSubSections(subSectionList)}
@@ -116,7 +116,7 @@ function BoxSection(props) {
         : 
           <div className={styles.sectionNoSubs}>
               {sortedData.map((e) => {
-                return <BoxItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
+                return <GridItem key={e.id} element={e} livesInBox={true} setElementDragging={setElementDragging}/>
               })}
           </div>
         }
