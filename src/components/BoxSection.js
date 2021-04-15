@@ -68,17 +68,17 @@ function BoxSection(props) {
     return array
   }
 
-  const displayView = (data, isSubSection, sortingType) => {
+  const displayView = (data, page, sortingType) => {
     let sectionView = ""
     switch (props.sorting.view){
       case "grid":
-        sectionView = <GridView data={data} isSubSection={isSubSection} sortingType={sortingType} setElementDragging={setElementDragging}/>
+        sectionView = <GridView data={data} page={page} sortingType={sortingType} setElementDragging={setElementDragging}/>
       break;
       case "list":
-        sectionView = <ListView data={data} isSubSection={isSubSection} sortingType={sortingType} setElementDragging={setElementDragging}/>
+        sectionView = <ListView data={data} page={page} sortingType={sortingType} setElementDragging={setElementDragging}/>
       break;
       case "detail":
-        sectionView = <DetailView data={data} isSubSection={isSubSection} sortingType={sortingType} setElementDragging={setElementDragging}/>
+        sectionView = <DetailView data={data} page={page} sortingType={sortingType} setElementDragging={setElementDragging}/>
       break;
       default:
     }
@@ -94,25 +94,12 @@ function BoxSection(props) {
     })
   } 
 
-  let sectionIconSrc = ""
+  const sectionIconSrc = `/icons/${props.type.toLowerCase()}.svg`
   const sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, props.sorting.secondarySorting, props.sorting.ascendingOrder)
   const subSectionList = props.sorting.primarySorting === "custom" ? 
     props.box.subSections.filter(s => s.type === props.type.toLowerCase()).reduce((acc, curr) => [...acc, curr.name], []).sort()
     : Array.from(new Set(props.data.map(e => getProperty(e, props.type, props.sorting.primarySorting))))
   console.log(subSectionList)
-
-  switch (props.type) {
-    case "Artists":
-      sectionIconSrc = "/icons/artist.svg"
-    break;
-    case "Albums":
-      sectionIconSrc = "/icons/album.svg"
-    break;
-    case "Tracks":
-      sectionIconSrc = "/icons/song.svg"
-    break;
-    default:
-  }
 
   return (
     <AnimateHeight duration={250} height={height}>
@@ -131,7 +118,7 @@ function BoxSection(props) {
           </div>
         : 
           <div className={styles.sectionNoSubs}>
-              {displayView(sortedData, "box", props.sorting.primarySorting)}
+            {displayView(sortedData, "box", props.sorting.primarySorting)}
           </div>
         }
 
