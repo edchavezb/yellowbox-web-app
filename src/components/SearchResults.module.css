@@ -1,4 +1,3 @@
-.resultsContainer {
-    display: flex;
-    flex-wrap: wrap;
+.resultsSection {
+    display: block
 }

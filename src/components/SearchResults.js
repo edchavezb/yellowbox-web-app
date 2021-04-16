@@ -6,11 +6,9 @@ import styles from "./SearchResults.module.css";
 function SearchResults(props) {
 
   return (
-    <div className={styles.resultsPanel}>
+    <div className={styles.resultsSection}>
       <h3> {props.type} </h3>
-      <div className={styles.resultsContainer}>
-        <GridView data={props.data} page="search" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
-      </div>
+      <GridView data={props.data} page="search" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
     </div>
   )
 }
