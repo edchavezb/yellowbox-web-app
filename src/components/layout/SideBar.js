@@ -8,6 +8,7 @@ function SideBar(props) {
   const dispatch = props.dispatch;
 
   const addToBox = (draggedData, targetBoxId) => {
+    console.log(JSON.stringify(draggedData))
     const targetIndex = props.boxes.findIndex(box => box.id === targetBoxId)
     const targetBox = {...props.boxes.find(box => box.id === targetBoxId)}
     let updatedBox = {}
