@@ -30,9 +30,7 @@ function SubSection(props) {
   return (itemsMatch.length > 0 ?
     <div className={styles.subSection} key={subName}>
       {!props.default ? <div className={styles.subSectionName}> {subName} </div> : "" }
-      <div className={styles.itemContainer}>
         {displayView(itemsMatch, props.page, props.customSorting)}
-      </div>
     </div>
     : "")
 }

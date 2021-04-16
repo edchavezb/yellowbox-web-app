@@ -30,8 +30,8 @@ function BoxDetail(props) {
           toggleModal={toggleModal}
           /> 
         : ""}
-      <h2> {boxCopy.name} </h2>
-      <p> {boxCopy.description} </p>
+      <h2 id={styles.boxName}> {boxCopy.name} </h2>
+      <div id={styles.boxDesc}> {boxCopy.description} </div>
       {boxCopy.artists.length ? 
         <BoxSection 
           type="Artists"
