@@ -106,16 +106,15 @@ function BoxSection(props) {
             {showSubSections(subSectionList)}
           </div>
         : 
-          <div className={styles.sectionNoSubs}>
-            <SubSection 
-              itemsMatch={sortedData} 
-              viewType={props.sorting.view} 
-              default={true} 
-              page="box" 
-              customSorting={props.sorting.primarySorting === "custom"} 
-              toggleModal={toggleModal} 
-              boxId={props.box.id} />
-          </div>
+          <SubSection 
+            itemsMatch={sortedData} 
+            viewType={props.sorting.view} 
+            default={true} 
+            page="box" 
+            customSorting={props.sorting.primarySorting === "custom"} 
+            toggleModal={toggleModal} 
+            boxId={props.box.id} 
+          />
         }
 
       </div>

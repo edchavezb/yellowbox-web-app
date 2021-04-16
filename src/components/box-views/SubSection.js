@@ -28,7 +28,7 @@ function SubSection(props) {
   }
 
   return (itemsMatch.length > 0 ?
-    <div className={styles.subSection} key={subName}>
+    <div className={styles.subSectionWrapper} key={subName}>
       {!props.default ? <div className={styles.subSectionName}> {subName} </div> : "" }
         {displayView(itemsMatch, props.page, props.customSorting)}
     </div>
