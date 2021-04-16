@@ -59,7 +59,7 @@ function BoxDetail(props) {
           visible={visibility.tracks}
           toggleModal={toggleModal}  /> 
         : ""}
-      {boxNotEmpty ? "" : <div id={styles.emptyMsg}><h3> You have not added any items to this box yet. <br/> Start by searching some music you like! </h3></div>}
+      {boxNotEmpty ? "" : <div id={styles.emptyMsgDiv}><h3 id={styles.emptyMsg}> You have not added any items to this box yet. <br/> Start by searching some music you like! </h3></div>}
     </div>
   )
 }

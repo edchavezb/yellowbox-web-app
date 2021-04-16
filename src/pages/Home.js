@@ -7,7 +7,7 @@ function Home() {
 
   return (
     <div className="main-div">
-      <h1> Welcome to Yellowbox! </h1>
+      <h1> Welcome Pablo! </h1>
       <p>Search something...</p>
     </div>
   );
