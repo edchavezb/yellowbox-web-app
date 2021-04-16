@@ -16,31 +16,34 @@ function BoxSection(props) {
   }, [props.visible])
 
   function getProperty(item, type, propertyName){
-    let property = ""
+    let propertyValue = ""
 
     switch (propertyName) {
+      case "release_year":
+        propertyValue = type === "Tracks" ? parseInt(item.album["release_date"].split("-")[0]) : parseInt(item["release_date"].split("-")[0])
+      break;
       case "release_date":
-        property = type === "Tracks" ? new Date(item.album["release_date"]): new Date(item["release_date"])
+        propertyValue = type === "Tracks" ? new Date(item.album["release_date"]) : new Date(item["release_date"])
       break;
       case "artist":
-        property = item.artists[0].name
+        propertyValue = item.artists[0].name
       break;
       case "name":
-        property = item.name
+        propertyValue = item.name
       break;
       case "album":
-        property = item.album.name
+        propertyValue = item.album.name
       break;
       case "duration":
-        property = item["duration_ms"]
+        propertyValue = item["duration_ms"]
       break;
       case "track_number":
-        property = item["track_number"]
+        propertyValue = item["track_number"]
       break;
       default:
     }
 
-    return property
+    return propertyValue
   }
 
   const twoFactorSort = (array, type, sortFactorOne, sortFactorTwo, ascending) => {
@@ -68,7 +71,7 @@ function BoxSection(props) {
       const itemsMatch = props.sorting.primarySorting === "custom" ? 
         sortedData.filter(e => e.subSection === s) 
         : sortedData.filter(e => getProperty(e, props.type, props.sorting.primarySorting) === s)
-      return <SubSection itemsMatch={itemsMatch} page="box" subName={s} viewType={props.sorting.view} toggleModal={toggleModal}/>
+      return <SubSection itemsMatch={itemsMatch} page="box" subName={s} key={s} viewType={props.sorting.view} toggleModal={toggleModal}/>
     })
   } 
 
@@ -76,7 +79,7 @@ function BoxSection(props) {
   const sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, props.sorting.secondarySorting, props.sorting.ascendingOrder)
   const subSectionList = props.sorting.primarySorting === "custom" ? 
     props.box.subSections.filter(s => s.type === props.type.toLowerCase()).reduce((acc, curr) => [...acc, curr.name], []).sort()
-    : Array.from(new Set(props.data.map(e => getProperty(e, props.type, props.sorting.primarySorting))))
+    : Array.from(new Set(props.data.map(e => getProperty(e, props.type, props.sorting.primarySorting)))).sort()
   console.log(subSectionList)
 
   return (

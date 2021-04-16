@@ -73,7 +73,7 @@ function SortingMenu(props) {
                   <option value="custom"> Custom </option>
                   {section === "artists" ? <option value="name"> Name </option> : ""}
                   {section !== "artists" ? <option value="name"> Title </option> : ""}
-                  {section !== "artists" ? <option value="release_date"> Release Date </option> : ""}
+                  {section !== "artists" ? <option value="release_year"> Release Year </option> : ""}
                   {section !== "artists" ? <option value="artist"> Artist </option> : ""}
                   {section === "tracks" ? <option value="album"> Album </option> : ""}
                   {section === "tracks" ? <option value="duration"> Duration </option> : ""}
@@ -96,6 +96,7 @@ function SortingMenu(props) {
                   <option value="none" disabled hidden> Select... </option> 
                   {section === "artists" ? <option value="name" hidden={sorting[section].primarySorting === "name"}> Name </option> : ""}
                   {section !== "artists" ? <option value="name" hidden={sorting[section].primarySorting === "name"}> Title </option> : ""}
+                  {section !== "artists" ? <option value="release_year" hidden={sorting[section].primarySorting === "release_year"}> Release Year </option> : ""}
                   {section !== "artists" ? <option value="release_date" hidden={sorting[section].primarySorting === "release_date"}> Release Date </option> : ""}
                   {section !== "artists" ? <option value="artist" hidden={sorting[section].primarySorting === "artist"}> Artist </option> : ""}
                   {section !== "albums" ? <option value="popularity" hidden={sorting[section].primarySorting === "popularity"}> Popularity </option> : ""}
