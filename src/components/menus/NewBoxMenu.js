@@ -47,7 +47,8 @@ function NewBoxMenu(props) {
         artists: true,
         albums: true, 
         tracks: true
-      }
+      },
+      subSections : []
     }
     dispatch({ type: "ADD_BOX", payload: { newBox: newBox } })
     toggleModal({ visible: false, type: "", boxId:"" })

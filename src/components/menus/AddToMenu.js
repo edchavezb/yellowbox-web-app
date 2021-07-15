@@ -12,7 +12,7 @@ function AddToMenu(props) {
 
   const [addType, setAddType] = useState("box")
   const [addBox, setAddBox] = useState(userBoxes[0].id)
-  const [addSub, setAddSub] = useState(currentBox.subSections ? currentBox.subSections[0].name : "")
+  const [addSub, setAddSub] = useState(props.page === "box" && currentBox.subSections.length ? currentBox.subSections[0].name : "")
 
   useEffect(() => {
     console.log(addType)
