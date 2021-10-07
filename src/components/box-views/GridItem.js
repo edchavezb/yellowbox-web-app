@@ -4,8 +4,9 @@ import styles from "./GridItem.module.css";
 function GridItem(props){
     const elementImages = props.element.type === "track" ? props.element.album.images : props.element.images
     const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
-    const artistName = props.element.type === "artist" ? "" 
-        : <div className={styles.artistName}> {props.element.artists[0].name} </div>
+    const artistName = props.element.type === "playlist" ? "" : props.element.type === "artist" ? "" 
+        : <div className={styles.artistName}> {props.element.artists[0].name} </div>;
+    const ownerName = props.element.type === "playlist" ? <div className={styles.artistName}> {props.element.owner.display_name} </div> : "";
 
     const handleDrag = (e, data) => {
         console.log(data)
@@ -22,8 +23,8 @@ function GridItem(props){
             <div className={styles.imageContainer}>
                 <img draggable="false" className={styles.itemImage} alt={props.element.name} src={itemCoverArt}></img>
             </div>
-            <div className={styles.name}> {props.element.name} </div>
-            {artistName}
+            <div className={styles.name}> {props.element.name.trim()} </div>
+            {props.element.type !== "playlist" ? artistName : ownerName}
         </div>
     )
 }

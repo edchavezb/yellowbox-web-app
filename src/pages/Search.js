@@ -12,7 +12,7 @@ function Search(props) {
 
   const params = useParams()
   const [spotifyToken, setToken] = useState('')
-  const [searchData, setSearchData] = useState({artists: [], albums: [], tracks: []})
+  const [searchData, setSearchData] = useState({artists: [], albums: [], tracks: [], playlists:[]})
 
 
   useEffect(() => {
@@ -44,7 +44,7 @@ function Search(props) {
     spotifyAuthorization()
     axios({
       method: 'get',
-      url: `https://api.spotify.com/v1/search?q=${query}&type=artist,track,album`,
+      url: `https://api.spotify.com/v1/search?q=${query}&type=artist,track,album,playlist`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${spotifyToken}`
@@ -54,7 +54,8 @@ function Search(props) {
         console.log(response.data)
         setSearchData({artists: response.data.artists.items, 
           albums: response.data.albums.items, 
-          tracks: response.data.tracks.items})
+          tracks: response.data.tracks.items,
+          playlists: response.data.playlists.items})
       })
       .catch(error => {
         console.log(error);
@@ -67,6 +68,7 @@ function Search(props) {
       <SearchResults type="Artists" data={searchData.artists.slice(0,12)} toggleModal={props.toggleModal}/>
       <SearchResults type="Albums" data={searchData.albums.slice(0,12)} toggleModal={props.toggleModal} />
       <SearchResults type="Tracks" data={searchData.tracks.slice(0,12)} toggleModal={props.toggleModal}/>
+      <SearchResults type="Playlists" data={searchData.playlists.slice(0,12)} toggleModal={props.toggleModal}/>
     </div>
   );
 }
