@@ -7,6 +7,7 @@ const defaultBoxes = [
     description: "Mis favoritos en el español",
     artists: [],
     albums: [],
+    playlists: [],
     tracks: [],
     sectionSorting: {
       artists: {
@@ -57,6 +58,42 @@ const defaultBoxes = [
       {album_type:"album",artists:[{external_urls:{spotify:"https://open.spotify.com/artist/4d53BMrRlQkrQMz5d59f2O"},href:"https://api.spotify.com/v1/artists/4d53BMrRlQkrQMz5d59f2O",id:"4d53BMrRlQkrQMz5d59f2O",name:"Mayer Hawthorne",type:"artist",uri:"spotify:artist:4d53BMrRlQkrQMz5d59f2O"}],external_urls:{spotify:"https://open.spotify.com/album/5MBHKaOoI0GPDg9moUCZor"},id:"5MBHKaOoI0GPDg9moUCZor",images:[{height:640,url:"https://i.scdn.co/image/ab67616d0000b27371bf98334c981b940838111e",width:640},{height:300,url:"https://i.scdn.co/image/ab67616d00001e0271bf98334c981b940838111e",width:300},{height:64,url:"https://i.scdn.co/image/ab67616d0000485171bf98334c981b940838111e",width:64}],name:"Man About Town",release_date:"2016-02-19",type:"album",uri:"spotify:album:5MBHKaOoI0GPDg9moUCZor",subSection:"default"},
       {album_type:"album",artists:[{external_urls:{spotify:"https://open.spotify.com/artist/3Uqu1mEdkUJxPe7s31n1M9"},href:"https://api.spotify.com/v1/artists/3Uqu1mEdkUJxPe7s31n1M9",id:"3Uqu1mEdkUJxPe7s31n1M9",name:"Weyes Blood",type:"artist",uri:"spotify:artist:3Uqu1mEdkUJxPe7s31n1M9"}],external_urls:{spotify:"https://open.spotify.com/album/0Cuqhgy8vm96JEkBY3polk"},id:"0Cuqhgy8vm96JEkBY3polk",images:[{height:640,url:"https://i.scdn.co/image/ab67616d0000b2730c64e752dec4c08362cc4a88",width:640},{height:300,url:"https://i.scdn.co/image/ab67616d00001e020c64e752dec4c08362cc4a88",width:300},{height:64,url:"https://i.scdn.co/image/ab67616d000048510c64e752dec4c08362cc4a88",width:64}],name:"Titanic Rising",release_date:"2019-04-05",type:"album",uri:"spotify:album:0Cuqhgy8vm96JEkBY3polk",subSection:"default"}
     ],
+    playlists: [
+      {
+        description: "Al cien con los corridos, ¡para un buen ejercicio!",
+        external_urls: {
+            spotify: "https://open.spotify.com/playlist/37i9dQZF1DXaMxIh88NH1N"
+        },
+        href: "https://api.spotify.com/v1/playlists/37i9dQZF1DXaMxIh88NH1N",
+        id: "37i9dQZF1DXaMxIh88NH1N",
+        images: [
+            {
+                height: null,
+                url: "https://i.scdn.co/image/ab67706f00000003033f8707da9cae3e8fce0cf4",
+                width: null
+            }
+        ],
+        name: "Bien Machín",
+        owner: {
+            display_name: "Spotify",
+            external_urls: {
+                spotify: "https://open.spotify.com/user/spotify"
+            },
+            href: "https://api.spotify.com/v1/users/spotify",
+            id: "spotify",
+            type: "user",
+            uri: "spotify:user:spotify"
+        },
+        public: null,
+        snapshot_id: "MTYzMzYzOTM2NSwwMDAwMDAwMGQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0Mjdl",
+        tracks: {
+            "href": "https://api.spotify.com/v1/playlists/37i9dQZF1DXaMxIh88NH1N/tracks",
+            "total": 100
+        },
+        type: "playlist",
+        uri: "spotify:playlist:37i9dQZF1DXaMxIh88NH1N"
+      }
+    ],
     tracks: [],
     sectionSorting: {
       artists: {
@@ -78,12 +115,20 @@ const defaultBoxes = [
         view: "grid",
         ascendingOrder: true,
         subSections: false
+      },
+      playlists: {
+        primarySorting: "custom",
+        secondarySorting: "none",
+        view: "grid",
+        ascendingOrder: true,
+        subSections: false
       }
     },
     sectionVisibility: {
       artists: true,
       albums: true,
-      tracks: true
+      tracks: true,
+      playlists: true
     },
     subSections : [
       {type: "artists", name: "Da Best"},

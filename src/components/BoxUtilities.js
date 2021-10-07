@@ -39,6 +39,11 @@ function BoxUtilities(props) {
             <img className={styles.buttonIcon} alt="Toggle songs" src="/icons/tracks.svg" />
           </div>
           : ""}
+        {box.playlists.length ?
+          <div className={visibility.playlists ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} handles="playlists">
+            <img className={styles.buttonIcon} alt="Toggle playlists" src="/icons/playlists.svg" />
+          </div>
+          : ""}
       </div>
       <button id={styles.sortingButton} onClick={() => props.toggleModal({visible: true, type: "Sorting Options", boxId: box.id})}> Sorting Options </button>
     </div>
