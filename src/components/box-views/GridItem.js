@@ -21,9 +21,15 @@ function GridItem(props){
     return (
         <div draggable onDragStart={(e) => handleDrag(e, props.element)} onDragEnd={() => handleDragEnd()} className={styles.itemCard}>
             <div className={styles.imageContainer}>
+                <a href={`${props.element.uri}:play`}>
+                    <div className={styles.instantPlay}> 
+                        <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
+                        {props.element.type === "track"? <span> Play </span> : <span> Open </span>} 
+                    </div>
+                </a>
                 <img draggable="false" className={styles.itemImage} alt={props.element.name} src={itemCoverArt}></img>
             </div>
-            <a href={props.element.uri}> <div className={styles.name}> {props.element.name} </div> </a>
+            <a href={`${props.element.uri}:play`}> <div className={styles.name}> {props.element.name} </div> </a>
             {props.element.type !== "playlist" ?  
             artistName: 
             ownerName}

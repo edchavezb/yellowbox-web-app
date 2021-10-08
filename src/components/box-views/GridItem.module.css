@@ -10,11 +10,42 @@
     overflow: hidden;
 }
 
+.instantPlay {
+    visibility: hidden;
+    width: 50px;
+    height: 20px;
+    padding: 2px;
+    line-height: 20px;
+    vertical-align: middle;
+    border-radius: 5000px;
+    background-color: #282c34;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 100;
+    cursor: pointer;
+    font-size: .7em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imageContainer:hover .instantPlay {
+    visibility: visible;
+}
+
+.spotifyIcon {
+    width: 10px;
+    margin-right: 3px;
+}
+
 .itemImage {
     width: 100%;
     position: absolute;
     top: 0;
     cursor: grab;
+    z-index: 50;
 }
 
 .name {
