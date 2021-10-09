@@ -23,7 +23,7 @@ function BoxUtilities(props) {
   return (
     <div id={styles.boxUtilities}>
       <div id={singleTypeBox ? styles.noInclude : styles.includeToggler}>
-        <span id={styles.includeTitle}> Include </span>
+        <span id={styles.includeTitle}> Show: </span>
         {box.artists.length ?
           <div className={visibility.artists ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} handles="artists">
             <img className={styles.buttonIcon} alt="Toggle artists" src="/icons/artists.svg" />
