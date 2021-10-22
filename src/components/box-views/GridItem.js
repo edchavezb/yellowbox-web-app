@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from "./GridItem.module.css";
 
 function GridItem(props){
-    const elementImages = props.element.type === "track" ? props.element.album.images : props.element.images
+    const elementImages = props.page !== "detail" ? (props.element.type === "track" ? props.element.album.images : props.element.images) : [];
     const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
     const artistName = props.element.type === "playlist" || props.element.type === "artist" ? "" 
         : <a href={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </a>;

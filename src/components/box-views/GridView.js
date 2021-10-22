@@ -11,7 +11,7 @@ function GridView(props) {
   return (
     <div className={styles.itemContainer}>
       {props.data.map((e) => {
-          return <GridItem key={e.id} element={e} setElementDragging={setElementDragging} />
+          return <GridItem key={e.id} element={e} page={props.page} setElementDragging={setElementDragging} />
       })}
       <DragActions elementDragging={elementDragging} page={props.page} toggleModal={props.toggleModal} boxId={props.boxId} />
     </div>

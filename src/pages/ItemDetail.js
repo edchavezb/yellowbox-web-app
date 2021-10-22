@@ -4,13 +4,15 @@ import axios from 'axios'
 import querystring from 'querystring'
 import credentials from '../keys'
 
+import GridView from '../components/box-views/GridView';
+
 import styles from "./ItemDetail.module.css"
 
 function ItemDetail(props) {
 
 	const params = useParams()
 	const [spotifyToken, setToken] = useState('')
-	const [searchData, setSearchData] = useState({})
+	const [searchData, setSearchData] = useState({items: []})
 
 
 	useEffect(() => {
@@ -37,7 +39,7 @@ function ItemDetail(props) {
 					url: query,
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded',
-						Authorization: `Bearer ${spotifyToken}`
+						Authorization: `Bearer ${response.data.access_token}`
 					}
 				})
 					.then(response => {
@@ -74,7 +76,8 @@ function ItemDetail(props) {
 	return (
 		<div className="main-div">
 			<h1> Is this what you're looking for? </h1>
-			
+			{params.type !== 'track' ? <GridView data={searchData.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+			: ""}
 		</div>
 	);
 }
