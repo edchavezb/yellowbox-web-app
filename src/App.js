@@ -9,6 +9,7 @@ import BoxDetail from "./pages/BoxDetail"
 import Modal from "./components/Modal"
 
 import defaultBoxes from "./DefaultBoxes"
+import ItemDetail from './pages/ItemDetail';
 
 function App() {
 
@@ -48,6 +49,7 @@ function App() {
         <Route exact path="/" component={Home} />
         <Route path="/search/:query" render={(props) => <Search {...props} toggleModal={setModal}/>} />
         <Route path="/box/:id" render={(props) => <BoxDetail {...props} userBoxes={boxes} toggleModal={setModal}/>} />
+        <Route path="/detail/:type/:query" render={(props) => <ItemDetail {...props} toggleModal={setModal}/>} />
       </Layout>
     </Router>
   );
