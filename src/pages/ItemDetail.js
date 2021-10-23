@@ -11,17 +11,40 @@ import styles from "./ItemDetail.module.css"
 function ItemDetail(props) {
 
 	const params = useParams()
-	const [spotifyToken, setToken] = useState('')
-	const [searchData, setSearchData] = useState({items: []})
-
+	const [itemData, setItemData] = useState({type:"", images: ["https://via.placeholder.com/150"], name: "", artists: [{name:""}], album_type: ""})
+	const [itemContents, setItemContents] = useState({items: []})
 
 	useEffect(() => {
-		handleSearch(params.type, params.query)
+		handleDetailData(params.type, params.id)
 	}, [params]);
 
-	useEffect(() => console.log(searchData), [searchData]);
+	useEffect(() => console.log(itemContents), [itemContents]);
 
-	const getData = (query) => {
+	const handleDetailData = (typeParam, idParam) => {
+
+		let itemQuery;
+		let contentsQuery;
+		switch (typeParam) {
+			case 'album':
+				itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
+				contentsQuery = `https://api.spotify.com/v1/albums/${idParam}/tracks`
+				break;
+			case 'artist':
+				itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
+				contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums`
+				break;
+			case 'track':
+				itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
+				contentsQuery = `https://api.spotify.com/v1/tracks/${idParam}`
+				break;
+			case 'playlist':
+				itemQuery = `https://api.spotify.com/v1/playlists/${idParam}`
+				contentsQuery = `https://api.spotify.com/v1/playlists/${idParam}/tracks`
+				break;
+			default:
+				break;
+		}
+
 		axios({
 			method: 'post',
 			url: 'https://accounts.spotify.com/api/token',
@@ -33,53 +56,67 @@ function ItemDetail(props) {
 			}
 		})
 			.then(response => {
-				setToken(response.data.access_token)
-				axios({
-					method: 'get',
-					url: query,
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-						Authorization: `Bearer ${response.data.access_token}`
-					}
-				})
-					.then(response => {
-						console.log(response.data)
-						setSearchData(response.data)
-					})
-					.catch(error => {
-						console.log(error);
-					});
+				getItemData(itemQuery, response.data.access_token)
+				getContents(contentsQuery, response.data.access_token)
 			})
 			.catch(error => {
 				console.log(error);
 			});
 	}
 
-	const handleSearch = async (type, query) => {
-		let queryString;
-		switch (type) {
-			case 'album':
-				queryString = `https://api.spotify.com/v1/albums/${query}/tracks`
-				break;
-			case 'artist':
-				queryString = `https://api.spotify.com/v1/artists/${query}/albums`
-				break;
-			case 'track':
-				queryString = `https://api.spotify.com/v1/tracks/${query}`
-				break;
-			case 'playlist':
-				queryString = `https://api.spotify.com/v1/playlists/${query}/tracks`
-				break;
-			default:
-				break;
-		}
-		getData(queryString)
+	const getItemData = (query, auth) => {
+		axios({
+			method: 'get',
+			url: query,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Bearer ${auth}`
+			}
+		})
+			.then(response => {
+				console.log(response.data)
+				setItemData(response.data)
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	}
+
+	const getContents = (query, auth) => {
+		axios({
+			method: 'get',
+			url: query,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: `Bearer ${auth}`
+			}
+		})
+			.then(response => {
+				console.log(response.data)
+				setItemContents(response.data)
+			})
+			.catch(error => {
+				console.log(error);
+			});
 	}
 
 	return (
 		<div className="main-div">
-			<h1> Is this what you're looking for? </h1>
-			{params.type !== 'track' ? <GridView data={params.type === 'playlist'? searchData.items.map((e) => e['track']) : searchData.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+			<div className={styles.itemDataViewer}>
+				<img className={styles.itemImage} src={itemData.type === "track" ? itemData.album.images[0].url : itemData.images[0].url} alt={itemData.name}></img>
+				<div className={styles.metadataContainer}>
+					<div className={styles.itemTitle}> {itemData.name} </div>
+          {itemData.type !== "artist" ? 
+            <div className={styles.itemDetails}> 
+              {itemData.type === "album" ? `${itemData.album_type.charAt(0).toUpperCase()}${itemData.album_type.slice(1)}` 
+                : `${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
+              <nbsp/> by {itemData.type === "playlist" ? itemData.owner.display_name : itemData.artists[0].name} </div>
+            : "Popular releases"
+          }
+				</div>
+			</div>
+			<hr/>
+			{params.type !== 'track' ? <GridView data={params.type === 'playlist'? itemContents.items.map((e) => e['track']) : itemContents.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
 			: ""}
 		</div>
 	);

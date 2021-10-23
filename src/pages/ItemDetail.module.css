@@ -1,0 +1,26 @@
+.itemDataViewer {
+  height: 100px;
+  padding: 15px;
+	display: flex;
+  align-items: center;
+}
+
+.itemImage {
+	height: 80px;
+}
+
+.metadataContainer {
+  padding-left: 15px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.itemTitle {
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.itemDetails {
+  font-size: .8em;
+}
