@@ -67,6 +67,9 @@ function ItemDetail(props) {
 			case 'track':
 				queryString = `https://api.spotify.com/v1/tracks/${query}`
 				break;
+			case 'playlist':
+				queryString = `https://api.spotify.com/v1/playlists/${query}/tracks`
+				break;
 			default:
 				break;
 		}
@@ -76,7 +79,7 @@ function ItemDetail(props) {
 	return (
 		<div className="main-div">
 			<h1> Is this what you're looking for? </h1>
-			{params.type !== 'track' ? <GridView data={searchData.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+			{params.type !== 'track' ? <GridView data={params.type === 'playlist'? searchData.items.map((e) => e['track']) : searchData.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
 			: ""}
 		</div>
 	);
