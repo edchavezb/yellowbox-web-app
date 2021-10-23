@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
+
 import styles from "./GridItem.module.css";
 
 function GridItem(props){
     const elementImages = props.page !== "detail" ? (props.element.type === "track" ? props.element.album.images : props.element.images) : [];
     const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
     const artistName = props.element.type === "playlist" || props.element.type === "artist" ? "" 
-        : <a href={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </a>;
-    const ownerName = props.element.type === "playlist" ? <a href={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></a> : "";
+        : <Link to={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </Link>;
+    const ownerName = props.element.type === "playlist" ? <Link to={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></Link> : "";
 
     const handleDrag = (e, data) => {
         console.log(data)
@@ -29,7 +31,7 @@ function GridItem(props){
                 </a>
                 <img draggable="false" className={styles.itemImage} alt={props.element.name} src={itemCoverArt}></img>
             </div>
-            <a href={`/detail/${props.element.type}/${props.element.id}`}> <div className={styles.name}> {props.element.name} </div> </a>
+            <Link to={`/detail/${props.element.type}/${props.element.id}`}> <div className={styles.name}> {props.element.name} </div> </Link>
             {props.element.type !== "playlist" ?  
             artistName: 
             ownerName}
