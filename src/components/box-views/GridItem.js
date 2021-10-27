@@ -3,40 +3,40 @@ import { Link } from "react-router-dom";
 
 import styles from "./GridItem.module.css";
 
-function GridItem(props){
-    const elementImages = props.page !== "detail" ? (props.element.type === "track" ? props.element.album.images : props.element.images) : [];
-    const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
-    const artistName = props.element.type === "playlist" || props.element.type === "artist" ? "" 
-        : <Link to={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </Link>;
-    const ownerName = props.element.type === "playlist" ? <Link to={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></Link> : "";
+function GridItem(props) {
+	const elementImages = props.element.type === "track" ? props.element.album.images : props.element.images;
+	const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
+	const artistName = props.element.type === "playlist" || props.element.type === "artist" ? ""
+		: <Link to={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </Link>;
+	const ownerName = props.element.type === "playlist" ? <Link to={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></Link> : "";
 
-    const handleDrag = (e, data) => {
-        console.log(data)
-        e.dataTransfer.setData("data", JSON.stringify(data))
-        props.setElementDragging(true)
-    }
+	const handleDrag = (e, data) => {
+		console.log(data)
+		e.dataTransfer.setData("data", JSON.stringify(data))
+		props.setElementDragging(true)
+	}
 
-    const handleDragEnd = () => {
-        props.setElementDragging(false)
-    }
+	const handleDragEnd = () => {
+		props.setElementDragging(false)
+	}
 
-    return (
-        <div draggable onDragStart={(e) => handleDrag(e, props.element)} onDragEnd={() => handleDragEnd()} className={styles.itemCard}>
-            <div className={styles.imageContainer}>
-                <a href={`${props.element.uri}:play`}>
-                    <div className={styles.instantPlay}> 
-                        <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-                        {props.element.type === "track"? <span> Play </span> : <span> Open </span>} 
-                    </div>
-                </a>
-                <img draggable="false" className={styles.itemImage} alt={props.element.name} src={itemCoverArt}></img>
-            </div>
-            <Link to={`/detail/${props.element.type}/${props.element.id}`}> <div className={styles.name}> {props.element.name} </div> </Link>
-            {props.element.type !== "playlist" ?  
-            artistName: 
-            ownerName}
-        </div>
-    )
+	return (
+		<div draggable onDragStart={(e) => handleDrag(e, props.element)} onDragEnd={() => handleDragEnd()} className={styles.itemCard}>
+			<div className={styles.imageContainer}>
+				<a href={`${props.element.uri}:play`}>
+					<div className={styles.instantPlay}>
+						<img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
+						{props.element.type === "track" ? <span> Play </span> : <span> Open </span>}
+					</div>
+				</a>
+				<img draggable="false" className={styles.itemImage} alt={props.element.name} src={itemCoverArt}></img>
+			</div>
+			<Link to={`/detail/${props.element.type}/${props.element.id}`}> <div className={styles.name}> {props.element.name} </div> </Link>
+			{props.element.type !== "playlist" ?
+				artistName :
+				ownerName}
+		</div>
+	)
 }
 
 export default GridItem;
