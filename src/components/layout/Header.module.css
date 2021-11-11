@@ -1,9 +1,18 @@
+@font-face {
+    font-family: "Coco Gothic";
+    font-weight: 700;
+    src: url("../../fonts/CocoGothic-Bold.ttf") format("ttf"),
+         url("../../fonts/CocoGothic-Bold.woff") format("woff"),
+         url("../../fonts/CocoGothic-Bold.woff2") format("woff2");
+  }
+
 #header {
     display: flex;
     height: 100%
 }
 
 #logoSide {
+    margin-left: 10px;
     width: 200px;
     display: flex;
     align-items: center;
@@ -14,11 +23,21 @@
     font-size: 2.5em;
     color: #ffffff;
     font-weight: bold;
+    font-family: 'Coco Gothic';
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+}
+
+#ideogram {
+    height: .75em;
+    border-radius: .1em;
 }
 
 #logo {
-    height: .7em;
-    border-radius: .1em;
+    font-size: .65em;
+    line-height: 28px;
+    vertical-align: middle;
 }
 
 #headerTools {

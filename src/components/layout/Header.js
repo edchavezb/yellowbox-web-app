@@ -17,7 +17,8 @@ function Header(props) {
     <div id={styles.header}> 
         <div id={styles.logoSide}>
           <div id={styles.logoContainer}>
-            <img id={styles.logo} src="/logoybx.png"></img> YBX
+            <img id={styles.ideogram} src="/ideogram.png" alt="ideogram"></img>
+            <span id={styles.logo}> yellowbox </span>
           </div>
         </div>
         <div id={styles.headerTools}>
@@ -26,7 +27,7 @@ function Header(props) {
               <input id={styles.searchInput} type="text" onChange={(e) => setInput(e.target.value.trim().replace(" ", "%20"))} 
                 onFocus={() => {if(input) history.push(`/search/${input}`)}}/>
             </div>
-            <img id={styles.searchIcon} src="/icons/search.svg"></img>
+            <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
           </div>
           <div id={styles.newButton} onClick={() => toggleModal({visible: true, type:"New Box"})}>
             <img id={styles.plusIcon} src="/icons/plus.svg"></img>
