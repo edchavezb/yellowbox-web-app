@@ -49,7 +49,7 @@ function App() {
         <Route exact path="/" component={Home} />
         <Route path="/search/:query" render={(props) => <Search {...props} toggleModal={setModal}/>} />
         <Route path="/box/:id" render={(props) => <BoxDetail {...props} userBoxes={boxes} toggleModal={setModal}/>} />
-        <Route path="/detail/:type/:id" render={(props) => <ItemDetail {...props} toggleModal={setModal}/>} />
+        <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props} toggleModal={setModal}/>} />
       </Layout>
     </Router>
   );

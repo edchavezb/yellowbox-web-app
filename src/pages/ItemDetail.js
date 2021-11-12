@@ -32,7 +32,7 @@ function ItemDetail(props) {
         break;
       case 'artist':
         itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
-        contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums`
+        contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums?market=us`
         break;
       case 'track':
         itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
