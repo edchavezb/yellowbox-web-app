@@ -8,12 +8,17 @@
     background-color: rgb(48, 48, 48);
 }
 
+
+.numberColumn {
+    width: 30px;
+}
+
 .playColumn {
-    width: 10%;
+    width: 80px;
 }
 
 .nameColumn {
-    width: 30%;
+    width: 25%;
 }
 
 .artistOwnerColumn {

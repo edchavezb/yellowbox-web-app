@@ -11,7 +11,7 @@ function ListView(props) {
   return (
     <div className={styles.itemContainer}>
       {props.data.map((e) => {
-          return <ListItem key={e.id} element={e} page={props.page} setElementDragging={setElementDragging} />
+          return <ListItem key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
       })}
       <DragActions elementDragging={elementDragging} toggleModal={props.toggleModal} boxId={props.boxId} />
     </div>

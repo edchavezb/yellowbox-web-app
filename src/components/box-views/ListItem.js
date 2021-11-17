@@ -21,6 +21,8 @@ function ListItem(props) {
 	return (
 		<div draggable onDragStart={(e) => handleDrag(e, props.element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
 
+			<div className={styles.numberColumn}>{props.index+1}</div>
+
 			<div className={styles.playColumn}>
 				<a href={`${props.element.uri}:play`}>
 					<div className={styles.instantPlay}>
