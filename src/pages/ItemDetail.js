@@ -5,6 +5,7 @@ import querystring from 'querystring'
 import credentials from '../keys'
 
 import GridView from '../components/box-views/GridView';
+import ListView from '../components/box-views/ListView';
 
 import styles from "./ItemDetail.module.css"
 
@@ -123,7 +124,7 @@ function ItemDetail(props) {
       </div>
       <hr />
       {params.type !== 'track' ? 
-        <GridView data={params.type === 'playlist' ? itemContents.items.map((e) => e['track']) : 
+        <ListView data={params.type === 'playlist' ? itemContents.items.map((e) => e['track']) : 
           params.type === 'album' ? attachImgToTracks(itemData) : itemContents.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
         : ""}
     </div>

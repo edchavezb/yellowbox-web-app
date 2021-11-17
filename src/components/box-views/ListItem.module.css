@@ -1,0 +1,46 @@
+.itemRow {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.itemRow:hover {
+    background-color: rgb(48, 48, 48);
+}
+
+.playColumn {
+    width: 10%;
+}
+
+.nameColumn {
+    width: 30%;
+}
+
+.artistOwnerColumn {
+    width: 25%;
+}
+
+.releaseUpdatedColumn {
+    width: 20%;
+}
+
+.instantPlay {
+    width: 50px;
+    height: 20px;
+    padding: 2px;
+    line-height: 20px;
+    vertical-align: middle;
+    border-radius: 5000px;
+    background-color: #282c34CC;
+    cursor: pointer;
+    font-size: .7em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spotifyIcon {
+    width: 10px;
+    margin-right: 3px;
+}
