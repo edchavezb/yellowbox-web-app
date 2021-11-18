@@ -1,32 +1,13 @@
 .itemRow {
     height: 40px;
-    display: flex;
+    display: grid;
+    column-gap: 10px;
+    grid-template-columns: [index] 30px [title] 1fr [artist] 1fr [album] 1fr [time] 60px [explicit] 100px [spotify] 60px;
     align-items: center;
 }
 
 .itemRow:hover {
     background-color: rgb(48, 48, 48);
-}
-
-
-.numberColumn {
-    width: 30px;
-}
-
-.playColumn {
-    width: 80px;
-}
-
-.nameColumn {
-    width: 25%;
-}
-
-.artistOwnerColumn {
-    width: 25%;
-}
-
-.releaseUpdatedColumn {
-    width: 20%;
 }
 
 .instantPlay {
@@ -48,4 +29,12 @@
 .spotifyIcon {
     width: 10px;
     margin-right: 3px;
+}
+
+.colCentered {
+    text-align: center;
+}
+
+.colLeftAlgn {
+    text-align: left;
 }

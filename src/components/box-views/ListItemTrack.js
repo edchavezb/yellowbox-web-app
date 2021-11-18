@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
-import styles from "./ListItem.module.css";
+import styles from "./ListItemTrack.module.css";
 
 function ListItem(props) {
 	const artistName = props.element.type === "playlist" || props.element.type === "artist" ? ""
@@ -21,29 +21,37 @@ function ListItem(props) {
 	return (
 		<div draggable onDragStart={(e) => handleDrag(e, props.element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
 
-			<div className={styles.numberColumn}>{props.index+1}</div>
+			<div className={styles.colLeftAlgn}>{props.index+1}</div>
 
-			<div className={styles.playColumn}>
+			<div className={styles.colLeftAlgn}>
+				<Link to={`/detail/${props.element.type}/${props.element.id}`}> <div className={styles.name}> {props.element.name} </div> </Link>
+			</div>
+
+			<div className={styles.colLeftAlgn}>
+				{props.element.type !== "playlist" ?
+					artistName :
+					ownerName}
+			</div>
+
+			<div className={styles.colLeftAlgn}>
+				{props.element.album.name}
+			</div>
+
+			<div className={styles.colCentered}>
+				{`${parseInt(props.element.duration_ms/60000)}`.padStart(2,0)+":"+`${Math.floor(props.element.duration_ms%60000/1000)}`.padStart(2,0)}
+			</div>
+
+			<div className={styles.colCentered}>
+				{props.element.explicit ? "Explicit" : "Clean"}
+			</div>
+
+			<div className={styles.colCentered}>
 				<a href={`${props.element.uri}:play`}>
 					<div className={styles.instantPlay}>
 						<img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
 						{props.element.type === "track" ? <span> Play </span> : <span> Open </span>}
 					</div>
 				</a>
-			</div>
-
-			<div className={styles.nameColumn}>
-				<Link to={`/detail/${props.element.type}/${props.element.id}`}> <div className={styles.name}> {props.element.name} </div> </Link>
-			</div>
-
-			<div className={styles.artistOwnerColumn}>
-				{props.element.type !== "playlist" ?
-					artistName :
-					ownerName}
-			</div>
-
-			<div className={styles.releaseUpdatedColumn}>
-				{props.element.release_date}
 			</div>
 
 		</div>

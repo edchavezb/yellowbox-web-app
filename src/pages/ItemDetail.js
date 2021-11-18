@@ -13,7 +13,8 @@ function ItemDetail(props) {
 
   const history = useHistory();
   const params = useParams()
-  const [itemData, setItemData] = useState({})
+  const [itemData, setItemData] = useState({ type: "", images: ["https://via.placeholder.com/150"], name: "", artists: [{ name: "" }], album_type: "", tracks: {items: []} })
+  const [itemChildrenType, setItemChildrenType] = useState("")
   const [itemContents, setItemContents] = useState({ items: [] })
 
   useEffect(() => {
@@ -30,10 +31,12 @@ function ItemDetail(props) {
       case 'album':
         itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
         contentsQuery = `https://api.spotify.com/v1/albums/${idParam}/tracks`
+        setItemChildrenType("track")
         break;
       case 'artist':
         itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
         contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums?market=us`
+        setItemChildrenType("album")
         break;
       case 'track':
         itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
@@ -42,6 +45,7 @@ function ItemDetail(props) {
       case 'playlist':
         itemQuery = `https://api.spotify.com/v1/playlists/${idParam}`
         contentsQuery = `https://api.spotify.com/v1/playlists/${idParam}/tracks`
+        setItemChildrenType("track")
         break;
       default:
         break;
@@ -102,9 +106,19 @@ function ItemDetail(props) {
       });
   }
 
-  const attachImgToTracks = (parentItem) => {
+  const attachAlbumDataToTracks = (parentItem) => {
     console.log(parentItem);
-    return parentItem.tracks.items.map(e => ({'album': {'images': parentItem.images}, ...e}))
+    return parentItem.tracks.items.map(e => ({'album': {
+      "album_type" : parentItem.album_type, 
+      "artists" : parentItem.artists, 
+      "external_urls" : parentItem.external_urls, 
+      "id" : parentItem.id,
+      'images': parentItem.images,
+      "name" : parentItem.name, 
+      "release_date" : parentItem.release_date, 
+      "type" : parentItem.type, 
+      "uri" : parentItem.uri
+    }, ...e}))
   }
 
   return (
@@ -124,8 +138,8 @@ function ItemDetail(props) {
       </div>
       <hr />
       {params.type !== 'track' ? 
-        <ListView data={params.type === 'playlist' ? itemContents.items.map((e) => e['track']) : 
-          params.type === 'album' ? attachImgToTracks(itemData) : itemContents.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+        <ListView listType={itemChildrenType} data={params.type === 'playlist' ? itemContents.items.map((e) => e['track']) : 
+          params.type === 'album' ? attachAlbumDataToTracks(itemData) : itemContents.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
         : ""}
     </div>
   );
