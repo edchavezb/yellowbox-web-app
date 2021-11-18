@@ -106,6 +106,28 @@ function ItemDetail(props) {
       });
   }
 
+  const getListComponent = () => {
+    let listComponent;
+    switch (params.type){
+      case "album" :
+        listComponent = 
+        <ListView listType={itemChildrenType} data={attachAlbumDataToTracks(itemData)} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+      break;
+      case "playlist" :
+        listComponent = 
+        <ListView listType={itemChildrenType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+      break;
+      case "artist" :
+        listComponent = 
+        <GridView data={itemContents.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+      break;
+      default:
+        listComponent = <div></div>
+      break;
+    }
+    return listComponent;
+  }
+
   const attachAlbumDataToTracks = (parentItem) => {
     console.log(parentItem);
     return parentItem.tracks.items.map(e => ({'album': {
@@ -137,10 +159,7 @@ function ItemDetail(props) {
         </div>
       </div>
       <hr />
-      {params.type !== 'track' ? 
-        <ListView listType={itemChildrenType} data={params.type === 'playlist' ? itemContents.items.map((e) => e['track']) : 
-          params.type === 'album' ? attachAlbumDataToTracks(itemData) : itemContents.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
-        : ""}
+      {getListComponent()}
     </div>
   );
 }

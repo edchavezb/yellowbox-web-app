@@ -22,7 +22,7 @@ function ListView(props) {
           <div className={styles.headerLeftAlgn}> Title </div> 
           <div className={styles.headerLeftAlgn}> Artist </div> 
           <div className={styles.headerLeftAlgn}> Album </div> 
-          <div className={styles.headerCentered}> Time </div> 
+          <div className={styles.headerCentered}> Duration </div> 
           <div className={styles.headerCentered}> Lyrics </div> 
           <div className={styles.headerCentered}> Spotify </div>
         </div> ;
@@ -30,12 +30,12 @@ function ListView(props) {
       case "album":
         listHeader =
         <div className={styles.albumListHeader}>
-          <div className={styles.columnHeader}> # </div> 
-          <div className={styles.columnHeader}> Title </div> 
-          <div className={styles.columnHeader}> Artist </div> 
-          <div className={styles.columnHeader}> Type </div> 
-          <div className={styles.columnHeader}> Year </div> 
-          <div className={styles.columnHeader}> Spotify </div>
+          <div className={styles.headerLeftAlgn}> # </div> 
+          <div className={styles.headerLeftAlgn}> Title </div> 
+          <div className={styles.headerLeftAlgn}> Artist </div> 
+          <div className={styles.headerCentered}> Type </div> 
+          <div className={styles.headerCentered}> Year </div> 
+          <div className={styles.headerCentered}> Spotify </div>
         </div> ;
       break;
       case "playlist":

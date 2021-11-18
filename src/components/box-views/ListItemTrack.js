@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import styles from "./ListItemTrack.module.css";
 
-function ListItem(props) {
+function ListItemTrack(props) {
 	const artistName = props.element.type === "playlist" || props.element.type === "artist" ? ""
 		: <Link to={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </Link>;
 	const ownerName = props.element.type === "playlist" ? <Link to={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></Link> : "";
@@ -24,7 +24,7 @@ function ListItem(props) {
 			<div className={styles.colLeftAlgn}>{props.index+1}</div>
 
 			<div className={styles.colLeftAlgn}>
-				<Link to={`/detail/${props.element.type}/${props.element.id}`}> <div className={styles.name}> {props.element.name} </div> </Link>
+				 <div className={styles.name}> <Link to={`/detail/${props.element.type}/${props.element.id}`}> {props.element.name} </Link></div> 
 			</div>
 
 			<div className={styles.colLeftAlgn}>
@@ -58,4 +58,4 @@ function ListItem(props) {
 	)
 }
 
-export default ListItem;
+export default ListItemTrack;

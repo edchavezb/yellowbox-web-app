@@ -4,19 +4,33 @@
 }
 
 .trackListHeader {
+    margin-bottom: 10px;
+    margin-top: 5px;
+    padding: 0px 10px;
+    color: #b6b6b6;
     display: grid;
     column-gap: 10px;
     grid-template-columns: [index] 30px [title] 1fr [artist] 1fr [album] 1fr [time] 60px [explicit] 100px [spotify] 60px;
 }
 
 .albumListHeader {
+    margin-bottom: 10px;
+    margin-top: 5px;
+    padding: 0px 10px;
+    color: #b6b6b6;
     display: grid;
-    grid-template-columns: [index] 16px [title] 2fr [artist] 2fr [album] 2fr [time] 100px [explicit] 100px [spotify] 100px;
+    column-gap: 10px;
+    grid-template-columns: [index] 30px [title] 1.5fr [artist] 1fr [type] 80px [year] 80px [spotify] 80px;
 }
 
 .playlistListHeader {
+    margin-bottom: 10px;
+    margin-top: 5px;
+    padding: 0px 10px;
+    color: #b6b6b6;
     display: grid;
-    grid-template-columns: [index] 16px [title] 2fr [artist] 2fr [album] 2fr [time] 100px [explicit] 100px [spotify] 100px;
+    column-gap: 10px;
+    grid-template-columns: [index] 30px [title] 1fr [artist] 1fr [album] 1fr [time] 60px [explicit] 100px [spotify] 60px;
 }
 
 .headerCentered {
