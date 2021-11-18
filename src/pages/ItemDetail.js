@@ -13,7 +13,7 @@ function ItemDetail(props) {
 
   const history = useHistory();
   const params = useParams()
-  const [itemData, setItemData] = useState({ type: "", images: ["https://via.placeholder.com/150"], name: "", artists: [{ name: "" }], album_type: "", tracks: {items: []} })
+  const [itemData, setItemData] = useState({})
   const [itemContents, setItemContents] = useState({ items: [] })
 
   useEffect(() => {
