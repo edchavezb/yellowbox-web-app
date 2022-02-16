@@ -10,9 +10,10 @@ function NewBoxMenu(props) {
 
   const [boxDetails, setBoxDetails] = useState({boxName: "", boxDesc: "", avail: "public"})
 
-  const handleCreateBox = () => {
+  const Box = () => {
     const highestId = parseInt(props.userBoxes[props.userBoxes.length - 1].id)
     const newId = (highestId + 1).toString()
+
     const newBox = {
       id: newId,
       name: boxDetails.boxName,
@@ -42,16 +43,29 @@ function NewBoxMenu(props) {
           view: "grid",
           ascendingOrder: false,
           subSections: false
+        },
+        playlists: {
+          primarySorting: "custom",
+          secondarySorting: "none",
+          view: "grid",
+          ascendingOrder: false,
+          subSections: false
         }
       },
       sectionVisibility: {
         artists: true,
         albums: true, 
-        tracks: true
+        tracks: true,
+        playlists: true
       },
       subSections : []
     }
-    dispatch({ type: "ADD_BOX", payload: { newBox: newBox } })
+
+    return newBox;
+  }
+
+  const handleSaveNewBox = () => {
+    dispatch({ type: "ADD_BOX", payload: { newBox: Box() } })
     toggleModal({ visible: false, type: "", boxId:"" })
   }
 
@@ -66,7 +80,7 @@ function NewBoxMenu(props) {
           onChange={(e) => setBoxDetails(state => ({ ...state, boxDesc: e.target.value.trim() }))} />
       </form>
       <div id={styles.modalFooter}>
-        <button onClick={() => handleCreateBox()}> Create </button>
+        <button onClick={() => handleSaveNewBox()}> Create </button>
       </div>
     </div>
   )
