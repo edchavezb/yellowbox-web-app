@@ -50,8 +50,8 @@ function SortingMenu(props) {
                     console.log(newSortingObject)
                     setSorting(state => ({...state, ...newSortingObject})) 
                   }}> 
-                    {section !== "artists" ? <option value="grid"> Grid </option> : ""}
-                    <option value="list"> List </option>
+                    <option value="grid"> Grid </option> 
+                    {section !== "artists" ? <option value="list"> List </option> : ""}
                     <option value="details"> Details </option>
                 </select>
               </div>
