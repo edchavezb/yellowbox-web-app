@@ -26,7 +26,7 @@ function NewBoxMenu(props) {
       sectionSorting: {
         artists: {
           primarySorting: "custom",
-          view: "list",
+          view: "grid",
           ascendingOrder: false,
           subSections: false
         },
