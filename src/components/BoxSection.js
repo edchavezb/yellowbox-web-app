@@ -96,6 +96,7 @@ function BoxSection(props) {
               <SubSection 
                 itemsMatch={sortedData.filter(e => e.subSection === "default")} 
                 viewType={props.sorting.view} 
+                sectionType={props.type}
                 default={true} 
                 page="box" 
                 customSorting={props.sorting.primarySorting === "custom"} 
@@ -109,6 +110,7 @@ function BoxSection(props) {
           <SubSection 
             itemsMatch={sortedData} 
             viewType={props.sorting.view} 
+            sectionType={props.type}
             default={true} 
             page="box" 
             customSorting={props.sorting.primarySorting === "custom"} 

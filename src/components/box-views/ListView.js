@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-import ListItemTrack from "./ListItemTrack"
-import ListItemAlbum from "./ListItemAlbum"
-import ListItemPlaylist from "./ListItemPlaylist"
+import ListRowTrack from "./list-rows/ListRowTrack"
+import ListRowAlbum from "./list-rows/ListRowAlbum"
+import ListRowPlaylist from "./list-rows/ListRowPlaylist"
 import DragActions from "../DragActions"
 import styles from "./ListView.module.css";
 
@@ -15,7 +15,7 @@ function ListView(props) {
   const getListHeader = () => {
     let listHeader;
     switch(props.listType){
-      case "track":
+      case "tracklist": // Tracklist is used for both albums, playlists, and tracks in boxes
         listHeader =
         <div className={styles.trackListHeader}>
           <div className={styles.headerLeftAlgn}> # </div> 
@@ -27,7 +27,7 @@ function ListView(props) {
           <div className={styles.headerCentered}> Spotify </div>
         </div> ;
       break;
-      case "album":
+      case "albumlist": // Presents a list of albums
         listHeader =
         <div className={styles.albumListHeader}>
           <div className={styles.headerLeftAlgn}> # </div> 
@@ -38,7 +38,7 @@ function ListView(props) {
           <div className={styles.headerCentered}> Spotify </div>
         </div> ;
       break;
-      case "playlist":
+      case "playlists": // List of playlists
         listHeader =
         <div className={styles.playlistListHeader}>
           <div className={styles.columnHeader}> # </div> 
@@ -59,17 +59,17 @@ function ListView(props) {
   const getListItemComponent = (e) => {
     let itemComponent;
     switch(props.listType){
-      case "track":
-        itemComponent = <ListItemTrack key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
+      case "tracklist":
+        itemComponent = <ListRowTrack key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
       break;
-      case "album":
-        itemComponent = <ListItemAlbum key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
+      case "albumlist":
+        itemComponent = <ListRowAlbum key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
       break;
-      case "playlist":
-        itemComponent = <ListItemPlaylist key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
+      case "playlists":
+        itemComponent = <ListRowPlaylist key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
       break;
       default:
-        itemComponent = <ListItemTrack key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
+        itemComponent = <ListRowTrack key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
       break;
     }
     return itemComponent;

@@ -10,6 +10,28 @@ function SubSection(props) {
   const subName = props.subName
   console.log(itemsMatch)
 
+  const getListType = (sectionType) => {
+    let listType;
+    switch (sectionType) {
+      case 'Albums':
+        listType = "albumlist"
+        break;
+      case 'Artists':
+        listType = undefined;
+        break;
+      case 'Tracks':
+        listType = "tracklist"
+        break;
+      case 'Playlists':
+        listType = "playlists"
+        break;
+      default:
+        listType = undefined;
+        break;
+    }
+    return listType;
+  }
+
   const displayView = (data, page, isCustom) => {
     let sectionView = ""
     switch (props.viewType){
@@ -17,7 +39,7 @@ function SubSection(props) {
         sectionView = <GridView data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
       break;
       case "list":
-        sectionView = <ListView data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
+        sectionView = <ListView listType={getListType(props.sectionType)} data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
       break;
       case "detail":
         sectionView = <DetailView data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />

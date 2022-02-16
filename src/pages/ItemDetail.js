@@ -14,7 +14,7 @@ function ItemDetail(props) {
   const history = useHistory();
   const params = useParams()
   const [itemData, setItemData] = useState({ type: "", images: ["https://via.placeholder.com/150"], name: "", artists: [{ name: "" }], album_type: "", tracks: {items: []} })
-  const [itemChildrenType, setItemChildrenType] = useState("")
+  const [itemListType, setItemListType] = useState("")
   const [itemContents, setItemContents] = useState({ items: [] })
 
   useEffect(() => {
@@ -31,12 +31,12 @@ function ItemDetail(props) {
       case 'album':
         itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
         contentsQuery = `https://api.spotify.com/v1/albums/${idParam}/tracks`
-        setItemChildrenType("track")
+        setItemListType("tracklist")
         break;
       case 'artist':
         itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
         contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums?market=us`
-        setItemChildrenType("album")
+        setItemListType("albumlist")
         break;
       case 'track':
         itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
@@ -45,7 +45,7 @@ function ItemDetail(props) {
       case 'playlist':
         itemQuery = `https://api.spotify.com/v1/playlists/${idParam}`
         contentsQuery = `https://api.spotify.com/v1/playlists/${idParam}/tracks`
-        setItemChildrenType("track")
+        setItemListType("tracklist")
         break;
       default:
         break;
@@ -111,11 +111,11 @@ function ItemDetail(props) {
     switch (params.type){
       case "album" :
         listComponent = 
-        <ListView listType={itemChildrenType} data={attachAlbumDataToTracks(itemData)} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData)} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
       break;
       case "playlist" :
         listComponent = 
-        <ListView listType={itemChildrenType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
       break;
       case "artist" :
         listComponent = 

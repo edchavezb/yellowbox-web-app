@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
-import styles from "./ListItemAlbum.module.css";
+import styles from "./ListRowTrack.module.css";
 
-function ListItemAlbum(props) {
+function ListItemTrack(props) {
 	const artistName = props.element.type === "playlist" || props.element.type === "artist" ? ""
 		: <Link to={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </Link>;
 	const ownerName = props.element.type === "playlist" ? <Link to={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></Link> : "";
@@ -33,12 +33,16 @@ function ListItemAlbum(props) {
 					ownerName}
 			</div>
 
-            <div className={styles.colCentered}>
-                {`${props.element.album_type.charAt(0).toUpperCase()}${props.element.album_type.slice(1)}`}
+			<div className={styles.colLeftAlgn}>
+				{props.element.album.name}
 			</div>
 
 			<div className={styles.colCentered}>
-				{props.element.release_date.split("-")[0]}
+				{`${parseInt(props.element.duration_ms/60000)}`.padStart(2,0)+":"+`${Math.floor(props.element.duration_ms%60000/1000)}`.padStart(2,0)}
+			</div>
+
+			<div className={styles.colCentered}>
+				{props.element.explicit ? "Explicit" : "Clean"}
 			</div>
 
 			<div className={styles.colCentered}>
@@ -54,4 +58,4 @@ function ListItemAlbum(props) {
 	)
 }
 
-export default ListItemAlbum;
+export default ListItemTrack;
