@@ -17,6 +17,7 @@ function BoxDetail(props) {
 
   useEffect(() => {
     console.log(visibility)
+    console.log(boxCopy)
   }, [visibility])
 
   return (

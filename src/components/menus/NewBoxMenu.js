@@ -21,6 +21,7 @@ function NewBoxMenu(props) {
       artists: [],
       albums: [],
       tracks: [],
+      playlists: [],
       sectionSorting: {
         artists: {
           primarySorting: "custom",
