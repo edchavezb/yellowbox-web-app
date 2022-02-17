@@ -6,7 +6,7 @@ import Layout from "./components/layout/Layout";
 import Home from "./pages/Home"
 import Search from "./pages/Search"
 import BoxDetail from "./pages/BoxDetail"
-import Modal from "./components/Modal"
+import Modal from "./components/layout/Modal"
 
 import defaultBoxes from "./DefaultBoxes"
 import ItemDetail from './pages/ItemDetail';

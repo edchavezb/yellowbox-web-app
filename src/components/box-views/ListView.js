@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-import ListRowTrack from "./list-rows/ListRowTrack"
-import ListRowAlbum from "./list-rows/ListRowAlbum"
-import ListRowPlaylist from "./list-rows/ListRowPlaylist"
-import DragActions from "../DragActions"
+import ListRowTrack from "./list-row/ListRowTrack"
+import ListRowAlbum from "./list-row/ListRowAlbum"
+import ListRowPlaylist from "./list-row/ListRowPlaylist"
+import DragActions from "../layout/DragActions"
 import styles from "./ListView.module.css";
 
 function ListView(props) {

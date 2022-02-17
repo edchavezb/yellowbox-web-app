@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
 import styles from "./Modal.module.css";
-import SortingMenu from "./menus/SortingMenu";
-import NewBoxMenu from "./menus/NewBoxMenu";
-import DeletePrompt from "./menus/DeletePrompt";
-import AddToMenu from "./menus/AddToMenu";
+import SortingMenu from "../menus/SortingMenu";
+import NewBoxMenu from "../menus/NewBoxMenu";
+import DeletePrompt from "../menus/DeletePrompt";
+import AddToMenu from "../menus/AddToMenu";
 
 function Modal(props) {
 

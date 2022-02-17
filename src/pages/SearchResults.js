@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import GridView from "./box-views/GridView"
+import GridView from "../components/box-views/GridView"
 import styles from "./SearchResults.module.css";
 
 function SearchResults(props) {

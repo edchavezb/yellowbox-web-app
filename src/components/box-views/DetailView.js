@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import GridItem from "./GridItem"
-import DragActions from "../DragActions"
+import DragActions from "../layout/DragActions"
 import styles from "./DetailView.module.css";
 
 function DetailView(props) {

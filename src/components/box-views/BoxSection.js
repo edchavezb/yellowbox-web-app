@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 
-import SubSection from "./box-views/SubSection"
+import SubSection from "./SubSection"
 import styles from "./BoxSection.module.css";
 
 function BoxSection(props) {

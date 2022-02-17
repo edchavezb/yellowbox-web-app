@@ -1,0 +1,41 @@
+.itemRow {
+    height: 45px;
+    padding: 0px 10px;
+    display: grid;
+    column-gap: 10px;
+    grid-template-columns: [index] 30px [title] 1.5fr [artist] 1fr [type] 80px [year] 80px [spotify] 60px;
+    align-items: center;
+}
+
+.itemRow:hover {
+    background-color: rgb(48, 48, 48);
+}
+
+.instantPlay {
+    width: 50px;
+    height: 20px;
+    padding: 2px;
+    line-height: 20px;
+    vertical-align: middle;
+    border-radius: 5000px;
+    background-color: #282c34CC;
+    cursor: pointer;
+    font-size: .7em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spotifyIcon {
+    width: 10px;
+    margin-right: 3px;
+}
+
+.colCentered {
+    text-align: center;
+}
+
+.colLeftAlgn {
+    text-align: left;
+}

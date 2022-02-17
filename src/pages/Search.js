@@ -4,7 +4,7 @@ import axios from 'axios'
 import querystring from 'querystring'
 import credentials from '../keys'
 
-import SearchResults from "../components/SearchResults"
+import SearchResults from "./SearchResults"
 
 import styles from "./Search.module.css"
 

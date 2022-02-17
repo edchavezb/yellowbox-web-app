@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import BoxUtilities from '../components/BoxUtilities';
-import BoxSection from '../components/BoxSection';
+import BoxUtilities from '../components/box-views/BoxUtilities';
+import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
 
 function BoxDetail(props) {
