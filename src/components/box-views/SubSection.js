@@ -41,8 +41,8 @@ function SubSection(props) {
       case "list":
         sectionView = <ListView listType={getListType(props.sectionType)} data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
       break;
-      case "detail":
-        sectionView = <DetailView data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
+      case "details":
+        sectionView = <DetailView listType={getListType(props.sectionType)} data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
       break;
       default:
     }

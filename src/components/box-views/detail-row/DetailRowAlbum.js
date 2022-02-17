@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
-import styles from "./ListRowAlbum.module.css";
+import styles from "./DetailRowAlbum.module.css";
 
-function ListRowAlbum(props) {
+function DetailRowAlbum(props) {
 	const artistName = props.element.type === "playlist" || props.element.type === "artist" ? ""
 		: <Link to={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </Link>;
 	const ownerName = props.element.type === "playlist" ? <Link to={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></Link> : "";
@@ -54,4 +54,4 @@ function ListRowAlbum(props) {
 	)
 }
 
-export default ListRowAlbum;
+export default DetailRowAlbum;

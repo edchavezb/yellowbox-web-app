@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
-import styles from "./ListRowTrack.module.css";
+import styles from "./DetailRowTrack.module.css";
 
-function ListRowTrack(props) {
+function DetailRowTrack(props) {
 	const artistName = props.element.type === "playlist" || props.element.type === "artist" ? ""
 		: <Link to={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </Link>;
 	const ownerName = props.element.type === "playlist" ? <Link to={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></Link> : "";
@@ -58,4 +58,4 @@ function ListRowTrack(props) {
 	)
 }
 
-export default ListRowTrack;
+export default DetailRowTrack;
