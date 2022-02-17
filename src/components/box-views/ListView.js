@@ -43,9 +43,9 @@ function ListView(props) {
         <div className={styles.playlistListHeader}>
           <div className={styles.columnHeader}> # </div> 
           <div className={styles.columnHeader}> Name </div> 
-          <div className={styles.columnHeader}> Creator </div> 
-          <div className={styles.columnHeader}> Tracks </div> 
           <div className={styles.columnHeader}> Description </div> 
+          <div className={styles.columnHeader}> Tracks </div> 
+          <div className={styles.columnHeader}> Creator </div> 
           <div className={styles.columnHeader}> Spotify </div>
         </div>;
       break;

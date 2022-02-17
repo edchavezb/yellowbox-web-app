@@ -5,7 +5,7 @@
 
 .trackListHeader {
     margin-bottom: 10px;
-    margin-top: 5px;
+    margin-top: 10px;
     padding: 0px 10px;
     color: #b6b6b6;
     display: grid;
@@ -20,7 +20,7 @@
     color: #b6b6b6;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [title] 1.5fr [artist] 1fr [type] 80px [year] 80px [spotify] 80px;
+    grid-template-columns: [index] 30px [title] 1.5fr [artist] 1fr [type] 80px [year] 80px [spotify] 60px;
 }
 
 .playlistListHeader {
@@ -30,7 +30,7 @@
     color: #b6b6b6;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [title] 1fr [artist] 1fr [album] 1fr [time] 60px [explicit] 100px [spotify] 60px;
+    grid-template-columns: [index] 30px [title] 1fr [description] 2fr [tracks] 60px [owner] 100px [spotify] 60px;
 }
 
 .headerCentered {

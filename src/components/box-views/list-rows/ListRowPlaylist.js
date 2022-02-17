@@ -27,18 +27,18 @@ function ListRowPlaylist(props) {
 				 <div className={styles.name}> <Link to={`/detail/${props.element.type}/${props.element.id}`}> {props.element.name} </Link></div> 
 			</div>
 
+            <div className={styles.colLeftAlgn}>
+				{props.element.description}
+			</div>
+
+            <div className={styles.colLeftAlgn}>
+				{props.element.tracks.total}
+			</div>
+
 			<div className={styles.colLeftAlgn}>
 				{props.element.type !== "playlist" ?
 					artistName :
 					ownerName}
-			</div>
-
-			<div className={styles.colLeftAlgn}>
-				{props.element.tracks.total}
-			</div>
-
-			<div className={styles.colCentered}>
-				{props.element.description}
 			</div>
 
 			<div className={styles.colCentered}>
