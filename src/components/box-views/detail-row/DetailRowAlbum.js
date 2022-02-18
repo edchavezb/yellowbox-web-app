@@ -42,11 +42,14 @@ function DetailRowAlbum(props) {
 					  ownerName} 
           </div>
           <div className={styles.metaDataContainer}>
-            <div class={styles.metaDataPill}>
-              <span> Type: {`${props.element.album_type.charAt(0).toUpperCase()}${props.element.album_type.slice(1)}`} </span>
+            <div className={styles.metaDataPill}>
+             {`${props.element.album_type.charAt(0).toUpperCase()}${props.element.album_type.slice(1)}`}
             </div>
-            <div class={styles.metaDataPill}>
-              <span> Release date: {props.element.release_date.split("-")[0]} </span>
+            <div className={styles.metaDataPill}>
+              <span> {props.element.release_date.split("-")[0]} </span>
+            </div>
+            <div className={styles.metaDataPill}>
+              <span> Popularity: {props.element.popularity} </span>
             </div>
           </div>				 
 			</div>

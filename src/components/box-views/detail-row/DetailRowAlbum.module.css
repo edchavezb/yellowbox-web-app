@@ -97,6 +97,7 @@
 }
 
 .metaDataPill {
+    height: 17px;
     font-size: .8em;
     border-radius: 500px;
     padding: 2.5px 9px;
