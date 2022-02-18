@@ -7,7 +7,7 @@ function DetailItem(props) {
   const elementImages = props.element.type === "track" ? props.element.album.images : props.element.images;
   const artistName = props.element.type === "playlist" || props.element.type === "artist" ? ""
     : <Link to={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </Link>;
-  const ownerName = props.element.type === "playlist" ? <Link to={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></Link> : "";
+  const ownerName = props.element.type === "playlist" ? <a href={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></a> : "";
   const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
 
   const handleDrag = (e, data) => {
@@ -36,7 +36,7 @@ function DetailItem(props) {
       </div>
 
       <div className={styles.dataCol}>
-        <div className={styles.name}> 
+        <div className={props.element.type === "track" || props.element.type === "album"? styles.itemNameItalic : styles.itemName}> 
           <Link to={`/detail/${props.element.type}/${props.element.id}`}> {props.element.name} </Link>
         </div>
         <div className={styles.artist}> {props.element.type !== "playlist" ?
@@ -60,7 +60,17 @@ function DetailItem(props) {
             : ""
           }
 
-          
+          {props.element.type === "playlist" ?
+            <div className={styles.metaDataContainer}>
+              <div className={styles.metaDataPill}>
+                <span> {props.element.description} </span>
+              </div>
+              <div className={styles.metaDataPill}>
+                <span> {props.element.tracks.total} tracks </span>
+              </div>  
+            </div>
+            : ""
+          } 
         
       </div>
 

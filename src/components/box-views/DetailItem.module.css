@@ -78,11 +78,15 @@
     justify-content: center;
 }
 
-.name {
+.itemName {
     font-weight: bold;
     font-size: 1.1em;
+    padding: 0px 4px;
+}
+
+.itemNameItalic {
+    composes: itemName;
     font-style: italic;
-    padding: 0px 5px;
 }
 
 .artist {
@@ -97,6 +101,8 @@
     margin-top: 10px;
     display: flex;
     column-gap: 4px;
+    row-gap: 4px;
+    flex-wrap: wrap;
 }
 
 .metaDataPill {
@@ -107,6 +113,11 @@
     background-color: #1a1a1a;
     line-height: 17px;
     vertical-align: middle;
+}
+
+.playlistDesc {
+    padding: 0px 4px;
+    font-size: .8em;
 }
 
 .notesCol {
