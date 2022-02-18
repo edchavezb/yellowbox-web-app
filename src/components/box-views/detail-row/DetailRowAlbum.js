@@ -49,7 +49,7 @@ function DetailRowAlbum(props) {
               <span> {props.element.release_date.split("-")[0]} </span>
             </div>
             <div className={styles.metaDataPill}>
-              <span> Popularity: {props.element.popularity} </span>
+              <span> {props.element.total_tracks} tracks </span>
             </div>
           </div>				 
 			</div>
@@ -57,6 +57,7 @@ function DetailRowAlbum(props) {
       <div className={styles.notesCol}>
         <div className={styles.notesPanel}>
           <div className={styles.notesTitle}> NOTES </div>
+		  <div className={styles.notesDisplay}></div>
         </div>
       </div>
 

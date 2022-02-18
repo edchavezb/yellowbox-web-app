@@ -40,8 +40,8 @@ function SideBar(props) {
       break;
       }
       case "album" : {
-        const {album_type, artists, external_urls, id, images, name, release_date, type, uri} = data
-        extractedData = {album_type, artists, external_urls, id, images, name, release_date, type, uri, subSection: "default"}
+        const {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri} = data
+        extractedData = {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri, subSection: "default"}
       break;
       }
       case "track" : {
