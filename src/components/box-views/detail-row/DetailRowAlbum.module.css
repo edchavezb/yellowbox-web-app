@@ -86,8 +86,11 @@
 }
 
 .artist {
-    font-weight: bold;
     padding: 0px 4px;
+}
+
+.artistName {
+    display: inline;
 }
 
 .metaDataContainer{
