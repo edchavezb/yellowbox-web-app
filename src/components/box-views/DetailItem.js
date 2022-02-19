@@ -46,7 +46,7 @@ function DetailItem(props) {
         
         {props.element.type === "artist" && props.element.genres ?
           <div className={styles.metaDataContainer}>
-            {props.element.genres.map(e => {
+            {props.element.genres.slice(0,3).map(e => {
               return (
               <div className={styles.metaDataPill} key={e}>
                   {e.split(" ").map(word => {

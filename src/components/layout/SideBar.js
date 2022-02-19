@@ -35,8 +35,8 @@ function SideBar(props) {
     let extractedData = {}
     switch(data.type){
       case "artist" : {
-        const {external_urls, id, images, name, popularity, type, uri} = data
-        extractedData = {external_urls, id, images, name, popularity, type, uri, subSection: "default"}
+        const {external_urls, genres, id, images, name, popularity, type, uri} = data
+        extractedData = {external_urls, genres, id, images, name, popularity, type, uri, subSection: "default"}
       break;
       }
       case "album" : {
