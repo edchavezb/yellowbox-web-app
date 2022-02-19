@@ -44,33 +44,58 @@ function DetailItem(props) {
           ownerName}
         </div>
         
+        {props.element.type === "artist" && props.element.genres ?
+          <div className={styles.metaDataContainer}>
+            {props.element.genres.map(e => {
+              return (
+              <div className={styles.metaDataPill} key={e}>
+                  {e.split(" ").map(word => {
+                    return `${word.charAt(0).toUpperCase()}${word.slice(1)} `
+                  })}
+              </div> )
+            })}
+          </div>
+          : ""
+        } 
 
-          {props.element.type === "album" ?
-            <div className={styles.metaDataContainer}>
-              <div className={styles.metaDataPill}>
-                {`${props.element.album_type.charAt(0).toUpperCase()}${props.element.album_type.slice(1)}`}
-              </div>
-              <div className={styles.metaDataPill}>
-                <span> {props.element.release_date.split("-")[0]} </span>
-              </div>
-              <div className={styles.metaDataPill}>
-                <span> {props.element.total_tracks} tracks </span>
-              </div>
+        {props.element.type === "album" ?
+          <div className={styles.metaDataContainer}>
+            <div className={styles.metaDataPill}>
+              {`${props.element.album_type.charAt(0).toUpperCase()}${props.element.album_type.slice(1)}`}
             </div>
-            : ""
-          }
+            <div className={styles.metaDataPill}>
+              {`${props.element.release_date.split("-")[0]}`}
+            </div>
+            <div className={styles.metaDataPill}>
+              {`${props.element.total_tracks} tracks`}
+            </div>
+          </div>
+          : ""
+        }
 
-          {props.element.type === "playlist" ?
-            <div className={styles.metaDataContainer}>
-              <div className={styles.metaDataPill}>
-                <span> {props.element.description} </span>
-              </div>
-              <div className={styles.metaDataPill}>
-                <span> {props.element.tracks.total} tracks </span>
-              </div>  
+        {props.element.type === "track" ?
+          <div className={styles.metaDataContainer}>
+            <div className={styles.metaDataPill}>
+              {`${props.element.album.release_date.split("-")[0]}`}
             </div>
-            : ""
-          } 
+            <div className={styles.metaDataPill}>
+              {`${parseInt(props.element.duration_ms/60000)}`.padStart(2,0)+":"+`${Math.floor(props.element.duration_ms%60000/1000)}`.padStart(2,0)}
+            </div>
+          </div>
+          : ""
+        }
+
+        {props.element.type === "playlist" ?
+          <div className={styles.metaDataContainer}>
+            <div className={styles.metaDataPill}>
+            {`${props.element.description}`}
+            </div>
+            <div className={styles.metaDataPill}>
+              {`${props.element.tracks.total} tracks`}
+            </div>  
+          </div>
+          : ""
+        } 
         
       </div>
 

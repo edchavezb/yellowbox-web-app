@@ -72,7 +72,7 @@
 
 .dataCol {
     height: 100%;
-    padding: 0px 7px;
+    padding: 0px 5px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -81,7 +81,7 @@
 .itemName {
     font-weight: bold;
     font-size: 1.1em;
-    padding: 0px 4px;
+    padding: 0px 5px;
 }
 
 .itemNameItalic {
@@ -90,7 +90,7 @@
 }
 
 .artist {
-    padding: 0px 4px;
+    padding: 0px 5px;
 }
 
 .artistName {
@@ -100,18 +100,18 @@
 .metaDataContainer{
     margin-top: 10px;
     display: flex;
-    column-gap: 4px;
-    row-gap: 4px;
+    column-gap: 3px;
+    row-gap: 3px;
     flex-wrap: wrap;
 }
 
 .metaDataPill {
-    height: 17px;
+    height: 22px;
     font-size: .8em;
     border-radius: 500px;
-    padding: 2.5px 9px;
+    padding: 0px 8px;
     background-color: #1a1a1a;
-    line-height: 17px;
+    line-height: 22px;
     vertical-align: middle;
 }
 

@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import GridItem from "./GridItem"
-import DetailRowTrack from "./detail-row/DetailRowTrack"
-import DetailRowAlbum from "./detail-row/DetailRowAlbum"
-import DetailRowPlaylist from "./detail-row/DetailRowPlaylist"
 import DetailItem from './DetailItem';
 import DragActions from "../layout/DragActions"
 import styles from "./DetailView.module.css";
