@@ -112,7 +112,7 @@
     padding: 0px 8px;
     background-color: #1a1a1a;
     line-height: 22px;
-    vertical-align: middle;
+    vertical-align: bottom;
 }
 
 .playlistDesc {
@@ -138,7 +138,7 @@
 }
 
 .notesTitle {
-    font-size: .8em;
+    font-size: .7em;
     letter-spacing: 1.5px;
 }
 

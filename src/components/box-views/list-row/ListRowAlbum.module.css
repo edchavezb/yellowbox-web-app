@@ -3,7 +3,7 @@
     padding: 0px 10px;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [title] 1.5fr [artist] 1fr [type] 80px [year] 80px [spotify] 60px;
+    grid-template-columns: [index] 30px [title] 1fr [artist] 1fr [type] 80px [year] 80px [spotify] 60px;
     align-items: center;
 }
 
