@@ -12,7 +12,7 @@ function DetailView(props) {
       {props.data.map((e) => {
           return <DetailItem key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
       })}
-      <DragActions elementDragging={elementDragging} toggleModal={props.toggleModal} boxId={props.boxId} />
+      <DragActions elementDragging={elementDragging} page={props.page} toggleModal={props.toggleModal} boxId={props.boxId} />
     </div>
   )
 }

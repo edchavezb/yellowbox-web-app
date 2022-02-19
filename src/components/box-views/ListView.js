@@ -81,7 +81,7 @@ function ListView(props) {
       {props.data.map((element) => {
           return getListItemComponent(element)
       })}
-      <DragActions elementDragging={elementDragging} toggleModal={props.toggleModal} boxId={props.boxId} />
+      <DragActions elementDragging={elementDragging} page={props.page} toggleModal={props.toggleModal} boxId={props.boxId} />
     </div>
   )
 }
