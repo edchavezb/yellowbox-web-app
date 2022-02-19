@@ -34,6 +34,7 @@ function DragActions(props) {
 
   return (
     <div id={props.elementDragging ? styles.actionsActive : styles.actionsHidden}>
+      <span className={styles.actionsTitle}> QUICK ACTIONS </span>
       {props.page === "box" ?
         <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.delete} action="Delete Item"
           onDragEnter={(e) => handleDragEnter(e)} 
