@@ -25,6 +25,10 @@ function SideBar(props) {
         const updatedTracks = [...targetBox.tracks, draggedData]
         updatedBox = {...targetBox, tracks: updatedTracks}
       break;
+      case "playlist" :
+        const updatedPlaylists = [...targetBox.playlists, draggedData]
+        updatedBox = {...targetBox, playlists: updatedPlaylists}
+      break;
       default :
     }
     console.log("Dispatch call")

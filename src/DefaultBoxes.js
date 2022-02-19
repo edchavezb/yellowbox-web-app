@@ -29,6 +29,13 @@ const defaultBoxes = [
         view: "grid",
         ascendingOrder: true,
         subSections: false
+      },
+      playlists: {
+        primarySorting: "custom",
+        secondarySorting: "none",
+        view: "grid",
+        ascendingOrder: true,
+        subSections: false
       }
     },
     sectionVisibility: {

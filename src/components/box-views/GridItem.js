@@ -8,7 +8,7 @@ function GridItem(props) {
 	const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
 	const artistName = props.element.type === "playlist" || props.element.type === "artist" ? ""
 		: <Link to={`/detail/artist/${props.element.artists[0].id}`}><div className={styles.artistName}> {props.element.artists[0].name} </div> </Link>;
-	const ownerName = props.element.type === "playlist" ? <Link to={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></Link> : "";
+	const ownerName = props.element.type === "playlist" ? <a href={props.element.owner.uri}><div className={styles.artistName}> {props.element.owner.display_name} </div></a> : "";
 
 	const handleDrag = (e, data) => {
 		console.log(data)

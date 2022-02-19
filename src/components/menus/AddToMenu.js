@@ -38,6 +38,10 @@ function AddToMenu(props) {
         const updatedTracks = [...targetBox.tracks.filter(a => a.id !== updatedItem.id), updatedItem]
         updatedBox = {...targetBox, tracks: updatedTracks}
       break;
+      case "playlist" :
+        const updatedPlaylists = [...targetBox.playlists.filter(a => a.id !== updatedItem.id), updatedItem]
+        updatedBox = {...targetBox, playlists: updatedPlaylists}
+      break;
       default :
     }
     console.log("Dispatch call")
