@@ -42,3 +42,9 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+.name {
+    overflow: hidden;
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+}
