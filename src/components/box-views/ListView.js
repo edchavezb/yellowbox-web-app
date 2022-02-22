@@ -6,15 +6,15 @@ import ListRowPlaylist from "./list-row/ListRowPlaylist"
 import DragActions from "../layout/DragActions"
 import styles from "./ListView.module.css";
 
-function ListView(props) {
+function ListView({data, page, listType, toggleModal, boxId}) {
 
   const [elementDragging, setElementDragging] = useState(false)
 
-  useEffect(() => console.log(props.data), [props.data]);
+  useEffect(() => console.log(data), [data]);
 
   const getListHeader = () => {
     let listHeader;
-    switch(props.listType){
+    switch(listType){
       case "tracklist": // Tracklist is used for both albums, playlists, and tracks in boxes
         listHeader =
         <div className={styles.trackListHeader}>
@@ -58,18 +58,18 @@ function ListView(props) {
 
   const getListItemComponent = (e) => {
     let itemComponent;
-    switch(props.listType){
+    switch(listType){
       case "tracklist":
-        itemComponent = <ListRowTrack key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
+        itemComponent = <ListRowTrack key={e.id} index={data.indexOf(e)} element={e} page={page} setElementDragging={setElementDragging} />
       break;
       case "albumlist":
-        itemComponent = <ListRowAlbum key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
+        itemComponent = <ListRowAlbum key={e.id} index={data.indexOf(e)} element={e} page={page} setElementDragging={setElementDragging} />
       break;
       case "playlists":
-        itemComponent = <ListRowPlaylist key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
+        itemComponent = <ListRowPlaylist key={e.id} index={data.indexOf(e)} element={e} page={page} setElementDragging={setElementDragging} />
       break;
       default:
-        itemComponent = <ListRowTrack key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
+        itemComponent = <ListRowTrack key={e.id} index={data.indexOf(e)} element={e} page={page} setElementDragging={setElementDragging} />
       break;
     }
     return itemComponent;
@@ -78,10 +78,10 @@ function ListView(props) {
   return (
     <div className={styles.itemContainer}>
       {getListHeader()}
-      {props.data.map((element) => {
+      {data.map((element) => {
           return getListItemComponent(element)
       })}
-      <DragActions elementDragging={elementDragging} page={props.page} toggleModal={props.toggleModal} boxId={props.boxId} />
+      <DragActions elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
     </div>
   )
 }
