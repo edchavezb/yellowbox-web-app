@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import GridItem from "./GridItem"
 import DragActions from "../layout/DragActions"
 import styles from "./GridView.module.css";
 
-function GridView(props) {
+function GridView({data, page, toggleModal, boxId}) {
 
   const [elementDragging, setElementDragging] = useState(false)
 
   return (
     <div className={styles.itemContainer}>
-      {props.data.map((e) => {
-          return <GridItem key={e.id} element={e} page={props.page} setElementDragging={setElementDragging} />
+      {data.map((e) => {
+          return <GridItem key={e.id} element={e} page={page} setElementDragging={setElementDragging} />
       })}
-      <DragActions elementDragging={elementDragging} page={props.page} toggleModal={props.toggleModal} boxId={props.boxId} />
+      <DragActions elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
     </div>
   )
 }

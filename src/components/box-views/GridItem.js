@@ -4,8 +4,10 @@ import styles from "./GridItem.module.css";
 
 function GridItem({element, setElementDragging}) {
 	const {name, type, album, images, artists, owner, uri, id} = element;
+
 	const elementImages = type === "track" ? album.images : images;
 	const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
+
 	const artistName = type === "playlist" || type === "artist" ? ""
 		: <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>;
 	const ownerName = type === "playlist" ? <a href={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></a> : "";
@@ -21,7 +23,7 @@ function GridItem({element, setElementDragging}) {
 	}
 
 	return (
-		<div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemCard}>
+		<div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemCard}>
 			<div className={styles.imageContainer}>
 				<a href={`${uri}:play`}>
 					<div className={styles.instantPlay}>
