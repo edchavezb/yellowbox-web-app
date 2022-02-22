@@ -6,8 +6,8 @@ function ListRowAlbum({ element, setElementDragging, index }) {
   const { name, type, artists, album_type, release_date, id, uri } = element;
 
   const getArtists = () => {
-    const artistArray = artists.slice(0, 3).map((artist, index, arr) => {
-      return <Link to={`/detail/artist/${artist.id}`}><span className={styles.artistName}> {`${artist.name}${arr[index+1] ? ", " : ""}`} </span> </Link>;
+    const artistArray = artists.slice(0, 3).map((artist, idx, arr) => {
+      return <Link to={`/detail/artist/${artist.id}`}><span className={styles.artistName}> {`${artist.name}${arr[idx+1] ? ", " : ""}`} </span> </Link>;
     })
 
     return artistArray;
