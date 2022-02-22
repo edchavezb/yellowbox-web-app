@@ -5,7 +5,13 @@ import styles from "./ListRowAlbum.module.css";
 function ListRowAlbum({ element, setElementDragging, index }) {
   const { name, type, artists, album_type, release_date, id, uri } = element;
 
-  const artistName = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>;
+  const getArtists = () => {
+    const artistArray = artists.slice(0, 3).map((artist, index, arr) => {
+      return <Link to={`/detail/artist/${artist.id}`}><span className={styles.artistName}> {`${artist.name}${arr[index+1] ? ", " : ""}`} </span> </Link>;
+    })
+
+    return artistArray;
+  }
 
   const handleDrag = (e, data) => {
     console.log(data)
@@ -27,7 +33,7 @@ function ListRowAlbum({ element, setElementDragging, index }) {
       </div>
 
       <div className={styles.colLeftAlgn}>
-        {artistName}
+        {getArtists()}
       </div>
 
       <div className={styles.colCentered}>
