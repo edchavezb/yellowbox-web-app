@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import DetailItem from './DetailItem';
 import DragActions from "../layout/DragActions"
 import styles from "./DetailView.module.css";
 
-function DetailView(props) {
+function DetailView({data, page, toggleModal, boxId}) {
   const [elementDragging, setElementDragging] = useState(false)
 
   return (
     <div className={styles.itemContainer}>
-      {props.data.map((e) => {
-          return <DetailItem key={e.id} index={props.data.indexOf(e)} element={e} page={props.page} setElementDragging={setElementDragging} />
+      {data.map((e) => {
+          return <DetailItem key={e.id} index={data.indexOf(e)} element={e} page={page} setElementDragging={setElementDragging} />
       })}
-      <DragActions elementDragging={elementDragging} page={props.page} toggleModal={props.toggleModal} boxId={props.boxId} />
+      <DragActions elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
     </div>
   )
 }
