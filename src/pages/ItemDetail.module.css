@@ -1,16 +1,16 @@
 .itemDataViewer {
-  height: 100px;
-  padding: 15px;
+  height: 120px;
+  padding: 10px;
 	display: flex;
   align-items: center;
 }
 
 .itemImage {
-	height: 80px;
+	width: 100px;
 }
 
 .metadataContainer {
-  padding-left: 15px;
+  padding-left: 20px;
   display: flex;
   flex-direction: column;
   row-gap: 5px;
@@ -18,7 +18,7 @@
 
 .itemTitle {
   font-weight: bold;
-  font-size: 1.5em;
+  font-size: 1.6em;
 }
 
 .itemDetails {
