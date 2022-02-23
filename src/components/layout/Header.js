@@ -3,11 +3,10 @@ import { useHistory } from "react-router-dom";
 
 import styles from "./Header.module.css";
 
-function Header(props) {
+function Header({toggleModal}) {
 
   const [input, setInput] = useState("");
   const history = useHistory();
-  const toggleModal = props.toggleModal
 
   useEffect(() => {
     if (input) history.push(`/search/${input}`)

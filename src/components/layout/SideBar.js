@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
 import styles from "./SideBar.module.css";
 
-function SideBar(props) {
-
-  const dispatch = props.dispatch;
+function SideBar({userName, boxes, dispatch}) {
 
   const addToBox = (draggedData, targetBoxId) => {
     console.log(JSON.stringify(draggedData))
-    const targetIndex = props.boxes.findIndex(box => box.id === targetBoxId)
-    const targetBox = {...props.boxes.find(box => box.id === targetBoxId)}
+    const targetIndex = boxes.findIndex(box => box.id === targetBoxId)
+    const targetBox = {...boxes.find(box => box.id === targetBoxId)}
     let updatedBox = {}
     switch (draggedData.type) {
       case "album" :
@@ -91,11 +88,11 @@ function SideBar(props) {
     <div id={styles.mainPanel}>
       <div id={styles.user}>
         <img id={styles.userImage} src="/user.png" alt="user" />
-        <span id={styles.userName}> {props.userName} </span>
+        <span id={styles.userName}> {userName} </span>
       </div>
       <div id={styles.boxList}>
         <h4 id={styles.boxesTitle}> Your Boxes </h4>
-        {props.boxes.map((box) => {
+        {boxes.map((box) => {
           return (
             <Link className={styles.boxLink} id={box.id} key={box.id} to={`/box/${box.id}`} 
               onDragEnter={(e) => handleDragEnter(e)} 

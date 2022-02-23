@@ -1,6 +1,3 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from "react-router-dom";
-
 import SideBar from "./SideBar"
 import Header from "./Header"
 import styles from "./Layout.module.css";
