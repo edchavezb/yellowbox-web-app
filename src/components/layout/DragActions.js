@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from 'react';
-
 import styles from "./DragActions.module.css";
 
-function DragActions(props) {
-
-  const toggleModal = props.toggleModal
+function DragActions({page, boxId, toggleModal, elementDragging}) {
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -29,13 +25,13 @@ function DragActions(props) {
     const data = JSON.parse(e.dataTransfer.getData("data"))
     const action = e.currentTarget.getAttribute("action")
     e.currentTarget.className = `${styles.dragActionsButton} ${styles.idleColor}`
-    toggleModal({visible: true, type: action, boxId: props.boxId, itemData: data, page: props.page})
+    toggleModal({visible: true, type: action, boxId: boxId, itemData: data, page: page})
   }
 
   return (
-    <div id={props.elementDragging ? styles.actionsActive : styles.actionsHidden}>
+    <div id={elementDragging ? styles.actionsActive : styles.actionsHidden}>
       <span className={styles.actionsTitle}> QUICK ACTIONS </span>
-      {props.page === "box" ?
+      {page === "box" ?
         <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.delete} action="Delete Item"
           onDragEnter={(e) => handleDragEnter(e)} 
           onDragLeave={(e) => handleDragLeave(e)}
