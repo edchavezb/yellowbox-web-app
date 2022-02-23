@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import BoxUtilities from '../components/box-views/BoxUtilities';
 import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
 
-function BoxDetail(props) {
+function BoxDetail({userBoxes, toggleModal}) {
 
-  const toggleModal = props.toggleModal
   const params = useParams()
-  const boxCopy = JSON.parse(JSON.stringify(props.userBoxes.find(box => box.id === params.id)))
+  const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box.id === params.id)))
   const boxNotEmpty = boxCopy.albums.length > 0 || boxCopy.artists.length > 0 || boxCopy.tracks.length > 0 || boxCopy.playlists.length > 0;
   const singleTypeBox = [boxCopy.albums, boxCopy.artists, boxCopy.tracks].filter((section) => section.length > 0).length === 1
 

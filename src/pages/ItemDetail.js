@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios'
 import querystring from 'querystring'
@@ -9,7 +9,7 @@ import ListView from '../components/box-views/ListView';
 
 import styles from "./ItemDetail.module.css"
 
-function ItemDetail(props) {
+function ItemDetail({toggleModal}) {
 
   const history = useHistory();
   const params = useParams()
@@ -111,15 +111,15 @@ function ItemDetail(props) {
     switch (params.type){
       case "album" :
         listComponent = 
-        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData)} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData)} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
       break;
       case "playlist" :
         listComponent = 
-        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
       break;
       case "artist" :
         listComponent = 
-        <GridView data={itemContents.items} page="detail" customSorting={false} toggleModal={props.toggleModal} boxId={undefined} />
+        <GridView data={itemContents.items} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
       break;
       default:
         listComponent = <div></div>
