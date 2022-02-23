@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios'
 import querystring from 'querystring'
 import credentials from '../keys'
@@ -128,6 +128,21 @@ function ItemDetail({toggleModal}) {
     return listComponent;
   }
 
+  const getArtistLinks = (artists) => {
+    const artistLinks = artists.slice(0, 3).map((artist, idx, arr) => {
+      return <Link to={`/detail/artist/${artist.id}`}><span className={styles.artistName}> {`${artist.name}${arr[idx+1] ? ", " : ""}`} </span> </Link>;
+    })
+
+    return artistLinks;
+  }
+
+  const getAlbumRunningTime = (tracks) => {
+    const milliSecs = tracks.map(track => track.duration_ms).reduce((prev, curr) => {return prev + curr});
+    const minutes = parseInt(milliSecs / 60000);
+    const seconds = parseInt((milliSecs % 60000) / 1000);
+    return `${minutes} min, ${seconds} sec`
+  }
+
   const attachAlbumDataToTracks = (parentItem) => {
     console.log(parentItem);
     return parentItem.tracks.items.map(e => ({'album': {
@@ -148,14 +163,55 @@ function ItemDetail({toggleModal}) {
       <div className={styles.itemDataViewer}>
         <img className={styles.itemImage} src={itemData.type === "track" ? itemData.album.images[0].url : itemData.images[0].url} alt={itemData.name}></img>
         <div className={styles.metadataContainer}>
+
           <div className={styles.itemTitle}> {itemData.name} </div>
-          {itemData.type !== "artist" ?
+
+          {itemData.type === "artist" ?
             <div className={styles.itemDetails}>
-              {itemData.type === "album" ? `${itemData.album_type.charAt(0).toUpperCase()}${itemData.album_type.slice(1)}`
-                : `${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
-              <nbsp /> by {itemData.type === "playlist" ? itemData.owner.display_name : itemData.artists[0].name} </div>
-            : "Popular releases"
+              {itemData.genres.slice(0,3).map((genre, idx, arr) => {
+                return (
+                  <span key={genre}>
+                      {genre.split(" ").map((word, i ,a) => {
+                        return `${word.charAt(0).toUpperCase()}${word.slice(1)}${a[i+1] ? " " : ""}`
+                      })}{arr[idx+1] ? ", " : ""}
+                  </span> 
+                )
+              })}
+              {itemData.genres.length ? " | " : ""}Popular releases
+            </div>
+            : ""
           }
+
+          {itemData.type === "album" ?
+            <div className={styles.itemDetails}>
+              {`${itemData.album_type.charAt(0).toUpperCase()}${itemData.album_type.slice(1)}`}  
+              {` by `}{getArtistLinks(itemData.artists)} |
+              {` ${itemData.release_date.split("-")[0]}`} |
+              {` ${itemData.total_tracks} tracks`} |
+              {` ${getAlbumRunningTime(itemData.tracks.items)}`}
+            </div>
+            : ""
+          }
+
+          {itemData.type === "track" ?
+            <div className={styles.itemDetails}>
+              {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
+              {` by `}{getArtistLinks(itemData.artists)} |
+              {` ${itemData.album.release_date.split("-")[0]}`} |
+              {` ${parseInt(itemData.duration_ms/60000)}`.padStart(2,0)+":"+`${Math.floor(itemData.duration_ms%60000/1000)}`.padStart(2,0)} |
+              <Link to={`/detail/album/${itemData.album.id}`}><span> Album </span> </Link>
+            </div>
+            : ""
+          }
+
+          {itemData.type === "playlist" ?
+            <div className={styles.itemDetails}>
+              {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
+              {` by `}<a href={itemData.owner.uri}><span> {itemData.owner.display_name} </span></a>
+            </div>
+            : ""
+          }
+
         </div>
       </div>
       <hr />
