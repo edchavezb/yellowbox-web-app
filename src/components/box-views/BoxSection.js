@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 
 import SubSection from "./SubSection"
 import styles from "./BoxSection.module.css";
 
-function BoxSection(props) {
-
-  const toggleModal = props.toggleModal
+function BoxSection({data, type, box, sorting, visible, toggleModal}) {
 
   const [height, setHeight] = useState("auto")
 
   useEffect(() => {
-    const heightProp = props.visible ? "auto" : 0
+    const heightProp = visible ? "auto" : 0
     setHeight(heightProp)
-  }, [props.visible])
+  }, [visible])
 
   function getProperty(item, itemType, propertyName, upperCased){
     let propertyValue = ""
@@ -68,18 +66,18 @@ function BoxSection(props) {
 
   const showSubSections = (array) => {
     return array.map(s => {
-      const itemsMatch = props.sorting.primarySorting === "custom" ? 
+      const itemsMatch = sorting.primarySorting === "custom" ? 
         sortedData.filter(e => e.subSection === s) 
-        : sortedData.filter(e => getProperty(e, props.type, props.sorting.primarySorting) === s)
-      return <SubSection itemsMatch={itemsMatch} page="box" subName={s} key={s} viewType={props.sorting.view} toggleModal={toggleModal}/>
+        : sortedData.filter(e => getProperty(e, type, sorting.primarySorting) === s)
+      return <SubSection itemsMatch={itemsMatch} page="box" subName={s} key={s} viewType={sorting.view} toggleModal={toggleModal}/>
     })
   } 
 
-  const sectionIconSrc = `/icons/${props.type.toLowerCase()}.svg`
-  const sortedData = twoFactorSort([...props.data], props.type, props.sorting.primarySorting, props.sorting.secondarySorting, props.sorting.ascendingOrder)
-  const subSectionList = props.sorting.primarySorting === "custom" ? 
-    props.box.subSections.filter(s => s.type === props.type.toLowerCase()).reduce((acc, curr) => [...acc, curr.name], []).sort()
-    : Array.from(new Set(props.data.map(e => getProperty(e, props.type, props.sorting.primarySorting, false)))).sort()
+  const sectionIconSrc = `/icons/${type.toLowerCase()}.svg`
+  const sortedData = twoFactorSort([...data], type, sorting.primarySorting, sorting.secondarySorting, sorting.ascendingOrder)
+  const subSectionList = sorting.primarySorting === "custom" ? 
+    box.subSections.filter(s => s.type === type.toLowerCase()).reduce((acc, curr) => [...acc, curr.name], []).sort()
+    : Array.from(new Set(data.map(e => getProperty(e, type, sorting.primarySorting, false)))).sort()
   console.log(subSectionList)
 
   return (
@@ -87,21 +85,21 @@ function BoxSection(props) {
       <div className={styles.sectionPanel}>
         <div className={styles.sectionUtilities}>
           <img className={styles.sectionIcon} src={sectionIconSrc} alt="Section icon"></img>
-          <span> {props.type} ({props.data.length}) </span>
+          <span> {type} ({data.length}) </span>
         </div>
 
-        {props.sorting.subSections ? 
+        {sorting.subSections ? 
           <div className={styles.sectionWithSubs}>
-            <div className={props.sorting.primarySorting === "custom" ? styles.defaultSubSection : styles.hidden}>
+            <div className={sorting.primarySorting === "custom" ? styles.defaultSubSection : styles.hidden}>
               <SubSection 
                 itemsMatch={sortedData.filter(e => e.subSection === "default")} 
-                viewType={props.sorting.view} 
-                sectionType={props.type}
+                viewType={sorting.view} 
+                sectionType={type}
                 default={true} 
                 page="box" 
-                customSorting={props.sorting.primarySorting === "custom"} 
+                customSorting={sorting.primarySorting === "custom"} 
                 toggleModal={toggleModal} 
-                boxId={props.box.id}
+                boxId={box.id}
               />
             </div>
             {showSubSections(subSectionList)}
@@ -109,13 +107,13 @@ function BoxSection(props) {
         : 
           <SubSection 
             itemsMatch={sortedData} 
-            viewType={props.sorting.view} 
-            sectionType={props.type}
+            viewType={sorting.view} 
+            sectionType={type}
             default={true} 
             page="box" 
-            customSorting={props.sorting.primarySorting === "custom"} 
+            customSorting={sorting.primarySorting === "custom"} 
             toggleModal={toggleModal} 
-            boxId={props.box.id} 
+            boxId={box.id} 
           />
         }
 
