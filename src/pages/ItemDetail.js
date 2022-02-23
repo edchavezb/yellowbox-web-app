@@ -207,7 +207,9 @@ function ItemDetail({toggleModal}) {
           {itemData.type === "playlist" ?
             <div className={styles.itemDetails}>
               {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
-              {` by `}<a href={itemData.owner.uri}><span> {itemData.owner.display_name} </span></a>
+              {` by `}<a href={itemData.owner.uri}><span> {itemData.owner.display_name} </span></a> |
+              {` ${itemData.tracks.total} tracks`} |
+              {` ${itemData.description}`}
             </div>
             : ""
           }
