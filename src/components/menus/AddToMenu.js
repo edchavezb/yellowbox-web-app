@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import styles from "./AddToMenu.module.css";
 
-function AddToMenu(props) {
+function AddToMenu({page, itemData, userBoxes, boxId, toggleModal, dispatch}) {
 
-  const toggleModal = props.toggleModal;
-  const dispatch = props.dispatch;
-  const userBoxes = props.userBoxes
-  const currentBox = {...props.userBoxes.find(box => box.id === props.boxId)}
-  const itemData = JSON.parse(JSON.stringify(props.itemData))
+  const currentBox = {...userBoxes.find(box => box.id === boxId)}
+  const itemCopy = JSON.parse(JSON.stringify(itemData))
 
   const [addType, setAddType] = useState("box")
   const [addBox, setAddBox] = useState(userBoxes[0].id)
-  const [addSub, setAddSub] = useState(props.page === "box" && currentBox.subSections.length ? currentBox.subSections[0].name : "")
+  const [addSub, setAddSub] = useState(page === "box" && currentBox.subSections.length ? currentBox.subSections[0].name : "")
 
   useEffect(() => {
     console.log(addType)
@@ -23,9 +20,9 @@ function AddToMenu(props) {
     const targetIndex = userBoxes.findIndex(box => box.id === targetId)
     const targetBox = {...userBoxes.find(box => box.id === targetId)}
     console.log(targetBox)
-    const updatedItem = {...itemData, subSection: addType === "box" ? "default" : addSub}
+    const updatedItem = {...itemCopy, subSection: addType === "box" ? "default" : addSub}
     let updatedBox = {}
-    switch (itemData.type) {
+    switch (itemCopy.type) {
       case "album" :
         const updatedAlbums = [...targetBox.albums.filter(a => a.id !== updatedItem.id), updatedItem]
         updatedBox = {...targetBox, albums: updatedAlbums}
@@ -55,7 +52,7 @@ function AddToMenu(props) {
         <label htmlFor="add-type"> Add this item to </label>
         <select name="add-type" defaultValue={addType} onChange={(e) => setAddType(e.target.value)}>
           <option value="box"> another box in your collection </option>
-          <option value="subsection" hidden={props.page === "search"} > a sub-section of this box </option>
+          <option value="subsection" hidden={page === "search"} > a sub-section of this box </option>
         </select>
       </div>
 

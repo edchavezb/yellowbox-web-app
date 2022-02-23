@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from "react-router-dom";
-
 import styles from "./DeletePrompt.module.css";
 
-function DeletePrompt(props) {
+function DeletePrompt({itemData, userBoxes, boxId, toggleModal, dispatch}) {
 
-  const toggleModal = props.toggleModal;
-  const dispatch = props.dispatch;
-  const itemData = props.itemData
   let sectionType
 
   switch(itemData.type){
@@ -24,8 +18,8 @@ function DeletePrompt(props) {
   }
 
   const handleDeleteItem = () => {
-    const targetIndex = props.userBoxes.findIndex(box => box.id === props.boxId)
-    const targetBox = {...props.userBoxes.find(box => box.id === props.boxId)}
+    const targetIndex = userBoxes.findIndex(box => box.id === boxId)
+    const targetBox = {...userBoxes.find(box => box.id === boxId)}
     const targetSection = targetBox[sectionType]
     const filteredSection = targetSection.filter(item => item.id !== itemData.id)
     let updatedBox = JSON.parse(JSON.stringify(targetBox))

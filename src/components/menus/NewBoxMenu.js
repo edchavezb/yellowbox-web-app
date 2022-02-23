@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from "react-router-dom";
+import { useState } from 'react';
 
 import styles from "./NewBoxMenu.module.css";
 
-function NewBoxMenu(props) {
-
-  const toggleModal = props.toggleModal;
-  const dispatch = props.dispatch;
+function NewBoxMenu({userBoxes, toggleModal, dispatch}) {
 
   const [boxDetails, setBoxDetails] = useState({boxName: "", boxDesc: "", avail: "public"})
 
   const Box = () => {
-    const highestId = parseInt(props.userBoxes[props.userBoxes.length - 1].id)
+    const highestId = parseInt(userBoxes[userBoxes.length - 1].id)
     const newId = (highestId + 1).toString()
 
     const newBox = {
@@ -71,17 +67,23 @@ function NewBoxMenu(props) {
 
   return (
     <div id={styles.modalBody}>
+
       <form id={styles.newBoxForm}>
         <label className={styles.formElement} htmlFor="box-name"> Name </label>
         <input className={styles.formElement} type="text" name="box-name" id={styles.boxName}
-          onChange={(e) => setBoxDetails(state => ({ ...state, boxName: e.target.value.trim() }))} />
+          onChange={(e) => setBoxDetails(state => ({ ...state, boxName: e.target.value.trim() }))} 
+        />
+
         <label className={styles.formElement} htmlFor="box-description"> Description </label>
         <textarea className={styles.formElement} name="box-description" id={styles.boxDesc} rows="3" resize="none"
-          onChange={(e) => setBoxDetails(state => ({ ...state, boxDesc: e.target.value.trim() }))} />
+          onChange={(e) => setBoxDetails(state => ({ ...state, boxDesc: e.target.value.trim() }))} 
+        />
       </form>
+
       <div id={styles.modalFooter}>
         <button onClick={() => handleSaveNewBox()}> Create </button>
       </div>
+
     </div>
   )
 }

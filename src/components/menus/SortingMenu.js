@@ -3,12 +3,10 @@ import { useHistory } from "react-router-dom";
 
 import styles from "./SortingMenu.module.css";
 
-function SortingMenu(props) {
+function SortingMenu({boxId, userBoxes, toggleModal, dispatch}) {
 
-  const toggleModal = props.toggleModal;
-  const dispatch = props.dispatch;
-  const targetIndex = props.userBoxes.findIndex(box => box.id === props.boxId)
-  const boxCopy = JSON.parse(JSON.stringify(props.userBoxes.find(box => box.id === props.boxId)))
+  const targetIndex = userBoxes.findIndex(box => box.id === boxId)
+  const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box.id === boxId)))
   const boxSections = {artists: boxCopy.artists, albums: boxCopy.albums, tracks: boxCopy.tracks, playlists: boxCopy.playlists}
   const nonEmptySections = Object.keys(boxSections).filter((section) => boxSections[section].length > 0)
   const boxSorting = boxCopy.sectionSorting
