@@ -6,7 +6,7 @@ import credentials from '../keys'
 
 import SearchResults from "./SearchResults"
 
-import styles from "./Search.module.css"
+//import styles from "./Search.module.css"
 
 function Search({toggleModal}) {
 

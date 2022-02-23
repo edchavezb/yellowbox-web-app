@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios'
+//import React, { useState, useEffect } from 'react';
+//import axios from 'axios'
 
-import styles from "./Home.module.css"
+//import styles from "./Home.module.css"
 
 function Home() {
 
