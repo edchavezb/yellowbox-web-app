@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 
-import styles from "./DetailItem.module.css";
+import styles from "./DetailRow.module.css";
 
-function DetailItem({element, setElementDragging, index}) {
+function DetailRow({element, setElementDragging, index}) {
   const {name, type, album, artists, genres, images, owner, album_type, release_date, total_tracks, duration_ms, description, tracks, uri, id} = element
 
   const elementImages = type === "track" ? album.images : images;
@@ -10,14 +10,13 @@ function DetailItem({element, setElementDragging, index}) {
 
   const ownerName = type === "playlist" && <a href={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></a>;
 
-  const getArtists = () => {
+  const getArtistLinks = () => {
     const artistArray = artists.slice(0, 3).map((artist, idx, arr) => {
-      return <Link to={`/detail/artist/${artist.id}`}><span className={styles.artistName}> {`${artist.name}${arr[idx+1] ? ", " : ""}`} </span> </Link>;
+      return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx+1] ? ", " : ""}`} </span> </Link>;
     })
 
     return artistArray;
   }
-
   
   const handleDrag = (e, data) => {
     console.log(data)
@@ -48,10 +47,14 @@ function DetailItem({element, setElementDragging, index}) {
         <div className={type === "track" || type === "album"? styles.itemNameItalic : styles.itemName}> 
           <Link to={`/detail/${type}/${id}`}> {name} </Link>
         </div>
-        <div className={styles.artist}> {type !== "playlist" ?
-          getArtists() :
-          ownerName}
-        </div>
+
+        {type !== "artist" ?
+          <div className={styles.artist}> {type !== "playlist" ?
+            getArtistLinks() :
+            ownerName}
+          </div>
+          : ""
+        }
         
         {type === "artist" && genres ?
           <div className={styles.metaDataContainer}>
@@ -119,4 +122,4 @@ function DetailItem({element, setElementDragging, index}) {
   )
 }
 
-export default DetailItem;
+export default DetailRow;

@@ -130,7 +130,7 @@ function ItemDetail({toggleModal}) {
 
   const getArtistLinks = (artists) => {
     const artistLinks = artists.slice(0, 3).map((artist, idx, arr) => {
-      return <Link to={`/detail/artist/${artist.id}`}><span className={styles.artistName}> {`${artist.name}${arr[idx+1] ? ", " : ""}`} </span> </Link>;
+      return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx+1] ? ", " : ""}`} </span> </Link>;
     })
 
     return artistLinks;
