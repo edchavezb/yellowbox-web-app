@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import querystring from 'querystring'
@@ -6,7 +6,7 @@ import credentials from '../keys'
 
 import SearchResults from "./SearchResults"
 
-//import styles from "./Search.module.css"
+import styles from "./Search.module.css"
 
 function Search({toggleModal}) {
 
@@ -62,13 +62,15 @@ function Search({toggleModal}) {
       });
   }
 
+  
+
   return (
     <div className="main-div">
       <h1> Is this what you're looking for? </h1>
-      <SearchResults type="Artists" data={searchData.artists.slice(0,12)} toggleModal={toggleModal}/>
-      <SearchResults type="Albums" data={searchData.albums.slice(0,12)} toggleModal={toggleModal} />
-      <SearchResults type="Tracks" data={searchData.tracks.slice(0,12)} toggleModal={toggleModal}/>
-      <SearchResults type="Playlists" data={searchData.playlists.slice(0,12)} toggleModal={toggleModal}/>
+      {searchData.artists.length > 0 && <SearchResults type="Artists" data={searchData.artists.slice(0,12)} toggleModal={toggleModal}/>}
+      {searchData.albums.length > 0 && <SearchResults type="Albums" data={searchData.albums.slice(0,12)} toggleModal={toggleModal} />}
+      {searchData.tracks.length > 0 && <SearchResults type="Tracks" data={searchData.tracks.slice(0,12)} toggleModal={toggleModal}/>}
+      {searchData.playlists.length > 0 && <SearchResults type="Playlists" data={searchData.playlists.slice(0,12)} toggleModal={toggleModal}/>}
     </div>
   );
 }

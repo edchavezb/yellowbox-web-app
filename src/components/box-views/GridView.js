@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import GridItem from "./GridItem"
 import DragActions from "../layout/DragActions"
