@@ -95,7 +95,7 @@ function BoxSection({data, type, box, sorting, visible, toggleModal}) {
                 itemsMatch={sortedData.filter(e => e.subSection === "default")} 
                 viewType={sorting.view} 
                 sectionType={type}
-                default={true} 
+                isDefault={true} 
                 page="box" 
                 customSorting={sorting.primarySorting === "custom"} 
                 toggleModal={toggleModal} 
@@ -109,7 +109,7 @@ function BoxSection({data, type, box, sorting, visible, toggleModal}) {
             itemsMatch={sortedData} 
             viewType={sorting.view} 
             sectionType={type}
-            default={true} 
+            isDefault={true} 
             page="box" 
             customSorting={sorting.primarySorting === "custom"} 
             toggleModal={toggleModal} 

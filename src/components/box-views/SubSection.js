@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
-
 import GridView from "./GridView"
 import ListView from "./ListView"
 import DetailView from "./DetailView"
 import styles from "./SubSection.module.css";
 
-function SubSection(props) {
-  const itemsMatch = props.itemsMatch
-  const subName = props.subName
+function SubSection({itemsMatch, subName, viewType, sectionType, toggleModal, boxId, isDefault, page, customSorting}) {
   console.log(itemsMatch)
 
   const getListType = (sectionType) => {
@@ -34,15 +30,15 @@ function SubSection(props) {
 
   const displayView = (data, page, isCustom) => {
     let sectionView = ""
-    switch (props.viewType){
+    switch (viewType){
       case "grid":
-        sectionView = <GridView data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
+        sectionView = <GridView data={data} page={page} customSorting={isCustom} toggleModal={toggleModal} boxId={boxId} />
       break;
       case "list":
-        sectionView = <ListView listType={getListType(props.sectionType)} data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
+        sectionView = <ListView listType={getListType(sectionType)} data={data} page={page} customSorting={isCustom} toggleModal={toggleModal} boxId={boxId} />
       break;
       case "details":
-        sectionView = <DetailView listType={getListType(props.sectionType)} data={data} page={page} customSorting={isCustom} toggleModal={props.toggleModal} boxId={props.boxId} />
+        sectionView = <DetailView listType={getListType(sectionType)} data={data} page={page} customSorting={isCustom} toggleModal={toggleModal} boxId={boxId} />
       break;
       default:
     }
@@ -51,8 +47,8 @@ function SubSection(props) {
 
   return (itemsMatch.length > 0 ?
     <div className={styles.subSectionWrapper} key={subName}>
-      {!props.default ? <div className={styles.subSectionName}> {subName} </div> : "" }
-        {displayView(itemsMatch, props.page, props.customSorting)}
+      {!isDefault ? <div className={styles.subSectionName}> {subName} </div> : "" }
+        {displayView(itemsMatch, page, customSorting)}
     </div>
     : "")
 }

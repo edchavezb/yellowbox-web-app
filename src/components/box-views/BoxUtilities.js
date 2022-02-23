@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import styles from "./BoxUtilities.module.css";
 
-function BoxUtilities(props) {
-
-  const box = props.box
-  const singleTypeBox = props.singleTypeBox
-  const visibility = props.visibility
-  const setVisibility = props.setVisibility
+function BoxUtilities({box, singleTypeBox, visibility, setVisibility, toggleModal}) {
 
   const handleSectionVisibility = e => {
     const section = e.currentTarget.getAttribute("handles")
@@ -45,7 +40,7 @@ function BoxUtilities(props) {
           </div>
           : ""}
       </div>
-      <button id={styles.sortingButton} onClick={() => props.toggleModal({visible: true, type: "Sorting Options", boxId: box.id})}> Sorting Options </button>
+      <button id={styles.sortingButton} onClick={() => toggleModal({visible: true, type: "Sorting Options", boxId: box.id})}> Sorting Options </button>
     </div>
   )
 }
