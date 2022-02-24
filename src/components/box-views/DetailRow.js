@@ -50,8 +50,7 @@ function DetailRow({element, setElementDragging, index}) {
 
         {type !== "artist" ?
           <div className={styles.artist}> {type !== "playlist" ?
-            getArtistLinks() :
-            ownerName}
+            getArtistLinks() : ownerName}
           </div>
           : ""
         }

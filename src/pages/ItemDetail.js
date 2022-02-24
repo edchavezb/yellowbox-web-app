@@ -6,6 +6,7 @@ import credentials from '../keys'
 
 import GridView from '../components/box-views/GridView';
 import ListView from '../components/box-views/ListView';
+import TrackVisualizer from '../components/box-views/TrackVisualizer';
 
 import styles from "./ItemDetail.module.css"
 
@@ -13,9 +14,10 @@ function ItemDetail({toggleModal}) {
 
   const history = useHistory();
   const params = useParams()
-  const [itemData, setItemData] = useState({ type: "", images: ["https://via.placeholder.com/150"], name: "", artists: [{ name: "" }], album_type: "", tracks: {items: []} })
+  const [itemData, setItemData] = useState({ album: {id:""}, type: "", images: ["https://via.placeholder.com/150"], name: "", artists: [{ name: "" }], album_type: "", tracks: {items: []} })
   const [itemListType, setItemListType] = useState("")
   const [itemContents, setItemContents] = useState({ items: [] })
+  const [itemAlbum, setItemAlbum] = useState({ tracks: {items: []}, release_date: "" })
 
   useEffect(() => {
     handleDetailData(params.type, params.id)
@@ -62,7 +64,7 @@ function ItemDetail({toggleModal}) {
       }
     })
       .then(response => {
-        getItemData(itemQuery, response.data.access_token)
+        getItemData(typeParam, itemQuery, response.data.access_token)
         getContents(contentsQuery, response.data.access_token)
       })
       .catch(error => {
@@ -70,7 +72,7 @@ function ItemDetail({toggleModal}) {
       });
   }
 
-  const getItemData = (query, auth) => {
+  const getItemData = (type, query, auth) => {
     axios({
       method: 'get',
       url: query,
@@ -82,6 +84,9 @@ function ItemDetail({toggleModal}) {
       .then(response => {
         console.log(response.data)
         setItemData(response.data)
+        if (type === "track") {
+          getItemAlbum(`https://api.spotify.com/v1/albums/${response.data.album.id}`, auth)
+        }
       })
       .catch(error => {
         console.log(error);
@@ -106,6 +111,24 @@ function ItemDetail({toggleModal}) {
       });
   }
 
+  const getItemAlbum = (query, auth) => {
+    axios({
+      method: 'get',
+      url: query,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${auth}`
+      }
+    })
+      .then(response => {
+        console.log(response.data)
+        setItemAlbum(response.data)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   const getListComponent = () => {
     let listComponent;
     switch (params.type){
@@ -120,6 +143,10 @@ function ItemDetail({toggleModal}) {
       case "artist" :
         listComponent = 
         <GridView data={itemContents.items} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
+      break;
+      case "track" :
+        listComponent = 
+        <TrackVisualizer data={itemData} album={itemAlbum} page="detail" toggleModal={toggleModal} boxId={undefined}/>
       break;
       default:
         listComponent = <div></div>
@@ -198,8 +225,7 @@ function ItemDetail({toggleModal}) {
               {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
               {` by `}{getArtistLinks(itemData.artists)} |
               {` ${itemData.album.release_date.split("-")[0]}`} |
-              {` ${parseInt(itemData.duration_ms/60000)}`.padStart(2,0)+":"+`${Math.floor(itemData.duration_ms%60000/1000)}`.padStart(2,0)} |
-              <Link to={`/detail/album/${itemData.album.id}`}><span> Album </span> </Link>
+              {` ${parseInt(itemData.duration_ms/60000)}`.padStart(2,0)+":"+`${Math.floor(itemData.duration_ms%60000/1000)}`.padStart(2,0)}
             </div>
             : ""
           }
