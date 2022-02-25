@@ -129,38 +129,19 @@ function ItemDetail({toggleModal}) {
       });
   }
 
-  const getListComponent = () => {
-    let listComponent;
-    switch (params.type){
-      case "album" :
-        listComponent = 
-        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData)} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
-      break;
-      case "playlist" :
-        listComponent = 
-        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
-      break;
-      case "artist" :
-        listComponent = 
-        <GridView data={itemContents.items} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
-      break;
-      case "track" :
-        listComponent = 
-        <TrackVisualizer data={itemData} album={itemAlbum} page="detail" toggleModal={toggleModal} boxId={undefined}/>
-      break;
-      default:
-        listComponent = <div></div>
-      break;
-    }
-    return listComponent;
-  }
-
   const getArtistLinks = (artists) => {
     const artistLinks = artists.slice(0, 3).map((artist, idx, arr) => {
       return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx+1] ? ", " : ""}`} </span> </Link>;
     })
 
     return artistLinks;
+  }
+
+  const removeDuplicatesByProperty = (arrayObj, propertyName) => {
+    const newArr = arrayObj.filter((element, index) => {
+      return index === arrayObj.map(e => e[propertyName]).indexOf(element[propertyName]);
+    })
+    return newArr;
   }
 
   const getAlbumRunningTime = (tracks) => {
@@ -183,6 +164,32 @@ function ItemDetail({toggleModal}) {
       "type" : parentItem.type, 
       "uri" : parentItem.uri
     }, ...e}))
+  }
+
+  const getListComponent = () => {
+    let listComponent;
+    switch (params.type){
+      case "album" :
+        listComponent = 
+        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData)} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
+      break;
+      case "playlist" :
+        listComponent = 
+        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
+      break;
+      case "artist" :
+        listComponent = 
+        <GridView data={removeDuplicatesByProperty(itemContents.items, "name")} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
+      break;
+      case "track" :
+        listComponent = 
+        <TrackVisualizer data={itemData} album={itemAlbum} page="detail" toggleModal={toggleModal} boxId={undefined}/>
+      break;
+      default:
+        listComponent = <div></div>
+      break;
+    }
+    return listComponent;
   }
 
   return (
