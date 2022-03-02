@@ -114,6 +114,9 @@ function DetailRow({element, setElementDragging, index}) {
         <div className={styles.notesPanel}>
           <div className={styles.notesTitle}> NOTES </div>
           <div className={styles.notesDisplay}></div>
+          <div className={styles.notesOverlay}> 
+            <div className={styles.overlayTitle}> EXPAND ⛶ </div>
+          </div>
         </div>
       </div>
 
