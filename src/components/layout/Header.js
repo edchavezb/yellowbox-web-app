@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
@@ -15,10 +16,12 @@ function Header({toggleModal}) {
   return (
     <div id={styles.header}> 
         <div id={styles.logoSide}>
-          <div id={styles.logoContainer}>
-            <img id={styles.ideogram} src="/ideogram.png" alt="ideogram"></img>
-            <span id={styles.logo}> yellowbox </span>
-          </div>
+          <Link to="/">
+            <div id={styles.logoContainer}>
+              <img id={styles.ideogram} src="/ideogram.png" alt="ideogram"></img>
+              <span id={styles.logo}> yellowbox </span>
+            </div>
+          </Link>
         </div>
         <div id={styles.headerTools}>
           <div id={styles.searchBox}>
