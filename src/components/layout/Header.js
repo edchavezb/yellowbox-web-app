@@ -6,12 +6,18 @@ import styles from "./Header.module.css";
 
 function Header({toggleModal}) {
 
-  const [input, setInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const history = useHistory();
+  let searchTimeout;
 
   useEffect(() => {
-    if (input) history.push(`/search/${input}`)
-  }, [input])
+    if (searchQuery) history.push(`/search/${searchQuery}`)
+  }, [searchQuery])
+
+  const debounceSearch = (input) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => setSearchQuery(input), 500);
+  }
 
   return (
     <div id={styles.header}> 
@@ -26,8 +32,8 @@ function Header({toggleModal}) {
         <div id={styles.headerTools}>
           <div id={styles.searchBox}>
             <div id={styles.inputWrapper}>
-              <input id={styles.searchInput} type="text" onChange={(e) => setInput(e.target.value.trim().replace(" ", "%20"))} 
-                onFocus={() => {if(input) history.push(`/search/${input}`)}}/>
+              <input id={styles.searchInput} type="text" onChange={(e) => debounceSearch(e.target.value.trim().replace(" ", "%20"))} 
+                onFocus={() => {if(searchQuery) history.push(`/search/${searchQuery}`)}}/>
             </div>
             <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
           </div>
