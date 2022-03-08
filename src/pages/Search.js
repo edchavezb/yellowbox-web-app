@@ -21,7 +21,15 @@ function Search({toggleModal}) {
 
   useEffect(() => console.log(searchData), [searchData]);
 
-  const spotifyAuthorization = () => {
+  const handleSearch = (query) => {
+    if (!spotifyToken) {
+      spotifyAuthorization(query);
+    } else {
+      queryAPI(query, spotifyToken);
+    }
+  }
+
+  const spotifyAuthorization = (query) => {
     axios({
       method: 'post',
       url: 'https://accounts.spotify.com/api/token',
@@ -34,20 +42,20 @@ function Search({toggleModal}) {
     })
       .then(response => {
         setToken(response.data.access_token)
+        queryAPI(query, response.data.access_token)
       })
       .catch(error => {
         console.log(error);
       });
   }
 
-  const handleSearch = (query) => {
-    spotifyAuthorization()
+  const queryAPI = (query, token) => {
     axios({
       method: 'get',
       url: `https://api.spotify.com/v1/search?q=${query}&type=artist,track,album,playlist`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${spotifyToken}`
+        Authorization: `Bearer ${token}`
       }
     })
       .then(response => {
