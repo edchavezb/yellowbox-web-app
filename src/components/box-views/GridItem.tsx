@@ -1,8 +1,14 @@
 import { Link } from "react-router-dom";
+import { Artist, Album, Track, Playlist } from "../../interfaces";
 
 import styles from "./GridItem.module.css";
 
-function GridItem({element, setElementDragging}) {
+interface IProps<T extends Artist & Album & Track & Playlist> {
+	element: T
+	setElementDragging: any
+}
+
+function GridItem<T extends Artist & Album & Track & Playlist>({element, setElementDragging}: IProps<T>) {
 	const {name, type, album, images, artists, owner, uri, id} = element;
 
 	const elementImages = type === "track" ? album.images : images;
@@ -12,9 +18,9 @@ function GridItem({element, setElementDragging}) {
 		: <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>;
 	const ownerName = type === "playlist" ? <a href={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></a> : "";
 
-	const handleDrag = (e, data) => {
-		console.log(data)
-		e.dataTransfer.setData("data", JSON.stringify(data))
+	const handleDrag = (e: React.DragEvent<HTMLDivElement>, element:IProps<T>["element"]) => {
+		console.log(element)
+		e.dataTransfer.setData("data", JSON.stringify(element))
 		setElementDragging(true)
 	}
 
