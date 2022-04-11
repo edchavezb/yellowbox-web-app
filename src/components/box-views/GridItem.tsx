@@ -1,22 +1,45 @@
+import { ReactElement } from "react";
 import { Link } from "react-router-dom";
-import { Artist, Album, Track, Playlist } from "../../interfaces";
+import { Artist, Album, Track, Playlist, ItemImage } from "../../interfaces";
+import  * as checkType from  "../../typeguards";
 
 import styles from "./GridItem.module.css";
 
-interface IProps<T extends Artist & Album & Track & Playlist> {
+interface IProps<T> {
 	element: T
-	setElementDragging: any
+	setElementDragging: (dragging: boolean) => void
 }
 
-function GridItem<T extends Artist & Album & Track & Playlist>({element, setElementDragging}: IProps<T>) {
-	const {name, type, album, images, artists, owner, uri, id} = element;
+function GridItem<T extends Artist | Album | Track | Playlist>({element, setElementDragging}: IProps<T>) {
 
-	const elementImages = type === "track" ? album.images : images;
-	const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
+	const {name, type, uri, id} = element;
+  //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)
+  let elementImages!: ItemImage[]; 
+  let authorName!: ReactElement | string;
 
-	const artistName = type === "playlist" || type === "artist" ? ""
-		: <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>;
-	const ownerName = type === "playlist" ? <a href={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></a> : "";
+	if (checkType.isAlbum(element)){
+		const {images, artists} = element;
+    authorName = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
+    elementImages = images
+	} 
+  else if (checkType.isArtist(element)){
+    const {images} = element
+    authorName = ""
+    elementImages = images
+  }
+  else if (checkType.isTrack(element)){
+    const {artists, album} = element
+    authorName = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
+    elementImages = album.images;
+  }
+	else if (checkType.isPlaylist(element)){
+		const {images, owner} = element;
+    authorName = <a href={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></a>;
+    elementImages = images
+	}
+	
+	const itemCoverArt = elementImages && elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
+
 
 	const handleDrag = (e: React.DragEvent<HTMLDivElement>, element:IProps<T>["element"]) => {
 		console.log(element)
@@ -40,9 +63,7 @@ function GridItem<T extends Artist & Album & Track & Playlist>({element, setElem
 				<img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
 			</div>
 			<Link to={`/detail/${type}/${id}`}> <div className={styles.name}> {name} </div> </Link>
-			{type !== "playlist" ?
-				artistName :
-				ownerName}
+			{authorName}
 		</div>
 	)
 }
