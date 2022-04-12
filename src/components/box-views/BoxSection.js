@@ -33,10 +33,10 @@ function BoxSection({data, type, box, sorting, visible, toggleModal}) {
         propertyValue = item.album.name
       break;
       case "duration":
-        propertyValue = item["duration_ms"]
+        propertyValue = item.duration_ms
       break;
       case "track_number":
-        propertyValue = item["track_number"]
+        propertyValue = item.track_number
       break;
       default:
     }
