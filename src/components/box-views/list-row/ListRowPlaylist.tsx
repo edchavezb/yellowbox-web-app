@@ -1,14 +1,22 @@
 import { Link } from "react-router-dom";
+import { Playlist } from "../../../interfaces";
 
 import styles from "./ListRowPlaylist.module.css";
 
-function ListRowPlaylist({element, setElementDragging, index}) {
+interface IProps {
+	element: Playlist
+  index: number
+  page: string
+	setElementDragging: (dragging: boolean) => void
+}
+
+function ListRowPlaylist({element, setElementDragging, index, page}: IProps) {
 
   const {name, type, id, description, tracks, owner, uri} = element;
 
-  const handleDrag = (e, data) => {
-    console.log(data)
-    e.dataTransfer.setData("data", JSON.stringify(data))
+  const handleDrag = (e: React.DragEvent<HTMLDivElement>, element:IProps["element"]) => {
+    console.log(element)
+    e.dataTransfer.setData("data", JSON.stringify(element))
     setElementDragging(true)
   }
 

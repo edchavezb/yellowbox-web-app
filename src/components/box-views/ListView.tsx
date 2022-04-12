@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Artist, Album, Track, Playlist } from "../../interfaces";
 
 import ListRowTrack from "./list-row/ListRowTrack"
 import ListRowAlbum from "./list-row/ListRowAlbum"
@@ -6,7 +7,15 @@ import ListRowPlaylist from "./list-row/ListRowPlaylist"
 import DragActions from "../layout/DragActions"
 import styles from "./ListView.module.css";
 
-function ListView({data, page, listType, toggleModal, boxId}) {
+interface IProps<T> {
+  data: T[]
+  listType: string
+  page: string
+  boxId: string
+  toggleModal: (toggle: boolean) => void
+}
+
+function ListView<T extends Artist | Album | Track | Playlist>({data, page, listType, toggleModal, boxId}: IProps<T>) {
 
   const [elementDragging, setElementDragging] = useState(false)
 
@@ -56,20 +65,20 @@ function ListView({data, page, listType, toggleModal, boxId}) {
     return listHeader;
   }
 
-  const getListItemComponent = (e) => {
+  const getListItemComponent = (e: T) => {
     let itemComponent;
     switch(listType){
       case "tracklist":
-        itemComponent = <ListRowTrack key={e.id} index={data.indexOf(e)} element={e} page={page} setElementDragging={setElementDragging} />
+        itemComponent = <ListRowTrack key={e.id} index={data.indexOf(e)} element={e as Track} page={page} setElementDragging={setElementDragging} />
       break;
       case "albumlist":
-        itemComponent = <ListRowAlbum key={e.id} index={data.indexOf(e)} element={e} page={page} setElementDragging={setElementDragging} />
+        itemComponent = <ListRowAlbum key={e.id} index={data.indexOf(e)} element={e as Album} page={page} setElementDragging={setElementDragging} />
       break;
       case "playlists":
-        itemComponent = <ListRowPlaylist key={e.id} index={data.indexOf(e)} element={e} page={page} setElementDragging={setElementDragging} />
+        itemComponent = <ListRowPlaylist key={e.id} index={data.indexOf(e)} element={e as Playlist} page={page} setElementDragging={setElementDragging} />
       break;
       default:
-        itemComponent = <ListRowTrack key={e.id} index={data.indexOf(e)} element={e} page={page} setElementDragging={setElementDragging} />
+        itemComponent = <ListRowTrack key={e.id} index={data.indexOf(e)} element={e as Track} page={page} setElementDragging={setElementDragging} />
       break;
     }
     return itemComponent;
