@@ -103,6 +103,7 @@ interface Playlist {
   }
   type: string
   uri: string
+  subSection?: string 
 }
 
 interface SpotifyUser {
@@ -130,4 +131,4 @@ interface ItemImage {
   width: number
 }
 
-export type { UserBox, Visibility, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage }
+export type { UserBox, Visibility, Sorting, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage }

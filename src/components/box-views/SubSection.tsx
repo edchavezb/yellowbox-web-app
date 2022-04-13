@@ -59,12 +59,12 @@ function SubSection<T extends Artist | Album | Track | Playlist>({itemsMatch, su
     return sectionView
   }
 
-  return (itemsMatch.length > 0 ?
+  return (
     <div className={styles.subSectionWrapper} key={subName}>
       {!isDefault ? <div className={styles.subSectionName}> {subName} </div> : "" }
         {displayView(itemsMatch, page as string, customSorting)}
     </div>
-    : "")
+  )
 }
 
 export default SubSection;
