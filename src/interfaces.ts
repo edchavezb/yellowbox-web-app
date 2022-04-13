@@ -1,3 +1,40 @@
+interface UserBox {
+  id: string
+  name: string
+  public: boolean
+  creator: string
+  description: string
+  artists: Artist[]
+  albums: Album[]
+  tracks: Track[]
+  playlists: Playlist[]
+  sectionSorting: {
+    artists: Sorting
+    albums: Sorting
+    tracks: Sorting
+    playlists: Sorting
+  }
+  sectionVisibility: Visibility
+  subSections : [
+    {type: string, name: string}
+  ]
+}
+
+interface Sorting {
+  primarySorting: string
+  secondarySorting: string
+  view: string
+  ascendingOrder: boolean
+  displaySubSections: boolean
+}
+
+interface Visibility {
+  artists: boolean
+  albums: boolean
+  tracks: boolean
+  playlists: boolean
+}
+
 interface Album {
   album_type: string
   artists: Artist[]
@@ -93,4 +130,4 @@ interface ItemImage {
   width: number
 }
 
-export type { Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage }
+export type { UserBox, Visibility, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage }

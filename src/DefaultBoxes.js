@@ -2,7 +2,7 @@ const defaultBoxes = [
   {
     id: "1234",
     name: "Favoritos Español",
-    available: "public",
+    public: true,
     creator: "eKDNF346",
     description: "Mis favoritos en el español",
     artists: [],
@@ -12,36 +12,38 @@ const defaultBoxes = [
     sectionSorting: {
       artists: {
         primarySorting: "custom",
+        secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        subSections: false
+        displaySubSections: false
       },
       albums: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        subSections: false
+        displaySubSections: false
       },
       tracks: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        subSections: false
+        displaySubSections: false
       },
       playlists: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        subSections: false
+        displaySubSections: false
       }
     },
     sectionVisibility: {
       artists: true,
       albums: true,
-      tracks: true
+      tracks: true,
+      playlists: true
     },
     subSections : [
       {type: "artists", name: "Da Worst"}
@@ -50,7 +52,7 @@ const defaultBoxes = [
   {
     id: "2454",
     name: "Top 2020",
-    available: "public",
+    public: true,
     creator: "eKDNF346",
     description: "Top albums from 2020",
     artists: [
@@ -107,28 +109,28 @@ const defaultBoxes = [
         primarySorting: "custom",
         view: "grid",
         ascendingOrder: true,
-        subSections: true
+        displaySubSections: true
       },
       albums: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        subSections: false
+        displaySubSections: false
       },
       tracks: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        subSections: false
+        displaySubSections: false
       },
       playlists: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        subSections: false
+        displaySubSections: false
       }
     },
     sectionVisibility: {

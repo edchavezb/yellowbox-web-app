@@ -8,12 +8,13 @@ import styles from "./DetailRow.module.css";
 interface IProps<T> {
 	element: T
   index: number
+  page?: string
 	setElementDragging: (dragging: boolean) => void
 }
 
 function DetailRow<T extends Artist | Album | Track | Playlist>({element, setElementDragging, index}: IProps<T>) {
   const {name, type, uri, id} = element;
-  
+
   //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)
   let elementImages!: ItemImage[]; 
   let authorName!: ReactElement | JSX.Element[] | string;
