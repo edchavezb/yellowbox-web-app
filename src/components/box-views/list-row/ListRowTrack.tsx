@@ -50,7 +50,7 @@ function ListRowTrack({ element, setElementDragging, index, page }: IProps) {
       </div>
 
       <div className={styles.colCentered}>
-        {`${duration_ms / 60000}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
+        {`${Math.floor(duration_ms/60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
       </div>
 
       <div className={styles.colCentered}>

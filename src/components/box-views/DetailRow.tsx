@@ -76,7 +76,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({element, setEle
         {`${album.release_date.split("-")[0]}`}
       </div>
       <div className={styles.metaDataPill}>
-        {`${duration_ms/60000}`.padStart(2,'0')+":"+`${Math.floor(duration_ms%60000/1000)}`.padStart(2,'0')}
+        {`${Math.floor(duration_ms/60000)}`.padStart(2,'0')+":"+`${Math.floor(duration_ms%60000/1000)}`.padStart(2,'0')}
       </div>
     </div>
   }
