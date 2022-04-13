@@ -4,10 +4,16 @@ import { useParams } from 'react-router-dom';
 import BoxUtilities from '../components/box-views/BoxUtilities';
 import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
+import { Album, Artist, Playlist, Track, UserBox } from '../interfaces';
 
-function BoxDetail({userBoxes, toggleModal}) {
+interface IProps {
+	userBoxes: UserBox[]
+  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
+}
 
-  const params = useParams()
+function BoxDetail({userBoxes, toggleModal}: IProps) {
+
+  const params = useParams<{id: string}>()
   const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box.id === params.id)))
   const boxNotEmpty = boxCopy.albums.length > 0 || boxCopy.artists.length > 0 || boxCopy.tracks.length > 0 || boxCopy.playlists.length > 0;
   const singleTypeBox = [boxCopy.albums, boxCopy.artists, boxCopy.tracks].filter((section) => section.length > 0).length === 1
@@ -33,7 +39,7 @@ function BoxDetail({userBoxes, toggleModal}) {
       <h2 id={styles.boxName}> {boxCopy.name} </h2>
       <div id={styles.boxDesc}> {boxCopy.description} </div>
       {boxCopy.artists.length ? 
-        <BoxSection 
+        <BoxSection<Artist> 
           type="Artists"
           box={boxCopy}
           data={boxCopy.artists} 
@@ -42,7 +48,7 @@ function BoxDetail({userBoxes, toggleModal}) {
           toggleModal={toggleModal} />
         : ""}
       {boxCopy.albums.length ? 
-        <BoxSection 
+        <BoxSection<Album>
           type="Albums" 
           box={boxCopy} 
           data={boxCopy.albums}
@@ -51,7 +57,7 @@ function BoxDetail({userBoxes, toggleModal}) {
           toggleModal={toggleModal}  /> 
         : ""}
       {boxCopy.tracks.length ? 
-        <BoxSection 
+        <BoxSection<Track> 
           type="Tracks" 
           box={boxCopy} 
           data={boxCopy.tracks}
@@ -60,7 +66,7 @@ function BoxDetail({userBoxes, toggleModal}) {
           toggleModal={toggleModal}  /> 
         : ""}
         {boxCopy.playlists.length ? 
-        <BoxSection 
+        <BoxSection<Playlist> 
           type="Playlists" 
           box={boxCopy} 
           data={boxCopy.playlists}
