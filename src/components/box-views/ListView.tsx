@@ -12,7 +12,8 @@ interface IProps<T> {
   listType: string
   page: string
   boxId: string
-  toggleModal: (toggle: boolean) => void
+  customSorting: boolean
+  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
 }
 
 function ListView<T extends Artist | Album | Track | Playlist>({data, page, listType, toggleModal, boxId}: IProps<T>) {

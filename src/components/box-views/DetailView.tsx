@@ -9,7 +9,8 @@ interface IProps<T> {
   data: T[]
   page: string
   boxId: string
-  toggleModal: (toggle: boolean) => void
+  customSorting: boolean
+  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
 }
 
 function DetailView<T extends Artist | Album | Track | Playlist>({data, page, toggleModal, boxId}: IProps<T>) {

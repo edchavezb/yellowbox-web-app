@@ -9,10 +9,11 @@ interface IProps<T> {
   data: T[]
   page: string
   boxId: string
-  toggleModal: (toggle: boolean) => void
+  customSorting: boolean
+  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
 }
 
-function GridView<T extends Artist | Album | Track | Playlist> ({data, page, toggleModal, boxId}: IProps<T>) {
+function GridView<T extends Artist | Album | Track | Playlist> ({data, page, toggleModal, boxId, customSorting}: IProps<T>) {
 
   const [elementDragging, setElementDragging] = useState(false)
 
