@@ -26,7 +26,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, bo
   }, [visible])
 
   function getProperty(item: T, itemType: string, propertyName: string, upperCased: boolean): string | number | Date{
-    let propertyValue: string | number | Date
+    let propertyValue!: string | number | Date
 
     switch (propertyName) {
       case "release_year":
@@ -37,8 +37,8 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, bo
         propertyValue = checkType.isTrack(item) ? new Date(item.album.release_date) 
             : checkType.isAlbum(item) ? new Date(item.release_date) : ""
       break;
-      case "artist":
-        propertyValue = checkType.isArtist(item) || checkType.isPlaylist(item) ? "" : item.artists[0].name
+      case "artist":   
+        propertyValue = checkType.isTrack(item) || checkType.isAlbum(item) ? item.artists[0].name : ""
       break;
       case "name":
         propertyValue = item.name
