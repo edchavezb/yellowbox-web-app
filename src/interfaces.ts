@@ -46,6 +46,15 @@ interface Album {
   name: string
   release_date: string
   total_tracks: number
+  tracks?: {
+    href: string
+    items: Track[]
+    limit?: number
+    next?: string
+    offset?: number
+    previous?: string
+    total: number
+  }
   type: string
   uri: string
   subSection?: string
