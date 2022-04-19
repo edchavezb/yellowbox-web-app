@@ -3,18 +3,23 @@ import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
 import styles from "./Header.module.css";
+import { Album, Artist, Playlist, Track } from "../../interfaces";
 
-function Header({toggleModal}) {
+interface IProps {
+  toggleModal: (toggle: {visible: boolean, type: string, boxId: string, page: string, itemData?: Artist | Album | Track | Playlist}) => void
+}
+
+function Header({toggleModal}: IProps) {
 
   const [searchQuery, setSearchQuery] = useState("");
   const history = useHistory();
-  let searchTimeout;
+  let searchTimeout:  ReturnType<typeof setTimeout>;
 
   useEffect(() => {
     if (searchQuery) history.push(`/search/${searchQuery}`)
   }, [searchQuery])
 
-  const debounceSearch = (input) => {
+  const debounceSearch = (input: string) => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => setSearchQuery(input), 500);
   }
@@ -37,7 +42,7 @@ function Header({toggleModal}) {
             </div>
             <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
           </div>
-          <div id={styles.newButton} onClick={() => toggleModal({visible: true, type:"New Box"})}>
+          <div id={styles.newButton} onClick={() => toggleModal({visible: true, type: "New Box", boxId: "", page: "", itemData: undefined})}>
             <img id={styles.plusIcon} src="/icons/plus.svg"></img>
           </div>
         </div>
