@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import AnimateHeight from 'react-animate-height';
 
 import SubSection from "./SubSection"
 import styles from "./BoxSection.module.css";
-import { Album, Artist, Playlist, Sorting, Track, UserBox } from '../../interfaces';
+import { Album, Artist, ModalState, Playlist, Sorting, Track, UserBox } from '../../interfaces';
 import  * as checkType from  "../../typeguards";
 import ItemDetail from '../../pages/ItemDetail';
 
@@ -13,7 +13,7 @@ interface IProps<T> {
   box: UserBox
   sorting: Sorting
   visible: boolean
-	toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
+	toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
 function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, box, sorting, visible, toggleModal}: IProps<T>) {

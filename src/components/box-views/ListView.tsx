@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Artist, Album, Track, Playlist } from "../../interfaces";
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { Artist, Album, Track, Playlist, ModalState } from "../../interfaces";
 
 import ListRowTrack from "./list-row/ListRowTrack"
 import ListRowAlbum from "./list-row/ListRowAlbum"
@@ -13,7 +13,7 @@ interface IProps<T> {
   page: string
   boxId: string
   customSorting: boolean
-  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
+  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
 function ListView<T extends Artist | Album | Track | Playlist>({data, page, listType, toggleModal, boxId}: IProps<T>) {

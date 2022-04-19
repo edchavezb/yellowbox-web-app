@@ -1,11 +1,12 @@
-import { Album, Artist, Playlist, Track } from "../../interfaces";
+import { Dispatch, SetStateAction } from "react";
+import { Album, Artist, ModalState, Playlist, Track } from "../../interfaces";
 import styles from "./DragActions.module.css";
 
 interface IProps {
 	page: string
   boxId: string
   elementDragging: boolean
-  toggleModal: (toggle: {visible: boolean, type: string, boxId: string, page: string, itemData: Artist | Album | Track | Playlist}) => void
+  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
 function DragActions({page, boxId, toggleModal, elementDragging}: IProps) {

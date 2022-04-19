@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
 import styles from "./Header.module.css";
-import { Album, Artist, Playlist, Track } from "../../interfaces";
+import { Album, Artist, Playlist, Track, UserBox } from "../../interfaces";
 
 interface IProps {
+  boxes: UserBox[]
+  dispatch: any //TODO: Change any type
   toggleModal: (toggle: {visible: boolean, type: string, boxId: string, page: string, itemData?: Artist | Album | Track | Playlist}) => void
 }
 

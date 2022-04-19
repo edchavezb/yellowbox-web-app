@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Artist, Album, Track, Playlist } from "../../interfaces";
+import { Dispatch, SetStateAction, useState } from 'react';
+import { Artist, Album, Track, Playlist, ModalState } from "../../interfaces";
 
 import DetailRow from './DetailRow';
 import DragActions from "../layout/DragActions"
@@ -10,7 +10,7 @@ interface IProps<T> {
   page: string
   boxId: string
   customSorting: boolean
-  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
+  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
 function DetailView<T extends Artist | Album | Track | Playlist>({data, page, toggleModal, boxId}: IProps<T>) {

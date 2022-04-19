@@ -15,9 +15,7 @@ interface UserBox {
     playlists: Sorting
   }
   sectionVisibility: Visibility
-  subSections : [
-    {type: string, name: string}
-  ]
+  subSections : {type: string, name: string}[]
 }
 
 interface Sorting {
@@ -64,9 +62,9 @@ interface Artist {
   external_urls: {
     spotify: string
   }
-  genres: string[]
+  genres?: string[]
   id: string
-  images: ItemImage[]
+  images?: ItemImage[]
   name: string
   popularity?: number
   type: string
@@ -131,13 +129,21 @@ interface PlaylistItem {
   added_by: SpotifyUser
   is_local: boolean
   primary_color: string
-  track: any // Hey bro you need to do something here
+  track: any // TODO: Hey bro you need to do something here
 }
 
 interface ItemImage {
-  height: number
+  height?: number | null
   url: string
-  width: number
+  width?: number | null
 }
 
-export type { UserBox, Visibility, Sorting, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage }
+interface ModalState {
+  itemData?: Artist | Album | Track | Playlist
+  visible: boolean
+  type: string
+  boxId: string
+  page: string
+}
+
+export type { UserBox, Visibility, Sorting, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage, ModalState }

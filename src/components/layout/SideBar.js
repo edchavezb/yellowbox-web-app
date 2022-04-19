@@ -50,6 +50,11 @@ function SideBar({userName, boxes, dispatch}) {
         extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSection: "default"}
       break;
       }
+      case "playlist" : {
+        const {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri} = data
+        extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSection: "default"}
+      break;
+      }
       default :
         extractedData = data
     }

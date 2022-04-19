@@ -2,7 +2,8 @@ import GridView from "./GridView"
 import ListView from "./ListView"
 import DetailView from "./DetailView"
 import styles from "./SubSection.module.css";
-import { Album, Artist, Playlist, Track } from "../../interfaces";
+import { Album, Artist, ModalState, Playlist, Track } from "../../interfaces";
+import { Dispatch, SetStateAction } from "react";
 
 interface IProps<T> {
 	itemsMatch: T[]
@@ -13,7 +14,7 @@ interface IProps<T> {
   isDefault: boolean
   customSorting: boolean
   page?: string
-  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
+  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
 function SubSection<T extends Artist | Album | Track | Playlist>({itemsMatch, subName, viewType, sectionType, toggleModal, boxId, isDefault, page, customSorting}: IProps<T>) {

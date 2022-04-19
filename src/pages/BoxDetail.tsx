@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { useParams } from 'react-router-dom';
 
 import BoxUtilities from '../components/box-views/BoxUtilities';
 import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
-import { Album, Artist, Playlist, Track, UserBox } from '../interfaces';
+import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../interfaces';
 
 interface IProps {
 	userBoxes: UserBox[]
-  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
+  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
 function BoxDetail({userBoxes, toggleModal}: IProps) {

@@ -1,6 +1,6 @@
 //import React, { useState, useEffect } from 'react';
 import { Dispatch, SetStateAction } from "react";
-import { UserBox, Visibility } from "../../interfaces";
+import { ModalState, UserBox, Visibility } from "../../interfaces";
 
 import styles from "./BoxUtilities.module.css";
 
@@ -9,7 +9,7 @@ interface IProps {
   singleTypeBox: Boolean
   visibility: Visibility
 	setVisibility: Dispatch<SetStateAction<Visibility>>
-  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
+  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
 function BoxUtilities({box, singleTypeBox, visibility, setVisibility, toggleModal}: IProps) {
@@ -50,7 +50,7 @@ function BoxUtilities({box, singleTypeBox, visibility, setVisibility, toggleModa
           </div>
           : ""}
       </div>
-      <button id={styles.sortingButton} onClick={() => toggleModal({visible: true, type: "Sorting Options", boxId: box.id})}> Sorting Options </button>
+      <button id={styles.sortingButton} onClick={() => toggleModal({visible: true, type: "Sorting Options", boxId: box.id, page:"Box"})}> Sorting Options </button>
     </div>
   )
 }
