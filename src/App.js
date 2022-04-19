@@ -27,7 +27,7 @@ function App() {
 
   const [boxes, dispatchBoxUpdates] = useReducer(updateBoxes, defaultBoxes)
 
-  const [modal, setModal] = useState({visible: false, type: "", boxId: "", page: ""})
+  const [modal, setModal] = useState({itemData: {}, visible: false, type: "", boxId: "", page: ""})
 
   useEffect(() => {
     console.log(boxes)

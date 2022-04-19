@@ -41,9 +41,9 @@ function GridItem<T extends Artist | Album | Track | Playlist>({element, setElem
 	const itemCoverArt = elementImages && elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
 
 
-	const handleDrag = (e: React.DragEvent<HTMLDivElement>, element:IProps<T>["element"]) => {
+	const handleDrag = (event: React.DragEvent<HTMLDivElement>, element:IProps<T>["element"]) => {
 		console.log(element)
-		e.dataTransfer.setData("data", JSON.stringify(element))
+		event.dataTransfer.setData("data", JSON.stringify(element))
 		setElementDragging(true)
 	}
 
