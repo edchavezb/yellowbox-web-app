@@ -124,11 +124,11 @@ function SortingMenu({boxId, userBoxes, toggleModal, dispatch}) {
               
 
               <div className={styles.formInput}>
-                <input type="checkbox" name="sub-section" defaultChecked={boxSorting[section].subSections}
+                <input type="checkbox" name="sub-section" defaultChecked={boxSorting[section].displaySubSections}
                   onChange={e => {
                     console.log(e.target.checked)
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section]))
-                    let updatedSection = {...sectionCopy, subSections: e.target.checked}
+                    let updatedSection = {...sectionCopy, displaySubSections: e.target.checked}
                     let newSortingObject = {}
                     newSortingObject[section] = updatedSection
                     console.log(newSortingObject)

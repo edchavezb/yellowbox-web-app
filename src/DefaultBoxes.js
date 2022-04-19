@@ -100,13 +100,15 @@ const defaultBoxes = [
             "total": 100
         },
         type: "playlist",
-        uri: "spotify:playlist:37i9dQZF1DXaMxIh88NH1N"
+        uri: "spotify:playlist:37i9dQZF1DXaMxIh88NH1N",
+        subSection: "default"
       }
     ],
     tracks: [],
     sectionSorting: {
       artists: {
         primarySorting: "custom",
+        secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
         displaySubSections: true

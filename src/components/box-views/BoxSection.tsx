@@ -110,7 +110,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, bo
           <span> {type} ({data.length}) </span>
         </div>
 
-        {box.subSections ? 
+        {sorting.displaySubSections ? 
           <div className={styles.sectionWithSubs}>
             <div className={sorting.primarySorting === "custom" ? styles.defaultSubSection : styles.hidden}>
               <SubSection 
