@@ -4,10 +4,26 @@ import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../../inter
 
 import styles from "./SortingMenu.module.css";
 
+enum UpdateBoxTypes {
+  UPDATE_BOX = 'UPDATE_BOX',
+  ADD_BOX = 'ADD_BOX',
+  DELETE_BOX = 'DELETE_BOX',
+}
+
+interface UpdateBoxPayload {
+  updatedBox?: UserBox
+  newBox?: UserBox
+  targetIndex?: number
+  targetId?: string
+}
+
 interface IProps {
   userBoxes: UserBox[]
   boxId: string
-  dispatch: any //TODO: dispatch type
+  dispatch: React.Dispatch<{
+    type: UpdateBoxTypes;
+    payload: UpdateBoxPayload;
+  }>
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
@@ -32,7 +48,7 @@ function SortingMenu({boxId, userBoxes, toggleModal, dispatch}: IProps) {
     }
     console.log(boxCopy)
     console.log(updatedBox)
-    dispatch({ type: "UPDATE_BOX", payload: { updatedBox: updatedBox, target: targetIndex }})
+    dispatch({ type: UpdateBoxTypes["UPDATE_BOX"], payload: { updatedBox: updatedBox, targetIndex: targetIndex }})
     toggleModal({ visible: false, type: "", boxId:"", page:"" })
   }
 
@@ -55,7 +71,7 @@ function SortingMenu({boxId, userBoxes, toggleModal, dispatch}: IProps) {
                   onChange={e => {
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
                     let updatedSection = {...sectionCopy, view: e.target.value}
-                    let newSortingObject!: BoxSorting;
+                    let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
                     console.log(newSortingObject)
                     setSorting((state: BoxSorting) => ({...state, ...newSortingObject})) 
@@ -74,7 +90,7 @@ function SortingMenu({boxId, userBoxes, toggleModal, dispatch}: IProps) {
                     console.log(sectionCopy)
                     let updatedSection = {...sectionCopy, primarySorting: e.target.value}
                     console.log(updatedSection)
-                    let newSortingObject!: BoxSorting;
+                    let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
                     console.log(newSortingObject)
                     setSorting(state => ({...state, ...newSortingObject})) 
@@ -97,7 +113,7 @@ function SortingMenu({boxId, userBoxes, toggleModal, dispatch}: IProps) {
                   onChange={e => {
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
                     let updatedSection = {...sectionCopy, secondarySorting: e.target.value}
-                    let newSortingObject!: BoxSorting;
+                    let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
                     console.log(newSortingObject)
                     setSorting(state => ({...state, ...newSortingObject})) 
@@ -123,7 +139,7 @@ function SortingMenu({boxId, userBoxes, toggleModal, dispatch}: IProps) {
                     const booleanValue = e.target.value === "true"
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
                     let updatedSection = {...sectionCopy, ascendingOrder: booleanValue}
-                    let newSortingObject!: BoxSorting;
+                    let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
                     console.log(newSortingObject)
                     setSorting(state => ({...state, ...newSortingObject})) 
@@ -141,7 +157,7 @@ function SortingMenu({boxId, userBoxes, toggleModal, dispatch}: IProps) {
                     console.log(e.target.checked)
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
                     let updatedSection = {...sectionCopy, displaySubSections: e.target.checked}
-                    let newSortingObject!: BoxSorting;
+                    let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
                     console.log(newSortingObject)
                     setSorting(state => ({...state, ...newSortingObject})) 
