@@ -3,10 +3,26 @@ import { Album, Artist, Playlist, Track, UserBox } from "../../interfaces";
 
 import styles from "./SideBar.module.css";
 
+enum UpdateBoxTypes {
+  UPDATE_BOX = 'UPDATE_BOX',
+  ADD_BOX = 'ADD_BOX',
+  DELETE_BOX = 'DELETE_BOX',
+}
+
+interface UpdateBoxPayload {
+  updatedBox?: UserBox
+  newBox?: UserBox
+  targetIndex?: number
+  targetId?: string
+}
+
 interface IProps {
 	userName: string
   boxes: UserBox[]
-  dispatch: any //TODO: dispatch type
+  dispatch: React.Dispatch<{
+    type: UpdateBoxTypes;
+    payload: UpdateBoxPayload;
+  }>
 }
 
 type MusicData = Artist | Album | Track | Playlist;
@@ -16,29 +32,30 @@ function SideBar({userName, boxes, dispatch}: IProps) {
   const addToBox = (draggedData: MusicData, targetBoxId: string) => {
     console.log(JSON.stringify(draggedData))
     const targetIndex = boxes.findIndex(box => box.id === targetBoxId)
-    const targetBox = {...boxes.find(box => box.id === targetBoxId)}
-    let updatedBox = {}
+    const targetBox = {...boxes.find(box => box.id === targetBoxId) as UserBox}
+    let updatedBox!: UserBox;
     switch (draggedData.type) {
       case "album" :
-        const updatedAlbums = [...targetBox.albums as Album[], draggedData]
+        const updatedAlbums = [...targetBox.albums as Album[], draggedData as Album]
         updatedBox = {...targetBox, albums: updatedAlbums}
       break;
       case "artist" :
-        const updatedArtists = [...targetBox.artists as Artist[], draggedData]
+        const updatedArtists = [...targetBox.artists as Artist[], draggedData as Artist]
         updatedBox = {...targetBox, artists: updatedArtists}
       break;
       case "track" :
-        const updatedTracks = [...targetBox.tracks as Track[], draggedData]
+        const updatedTracks = [...targetBox.tracks as Track[], draggedData as Track]
         updatedBox = {...targetBox, tracks: updatedTracks}
       break;
       case "playlist" :
-        const updatedPlaylists = [...targetBox.playlists as Playlist[], draggedData]
+        const updatedPlaylists = [...targetBox.playlists as Playlist[], draggedData as Playlist]
         updatedBox = {...targetBox, playlists: updatedPlaylists}
       break;
       default :
+        updatedBox = targetBox
     }
     console.log("Dispatch call")
-    dispatch({type: "UPDATE_BOX", payload: {updatedBox: updatedBox, target: targetIndex}})
+    dispatch({type: UpdateBoxTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
   }
 
   const extractCrucialData = (data: MusicData) => {
