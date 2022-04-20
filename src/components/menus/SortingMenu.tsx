@@ -6,13 +6,12 @@ import styles from "./SortingMenu.module.css";
 
 enum UpdateBoxTypes {
   UPDATE_BOX = 'UPDATE_BOX',
-  ADD_BOX = 'ADD_BOX',
+  NEW_BOX = 'NEW_BOX',
   DELETE_BOX = 'DELETE_BOX',
 }
 
 interface UpdateBoxPayload {
-  updatedBox?: UserBox
-  newBox?: UserBox
+  updatedBox: UserBox
   targetIndex?: number
   targetId?: string
 }

@@ -14,15 +14,14 @@ import { ModalState, UserBox } from './interfaces';
 
 enum UpdateBoxTypes {
   UPDATE_BOX = 'UPDATE_BOX',
-  ADD_BOX = 'ADD_BOX',
+  NEW_BOX = 'NEW_BOX',
   DELETE_BOX = 'DELETE_BOX',
 }
 
 interface UpdateBoxPayload {
   updatedBox: UserBox
-  newBox: UserBox
-  targetIndex: number
-  targetId: string
+  targetIndex?: number
+  targetId?: string
 }
 
 function App() {
@@ -31,8 +30,8 @@ function App() {
     switch (action.type) {
       case 'UPDATE_BOX':
       return state.map((item, index) => index === action.payload.targetIndex ? action.payload.updatedBox : item)
-      case 'ADD_BOX':
-      return [...state, action.payload.newBox]
+      case 'NEW_BOX':
+      return [...state, action.payload.updatedBox]
       case 'DELETE_BOX':
       return state.filter((item) => item.id !== action.payload.targetId)
       default :
