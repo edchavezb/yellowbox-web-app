@@ -1,20 +1,37 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { ModalState, UpdateBoxPayload, UserBox } from '../../interfaces';
 
 import styles from "./NewBoxMenu.module.css";
 
-function NewBoxMenu({userBoxes, toggleModal, dispatch}) {
+enum UpdateBoxTypes {
+  UPDATE_BOX = 'UPDATE_BOX',
+  NEW_BOX = 'NEW_BOX',
+  DELETE_BOX = 'DELETE_BOX',
+}
 
-  const [boxDetails, setBoxDetails] = useState({boxName: "", boxDesc: "", avail: "public"})
+interface IProps {
+  userBoxes: UserBox[]
+  dispatch: React.Dispatch<{
+    type: UpdateBoxTypes;
+    payload: UpdateBoxPayload;
+  }>
+  toggleModal: Dispatch<SetStateAction<ModalState>>
+}
 
-  const Box = () => {
+function NewBoxMenu({userBoxes, toggleModal, dispatch}: IProps) {
+
+  const [boxDetails, setBoxDetails] = useState({boxName: "", boxDesc: "", public: true})
+
+  const newUserBox = () => {
     const highestId = parseInt(userBoxes[userBoxes.length - 1].id)
     const newId = (highestId + 1).toString()
 
-    const newBox = {
+    const newBox: UserBox = {
       id: newId,
       name: boxDetails.boxName,
       description: boxDetails.boxDesc,
-      available: boxDetails.avail,
+      creator: "", //TODO: This must be the user ID
+      public: boxDetails.public,
       artists: [],
       albums: [],
       tracks: [],
@@ -22,30 +39,31 @@ function NewBoxMenu({userBoxes, toggleModal, dispatch}) {
       sectionSorting: {
         artists: {
           primarySorting: "custom",
+          secondarySorting: "none",
           view: "grid",
           ascendingOrder: false,
-          subSections: false
+          displaySubSections: false
         },
         albums: {
           primarySorting: "custom",
           secondarySorting: "none",
           view: "grid",
           ascendingOrder: false,
-          subSections: false
+          displaySubSections: false
         },
         tracks: {
           primarySorting: "custom",
           secondarySorting: "none",
           view: "grid",
           ascendingOrder: false,
-          subSections: false
+          displaySubSections: false
         },
         playlists: {
           primarySorting: "custom",
           secondarySorting: "none",
           view: "grid",
           ascendingOrder: false,
-          subSections: false
+          displaySubSections: false
         }
       },
       sectionVisibility: {
@@ -61,8 +79,8 @@ function NewBoxMenu({userBoxes, toggleModal, dispatch}) {
   }
 
   const handleSaveNewBox = () => {
-    dispatch({ type: "ADD_BOX", payload: { newBox: Box() } })
-    toggleModal({ visible: false, type: "", boxId:"" })
+    dispatch({ type: UpdateBoxTypes["NEW_BOX"], payload: { updatedBox: newUserBox() } })
+    toggleModal({ visible: false, type: "", boxId:"", page: ""})
   }
 
   return (
@@ -75,7 +93,7 @@ function NewBoxMenu({userBoxes, toggleModal, dispatch}) {
         />
 
         <label className={styles.formElement} htmlFor="box-description"> Description </label>
-        <textarea className={styles.formElement} name="box-description" id={styles.boxDesc} rows="3" resize="none"
+        <textarea className={styles.formElement} name="box-description" id={styles.boxDesc} rows={3}
           onChange={(e) => setBoxDetails(state => ({ ...state, boxDesc: e.target.value.trim() }))} 
         />
       </form>

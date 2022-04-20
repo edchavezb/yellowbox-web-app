@@ -33,6 +33,12 @@ interface Visibility {
   playlists: boolean
 }
 
+interface UpdateBoxPayload {
+  updatedBox: UserBox
+  targetIndex?: number
+  targetId?: string
+}
+
 interface Album {
   album_type: string
   artists: Artist[]
@@ -146,4 +152,4 @@ interface ModalState {
   page: string
 }
 
-export type { UserBox, Visibility, Sorting, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage, ModalState }
+export type { UserBox, Visibility, Sorting, UpdateBoxPayload, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage, ModalState }
