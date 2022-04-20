@@ -1,29 +1,36 @@
 import { Link } from "react-router-dom";
+import { Album, Artist, Playlist, Track, UserBox } from "../../interfaces";
 
 import styles from "./SideBar.module.css";
 
-function SideBar({userName, boxes, dispatch}) {
+interface IProps {
+	userName: string
+  boxes: UserBox[]
+  dispatch: any //TODO: dispatch type
+}
 
-  const addToBox = (draggedData, targetBoxId) => {
+function SideBar({userName, boxes, dispatch}: IProps) {
+
+  const addToBox = (draggedData: Artist | Album | Track | Playlist, targetBoxId: string) => {
     console.log(JSON.stringify(draggedData))
     const targetIndex = boxes.findIndex(box => box.id === targetBoxId)
     const targetBox = {...boxes.find(box => box.id === targetBoxId)}
     let updatedBox = {}
     switch (draggedData.type) {
       case "album" :
-        const updatedAlbums = [...targetBox.albums, draggedData]
+        const updatedAlbums = [...targetBox.albums as Album[], draggedData]
         updatedBox = {...targetBox, albums: updatedAlbums}
       break;
       case "artist" :
-        const updatedArtists = [...targetBox.artists, draggedData]
+        const updatedArtists = [...targetBox.artists as Artist[], draggedData]
         updatedBox = {...targetBox, artists: updatedArtists}
       break;
       case "track" :
-        const updatedTracks = [...targetBox.tracks, draggedData]
+        const updatedTracks = [...targetBox.tracks as Track[], draggedData]
         updatedBox = {...targetBox, tracks: updatedTracks}
       break;
       case "playlist" :
-        const updatedPlaylists = [...targetBox.playlists, draggedData]
+        const updatedPlaylists = [...targetBox.playlists as Playlist[], draggedData]
         updatedBox = {...targetBox, playlists: updatedPlaylists}
       break;
       default :
@@ -32,27 +39,27 @@ function SideBar({userName, boxes, dispatch}) {
     dispatch({type: "UPDATE_BOX", payload: {updatedBox: updatedBox, target: targetIndex}})
   }
 
-  const extractCrucialData = (data) => {
-    let extractedData = {}
+  const extractCrucialData = (data: Artist | Album | Track | Playlist) => {
+    let extractedData: Artist | Album | Track | Playlist;
     switch(data.type){
       case "artist" : {
-        const {external_urls, genres, id, images, name, popularity, type, uri} = data
+        const {external_urls, genres, id, images, name, popularity, type, uri} = data as Artist
         extractedData = {external_urls, genres, id, images, name, popularity, type, uri, subSection: "default"}
       break;
       }
       case "album" : {
-        const {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri} = data
+        const {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri} = data as Album
         extractedData = {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri, subSection: "default"}
       break;
       }
       case "track" : {
-        const {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri} = data
+        const {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri} = data as Track
         extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSection: "default"}
       break;
       }
       case "playlist" : {
-        const {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri} = data
-        extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSection: "default"}
+        const {description, external_urls, id, images, name, owner, tracks, type, uri} = data as Playlist
+        extractedData = {description, external_urls, id, images, name, owner, tracks, type, uri, subSection: "default"}
       break;
       }
       default :
@@ -61,32 +68,32 @@ function SideBar({userName, boxes, dispatch}) {
     return extractedData
   }
 
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.target.className = styles.linkDragOver
+  const handleDragEnter = (event: React.DragEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    (event.target as Element).className = styles.linkDragOver
   }
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.target.className = styles.boxLink
+  const handleDragLeave = (event: React.DragEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    (event.target as Element).className = styles.boxLink
   }
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleDragOver = (event: React.DragEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
   }
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.target.className = styles.boxLink
-    const data = JSON.parse(e.dataTransfer.getData("data"))
+  const handleDrop = (event: React.DragEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    (event.target as Element).className = styles.boxLink
+    const data = JSON.parse(event.dataTransfer.getData("data"))
     const crucialData = extractCrucialData(data)
     console.log(data)
-    console.log(e.currentTarget.id)
-    addToBox(crucialData, e.currentTarget.id)
+    console.log(event.currentTarget.id)
+    addToBox(crucialData, event.currentTarget.id)
   }
 
   return (
