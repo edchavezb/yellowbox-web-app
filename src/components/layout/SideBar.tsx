@@ -9,9 +9,11 @@ interface IProps {
   dispatch: any //TODO: dispatch type
 }
 
+type MusicData = Artist | Album | Track | Playlist;
+
 function SideBar({userName, boxes, dispatch}: IProps) {
 
-  const addToBox = (draggedData: Artist | Album | Track | Playlist, targetBoxId: string) => {
+  const addToBox = (draggedData: MusicData, targetBoxId: string) => {
     console.log(JSON.stringify(draggedData))
     const targetIndex = boxes.findIndex(box => box.id === targetBoxId)
     const targetBox = {...boxes.find(box => box.id === targetBoxId)}
@@ -39,8 +41,8 @@ function SideBar({userName, boxes, dispatch}: IProps) {
     dispatch({type: "UPDATE_BOX", payload: {updatedBox: updatedBox, target: targetIndex}})
   }
 
-  const extractCrucialData = (data: Artist | Album | Track | Playlist) => {
-    let extractedData: Artist | Album | Track | Playlist;
+  const extractCrucialData = (data: MusicData) => {
+    let extractedData: MusicData;
     switch(data.type){
       case "artist" : {
         const {external_urls, genres, id, images, name, popularity, type, uri} = data as Artist

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import BoxUtilities from '../components/box-views/BoxUtilities';
 import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../interfaces';
+import { Album, Artist, ModalState, Playlist, Track, UserBox, Visibility } from '../interfaces';
 
 interface IProps {
 	userBoxes: UserBox[]
@@ -18,7 +18,7 @@ function BoxDetail({userBoxes, toggleModal}: IProps) {
   const boxNotEmpty = boxCopy.albums.length > 0 || boxCopy.artists.length > 0 || boxCopy.tracks.length > 0 || boxCopy.playlists.length > 0;
   const singleTypeBox = [boxCopy.albums, boxCopy.artists, boxCopy.tracks].filter((section) => section.length > 0).length === 1
 
-  const [visibility, setVisibility] = useState({...boxCopy.sectionVisibility})
+  const [visibility, setVisibility] = useState<Visibility>({...boxCopy.sectionVisibility})
 
   useEffect(() => {
     console.log(visibility)
