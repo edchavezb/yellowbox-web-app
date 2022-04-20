@@ -14,7 +14,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({element, setElem
 
 	const {name, type, uri, id} = element;
   //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)
-  let elementImages!: ItemImage[]; 
+  let elementImages: ItemImage[] | undefined; 
   let authorName!: ReactElement | string;
 
 	if (checkType.isAlbum(element)){
@@ -22,13 +22,13 @@ function GridItem<T extends Artist | Album | Track | Playlist>({element, setElem
     authorName = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
     elementImages = images
 	} 
-  else if (checkType.isArtist(element)){
-    const {images} = element
-    authorName = ""
-    elementImages = images
-  }
+	else if (checkType.isArtist(element)){
+		const {images} = element as Artist;
+		authorName = ""
+		elementImages = images
+	}
   else if (checkType.isTrack(element)){
-    const {artists, album} = element
+    const {artists, album} = element;
     authorName = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
     elementImages = album.images;
   }

@@ -47,7 +47,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({element, setEle
 	} 
 
   else if (checkType.isArtist(element)){
-    const {images, genres} = element
+    const {images, genres} = element as Artist
     authorName = ""
     elementImages = images as ItemImage[]
 

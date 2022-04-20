@@ -7,7 +7,7 @@ import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../inter
 import { Dispatch, SetStateAction } from "react";
 
 interface IProps {
-	itemData: Artist | Album | Track | Playlist
+	itemData: Artist | Album | Track | Playlist | undefined
   type: string
   page?: string
   visible: boolean
@@ -38,20 +38,24 @@ function Modal({itemData, type, page, visible, userBoxes, toggleModal, dispatch,
       modalBody = ""
   }
 
-  return (
-    visible &&
-    <div id={styles.modalDiv}> 
-      <div id={styles.modalPanel}>
-        <div id={styles.modalHeader}>
-          <div id={styles.modalTitle}> {type} </div>
-          <div id={styles.closeModal} onClick={() => toggleModal({visible: false, type:"", boxId:"", page: "", itemData: undefined})}>
-            <img id={styles.closeIcon} alt="Close modal" src="/icons/close.svg"/>
+
+  if(visible){
+    return (
+      <div id={styles.modalDiv}> 
+        <div id={styles.modalPanel}>
+          <div id={styles.modalHeader}>
+            <div id={styles.modalTitle}> {type} </div>
+            <div id={styles.closeModal} onClick={() => toggleModal({visible: false, type:"", boxId:"", page: "", itemData: undefined})}>
+              <img id={styles.closeIcon} alt="Close modal" src="/icons/close.svg"/>
+            </div>
           </div>
+          {modalBody}
         </div>
-        {modalBody}
       </div>
-    </div>
-  );
+    );
+  } else {
+    return null
+  }
   
 }
 
