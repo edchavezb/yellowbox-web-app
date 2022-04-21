@@ -68,12 +68,12 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({element, setEle
   else if (checkType.isTrack(element)){
     const {artists, album, duration_ms} = element
     authorName = getArtistLinks(artists)
-    elementImages = album.images;
+    elementImages = album!.images;
 
     metadata = 
     <div className={styles.metaDataContainer}>
       <div className={styles.metaDataPill}>
-        {`${album.release_date.split("-")[0]}`}
+        {`${album!.release_date.split("-")[0]}`}
       </div>
       <div className={styles.metaDataPill}>
         {`${Math.floor(duration_ms/60000)}`.padStart(2,'0')+":"+`${Math.floor(duration_ms%60000/1000)}`.padStart(2,'0')}

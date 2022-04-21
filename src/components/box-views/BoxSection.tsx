@@ -30,11 +30,11 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, bo
 
     switch (propertyName) {
       case "release_year":
-        propertyValue = checkType.isTrack(item) ? parseInt(item.album["release_date"].split("-")[0]) 
+        propertyValue = checkType.isTrack(item) ? parseInt(item.album!["release_date"].split("-")[0]) 
             : checkType.isAlbum(item) ? parseInt(item["release_date"].split("-")[0]) : ""
       break;
       case "release_date":
-        propertyValue = checkType.isTrack(item) ? new Date(item.album.release_date) 
+        propertyValue = checkType.isTrack(item) ? new Date(item.album!.release_date) 
             : checkType.isAlbum(item) ? new Date(item.release_date) : ""
       break;
       case "artist":   
@@ -44,7 +44,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, bo
         propertyValue = item.name
       break;
       case "album":
-        propertyValue = checkType.isTrack(item) ? item.album.name : ""
+        propertyValue = checkType.isTrack(item) ? item.album!.name : ""
       break;
       case "duration":
         propertyValue = checkType.isTrack(item) ? item.duration_ms : ""

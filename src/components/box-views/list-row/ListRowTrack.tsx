@@ -46,7 +46,7 @@ function ListRowTrack({ element, setElementDragging, index, page }: IProps) {
       </div>
 
       <div className={styles.colLeftAlgn}>
-        <Link to={`/detail/album/${album.id}`}>{album.name}</Link>
+        <Link to={`/detail/album/${album!.id}`}>{album!.name}</Link>
       </div>
 
       <div className={styles.colCentered}>

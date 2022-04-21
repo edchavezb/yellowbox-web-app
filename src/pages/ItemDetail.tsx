@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios'
 import querystring from 'querystring'
@@ -9,26 +9,43 @@ import ListView from '../components/box-views/ListView';
 import TrackVisualizer from '../components/box-views/TrackVisualizer';
 
 import styles from "./ItemDetail.module.css"
+import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../interfaces';
+import * as checkType from '../typeguards';
 
-function ItemDetail({toggleModal}) {
+interface IProps {
+  toggleModal: Dispatch<SetStateAction<ModalState>>
+}
+
+type MusicData = Artist | Album | Track | Playlist;
+
+type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
+
+function ItemDetail({toggleModal}: IProps) {
 
   const history = useHistory();
-  const params = useParams()
-  const [itemData, setItemData] = useState({ album: {id:""}, type: "", images: ["https://via.placeholder.com/150"], name: "", artists: [{ name: "" }], album_type: "", tracks: {items: []} })
+  const params = useParams<{id: string, type: string}>()
+  const [itemData, setItemData] = useState<MusicData>({} as MusicData)
   const [itemListType, setItemListType] = useState("")
   const [itemContents, setItemContents] = useState({ items: [] })
-  const [itemAlbum, setItemAlbum] = useState({ tracks: {items: []}, release_date: "" })
+  const [itemAlbum, setItemAlbum] = useState<Album>({} as Album)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     handleDetailData(params.type, params.id)
   }, [params.type, params.id, history.location.pathname]);
 
+  useEffect(() => {
+    if (itemData.id !== undefined){
+      setIsLoading(false)
+    }
+  }, [itemData]);
+
   useEffect(() => console.log(itemContents), [itemContents]);
 
-  const handleDetailData = (typeParam, idParam) => {
+  const handleDetailData = async (typeParam: string, idParam: string) => {
 
-    let itemQuery;
-    let contentsQuery;
+    let itemQuery: string;
+    let contentsQuery: string;
     switch (typeParam) {
       case 'album':
         itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
@@ -72,7 +89,7 @@ function ItemDetail({toggleModal}) {
       });
   }
 
-  const getItemData = (type, query, auth) => {
+  const getItemData = (type: string, query: string, auth: string) => {
     axios({
       method: 'get',
       url: query,
@@ -93,7 +110,7 @@ function ItemDetail({toggleModal}) {
       });
   }
 
-  const getContents = (query, auth) => {
+  const getContents = (query: string, auth: string) => {
     axios({
       method: 'get',
       url: query,
@@ -111,7 +128,7 @@ function ItemDetail({toggleModal}) {
       });
   }
 
-  const getItemAlbum = (query, auth) => {
+  const getItemAlbum = (query: string, auth: string) => {
     axios({
       method: 'get',
       url: query,
@@ -129,7 +146,7 @@ function ItemDetail({toggleModal}) {
       });
   }
 
-  const getArtistLinks = (artists) => {
+  const getArtistLinks = (artists: Artist[]) => {
     const artistLinks = artists.slice(0, 3).map((artist, idx, arr) => {
       return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx+1] ? ", " : ""}`} </span> </Link>;
     })
@@ -137,23 +154,23 @@ function ItemDetail({toggleModal}) {
     return artistLinks;
   }
 
-  const removeDuplicatesByProperty = (arrayObj, propertyName) => {
+  const removeDuplicatesByProperty = <T extends Artist | Album | Track | Playlist>(arrayObj: T[], propertyName: string) => {
     const newArr = arrayObj.filter((element, index) => {
-      return index === arrayObj.map(e => e[propertyName]).indexOf(element[propertyName]);
+      return index === arrayObj.map(e => e[propertyName as keyof T]).indexOf(element[propertyName as keyof T]);
     })
     return newArr;
   }
 
-  const getAlbumRunningTime = (tracks) => {
+  const getAlbumRunningTime = (tracks: Track[]) => {
     const milliSecs = tracks.map(track => track.duration_ms).reduce((prev, curr) => {return prev + curr});
-    const minutes = parseInt(milliSecs / 60000);
-    const seconds = parseInt((milliSecs % 60000) / 1000);
+    const minutes = milliSecs / 60000;
+    const seconds = (milliSecs % 60000) / 1000;
     return `${minutes} min, ${seconds} sec`
   }
 
-  const attachAlbumDataToTracks = (parentItem) => {
+  const attachAlbumDataToTracks = (parentItem: Album) => {
     console.log(parentItem);
-    return parentItem.tracks.items.map(e => ({'album': {
+    return parentItem.tracks!.items.map(e => ({'album': {
       "album_type" : parentItem.album_type, 
       "artists" : parentItem.artists, 
       "external_urls" : parentItem.external_urls, 
@@ -171,7 +188,7 @@ function ItemDetail({toggleModal}) {
     switch (params.type){
       case "album" :
         listComponent = 
-        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData)} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
+        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData as Album)} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
       break;
       case "playlist" :
         listComponent = 
@@ -183,7 +200,7 @@ function ItemDetail({toggleModal}) {
       break;
       case "track" :
         listComponent = 
-        <TrackVisualizer data={itemData} album={itemAlbum} page="detail" toggleModal={toggleModal} boxId={undefined}/>
+        <TrackVisualizer data={itemData as Track} album={itemAlbum} page="detail" toggleModal={toggleModal} boxId={undefined}/>
       break;
       default:
         listComponent = <div></div>
@@ -192,67 +209,72 @@ function ItemDetail({toggleModal}) {
     return listComponent;
   }
 
-  return (
-    <div className="main-div">
-      <div className={styles.itemDataViewer}>
-        <img className={styles.itemImage} src={itemData.type === "track" ? itemData.album.images[0].url : itemData.images[0].url} alt={itemData.name}></img>
-        <div className={styles.metadataContainer}>
+  if (!isLoading) {
+    return (
+      <div className="main-div">
+        <div className={styles.itemDataViewer}>
+          <img className={styles.itemImage} src={itemData.type === "track" ? (itemData as Track).album!.images[0].url : ((itemData as Album | Artist | Playlist).images![0].url || "https://via.placeholder.com/150")} alt={itemData.name}></img>
+          <div className={styles.metadataContainer}>
 
-          <div className={styles.itemTitle}> {itemData.name} </div>
+            <div className={styles.itemTitle}> {itemData.name} </div>
 
-          {itemData.type === "artist" ?
-            <div className={styles.itemDetails}>
-              {itemData.genres.slice(0,3).map((genre, idx, arr) => {
-                return (
-                  <span key={genre}>
-                      {genre.split(" ").map((word, i ,a) => {
-                        return `${word.charAt(0).toUpperCase()}${word.slice(1)}${a[i+1] ? " " : ""}`
-                      })}{arr[idx+1] ? ", " : ""}
-                  </span> 
-                )
-              })}
-              {itemData.genres.length ? " | " : ""}Popular releases
-            </div>
-            : ""
-          }
+            {checkType.isArtist(itemData) ?
+              <div className={styles.itemDetails}>
+                {itemData.genres && 
+                  itemData.genres.slice(0,3).map((genre, idx, arr) => {
+                  return (
+                    <span key={genre}>
+                        {genre.split(" ").map((word, i ,a) => {
+                          return `${word.charAt(0).toUpperCase()}${word.slice(1)}${a[i+1] ? " " : ""}`
+                        })}{arr[idx+1] ? ", " : ""}
+                    </span> 
+                  )
+                })}
+                {itemData.genres ? " | " : ""}Popular releases
+              </div>
+              : ""
+            }
 
-          {itemData.type === "album" ?
-            <div className={styles.itemDetails}>
-              {`${itemData.album_type.charAt(0).toUpperCase()}${itemData.album_type.slice(1)}`}  
-              {` by `}{getArtistLinks(itemData.artists)} |
-              {` ${itemData.release_date.split("-")[0]}`} |
-              {` ${itemData.total_tracks} tracks`} |
-              {` ${getAlbumRunningTime(itemData.tracks.items)}`}
-            </div>
-            : ""
-          }
+            {checkType.isAlbum(itemData) ?
+              <div className={styles.itemDetails}>
+                {`${itemData.album_type.charAt(0).toUpperCase()}${itemData.album_type.slice(1)}`}  
+                {` by `}{getArtistLinks(itemData.artists)} |
+                {` ${itemData.release_date.split("-")[0]}`} |
+                {` ${itemData.total_tracks} tracks`} |
+                {` ${getAlbumRunningTime(itemData.tracks!.items)}`}
+              </div>
+              : ""
+            }
 
-          {itemData.type === "track" ?
-            <div className={styles.itemDetails}>
-              {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
-              {` by `}{getArtistLinks(itemData.artists)} |
-              {` ${itemData.album.release_date.split("-")[0]}`} |
-              {` ${parseInt(itemData.duration_ms/60000)}`.padStart(2,0)+":"+`${Math.floor(itemData.duration_ms%60000/1000)}`.padStart(2,0)}
-            </div>
-            : ""
-          }
+            {checkType.isTrack(itemData) ?
+              <div className={styles.itemDetails}>
+                {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
+                {` by `}{getArtistLinks(itemData.artists)} |
+                {` ${itemData.album!.release_date.split("-")[0]}`} |
+                {` ${itemData.duration_ms/60000}`.padStart(2,"0")+":"+`${Math.floor(itemData.duration_ms%60000/1000)}`.padStart(2,"0")}
+              </div>
+              : ""
+            }
 
-          {itemData.type === "playlist" ?
-            <div className={styles.itemDetails}>
-              {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
-              {` by `}<a href={itemData.owner.uri}><span> {itemData.owner.display_name} </span></a> |
-              {` ${itemData.tracks.total} tracks`} |
-              {` ${itemData.description}`}
-            </div>
-            : ""
-          }
+            {checkType.isPlaylist(itemData) ?
+              <div className={styles.itemDetails}>
+                {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
+                {` by `}<a href={itemData.owner.uri}><span> {itemData.owner.display_name} </span></a> |
+                {` ${itemData.tracks.total} tracks`} |
+                {` ${itemData.description}`}
+              </div>
+              : ""
+            }
 
+          </div>
         </div>
+        <hr />
+        {getListComponent()}
       </div>
-      <hr />
-      {getListComponent()}
-    </div>
-  );
+    );
+  } else {
+    return (<div></div>)
+  }
 }
 
 export default ItemDetail;

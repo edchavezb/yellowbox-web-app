@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios'
 
-import { Album, Track } from '../../interfaces';
+import { Album, ModalState, Track } from '../../interfaces';
 import DragActions from "../layout/DragActions"
 import styles from "./TrackVisualizer.module.css";
 
@@ -11,9 +11,9 @@ import defaultLyrics from '../../DefaultLyrics';
 interface IProps {
 	data: Track
   album: Album
-  boxId: string
+  boxId?: string
   page?: string
-  toggleModal: (toggle: {visible: boolean, type: string, boxId: string}) => void
+  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
 function TrackVisualizer({data, album, page, toggleModal, boxId}: IProps) {

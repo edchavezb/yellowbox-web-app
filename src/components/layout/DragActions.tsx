@@ -4,7 +4,7 @@ import styles from "./DragActions.module.css";
 
 interface IProps {
 	page: string
-  boxId: string
+  boxId?: string
   elementDragging: boolean
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
@@ -34,7 +34,7 @@ function DragActions({page, boxId, toggleModal, elementDragging}: IProps) {
     const data = JSON.parse(event.dataTransfer.getData("data"))
     const action = event.currentTarget.getAttribute("data-action")
     event.currentTarget.className = `${styles.dragActionsButton} ${styles.idleColor}`
-    toggleModal({visible: true, type: action as string, boxId: boxId, itemData: data, page: page})
+    toggleModal({visible: true, type: action as string, boxId: boxId ?? "", itemData: data, page: page})
   }
 
   return (

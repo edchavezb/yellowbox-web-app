@@ -11,7 +11,7 @@ interface IProps<T> {
   data: T[]
   listType: string
   page: string
-  boxId: string
+  boxId?: string
   customSorting: boolean
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }

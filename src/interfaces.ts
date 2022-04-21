@@ -79,7 +79,7 @@ interface Artist {
 }
 
 interface Track {
-  album: Album
+  album?: Album
   artists: Artist[]
   duration_ms: number
   explicit: string

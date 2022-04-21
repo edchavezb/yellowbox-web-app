@@ -30,7 +30,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({element, setElem
   else if (checkType.isTrack(element)){
     const {artists, album} = element;
     authorName = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
-    elementImages = album.images;
+    elementImages = album!.images;
   }
 	else if (checkType.isPlaylist(element)){
 		const {images, owner} = element;

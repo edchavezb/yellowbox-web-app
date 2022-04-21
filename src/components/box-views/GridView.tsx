@@ -8,7 +8,7 @@ import styles from "./GridView.module.css";
 interface IProps<T> {
   data: T[]
   page: string
-  boxId: string
+  boxId?: string
   customSorting: boolean
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
