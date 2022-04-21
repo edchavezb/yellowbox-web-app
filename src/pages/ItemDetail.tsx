@@ -12,6 +12,8 @@ import styles from "./ItemDetail.module.css"
 import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../interfaces';
 import * as checkType from '../typeguards';
 
+// TODO: Handle promises better
+
 interface IProps {
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
@@ -27,7 +29,7 @@ function ItemDetail({toggleModal}: IProps) {
   const [itemData, setItemData] = useState<MusicData>({} as MusicData)
   const [itemListType, setItemListType] = useState("")
   const [itemContents, setItemContents] = useState({ items: [] })
-  const [itemAlbum, setItemAlbum] = useState<Album>({} as Album)
+  const [itemAlbum, setItemAlbum] = useState<Album>({name: "", release_date: "", album_id:"", album_type:"", artists: [], external_urls: {spotify: ""}, id:"", images: [], total_tracks:0, type:"album", uri:""} as Album)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
@@ -163,8 +165,8 @@ function ItemDetail({toggleModal}: IProps) {
 
   const getAlbumRunningTime = (tracks: Track[]) => {
     const milliSecs = tracks.map(track => track.duration_ms).reduce((prev, curr) => {return prev + curr});
-    const minutes = milliSecs / 60000;
-    const seconds = (milliSecs % 60000) / 1000;
+    const minutes = Math.floor(milliSecs / 60000);
+    const seconds = Math.floor((milliSecs % 60000) / 1000);
     return `${minutes} min, ${seconds} sec`
   }
 
@@ -251,7 +253,7 @@ function ItemDetail({toggleModal}: IProps) {
                 {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
                 {` by `}{getArtistLinks(itemData.artists)} |
                 {` ${itemData.album!.release_date.split("-")[0]}`} |
-                {` ${itemData.duration_ms/60000}`.padStart(2,"0")+":"+`${Math.floor(itemData.duration_ms%60000/1000)}`.padStart(2,"0")}
+                {` ${Math.floor(itemData.duration_ms/60000)}`.padStart(2,"0")+":"+`${Math.floor(itemData.duration_ms%60000/1000)}`.padStart(2,"0")}
               </div>
               : ""
             }
