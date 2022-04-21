@@ -7,7 +7,7 @@ import credentials from '../keys'
 import SearchResults from "./SearchResults"
 
 import styles from "./Search.module.css"
-import { ModalState } from '../interfaces';
+import { Album, Artist, ModalState, Playlist, Track } from '../interfaces';
 
 interface IProps {
   toggleModal: Dispatch<SetStateAction<ModalState>>
@@ -80,10 +80,10 @@ function Search({toggleModal}: IProps) {
   return (
     <div className="main-div">
       <h1> Is this what you're looking for? </h1>
-      {searchData.artists.length > 0 && <SearchResults type="Artists" data={searchData.artists.slice(0,12)} toggleModal={toggleModal}/>}
-      {searchData.albums.length > 0 && <SearchResults type="Albums" data={searchData.albums.slice(0,12)} toggleModal={toggleModal} />}
-      {searchData.tracks.length > 0 && <SearchResults type="Tracks" data={searchData.tracks.slice(0,12)} toggleModal={toggleModal}/>}
-      {searchData.playlists.length > 0 && <SearchResults type="Playlists" data={searchData.playlists.slice(0,12)} toggleModal={toggleModal}/>}
+      {searchData.artists.length > 0 && <SearchResults<Artist> type="Artists" data={searchData.artists.slice(0,12)} toggleModal={toggleModal}/>}
+      {searchData.albums.length > 0 && <SearchResults<Album> type="Albums" data={searchData.albums.slice(0,12)} toggleModal={toggleModal} />}
+      {searchData.tracks.length > 0 && <SearchResults<Track> type="Tracks" data={searchData.tracks.slice(0,12)} toggleModal={toggleModal}/>}
+      {searchData.playlists.length > 0 && <SearchResults<Playlist> type="Playlists" data={searchData.playlists.slice(0,12)} toggleModal={toggleModal}/>}
     </div>
   );
 }
