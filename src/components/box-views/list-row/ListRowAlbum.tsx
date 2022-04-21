@@ -1,8 +1,16 @@
 import { Link } from "react-router-dom";
+import { Album } from "../../../interfaces";
 
 import styles from "./ListRowAlbum.module.css";
 
-function ListRowAlbum({ element, setElementDragging, index }) {
+interface IProps {
+	element: Album
+  index: number
+  page: string
+	setElementDragging: (dragging: boolean) => void
+}
+
+function ListRowAlbum({ element, setElementDragging, index, page }: IProps) {
   const { name, type, artists, album_type, release_date, id, uri } = element;
 
   const getArtistLinks = () => {
@@ -13,9 +21,9 @@ function ListRowAlbum({ element, setElementDragging, index }) {
     return artistArray;
   }
 
-  const handleDrag = (e, data) => {
-    console.log(data)
-    e.dataTransfer.setData("data", JSON.stringify(data))
+  const handleDrag = (e: React.DragEvent<HTMLDivElement>, element:IProps["element"]) => {
+    console.log(element)
+    e.dataTransfer.setData("data", JSON.stringify(element))
     setElementDragging(true)
   }
 

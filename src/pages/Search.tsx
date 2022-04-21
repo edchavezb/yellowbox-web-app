@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import querystring from 'querystring'
@@ -7,10 +7,15 @@ import credentials from '../keys'
 import SearchResults from "./SearchResults"
 
 import styles from "./Search.module.css"
+import { Album, Artist, ModalState, Playlist, Track } from '../interfaces';
 
-function Search({toggleModal}) {
+interface IProps {
+  toggleModal: Dispatch<SetStateAction<ModalState>>
+}
 
-  const params = useParams()
+function Search({toggleModal}: IProps) {
+
+  const params = useParams<{query: string}>()
   const [spotifyToken, setToken] = useState('')
   const [searchData, setSearchData] = useState({artists: [], albums: [], tracks: [], playlists:[]})
 
@@ -21,7 +26,7 @@ function Search({toggleModal}) {
 
   useEffect(() => console.log(searchData), [searchData]);
 
-  const handleSearch = (query) => {
+  const handleSearch = (query: string) => {
     if (!spotifyToken) {
       spotifyAuthorization(query);
     } else {
@@ -29,7 +34,7 @@ function Search({toggleModal}) {
     }
   }
 
-  const spotifyAuthorization = (query) => {
+  const spotifyAuthorization = (query: string) => {
     axios({
       method: 'post',
       url: 'https://accounts.spotify.com/api/token',
@@ -49,7 +54,7 @@ function Search({toggleModal}) {
       });
   }
 
-  const queryAPI = (query, token) => {
+  const queryAPI = (query: string, token: string) => {
     axios({
       method: 'get',
       url: `https://api.spotify.com/v1/search?q=${query}&type=artist,track,album,playlist`,
@@ -75,10 +80,10 @@ function Search({toggleModal}) {
   return (
     <div className="main-div">
       <h1> Is this what you're looking for? </h1>
-      {searchData.artists.length > 0 && <SearchResults type="Artists" data={searchData.artists.slice(0,12)} toggleModal={toggleModal}/>}
-      {searchData.albums.length > 0 && <SearchResults type="Albums" data={searchData.albums.slice(0,12)} toggleModal={toggleModal} />}
-      {searchData.tracks.length > 0 && <SearchResults type="Tracks" data={searchData.tracks.slice(0,12)} toggleModal={toggleModal}/>}
-      {searchData.playlists.length > 0 && <SearchResults type="Playlists" data={searchData.playlists.slice(0,12)} toggleModal={toggleModal}/>}
+      {searchData.artists.length > 0 && <SearchResults<Artist> type="Artists" data={searchData.artists.slice(0,12)} toggleModal={toggleModal}/>}
+      {searchData.albums.length > 0 && <SearchResults<Album> type="Albums" data={searchData.albums.slice(0,12)} toggleModal={toggleModal} />}
+      {searchData.tracks.length > 0 && <SearchResults<Track> type="Tracks" data={searchData.tracks.slice(0,12)} toggleModal={toggleModal}/>}
+      {searchData.playlists.length > 0 && <SearchResults<Playlist> type="Playlists" data={searchData.playlists.slice(0,12)} toggleModal={toggleModal}/>}
     </div>
   );
 }

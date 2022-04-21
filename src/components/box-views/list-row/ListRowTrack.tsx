@@ -1,8 +1,16 @@
 import { Link } from "react-router-dom";
+import { Track } from "../../../interfaces";
 
 import styles from "./ListRowTrack.module.css";
 
-function ListRowTrack({ element, setElementDragging, index }) {
+interface IProps {
+	element: Track
+  index: number
+  page: string
+	setElementDragging: (dragging: boolean) => void
+}
+
+function ListRowTrack({ element, setElementDragging, index, page }: IProps) {
 
   const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
 
@@ -14,9 +22,9 @@ function ListRowTrack({ element, setElementDragging, index }) {
     return artistArray;
   }
 
-  const handleDrag = (e, data) => {
-    console.log(data)
-    e.dataTransfer.setData("data", JSON.stringify(data))
+  const handleDrag = (e: React.DragEvent<HTMLDivElement>, element:IProps["element"]) => {
+    console.log(element)
+    e.dataTransfer.setData("data", JSON.stringify(element))
     setElementDragging(true)
   }
 
@@ -38,11 +46,11 @@ function ListRowTrack({ element, setElementDragging, index }) {
       </div>
 
       <div className={styles.colLeftAlgn}>
-        <Link to={`/detail/album/${album.id}`}>{album.name}</Link>
+        <Link to={`/detail/album/${album!.id}`}>{album!.name}</Link>
       </div>
 
       <div className={styles.colCentered}>
-        {`${parseInt(duration_ms / 60000)}`.padStart(2, 0) + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, 0)}
+        {`${Math.floor(duration_ms/60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
       </div>
 
       <div className={styles.colCentered}>

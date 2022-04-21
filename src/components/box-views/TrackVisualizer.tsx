@@ -1,16 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios'
 
+import { Album, ModalState, Track } from '../../interfaces';
 import DragActions from "../layout/DragActions"
 import styles from "./TrackVisualizer.module.css";
 
 import defaultLyrics from '../../DefaultLyrics';
 
-function TrackVisualizer({data, album, page, toggleModal, boxId}) {
+interface IProps {
+	data: Track
+  album: Album
+  boxId?: string
+  page?: string
+  toggleModal: Dispatch<SetStateAction<ModalState>>
+}
 
-  const [elementDragging, setElementDragging] = useState(false)
-  const [trackLyrics, setTrackLyrics] = useState({ lyrics: ""})
+function TrackVisualizer({data, album, page, toggleModal, boxId}: IProps) {
+
+  const [trackLyrics, setTrackLyrics] = useState({lyrics: ""})
 
   useEffect(() => {
     getLyrics(`https://api.lyrics.ovh/v1/${data.artists[0].name.replace(" ", "_")}/${data.name.replace(" ", "_")}`)
@@ -19,7 +27,7 @@ function TrackVisualizer({data, album, page, toggleModal, boxId}) {
   useEffect(() => console.log(album), [album]);
   useEffect(() => console.log(data), [data]);
 
-  const getLyrics = (query) => {
+  const getLyrics = (query: string) => {
     //console.log(artist, song)
     //const query = `https://api.lyrics.ovh/v1/${artist.replace(" ", "_")}/${song.replace(" ", "_")}`;
     //const query = `https://api.lyrics.ovh/v1/Prince/Purple_Rain`;
@@ -31,7 +39,7 @@ function TrackVisualizer({data, album, page, toggleModal, boxId}) {
       })
       .catch(error => {
         console.log(error);
-        setTrackLyrics({lyrics: null});
+        setTrackLyrics({lyrics: ""});
       });
   }
 
@@ -56,7 +64,7 @@ function TrackVisualizer({data, album, page, toggleModal, boxId}) {
             <div className={styles.tracksContainer}>
 
               <div className={styles.tracklistCol}>
-                {album.tracks.items.slice(0, album.tracks.items.length / 2 + album.tracks.items.length % 2).map(track => {
+                {album.tracks?.items.slice(0, album.tracks.items.length / 2 + album.tracks.items.length % 2).map(track => {
                   return (
                     <Link key={track.id} to={`/detail/track/${track.id}`}>
                       <div className={styles.relatedRow}>  
@@ -68,7 +76,7 @@ function TrackVisualizer({data, album, page, toggleModal, boxId}) {
               </div>
 
               <div className={styles.tracklistCol}>
-                {album.tracks.items.slice(album.tracks.items.length / 2 + album.tracks.items.length % 2, album.tracks.items.length).map(track => {
+                {album.tracks?.items.slice(album.tracks.items.length / 2 + album.tracks.items.length % 2, album.tracks.items.length).map(track => {
                   return (
                     <Link key={track.id} to={`/detail/track/${track.id}`}>
                       <div className={styles.relatedRow}>  
@@ -83,7 +91,6 @@ function TrackVisualizer({data, album, page, toggleModal, boxId}) {
           </div>
         </div>
       </div>
-      <DragActions elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
     </div>
   )
 }

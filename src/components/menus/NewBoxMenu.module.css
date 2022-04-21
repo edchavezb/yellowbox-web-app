@@ -18,3 +18,7 @@
     justify-content: flex-end;
     align-items: center;
 }
+
+#boxDesc {
+    resize: none;
+}
