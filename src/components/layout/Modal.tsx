@@ -44,7 +44,7 @@ function Modal({itemData, type, page, visible, userBoxes, toggleModal, dispatch,
       modalBody = <SortingMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} />
     break;
     case "Delete Item" :
-      modalBody = <DeletePrompt toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={itemData} />
+      modalBody = <DeletePrompt toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={itemData!} />
     break;
     case "Add To" :
       modalBody = <AddToMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={itemData!} page={page!}/>
