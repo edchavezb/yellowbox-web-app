@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { Album, Artist, Playlist, Track, UserBox } from "../../interfaces";
+import { Album, Artist, Playlist, Track, User, UserBox } from "../../interfaces";
 
 import styles from "./SideBar.module.css";
 
-enum UpdateBoxTypes {
+enum UserBoxesActionTypes {
   UPDATE_BOX = 'UPDATE_BOX',
   ADD_BOX = 'ADD_BOX',
   DELETE_BOX = 'DELETE_BOX',
@@ -17,17 +17,17 @@ interface UpdateBoxPayload {
 }
 
 interface IProps {
-	userName: string
+	user: User
   boxes: UserBox[]
   dispatch: React.Dispatch<{
-    type: UpdateBoxTypes;
+    type: UserBoxesActionTypes;
     payload: UpdateBoxPayload;
   }>
 }
 
 type MusicData = Artist | Album | Track | Playlist;
 
-function SideBar({userName, boxes, dispatch}: IProps) {
+function SideBar({user, boxes, dispatch}: IProps) {
 
   const addToBox = (draggedData: MusicData, targetBoxId: string) => {
     console.log(JSON.stringify(draggedData))
@@ -55,7 +55,7 @@ function SideBar({userName, boxes, dispatch}: IProps) {
         updatedBox = targetBox
     }
     console.log("Dispatch call")
-    dispatch({type: UpdateBoxTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
+    dispatch({type: UserBoxesActionTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
   }
 
   const extractCrucialData = (data: MusicData) => {
@@ -118,8 +118,8 @@ function SideBar({userName, boxes, dispatch}: IProps) {
   return (
     <div id={styles.mainPanel}>
       <div id={styles.user}>
-        <img id={styles.userImage} src="/user.png" alt="user" />
-        <span id={styles.userName}> {userName} </span>
+        <img id={styles.userImage} src={user.userData.image ? user.userData.image : "/user.png"} alt="user" />
+        <span id={styles.userName}> {user.userData.displayName} </span>
       </div>
       <div id={styles.boxList}>
         <h4 id={styles.boxesTitle}> Your Boxes </h4>

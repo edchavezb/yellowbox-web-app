@@ -2,17 +2,18 @@ import SideBar from "./SideBar"
 import Header from "./Header"
 import styles from "./Layout.module.css";
 
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../interfaces";
+import { Album, Artist, ModalState, Playlist, Track, User, UserBox } from "../../interfaces";
 import { Dispatch, ReactNode, SetStateAction } from "react";
 
 interface IProps {
   children: ReactNode
   userBoxes: UserBox[]
+  user: User
   dispatch: any
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function Layout({userBoxes, toggleModal, dispatch, children}: IProps) {
+function Layout({user, userBoxes, toggleModal, dispatch, children}: IProps) {
 
   return (
     <div id={styles.layout}>
@@ -20,7 +21,7 @@ function Layout({userBoxes, toggleModal, dispatch, children}: IProps) {
         <Header boxes={userBoxes} toggleModal={toggleModal} dispatch={dispatch}/>
       </section>
       <section id={styles.sideBar}>
-        <SideBar userName="Pablo Alboran" boxes={userBoxes} dispatch={dispatch}/>
+        <SideBar user={user} boxes={userBoxes} dispatch={dispatch}/>
       </section>
       <section id={styles.mainView}>
         {children}

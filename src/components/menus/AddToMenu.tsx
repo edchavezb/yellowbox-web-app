@@ -3,7 +3,7 @@ import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../inter
 
 import styles from "./AddToMenu.module.css";
 
-enum UpdateBoxTypes {
+enum UserBoxesActionTypes {
   UPDATE_BOX = 'UPDATE_BOX',
   NEW_BOX = 'NEW_BOX',
   DELETE_BOX = 'DELETE_BOX',
@@ -23,7 +23,7 @@ interface IProps {
   userBoxes: UserBox[]
   boxId: string 
   dispatch: React.Dispatch<{
-    type: UpdateBoxTypes;
+    type: UserBoxesActionTypes;
     payload: UpdateBoxPayload;
   }>
   toggleModal: Dispatch<SetStateAction<ModalState>>
@@ -69,7 +69,7 @@ function AddToMenu({page, itemData, userBoxes, boxId, toggleModal, dispatch}: IP
       default :
     }
     console.log("Dispatch call")
-    dispatch({type: UpdateBoxTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
+    dispatch({type: UserBoxesActionTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
     toggleModal({ visible: false, type: "", boxId:"", page: "", itemData: undefined})
   }
 

@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { UserBox, UpdateBoxPayload, ModalState, Album, Artist, Playlist, Track } from "../../interfaces";
 import styles from "./DeletePrompt.module.css";
 
-enum UpdateBoxTypes {
+enum UserBoxesActionTypes {
   UPDATE_BOX = 'UPDATE_BOX',
   NEW_BOX = 'NEW_BOX',
   DELETE_BOX = 'DELETE_BOX',
@@ -17,7 +17,7 @@ interface IProps {
   boxId: string
   itemData: MusicData
   dispatch: React.Dispatch<{
-    type: UpdateBoxTypes;
+    type: UserBoxesActionTypes;
     payload: UpdateBoxPayload;
   }>
   toggleModal: Dispatch<SetStateAction<ModalState>>
@@ -48,7 +48,7 @@ function DeletePrompt({itemData, userBoxes, boxId, toggleModal, dispatch}: IProp
     const filteredSection = (targetSection as Array<T>).filter((item: T) => item.id !== itemData.id)
     let updatedBox: UserBox = JSON.parse(JSON.stringify(targetBox))
     updatedBox[sectionType as keyof BoxSections] = filteredSection
-    dispatch({ type: UpdateBoxTypes["UPDATE_BOX"], payload: { updatedBox: updatedBox, targetIndex: targetIndex } })
+    dispatch({ type: UserBoxesActionTypes["UPDATE_BOX"], payload: { updatedBox: updatedBox, targetIndex: targetIndex } })
     toggleModal({ visible: false, type: "", boxId:"", itemData: undefined, page:""})
   } //TODO: Better implementation
 

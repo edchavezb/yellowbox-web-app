@@ -1,3 +1,21 @@
+interface User {
+  auth: UserAuth
+  userData: UserData
+}
+
+interface UserData {
+  displayName: string
+  userId: string
+  uri: string
+  image: string
+  email: string
+}
+
+interface UserAuth {
+  code: string | null
+  refreshToken: string | null
+}
+
 interface UserBox {
   id: string
   name: string
@@ -152,4 +170,4 @@ interface ModalState {
   page: string
 }
 
-export type { UserBox, Visibility, Sorting, UpdateBoxPayload, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage, ModalState }
+export type { User, UserBox, Visibility, Sorting, UpdateBoxPayload, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage, ModalState }

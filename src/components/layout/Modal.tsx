@@ -6,7 +6,7 @@ import AddToMenu from "../menus/AddToMenu";
 import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../interfaces";
 import { Dispatch, SetStateAction } from "react";
 
-enum UpdateBoxTypes {
+enum UserBoxesActionTypes {
   UPDATE_BOX = 'UPDATE_BOX',
   NEW_BOX = 'NEW_BOX',
   DELETE_BOX = 'DELETE_BOX',
@@ -26,7 +26,7 @@ interface IProps {
   userBoxes: UserBox[]
   boxId: string
   dispatch: React.Dispatch<{
-    type: UpdateBoxTypes;
+    type: UserBoxesActionTypes;
     payload: UpdateBoxPayload;
   }>
   toggleModal: Dispatch<SetStateAction<ModalState>>

@@ -3,7 +3,7 @@ import { ModalState, UpdateBoxPayload, UserBox } from '../../interfaces';
 
 import styles from "./NewBoxMenu.module.css";
 
-enum UpdateBoxTypes {
+enum UserBoxesActionTypes {
   UPDATE_BOX = 'UPDATE_BOX',
   NEW_BOX = 'NEW_BOX',
   DELETE_BOX = 'DELETE_BOX',
@@ -12,7 +12,7 @@ enum UpdateBoxTypes {
 interface IProps {
   userBoxes: UserBox[]
   dispatch: React.Dispatch<{
-    type: UpdateBoxTypes;
+    type: UserBoxesActionTypes;
     payload: UpdateBoxPayload;
   }>
   toggleModal: Dispatch<SetStateAction<ModalState>>
@@ -79,7 +79,7 @@ function NewBoxMenu({userBoxes, toggleModal, dispatch}: IProps) {
   }
 
   const handleSaveNewBox = () => {
-    dispatch({ type: UpdateBoxTypes["NEW_BOX"], payload: { updatedBox: newUserBox() } })
+    dispatch({ type: UserBoxesActionTypes["NEW_BOX"], payload: { updatedBox: newUserBox() } })
     toggleModal({ visible: false, type: "", boxId:"", page: ""})
   }
 
