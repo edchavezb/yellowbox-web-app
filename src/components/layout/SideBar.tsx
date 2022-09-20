@@ -117,12 +117,23 @@ function SideBar({user, boxes, dispatch}: IProps) {
 
   return (
     <div id={styles.mainPanel}>
-      <div id={styles.user}>
-        <img id={styles.userImage} src={user.userData.image ? user.userData.image : "/user.png"} alt="user" />
-        <span id={styles.userName}> {user.userData.displayName} </span>
-      </div>
+      {
+        user.auth.code &&
+        <>
+          <div id={styles.user}>
+            <img id={styles.userImage} src={user.userData.image ? user.userData.image : "/user.png"} alt="user" />
+            <span id={styles.userName}> {user.userData.displayName} </span>
+          </div>
+          <div id={styles.servicesList}>
+            <h4 className={styles.sectionTitle}> Your Services </h4>
+            <Link className={styles.serviceLink} to={`/myaccounts/spotify`}>
+              <div className={styles.serviceButton}><img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img><span> Spotify </span></div>
+            </Link>
+          </div>
+        </>
+      }
       <div id={styles.boxList}>
-        <h4 id={styles.boxesTitle}> Your Boxes </h4>
+        <h4 className={styles.sectionTitle}> Your Boxes </h4>
         {boxes.map((box) => {
           return (
             <Link className={styles.boxLink} id={box.id} key={box.id} to={`/box/${box.id}`} 

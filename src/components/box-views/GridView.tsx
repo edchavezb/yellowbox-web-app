@@ -9,7 +9,7 @@ interface IProps<T> {
   data: T[]
   page: string
   boxId?: string
-  customSorting: boolean
+  customSorting?: boolean
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 

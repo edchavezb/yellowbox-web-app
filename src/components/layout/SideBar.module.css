@@ -11,7 +11,7 @@
 }
 
 #userImage {
-    width: 35px;
+    width: 28px;
     border-radius: 50%;
 }
 
@@ -21,11 +21,11 @@
     font-size: .8em;
 }
 
-#boxesTitle {
+.sectionTitle {
     margin: 15px 0px 10px 0px
 }
 
-#boxList {
+#boxList, #servicesList, #user {
     padding: 0px 10px;
 }
 
@@ -39,6 +39,18 @@
 .boxLink, .boxLink:link:active:visited {
     color: #ffffff;
     text-decoration: none;
+}
+
+.serviceButton {
+    display: flex;
+    align-items: center;
+}
+
+.spotifyIcon {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+    margin-top: 2px;
 }
 
 .linkDragOver {

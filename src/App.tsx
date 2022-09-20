@@ -12,6 +12,7 @@ import Modal from "./components/layout/Modal"
 import defaultBoxes from "./DefaultBoxes"
 import ItemDetail from './pages/ItemDetail';
 import { ModalState, User, UserBox } from './interfaces';
+import SpotifyUser from './pages/SpotifyUser';
 
 const defaultUserData: User = {
   auth: {
@@ -97,6 +98,7 @@ function App() {
         <Route path="/search/:query" render={(props) => <Search {...props} toggleModal={setModal}/>} />
         <Route path="/box/:id" render={(props) => <BoxDetail {...props} userBoxes={boxes} toggleModal={setModal}/>} />
         <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props} toggleModal={setModal}/>} />
+        <Route path="/myaccounts/spotify" render={(props) => <SpotifyUser {...props} user={user} dispatchUser={dispatchUserAction} toggleModal={setModal}/>} />
       </Layout>
     </Router>
   );
