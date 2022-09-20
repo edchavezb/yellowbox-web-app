@@ -1,7 +1,7 @@
 //import React, { useState, useEffect } from 'react';
 //import axios from 'axios'
 
-//import styles from "./Home.module.css"
+import styles from "./Home.module.css"
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import querystring from 'querystring'
 import credentials from '../keys'
@@ -47,8 +47,13 @@ function Home({location, user}: RouteComponentProps & IProps) {
   if (!user.auth.code){
     return (
       <div className="main-div">
-        <h1> Please log in with your Spotify account </h1>
-        <button onClick={handleLogin}> Log in </button>
+        <h1> Please log in with one of your accounts </h1>
+        <button className={styles.roundedButton} onClick={handleLogin}>
+          <div className={styles.buttonContents}>
+            <img className={styles.spotifyIcon} src='/icons/spotify_icon_white.png' alt='spotify'/> 
+            <span>Log in with Spotify</span>
+          </div>
+        </button>
       </div>
     );
   } else {

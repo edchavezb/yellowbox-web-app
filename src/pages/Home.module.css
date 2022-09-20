@@ -2,3 +2,22 @@
     display: flex;
     flex-wrap: wrap;
 }
+
+.roundedButton {
+    height: 40px;
+    padding: 0px 15px;
+    border-radius: 500px;
+    cursor: pointer;
+    color: #ffffff;
+    background-color: #1DB954;
+}
+
+.buttonContents{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.spotifyIcon {
+    width: 15px;
+}

@@ -2,7 +2,7 @@ import styles from "./SpotifyUser.module.css"
 import querystring from 'querystring'
 import credentials from '../keys'
 import axios from 'axios';
-import { Album, Artist, ModalState, Track, User } from "../interfaces";
+import { Artist, ModalState, Track, User } from "../interfaces";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import GridView from "../components/box-views/GridView";
 
