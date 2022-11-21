@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { UserBox, UpdateBoxPayload, ModalState, Album, Artist, Playlist, Track } from "../../interfaces";
+import { UserBox, UpdateBoxPayload, ModalState, Album, Artist, Playlist, Track } from "../../core/types/interfaces";
 import styles from "./DeletePrompt.module.css";
 
 enum UserBoxesActionTypes {

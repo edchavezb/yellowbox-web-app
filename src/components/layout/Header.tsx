@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
 import styles from "./Header.module.css";
-import { Album, Artist, Playlist, Track, UserBox } from "../../interfaces";
+import { Album, Artist, Playlist, Track, UserBox } from "../../core/types/interfaces";
 
 interface IProps {
   boxes: UserBox[]

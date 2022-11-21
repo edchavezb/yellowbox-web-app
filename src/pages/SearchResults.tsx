@@ -1,7 +1,7 @@
 //import React, { useState, useEffect } from 'react';
 import GridView from "../components/box-views/GridView"
 import styles from "./SearchResults.module.css";
-import { Album, Artist, ModalState, Playlist, Track } from '../interfaces';
+import { Album, Artist, ModalState, Playlist, Track } from '../core/types/interfaces';
 import { Dispatch, SetStateAction } from "react";
 
 interface IProps<T> {

@@ -2,7 +2,7 @@ import SideBar from "./SideBar"
 import Header from "./Header"
 import styles from "./Layout.module.css";
 
-import { Album, Artist, ModalState, Playlist, Track, User, UserBox } from "../../interfaces";
+import { Album, Artist, ModalState, Playlist, Track, User, UserBox } from "../../core/types/interfaces";
 import { Dispatch, ReactNode, SetStateAction } from "react";
 
 interface IProps {

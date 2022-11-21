@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Album } from "../../../interfaces";
+import { Album } from "../../../core/types/interfaces";
 
 import styles from "./ListRowAlbum.module.css";
 

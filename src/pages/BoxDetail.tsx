@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import BoxUtilities from '../components/box-views/BoxUtilities';
 import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
-import { Album, Artist, ModalState, Playlist, Track, UserBox, Visibility } from '../interfaces';
+import { Album, Artist, ModalState, Playlist, Track, UserBox, Visibility } from '../core/types/interfaces';
 
 interface IProps {
 	userBoxes: UserBox[]

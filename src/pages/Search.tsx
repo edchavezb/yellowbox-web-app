@@ -7,7 +7,7 @@ import credentials from '../keys'
 import SearchResults from "./SearchResults"
 
 import styles from "./Search.module.css"
-import { Album, Artist, ModalState, Playlist, Track } from '../interfaces';
+import { Album, Artist, ModalState, Playlist, Track } from '../core/types/interfaces';
 
 interface IProps {
   toggleModal: Dispatch<SetStateAction<ModalState>>

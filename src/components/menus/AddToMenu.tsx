@@ -1,5 +1,5 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../interfaces";
+import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../core/types/interfaces";
 
 import styles from "./AddToMenu.module.css";
 

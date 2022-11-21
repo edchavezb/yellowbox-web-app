@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { Album, Artist, ModalState, Playlist, Track } from "../../interfaces";
+import { Album, Artist, ModalState, Playlist, Track } from "../../core/types/interfaces";
 import styles from "./DragActions.module.css";
 
 interface IProps {

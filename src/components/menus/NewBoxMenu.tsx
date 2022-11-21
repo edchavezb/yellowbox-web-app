@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { ModalState, UpdateBoxPayload, UserBox } from '../../interfaces';
+import { ModalState, UpdateBoxPayload, UserBox } from '../../core/types/interfaces';
 
 import styles from "./NewBoxMenu.module.css";
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Playlist } from "../../../interfaces";
+import { Playlist } from "../../../core/types/interfaces";
 
 import styles from "./ListRowPlaylist.module.css";
 

@@ -1,4 +1,4 @@
-import { UserBox } from "./interfaces";
+import { UserBox } from "../types/interfaces";
 
 const defaultBoxes: UserBox[] = [
   {

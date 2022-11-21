@@ -9,9 +9,9 @@ import Search from "./pages/Search"
 import BoxDetail from "./pages/BoxDetail"
 import Modal from "./components/layout/Modal"
 
-import defaultBoxes from "./DefaultBoxes"
+import defaultBoxes from "./core/mocks/DefaultBoxes"
 import ItemDetail from './pages/ItemDetail';
-import { ModalState, User, UserBox } from './interfaces';
+import { ModalState, User, UserBox } from './core/types/interfaces';
 import SpotifyUser from './pages/SpotifyUser';
 
 const defaultUserData: User = {

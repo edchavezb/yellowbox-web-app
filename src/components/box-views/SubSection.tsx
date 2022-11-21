@@ -2,7 +2,7 @@ import GridView from "./GridView"
 import ListView from "./ListView"
 import DetailView from "./DetailView"
 import styles from "./SubSection.module.css";
-import { Album, Artist, ModalState, Playlist, Track } from "../../interfaces";
+import { Album, Artist, ModalState, Playlist, Track } from "../../core/types/interfaces";
 import { Dispatch, SetStateAction } from "react";
 
 interface IProps<T> {

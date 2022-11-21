@@ -3,8 +3,8 @@ import AnimateHeight from 'react-animate-height';
 
 import SubSection from "./SubSection"
 import styles from "./BoxSection.module.css";
-import { Album, Artist, ModalState, Playlist, Sorting, Track, UserBox } from '../../interfaces';
-import  * as checkType from  "../../typeguards";
+import { Album, Artist, ModalState, Playlist, Sorting, Track, UserBox } from '../../core/types/interfaces';
+import  * as checkType from  "../../core/helpers/typeguards";
 import ItemDetail from '../../pages/ItemDetail';
 
 interface IProps<T> {

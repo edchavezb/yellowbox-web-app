@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Track } from "../../../interfaces";
+import { Track } from "../../../core/types/interfaces";
 
 import styles from "./ListRowTrack.module.css";
 

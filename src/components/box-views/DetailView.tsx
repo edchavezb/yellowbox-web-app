@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Artist, Album, Track, Playlist, ModalState } from "../../interfaces";
+import { Artist, Album, Track, Playlist, ModalState } from "../../core/types/interfaces";
 
 import DetailRow from './DetailRow';
 import DragActions from "../layout/DragActions"

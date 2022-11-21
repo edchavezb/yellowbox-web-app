@@ -5,7 +5,9 @@ import styles from "./Home.module.css"
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import querystring from 'querystring'
 import credentials from '../keys'
-import { User } from "../interfaces";
+import { User } from "../core/types/interfaces";
+import { useEffect } from "react";
+import { getUserBoxes } from "../core/api/userboxes";
 
 interface IProps {
   user: User
@@ -42,6 +44,15 @@ function Home({location, user}: RouteComponentProps & IProps) {
       redirect_uri: 'http://localhost:3000/authsuccess',
       state: generateRandomString(16)
     }));
+  }
+
+  useEffect(() => {
+    fetchBoxes();
+  }, [])
+
+  const fetchBoxes = async () => {
+    const response = await getUserBoxes('637af9aedbd56910b4aa39d3');
+    console.log(response)
   }
 
   if (!user.auth.code){

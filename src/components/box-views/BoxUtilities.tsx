@@ -1,6 +1,6 @@
 //import React, { useState, useEffect } from 'react';
 import { Dispatch, SetStateAction } from "react";
-import { ModalState, UserBox, Visibility } from "../../interfaces";
+import { ModalState, UserBox, Visibility } from "../../core/types/interfaces";
 
 import styles from "./BoxUtilities.module.css";
 

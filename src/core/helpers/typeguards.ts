@@ -1,4 +1,4 @@
-import { Artist, Album, Track, Playlist } from "./interfaces";
+import { Artist, Album, Track, Playlist } from "../types/interfaces";
 
 function isAlbum (element: Artist | Album | Track | Playlist): element is Album {
   return  (element as Album).type === "album";

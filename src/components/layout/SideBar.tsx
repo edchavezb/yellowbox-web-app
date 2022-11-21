@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Album, Artist, Playlist, Track, User, UserBox } from "../../interfaces";
+import { Album, Artist, Playlist, Track, User, UserBox } from "../../core/types/interfaces";
 
 import styles from "./SideBar.module.css";
 

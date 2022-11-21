@@ -1,9 +1,9 @@
 interface User {
   auth: UserAuth
-  userData: UserData
+  userData: SpotifyUserData
 }
 
-interface UserData {
+interface SpotifyUserData {
   displayName: string
   userId: string
   uri: string

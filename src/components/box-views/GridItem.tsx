@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { Link } from "react-router-dom";
-import { Artist, Album, Track, Playlist, ItemImage } from "../../interfaces";
-import  * as checkType from  "../../typeguards";
+import { Artist, Album, Track, Playlist, ItemImage } from "../../core/types/interfaces";
+import  * as checkType from  "../../core/helpers/typeguards";
 
 import styles from "./GridItem.module.css";
 

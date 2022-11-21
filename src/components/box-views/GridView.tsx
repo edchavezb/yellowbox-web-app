@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Artist, Album, Track, Playlist, ModalState } from "../../interfaces";
+import { Artist, Album, Track, Playlist, ModalState } from "../../core/types/interfaces";
 
 import GridItem from "./GridItem"
 import DragActions from "../layout/DragActions"

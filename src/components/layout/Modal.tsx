@@ -3,7 +3,7 @@ import SortingMenu from "../menus/SortingMenu";
 import NewBoxMenu from "../menus/NewBoxMenu";
 import DeletePrompt from "../menus/DeletePrompt";
 import AddToMenu from "../menus/AddToMenu";
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../interfaces";
+import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../core/types/interfaces";
 import { Dispatch, SetStateAction } from "react";
 
 enum UserBoxesActionTypes {

@@ -1,5 +1,5 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import { Artist, Album, Track, Playlist, ModalState } from "../../interfaces";
+import { Artist, Album, Track, Playlist, ModalState } from "../../core/types/interfaces";
 
 import ListRowTrack from "./list-row/ListRowTrack"
 import ListRowAlbum from "./list-row/ListRowAlbum"

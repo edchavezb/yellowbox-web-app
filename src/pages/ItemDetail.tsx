@@ -9,8 +9,8 @@ import ListView from '../components/box-views/ListView';
 import TrackVisualizer from '../components/box-views/TrackVisualizer';
 
 import styles from "./ItemDetail.module.css"
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../interfaces';
-import * as checkType from '../typeguards';
+import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../core/types/interfaces';
+import * as checkType from '../core/helpers/typeguards';
 
 // TODO: Handle promises better
 
