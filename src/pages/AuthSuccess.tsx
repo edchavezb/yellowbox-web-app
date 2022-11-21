@@ -4,7 +4,8 @@ import { RouteComponentProps, useHistory, useLocation, useParams, withRouter } f
 import querystring from 'querystring'
 import credentials from '../keys'
 import axios from 'axios';
-import { getUserDataBySpotifyId } from '../core/api/users';
+import { createUser, getUserDataBySpotifyId } from '../core/api/users';
+import { YellowboxUser } from '../core/types/interfaces';
 
 function AuthSuccess({dispatchSpotifyLogin, dispatchUser} : {dispatchSpotifyLogin: any, dispatchUser: any}) {
   let location = useLocation();
@@ -57,7 +58,18 @@ function AuthSuccess({dispatchSpotifyLogin, dispatchUser} : {dispatchSpotifyLogi
             email: email
           }
         }
-        const user = await getUserDataBySpotifyId(spotifyLogin.userData.userId)
+        let user = await getUserDataBySpotifyId(spotifyLogin.userData.userId)
+        if(!user){
+          const userObj: Omit<YellowboxUser, '_id'> = {
+            displayName: display_name,
+            image: images[0].url,
+            email: email,
+            services: {
+              spotify: id
+            }
+          }
+          user = await createUser(userObj)
+        }
         dispatchSpotifyLogin({ type: 'UPDATE_LOGIN', payload: spotifyLogin })
         dispatchUser({ type: 'UPDATE_USER', payload: user })
         history.push('/')

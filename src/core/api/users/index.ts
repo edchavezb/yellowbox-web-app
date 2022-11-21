@@ -9,3 +9,12 @@ export const getUserDataBySpotifyId = async (spotifyId: string) => {
         console.log(err)
     }
 }
+
+export const createUser = async (userData: Omit<YellowboxUser, '_id'>) => {
+    try {
+        return await api.post<Omit<YellowboxUser, '_id'>, YellowboxUser>('users', userData)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
