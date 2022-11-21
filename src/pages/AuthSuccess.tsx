@@ -17,7 +17,7 @@ function AuthSuccess({dispatchSpotifyLogin, dispatchUser} : {dispatchSpotifyLogi
       url: 'https://accounts.spotify.com/api/token',
       data: querystring.stringify({
         code: code,
-        redirect_uri: 'http://localhost:3000/authsuccess',
+        redirect_uri: `${process.env.REACT_APP_PROJECT_ROOT}/authsuccess`,
         grant_type: 'authorization_code'
       }),
       headers: {
