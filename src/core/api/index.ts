@@ -1,14 +1,8 @@
-export let apiURL: string;
-
-if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-  apiURL = 'http://localhost:3333'
-} else {
-  apiURL = 'https://expressjs-mongoose-production-156f.up.railway.app'
-}
+const apiURL = process.env.REACT_APP_PROJECT_API;
 
 export default {
   get: <R>(endpoint: string, params: { [key: string]: string }) => {
-    const url = new URL(`${apiURL}/api/${endpoint}`);
+    const url = new URL(`${apiURL}/${endpoint}`);
     url.search = new URLSearchParams(params).toString()
     return fetch(url.toString())
       .then((response) => {
@@ -18,16 +12,15 @@ export default {
         return response.json() as Promise<R>
       })
   },
-  post: <D, R>(endpoint: string, data: D): Promise<R> => {
-    return fetch(`http://${apiURL}/api/${endpoint}`, {
+  post: async <D, R>(endpoint: string, postData: D): Promise<R> => {
+    const response = await fetch(`${apiURL}/${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(postData)
     })
-      .then((response) => response.json() as Promise<R>
-      )
+    const responseData = await response.json()
+    return responseData
   }
-
 }

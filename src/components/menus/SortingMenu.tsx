@@ -32,8 +32,8 @@ type BoxSorting = UserBox["sectionSorting"]
 
 function SortingMenu({boxId, userBoxes, toggleModal, dispatch}: IProps) {
 
-  const targetIndex = userBoxes.findIndex(box => box.id === boxId)
-  const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box.id === boxId)))
+  const targetIndex = userBoxes.findIndex(box => box._id === boxId)
+  const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box._id === boxId)))
   const boxSections: BoxSections = {artists: boxCopy.artists, albums: boxCopy.albums, tracks: boxCopy.tracks, playlists: boxCopy.playlists}
   const nonEmptySections = Object.keys(boxSections).filter((section) => boxSections[section as keyof BoxSections].length > 0)
   const boxSorting = boxCopy.sectionSorting

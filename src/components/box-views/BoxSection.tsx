@@ -122,7 +122,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, bo
                 page="box" 
                 customSorting={sorting.primarySorting === "custom"} 
                 toggleModal={toggleModal} 
-                boxId={box.id}
+                boxId={box._id}
               />
             </div>
             {showSubSections(subSectionNameArr)}
@@ -137,7 +137,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, bo
             page="box" 
             customSorting={sorting.primarySorting === "custom"} 
             toggleModal={toggleModal} 
-            boxId={box.id} 
+            boxId={box._id} 
           />
         }
 

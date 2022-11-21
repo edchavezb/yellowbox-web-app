@@ -5,12 +5,12 @@ import styles from "./Home.module.css"
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import querystring from 'querystring'
 import credentials from '../keys'
-import { User } from "../core/types/interfaces";
+import { SpotifyLoginData } from "../core/types/interfaces";
 import { useEffect } from "react";
 import { getUserBoxes } from "../core/api/userboxes";
 
 interface IProps {
-  user: User
+  user: SpotifyLoginData
 }
 
 function Home({location, user}: RouteComponentProps & IProps) {
@@ -41,18 +41,9 @@ function Home({location, user}: RouteComponentProps & IProps) {
       response_type: 'code',
       client_id: credentials.id,
       scope: scopes.join("%20"),
-      redirect_uri: 'http://localhost:3000/authsuccess',
+      redirect_uri: `${process.env.REACT_APP_PROJECT_ROOT}/authsuccess`,
       state: generateRandomString(16)
     }));
-  }
-
-  useEffect(() => {
-    fetchBoxes();
-  }, [])
-
-  const fetchBoxes = async () => {
-    const response = await getUserBoxes('637af9aedbd56910b4aa39d3');
-    console.log(response)
   }
 
   if (!user.auth.code){

@@ -4,8 +4,9 @@ import { RouteComponentProps, useHistory, useLocation, useParams, withRouter } f
 import querystring from 'querystring'
 import credentials from '../keys'
 import axios from 'axios';
+import { getUserDataBySpotifyId } from '../core/api/users';
 
-function AuthSuccess({dispatchUser} : {dispatchUser: any}) {
+function AuthSuccess({dispatchSpotifyLogin, dispatchUser} : {dispatchSpotifyLogin: any, dispatchUser: any}) {
   let location = useLocation();
   let history = useHistory();
 
@@ -40,10 +41,10 @@ function AuthSuccess({dispatchUser} : {dispatchUser: any}) {
         'Authorization': `Bearer ${token}`
       }
     })
-      .then(response => {
+      .then(async response => {
         console.log(response.data)
         const {display_name, email, id, images, uri} = response.data
-        const user = {
+        const spotifyLogin = {
           auth: {
             code: code,
             refreshToken: refresh
@@ -56,6 +57,8 @@ function AuthSuccess({dispatchUser} : {dispatchUser: any}) {
             email: email
           }
         }
+        const user = await getUserDataBySpotifyId(spotifyLogin.userData.userId)
+        dispatchSpotifyLogin({ type: 'UPDATE_LOGIN', payload: spotifyLogin })
         dispatchUser({ type: 'UPDATE_USER', payload: user })
         history.push('/')
       })

@@ -50,7 +50,7 @@ function BoxUtilities({box, singleTypeBox, visibility, setVisibility, toggleModa
           </div>
           : ""}
       </div>
-      <button id={styles.sortingButton} onClick={() => toggleModal({visible: true, type: "Sorting Options", boxId: box.id, page:"Box"})}> Sorting Options </button>
+      <button id={styles.sortingButton} onClick={() => toggleModal({visible: true, type: "Sorting Options", boxId: box._id, page:"Box"})}> Sorting Options </button>
     </div>
   )
 }

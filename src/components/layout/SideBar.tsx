@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Album, Artist, Playlist, Track, User, UserBox } from "../../core/types/interfaces";
+import { getUserBoxes } from "../../core/api/userboxes";
+import { Album, Artist, Playlist, Track, SpotifyLoginData, UserBox, YellowboxUser } from "../../core/types/interfaces";
 
 import styles from "./SideBar.module.css";
 
@@ -7,6 +9,7 @@ enum UserBoxesActionTypes {
   UPDATE_BOX = 'UPDATE_BOX',
   ADD_BOX = 'ADD_BOX',
   DELETE_BOX = 'DELETE_BOX',
+  SET_BOXES = 'SET_BOXES'
 }
 
 interface UpdateBoxPayload {
@@ -14,10 +17,12 @@ interface UpdateBoxPayload {
   newBox?: UserBox
   targetIndex?: number
   targetId?: string
+  allBoxes?: UserBox[]
 }
 
 interface IProps {
-	user: User
+	user: YellowboxUser
+  login: SpotifyLoginData
   boxes: UserBox[]
   dispatch: React.Dispatch<{
     type: UserBoxesActionTypes;
@@ -27,12 +32,24 @@ interface IProps {
 
 type MusicData = Artist | Album | Track | Playlist;
 
-function SideBar({user, boxes, dispatch}: IProps) {
+function SideBar({user, login, boxes, dispatch}: IProps) {
+
+  useEffect(() => {
+    if (user._id){
+      fetchBoxes();
+    }
+  }, [user])
+
+  const fetchBoxes = async () => {
+    const response = await getUserBoxes(user._id);
+    dispatch({type: UserBoxesActionTypes["SET_BOXES"], payload: {allBoxes: response}})
+    console.log(response)
+  }
 
   const addToBox = (draggedData: MusicData, targetBoxId: string) => {
     console.log(JSON.stringify(draggedData))
-    const targetIndex = boxes.findIndex(box => box.id === targetBoxId)
-    const targetBox = {...boxes.find(box => box.id === targetBoxId) as UserBox}
+    const targetIndex = boxes.findIndex(box => box._id === targetBoxId)
+    const targetBox = {...boxes.find(box => box._id === targetBoxId) as UserBox}
     let updatedBox!: UserBox;
     switch (draggedData.type) {
       case "album" :
@@ -118,11 +135,11 @@ function SideBar({user, boxes, dispatch}: IProps) {
   return (
     <div id={styles.mainPanel}>
       {
-        user.auth.code &&
+        login.auth.code &&
         <>
           <div id={styles.user}>
-            <img id={styles.userImage} src={user.userData.image ? user.userData.image : "/user.png"} alt="user" />
-            <span id={styles.userName}> {user.userData.displayName} </span>
+            <img id={styles.userImage} src={login.userData.image ? login.userData.image : "/user.png"} alt="user" />
+            <span id={styles.userName}> {login.userData.displayName} </span>
           </div>
           <div id={styles.servicesList}>
             <h4 className={styles.sectionTitle}> Your Services </h4>
@@ -130,22 +147,22 @@ function SideBar({user, boxes, dispatch}: IProps) {
               <div className={styles.serviceButton}><img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img><span> Spotify </span></div>
             </Link>
           </div>
+          <div id={styles.boxList}>
+            <h4 className={styles.sectionTitle}> Your Boxes </h4>
+            {boxes.map((box) => {
+              return (
+                <Link className={styles.boxLink} id={box._id} key={box._id} to={`/box/${box._id}`} 
+                  onDragEnter={(e) => handleDragEnter(e)} 
+                  onDragLeave={(e) => handleDragLeave(e)}
+                  onDragOver={(e) => handleDragOver(e)}
+                  onDrop={(e) => handleDrop(e)}>
+                    <span> {box.name} </span>
+                </Link>
+              )
+            })}
+          </div>
         </>
       }
-      <div id={styles.boxList}>
-        <h4 className={styles.sectionTitle}> Your Boxes </h4>
-        {boxes.map((box) => {
-          return (
-            <Link className={styles.boxLink} id={box.id} key={box.id} to={`/box/${box.id}`} 
-              onDragEnter={(e) => handleDragEnter(e)} 
-              onDragLeave={(e) => handleDragLeave(e)}
-              onDragOver={(e) => handleDragOver(e)}
-              onDrop={(e) => handleDrop(e)}>
-                <span> {box.name} </span>
-            </Link>
-          )
-        })}
-      </div>
     </div>
   )
 }

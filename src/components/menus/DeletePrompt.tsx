@@ -42,8 +42,8 @@ function DeletePrompt({itemData, userBoxes, boxId, toggleModal, dispatch}: IProp
   }
 
   const handleDeleteItem = <T extends Artist & Album & Track & Playlist>() => {
-    const targetIndex = userBoxes.findIndex(box => box.id === boxId)
-    const targetBox = {...userBoxes.find(box => box.id === boxId) as UserBox}
+    const targetIndex = userBoxes.findIndex(box => box._id === boxId)
+    const targetBox = {...userBoxes.find(box => box._id === boxId) as UserBox}
     const targetSection = targetBox[sectionType as keyof BoxSections]
     const filteredSection = (targetSection as Array<T>).filter((item: T) => item.id !== itemData.id)
     let updatedBox: UserBox = JSON.parse(JSON.stringify(targetBox))

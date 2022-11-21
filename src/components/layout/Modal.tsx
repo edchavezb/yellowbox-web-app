@@ -3,7 +3,7 @@ import SortingMenu from "../menus/SortingMenu";
 import NewBoxMenu from "../menus/NewBoxMenu";
 import DeletePrompt from "../menus/DeletePrompt";
 import AddToMenu from "../menus/AddToMenu";
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../core/types/interfaces";
+import { Album, Artist, ModalState, Playlist, Track, UserBox, YellowboxUser } from "../../core/types/interfaces";
 import { Dispatch, SetStateAction } from "react";
 
 enum UserBoxesActionTypes {
@@ -19,6 +19,7 @@ interface UpdateBoxPayload {
 }
 
 interface IProps {
+  user?: YellowboxUser
 	itemData?: Artist | Album | Track | Playlist
   type: string
   page?: string
@@ -32,13 +33,13 @@ interface IProps {
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function Modal({itemData, type, page, visible, userBoxes, toggleModal, dispatch, boxId}: IProps) {
+function Modal({user, itemData, type, page, visible, userBoxes, toggleModal, dispatch, boxId}: IProps) {
 
   let modalBody: JSX.Element | string = "";
 
   switch(type){
     case "New Box" :
-      modalBody = <NewBoxMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} />
+      modalBody = <NewBoxMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} user={user!}/>
     break;
     case "Sorting Options" :
       modalBody = <SortingMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} />

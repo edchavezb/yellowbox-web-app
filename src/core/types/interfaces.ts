@@ -1,5 +1,5 @@
-interface User {
-  auth: UserAuth
+interface SpotifyLoginData {
+  auth: SpotifyUserAuth
   userData: SpotifyUserData
 }
 
@@ -11,13 +11,23 @@ interface SpotifyUserData {
   email: string
 }
 
-interface UserAuth {
+interface SpotifyUserAuth {
   code: string | null
   refreshToken: string | null
 }
 
+interface YellowboxUser {
+  _id: string
+  displayName: string
+  image: string
+  email: string
+  services: {
+    [key: string]: string
+  }
+}
+
 interface UserBox {
-  id: string
+  _id: string
   name: string
   public: boolean
   creator: string
@@ -170,4 +180,4 @@ interface ModalState {
   page: string
 }
 
-export type { User, UserBox, Visibility, Sorting, UpdateBoxPayload, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage, ModalState }
+export type { SpotifyLoginData, YellowboxUser, UserBox, Visibility, Sorting, UpdateBoxPayload, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage, ModalState }

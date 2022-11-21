@@ -14,7 +14,7 @@ interface IProps {
 function BoxDetail({userBoxes, toggleModal}: IProps) {
 
   const params = useParams<{id: string}>()
-  const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box.id === params.id)))
+  const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box._id === params.id)))
   const boxNotEmpty = boxCopy.albums.length > 0 || boxCopy.artists.length > 0 || boxCopy.tracks.length > 0 || boxCopy.playlists.length > 0;
   const singleTypeBox = [boxCopy.albums, boxCopy.artists, boxCopy.tracks].filter((section) => section.length > 0).length === 1
 

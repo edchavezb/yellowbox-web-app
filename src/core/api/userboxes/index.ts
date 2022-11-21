@@ -10,6 +10,8 @@ export const getUserBoxes = async (userId: string) => {
     }
 }
 
-export const createUserBox = async (data: Omit<UserBox, 'id'>) => {
-    return await api.post<Omit<UserBox, 'id'>, UserBox>('boxes', data)
+export const createUserBox = async (data: Omit<UserBox, '_id'>) => {
+    const result = await api.post<Omit<UserBox, '_id'>, UserBox>('boxes', data)
+    console.log(result)
+    return result
 }

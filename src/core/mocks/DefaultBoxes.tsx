@@ -2,7 +2,7 @@ import { UserBox } from "../types/interfaces";
 
 const defaultBoxes: UserBox[] = [
   {
-    id: "1234",
+    _id: "1234",
     name: "Favoritos Español",
     public: true,
     creator: "eKDNF346",
@@ -52,7 +52,7 @@ const defaultBoxes: UserBox[] = [
     ]
   },
   {
-    id: "2454",
+    _id: "2454",
     name: "Top 2020",
     public: true,
     creator: "eKDNF346",

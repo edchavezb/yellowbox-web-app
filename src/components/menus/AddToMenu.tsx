@@ -31,11 +31,11 @@ interface IProps {
 
 function AddToMenu({page, itemData, userBoxes, boxId, toggleModal, dispatch}: IProps) {
 
-  const currentBox = {...userBoxes.find(box => box.id === boxId) as UserBox}
+  const currentBox = {...userBoxes.find(box => box._id === boxId) as UserBox}
   const itemCopy = JSON.parse(JSON.stringify(itemData))
 
   const [addType, setAddType] = useState("box")
-  const [addBox, setAddBox] = useState(userBoxes[0].id)
+  const [addBox, setAddBox] = useState(userBoxes[0]._id)
   const [addSub, setAddSub] = useState(page === "box" && currentBox.subSections.length ? currentBox.subSections[0].name : "")
 
   useEffect(() => {
@@ -43,9 +43,9 @@ function AddToMenu({page, itemData, userBoxes, boxId, toggleModal, dispatch}: IP
   }, [addType])
 
   const handleAddItem = () => {
-    const targetId = addType === "box" ? addBox : currentBox.id
-    const targetIndex = userBoxes.findIndex(box => box.id === targetId)
-    const targetBox = {...userBoxes.find(box => box.id === targetId) as UserBox}
+    const targetId = addType === "box" ? addBox : currentBox._id
+    const targetIndex = userBoxes.findIndex(box => box._id === targetId)
+    const targetBox = {...userBoxes.find(box => box._id === targetId) as UserBox}
     console.log(targetBox)
     const updatedItem = {...extractCrucialData(itemCopy), subSection: addType === "box" ? "default" : addSub}
     let updatedBox!: UserBox;
@@ -115,9 +115,9 @@ function AddToMenu({page, itemData, userBoxes, boxId, toggleModal, dispatch}: IP
       {addType === "box" ? 
         <div id={styles.boxSelect}>
           <label htmlFor="box-select"> Select a box </label>
-          <select name="box-select" defaultValue={userBoxes[0].id} onChange={(e) => setAddBox(e.target.value)}>
+          <select name="box-select" defaultValue={userBoxes[0]._id} onChange={(e) => setAddBox(e.target.value)}>
             {userBoxes.map(box => {
-              return (<option key={box.id} value={box.id}> {box.name} </option>)
+              return (<option key={box._id} value={box._id}> {box.name} </option>)
             })}
           </select>
         </div>

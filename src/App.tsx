@@ -11,10 +11,10 @@ import Modal from "./components/layout/Modal"
 
 import defaultBoxes from "./core/mocks/DefaultBoxes"
 import ItemDetail from './pages/ItemDetail';
-import { ModalState, User, UserBox } from './core/types/interfaces';
+import { ModalState, SpotifyLoginData, YellowboxUser, UserBox } from './core/types/interfaces';
 import SpotifyUser from './pages/SpotifyUser';
 
-const defaultUserData: User = {
+const initialSpotifyLoginData: SpotifyLoginData = {
   auth: {
     code: null,
     refreshToken: null
@@ -28,11 +28,29 @@ const defaultUserData: User = {
   }
 }
 
+const initialBoxes: UserBox[] = []
+
+const initialUserData: YellowboxUser = {
+  _id: '',
+  displayName: '',
+  image: '',
+  email: '',
+  services: {
+    spotify: '',
+    lastfm: ''
+  }
+}
+
 enum UserReducerActionTypes {
   UPDATE_USER = 'UPDATE_USER'
 }
 
+enum SpotifyLoginActionTypes {
+  UPDATE_LOGIN = 'UPDATE_LOGIN'
+}
+
 enum UserBoxesActionTypes {
+  SET_BOXES = 'SET_BOXES',
   UPDATE_BOX = 'UPDATE_BOX',
   NEW_BOX = 'NEW_BOX',
   DELETE_BOX = 'DELETE_BOX',
@@ -42,24 +60,27 @@ interface UpdateBoxPayload {
   updatedBox: UserBox
   targetIndex?: number
   targetId?: string
+  allBoxes?: UserBox[]
 }
 
 function App() {
 
-  const userBoxesReducer = (state: UserBox[], action: {type: UserBoxesActionTypes, payload: UpdateBoxPayload }) => {
+  const userBoxesReducer = (state: UserBox[], action: {type: UserBoxesActionTypes, payload: UpdateBoxPayload}) => {
     switch (action.type) {
+      case 'SET_BOXES':
+      return state = action.payload.allBoxes as UserBox[]
       case 'UPDATE_BOX':
       return state.map((item, index) => index === action.payload.targetIndex ? action.payload.updatedBox : item)
       case 'NEW_BOX':
       return [...state, action.payload.updatedBox]
       case 'DELETE_BOX':
-      return state.filter((item) => item.id !== action.payload.targetId)
+      return state.filter((item) => item._id !== action.payload.targetId)
       default :
       return state
     }
   }
 
-  const userReducer = (state: User, action: {type: UserReducerActionTypes, payload: User }) => {
+  const userReducer = (state: YellowboxUser, action: {type: UserReducerActionTypes, payload: YellowboxUser }) => {
     switch (action.type) {
       case 'UPDATE_USER':
       return action.payload
@@ -68,8 +89,18 @@ function App() {
     }
   }
 
-  const [boxes, dispatchBoxAction] = useReducer(userBoxesReducer, defaultBoxes)
-  const [user, dispatchUserAction] = useReducer(userReducer, defaultUserData)
+  const spotifyUserReducer = (state: SpotifyLoginData, action: {type: SpotifyLoginActionTypes, payload: SpotifyLoginData }) => {
+    switch (action.type) {
+      case 'UPDATE_LOGIN':
+      return action.payload
+      default :
+      return state
+    }
+  }
+
+  const [ybxUser, dispatchYbxUserAction] = useReducer(userReducer, initialUserData)
+  const [boxes, dispatchBoxAction] = useReducer(userBoxesReducer, initialBoxes)
+  const [spotifyLogin, dispatchSpotifyLoginAction] = useReducer(spotifyUserReducer, initialSpotifyLoginData)
 
   const [modal, setModal] = useState<ModalState>({itemData: undefined, visible: false, type: "", boxId: "", page: ""})
 
@@ -78,8 +109,12 @@ function App() {
   }, [boxes])
 
   useEffect(() => {
-    console.log(user)
-  }, [user])
+    console.log(spotifyLogin)
+  }, [spotifyLogin])
+
+  useEffect(() => {
+    console.log(ybxUser)
+  }, [ybxUser])
 
   useEffect(() => {
     if (modal.visible) {
@@ -91,14 +126,14 @@ function App() {
 
   return (
     <Router>
-      <Modal toggleModal={setModal} visible={modal.visible} type={modal.type} boxId={modal.boxId} userBoxes={boxes} page={modal.page} dispatch={dispatchBoxAction} itemData={modal.itemData} />
-      <Layout userBoxes={boxes} user={user} toggleModal={setModal} dispatch={dispatchBoxAction}>
-        <Route exact path="/" render={(props) => <Home {...props} user={user}/>} />
-        <Route path="/authsuccess" render={(props) => <AuthSuccess {...props} dispatchUser={dispatchUserAction}/>} />
+      <Modal toggleModal={setModal} visible={modal.visible} type={modal.type} boxId={modal.boxId} user={ybxUser} userBoxes={boxes} page={modal.page} dispatch={dispatchBoxAction} itemData={modal.itemData} />
+      <Layout userBoxes={boxes} user={ybxUser} login={spotifyLogin} toggleModal={setModal} dispatch={dispatchBoxAction}>
+        <Route exact path="/" render={(props) => <Home {...props} user={spotifyLogin}/>} />
+        <Route path="/authsuccess" render={(props) => <AuthSuccess {...props} dispatchSpotifyLogin={dispatchSpotifyLoginAction} dispatchUser={dispatchYbxUserAction} />} />
         <Route path="/search/:query" render={(props) => <Search {...props} toggleModal={setModal}/>} />
         <Route path="/box/:id" render={(props) => <BoxDetail {...props} userBoxes={boxes} toggleModal={setModal}/>} />
         <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props} toggleModal={setModal}/>} />
-        <Route path="/myaccounts/spotify" render={(props) => <SpotifyUser {...props} user={user} dispatchUser={dispatchUserAction} toggleModal={setModal}/>} />
+        <Route path="/myaccounts/spotify" render={(props) => <SpotifyUser {...props} user={spotifyLogin} dispatchUser={dispatchSpotifyLoginAction} toggleModal={setModal}/>} />
       </Layout>
     </Router>
   );
