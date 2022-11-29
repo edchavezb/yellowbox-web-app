@@ -40,7 +40,7 @@ function Home({location, user}: RouteComponentProps & IProps) {
     querystring.stringify({
       response_type: 'code',
       client_id: credentials.id,
-      scope: scopes.join("%20"),
+      scope: scopes.join(" "),
       redirect_uri: `${process.env.REACT_APP_PROJECT_ROOT}/authsuccess`,
       state: generateRandomString(16)
     }));
