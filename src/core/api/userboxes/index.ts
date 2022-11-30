@@ -12,7 +12,7 @@ export const getUserBoxes = async (userId: string) => {
 
 export const getBoxById = async (boxId: string) => {
     try {
-        return await api.get<UserBox[]>('boxes/', {boxId})
+        return await api.get<UserBox>('boxes/', {boxId})
     }
     catch(err) {
         console.log(err)

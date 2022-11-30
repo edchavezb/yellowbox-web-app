@@ -5,11 +5,12 @@ import styles from "./DragActions.module.css";
 interface IProps {
 	page: string
   boxId?: string
+  isOwner?: boolean,
   elementDragging: boolean
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function DragActions({page, boxId, toggleModal, elementDragging}: IProps) {
+function DragActions({page, boxId, isOwner, toggleModal, elementDragging}: IProps) {
 
   const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -40,7 +41,7 @@ function DragActions({page, boxId, toggleModal, elementDragging}: IProps) {
   return (
     <div id={elementDragging ? styles.actionsActive : styles.actionsHidden}>
       <span className={styles.actionsTitle}> QUICK ACTIONS </span>
-      {page === "box" ?
+      {page === "box" && isOwner ?
         <div className={`${styles.dragActionsButton} ${styles.idleColor}`} id={styles.delete} data-action="Delete Item"
           onDragEnter={(e) => handleDragEnter(e)} 
           onDragLeave={(e) => handleDragLeave(e)}

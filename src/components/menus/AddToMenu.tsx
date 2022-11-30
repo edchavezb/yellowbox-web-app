@@ -1,4 +1,5 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { updateUserBox } from '../../core/api/userboxes';
 import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../core/types/interfaces";
 
 import styles from "./AddToMenu.module.css";
@@ -69,7 +70,12 @@ function AddToMenu({page, itemData, userBoxes, boxId, toggleModal, dispatch}: IP
       default :
     }
     console.log("Dispatch call")
-    dispatch({type: UserBoxesActionTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
+    try {
+      updateUserBox(targetId, updatedBox)
+      dispatch({type: UserBoxesActionTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
+    } catch {
+      console.log('Could not add item to box')
+    }
     toggleModal({ visible: false, type: "", boxId:"", page: "", itemData: undefined})
   }
 

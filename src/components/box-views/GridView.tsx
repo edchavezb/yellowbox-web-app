@@ -9,11 +9,12 @@ interface IProps<T> {
   data: T[]
   page: string
   boxId?: string
+  isOwner?: boolean,
   customSorting?: boolean
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function GridView<T extends Artist | Album | Track | Playlist> ({data, page, toggleModal, boxId, customSorting}: IProps<T>) {
+function GridView<T extends Artist | Album | Track | Playlist> ({data, isOwner, page, toggleModal, boxId, customSorting}: IProps<T>) {
 
   const [elementDragging, setElementDragging] = useState(false)
 
@@ -22,7 +23,7 @@ function GridView<T extends Artist | Album | Track | Playlist> ({data, page, tog
       {data.map((e) => {
           return <GridItem<T> key={e.id} element={e} setElementDragging={setElementDragging} />
       })}
-      <DragActions elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
+      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
     </div>
   )
 }

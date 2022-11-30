@@ -13,10 +13,11 @@ interface IProps<T> {
   box: UserBox
   sorting: Sorting
   visible: boolean
+  isOwner?: boolean
 	toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, box, sorting, visible, toggleModal}: IProps<T>) {
+function BoxSection<T extends Artist | Album | Track | Playlist>({isOwner, data, type, box, sorting, visible, toggleModal}: IProps<T>) {
 
   const [height, setHeight] = useState<string | number>("auto")
 
@@ -114,6 +115,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, bo
           <div className={styles.sectionWithSubs}>
             <div className={sorting.primarySorting === "custom" ? styles.defaultSubSection : styles.hidden}>
               <SubSection 
+                isOwner={isOwner}
                 itemsMatch={sortedData.filter(e => e.subSection === "default")} 
                 subName = "default"
                 viewType={sorting.view} 
@@ -129,6 +131,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({data, type, bo
           </div>
         : 
           <SubSection 
+            isOwner={isOwner}
             itemsMatch={sortedData} 
             subName = "default"
             viewType={sorting.view} 

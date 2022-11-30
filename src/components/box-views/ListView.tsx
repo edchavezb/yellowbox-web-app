@@ -12,11 +12,12 @@ interface IProps<T> {
   listType: string
   page: string
   boxId?: string
+  isOwner?: boolean
   customSorting: boolean
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function ListView<T extends Artist | Album | Track | Playlist>({data, page, listType, toggleModal, boxId}: IProps<T>) {
+function ListView<T extends Artist | Album | Track | Playlist>({isOwner, data, page, listType, toggleModal, boxId}: IProps<T>) {
 
   const [elementDragging, setElementDragging] = useState(false)
 
@@ -91,7 +92,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({data, page, list
       {data.map((element) => {
           return getListItemComponent(element)
       })}
-      <DragActions elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
+      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
     </div>
   )
 }

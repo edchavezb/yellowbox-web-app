@@ -9,11 +9,12 @@ interface IProps<T> {
   data: T[]
   page: string
   boxId: string
+  isOwner?: boolean
   customSorting: boolean
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function DetailView<T extends Artist | Album | Track | Playlist>({data, page, toggleModal, boxId}: IProps<T>) {
+function DetailView<T extends Artist | Album | Track | Playlist>({isOwner, data, page, toggleModal, boxId}: IProps<T>) {
   const [elementDragging, setElementDragging] = useState(false)
 
   return (
@@ -21,7 +22,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({data, page, to
       {data.map((e) => {
           return <DetailRow key={e.id} index={data.indexOf(e)} element={e} setElementDragging={setElementDragging} />
       })}
-      <DragActions elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
+      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
     </div>
   )
 }

@@ -5,6 +5,7 @@ import BoxUtilities from '../components/box-views/BoxUtilities';
 import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
 import { Album, Artist, ModalState, Playlist, Track, UserBox, Visibility } from '../core/types/interfaces';
+import { getBoxById } from '../core/api/userboxes';
 
 interface IProps {
 	userBoxes: UserBox[]
@@ -13,68 +14,90 @@ interface IProps {
 
 function BoxDetail({userBoxes, toggleModal}: IProps) {
 
-  const params = useParams<{id: string}>()
-  const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box._id === params.id)))
-  const boxNotEmpty = boxCopy.albums.length > 0 || boxCopy.artists.length > 0 || boxCopy.tracks.length > 0 || boxCopy.playlists.length > 0;
-  const singleTypeBox = [boxCopy.albums, boxCopy.artists, boxCopy.tracks].filter((section) => section.length > 0).length === 1
+  const {id} = useParams<{id: string}>()
+  const [boxData, setBoxData] = useState<UserBox | null>(null)
+  const [boxMetaData, setBoxMetaData] = useState({isOwner: false, boxNotEmpty: false, singleTypeBox: true})
+  const [visibility, setVisibility] = useState<Visibility>({playlists: true, albums: true, artists: true, tracks: true})
 
-  const [visibility, setVisibility] = useState<Visibility>({...boxCopy.sectionVisibility})
+  useEffect(() => {
+    fetchBoxData()
+  }, [id])
 
   useEffect(() => {
     console.log(visibility)
-    console.log(boxCopy)
+    console.log(boxData)
   }, [visibility])
+
+  const fetchBoxData = async () => {
+    const data = await getBoxById(id)
+    if (data) {
+      const isOwner = !!userBoxes.find(box => box._id === id);
+      const boxNotEmpty = data?.albums.length > 0 || data?.artists.length > 0 || data?.tracks.length > 0 || data?.playlists.length > 0;
+      const singleTypeBox = [data.albums, data.artists, data.tracks].filter((section) => section.length > 0).length === 1;
+      setBoxMetaData({isOwner, boxNotEmpty, singleTypeBox})
+      setBoxData(data as UserBox)
+      if (isOwner){
+        setVisibility(data.sectionVisibility)
+      }
+    }
+  }
 
   return (
     <div id={styles.mainPanel}>
-      {boxNotEmpty ? 
+      {boxData && boxMetaData.boxNotEmpty && boxMetaData.isOwner ? 
         <BoxUtilities 
-          box={boxCopy} 
-          singleTypeBox={singleTypeBox} 
+          box={boxData} 
+          singleTypeBox={boxMetaData.singleTypeBox} 
           visibility={visibility} 
           setVisibility={setVisibility}
           toggleModal={toggleModal}
-          /> 
-        : ""}
-      <h2 id={styles.boxName}> {boxCopy.name} </h2>
-      <div id={styles.boxDesc}> {boxCopy.description} </div>
-      {boxCopy.artists.length ? 
+        /> 
+        : 
+        ""
+      }
+      <h2 id={styles.boxName}> {boxData?.name} </h2>
+      <div id={styles.boxDesc}> {boxData?.description} </div>
+      {boxData?.artists?.length ? 
         <BoxSection<Artist> 
+          isOwner={boxMetaData.isOwner}
           type="Artists"
-          box={boxCopy}
-          data={boxCopy.artists} 
-          sorting={boxCopy.sectionSorting.artists}
+          box={boxData}
+          data={boxData.artists} 
+          sorting={boxData.sectionSorting.artists}
           visible={visibility.artists}
           toggleModal={toggleModal} />
         : ""}
-      {boxCopy.albums.length ? 
+      {boxData?.albums?.length ? 
         <BoxSection<Album>
+          isOwner={boxMetaData.isOwner}
           type="Albums" 
-          box={boxCopy} 
-          data={boxCopy.albums}
-          sorting={boxCopy.sectionSorting.albums}
+          box={boxData} 
+          data={boxData.albums}
+          sorting={boxData.sectionSorting.albums}
           visible={visibility.albums}
           toggleModal={toggleModal}  /> 
         : ""}
-      {boxCopy.tracks.length ? 
-        <BoxSection<Track> 
+      {boxData?.tracks?.length ? 
+        <BoxSection<Track>
+          isOwner={boxMetaData.isOwner}
           type="Tracks" 
-          box={boxCopy} 
-          data={boxCopy.tracks}
-          sorting={boxCopy.sectionSorting.tracks}
+          box={boxData} 
+          data={boxData.tracks}
+          sorting={boxData.sectionSorting.tracks}
           visible={visibility.tracks}
           toggleModal={toggleModal}  /> 
         : ""}
-        {boxCopy.playlists.length ? 
+        {boxData?.playlists?.length ? 
         <BoxSection<Playlist> 
+          isOwner={boxMetaData.isOwner}
           type="Playlists" 
-          box={boxCopy} 
-          data={boxCopy.playlists}
-          sorting={boxCopy.sectionSorting.playlists}
+          box={boxData} 
+          data={boxData.playlists}
+          sorting={boxData.sectionSorting.playlists}
           visible={visibility.playlists}
           toggleModal={toggleModal}  /> 
         : ""}
-      {boxNotEmpty ? "" : <div id={styles.emptyMsgDiv}><h3 id={styles.emptyMsg}> You have not added any items to this box yet. <br/> Start by searching some music you like! </h3></div>}
+      {boxMetaData.boxNotEmpty ? "" : <div id={styles.emptyMsgDiv}><h3 id={styles.emptyMsg}> You have not added any items to this box yet. <br/> Start by searching some music you like! </h3></div>}
     </div>
   )
 }

@@ -12,12 +12,13 @@ interface IProps<T> {
   sectionType: string
   boxId: string
   isDefault: boolean
+  isOwner?: boolean
   customSorting: boolean
   page?: string
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function SubSection<T extends Artist | Album | Track | Playlist>({itemsMatch, subName, viewType, sectionType, toggleModal, boxId, isDefault, page, customSorting}: IProps<T>) {
+function SubSection<T extends Artist | Album | Track | Playlist>({itemsMatch, subName, viewType, sectionType, toggleModal, boxId, isOwner, isDefault, page, customSorting}: IProps<T>) {
   console.log(itemsMatch)
 
   const getListType = (sectionType: string) => {
@@ -46,13 +47,13 @@ function SubSection<T extends Artist | Album | Track | Playlist>({itemsMatch, su
     let sectionView: JSX.Element;
     switch (viewType){
       case "grid":
-        sectionView = <GridView data={data} page={page} customSorting={isCustom} toggleModal={toggleModal} boxId={boxId} />
+        sectionView = <GridView isOwner={isOwner} data={data} page={page} customSorting={isCustom} toggleModal={toggleModal} boxId={boxId} />
       break;
       case "list":
-        sectionView = <ListView data={data} page={page} customSorting={isCustom} toggleModal={toggleModal} boxId={boxId} listType={getListType(sectionType)}/>
+        sectionView = <ListView isOwner={isOwner} data={data} page={page} customSorting={isCustom} toggleModal={toggleModal} boxId={boxId} listType={getListType(sectionType)}/>
       break;
       case "details":
-        sectionView = <DetailView data={data} page={page} customSorting={isCustom} toggleModal={toggleModal} boxId={boxId} />
+        sectionView = <DetailView isOwner={isOwner} data={data} page={page} customSorting={isCustom} toggleModal={toggleModal} boxId={boxId} />
       break;
       default:
         sectionView = <div></div>
