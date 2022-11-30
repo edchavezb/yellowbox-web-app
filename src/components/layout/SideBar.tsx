@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getUserBoxes } from "../../core/api/userboxes";
+import { getUserBoxes, updateUserBox } from "../../core/api/userboxes";
 import { Album, Artist, Playlist, Track, SpotifyLoginData, UserBox, YellowboxUser } from "../../core/types/interfaces";
 
 import styles from "./SideBar.module.css";
@@ -41,9 +41,11 @@ function SideBar({user, login, boxes, dispatch}: IProps) {
   }, [user])
 
   const fetchBoxes = async () => {
-    const response = await getUserBoxes(user._id);
-    dispatch({type: UserBoxesActionTypes["SET_BOXES"], payload: {allBoxes: response}})
-    console.log(response)
+    const userBoxes = await getUserBoxes(user._id);
+    if (userBoxes?.length){
+      dispatch({type: UserBoxesActionTypes["SET_BOXES"], payload: {allBoxes: userBoxes}})
+    }
+    console.log(userBoxes)
   }
 
   const addToBox = (draggedData: MusicData, targetBoxId: string) => {
@@ -72,7 +74,12 @@ function SideBar({user, login, boxes, dispatch}: IProps) {
         updatedBox = targetBox
     }
     console.log("Dispatch call")
-    dispatch({type: UserBoxesActionTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
+    try {
+      updateUserBox(targetBoxId, updatedBox)
+      dispatch({type: UserBoxesActionTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
+    } catch {
+      console.log('Could not add item to box')
+    }
   }
 
   const extractCrucialData = (data: MusicData) => {
@@ -149,7 +156,7 @@ function SideBar({user, login, boxes, dispatch}: IProps) {
           </div>
           <div id={styles.boxList}>
             <h4 className={styles.sectionTitle}> Your Boxes </h4>
-            {boxes.map((box) => {
+            {!!boxes.length && boxes.map((box) => {
               return (
                 <Link className={styles.boxLink} id={box._id} key={box._id} to={`/box/${box._id}`} 
                   onDragEnter={(e) => handleDragEnter(e)} 

@@ -3,7 +3,25 @@ import api from '../index'
 
 export const getUserBoxes = async (userId: string) => {
     try {
-        return await api.get<UserBox[]>('boxes', {userId})
+        return await api.get<UserBox[]>('boxes/userboxes', {userId})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const getBoxById = async (boxId: string) => {
+    try {
+        return await api.get<UserBox[]>('boxes/', {boxId})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const updateUserBox = async (boxId: string, updatedBox: UserBox) => {
+    try {
+        return await api.put<UserBox, UserBox>('boxes/', {boxId}, updatedBox)
     }
     catch(err) {
         console.log(err)
