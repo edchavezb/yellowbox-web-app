@@ -7,22 +7,20 @@ import { Dispatch, ReactNode, SetStateAction } from "react";
 
 interface IProps {
   children: ReactNode
-  userBoxes: UserBox[]
   user: YellowboxUser
   login: SpotifyLoginData
-  dispatch: any
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function Layout({user, login, userBoxes, toggleModal, dispatch, children}: IProps) {
+function Layout({user, login, toggleModal, children}: IProps) {
 
   return (
     <div id={styles.layout}>
       <section id={styles.headerWrapper}>
-        <Header boxes={userBoxes} toggleModal={toggleModal} dispatch={dispatch}/>
+        <Header toggleModal={toggleModal}/>
       </section>
       <section id={styles.sideBar}>
-        <SideBar user={user} login={login} boxes={userBoxes} dispatch={dispatch}/>
+        <SideBar user={user} login={login}/>
       </section>
       <section id={styles.mainView}>
         {children}

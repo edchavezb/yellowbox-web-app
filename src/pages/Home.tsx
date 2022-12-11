@@ -7,7 +7,7 @@ import querystring from 'querystring'
 import credentials from '../keys'
 import { SpotifyLoginData } from "../core/types/interfaces";
 import { useEffect } from "react";
-import { getUserBoxes } from "../core/api/userboxes";
+import { getUserBoxesApi } from "../core/api/userboxes";
 
 interface IProps {
   user: SpotifyLoginData

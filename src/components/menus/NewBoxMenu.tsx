@@ -1,27 +1,18 @@
+import { createUserBox } from 'core/features/userBoxes/userBoxesSlice';
+import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { createUserBox } from '../../core/api/userboxes';
-import { ModalState, UpdateBoxPayload, UserBox, YellowboxUser } from '../../core/types/interfaces';
+import { createUserBoxApi } from 'core/api/userboxes';
+import { ModalState, UserBox, YellowboxUser } from 'core/types/interfaces';
 
 import styles from "./NewBoxMenu.module.css";
 
-enum UserBoxesActionTypes {
-  UPDATE_BOX = 'UPDATE_BOX',
-  NEW_BOX = 'NEW_BOX',
-  DELETE_BOX = 'DELETE_BOX',
-}
-
 interface IProps {
   user: YellowboxUser
-  userBoxes: UserBox[]
-  dispatch: React.Dispatch<{
-    type: UserBoxesActionTypes;
-    payload: UpdateBoxPayload;
-  }>
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function NewBoxMenu({user, userBoxes, toggleModal, dispatch}: IProps) {
-
+function NewBoxMenu({user, toggleModal}: IProps) {
+  const dispatch = useAppDispatch();
   const [boxDetails, setBoxDetails] = useState({boxName: "", boxDesc: "", public: true})
 
   const newUserBox = async () => {
@@ -72,7 +63,7 @@ function NewBoxMenu({user, userBoxes, toggleModal, dispatch}: IProps) {
       },
       subSections : []
     }
-    const newBox = await createUserBox(blankBox)
+    const newBox = await createUserBoxApi(blankBox)
     console.log(newBox)
     return newBox;
   }
@@ -80,7 +71,7 @@ function NewBoxMenu({user, userBoxes, toggleModal, dispatch}: IProps) {
   const handleSaveNewBox = async () => {
     const boxPayload = await newUserBox();
     console.log(boxPayload)
-    dispatch({ type: UserBoxesActionTypes["NEW_BOX"], payload: { updatedBox: boxPayload } })
+    dispatch(createUserBox(boxPayload))
     toggleModal({ visible: false, type: "", boxId:"", page: ""})
   }
 

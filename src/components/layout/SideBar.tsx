@@ -1,57 +1,34 @@
+import { fetchUserBoxes, updateUserBox } from "core/features/userBoxes/userBoxesSlice";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
+import { useAppSelector } from "core/hooks/useAppSelector";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getUserBoxes, updateUserBox } from "../../core/api/userboxes";
+import { updateUserBoxApi } from "core/api/userboxes";
 import { Album, Artist, Playlist, Track, SpotifyLoginData, UserBox, YellowboxUser } from "../../core/types/interfaces";
 
 import styles from "./SideBar.module.css";
 
-enum UserBoxesActionTypes {
-  UPDATE_BOX = 'UPDATE_BOX',
-  ADD_BOX = 'ADD_BOX',
-  DELETE_BOX = 'DELETE_BOX',
-  SET_BOXES = 'SET_BOXES'
-}
-
-interface UpdateBoxPayload {
-  updatedBox?: UserBox
-  newBox?: UserBox
-  targetIndex?: number
-  targetId?: string
-  allBoxes?: UserBox[]
-}
-
 interface IProps {
 	user: YellowboxUser
   login: SpotifyLoginData
-  boxes: UserBox[]
-  dispatch: React.Dispatch<{
-    type: UserBoxesActionTypes;
-    payload: UpdateBoxPayload;
-  }>
 }
 
 type MusicData = Artist | Album | Track | Playlist;
 
-function SideBar({user, login, boxes, dispatch}: IProps) {
+function SideBar({user, login}: IProps) {
+
+  const dispatch = useAppDispatch();
+  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
 
   useEffect(() => {
     if (user._id){
-      fetchBoxes();
+      dispatch(fetchUserBoxes(user._id))
     }
   }, [user])
 
-  const fetchBoxes = async () => {
-    const userBoxes = await getUserBoxes(user._id);
-    if (userBoxes?.length){
-      dispatch({type: UserBoxesActionTypes["SET_BOXES"], payload: {allBoxes: userBoxes}})
-    }
-    console.log(userBoxes)
-  }
-
   const addToBox = (draggedData: MusicData, targetBoxId: string) => {
     console.log(JSON.stringify(draggedData))
-    const targetIndex = boxes.findIndex(box => box._id === targetBoxId)
-    const targetBox = {...boxes.find(box => box._id === targetBoxId) as UserBox}
+    const targetBox = {...userBoxes.find(box => box._id === targetBoxId) as UserBox}
     let updatedBox!: UserBox;
     switch (draggedData.type) {
       case "album" :
@@ -75,8 +52,8 @@ function SideBar({user, login, boxes, dispatch}: IProps) {
     }
     console.log("Dispatch call")
     try {
-      updateUserBox(targetBoxId, updatedBox)
-      dispatch({type: UserBoxesActionTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
+      updateUserBoxApi(targetBoxId, updatedBox)
+      dispatch(updateUserBox({targetId: targetBoxId, updatedBox}))
     } catch {
       console.log('Could not add item to box')
     }
@@ -156,7 +133,7 @@ function SideBar({user, login, boxes, dispatch}: IProps) {
           </div>
           <div id={styles.boxList}>
             <h4 className={styles.sectionTitle}> Your Boxes </h4>
-            {!!boxes.length && boxes.map((box) => {
+            {!!userBoxes.length && userBoxes.map((box) => {
               return (
                 <Link className={styles.boxLink} id={box._id} key={box._id} to={`/box/${box._id}`} 
                   onDragEnter={(e) => handleDragEnter(e)} 

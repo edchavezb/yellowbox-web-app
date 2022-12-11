@@ -6,49 +6,32 @@ import AddToMenu from "../menus/AddToMenu";
 import { Album, Artist, ModalState, Playlist, Track, UserBox, YellowboxUser } from "../../core/types/interfaces";
 import { Dispatch, SetStateAction } from "react";
 
-enum UserBoxesActionTypes {
-  UPDATE_BOX = 'UPDATE_BOX',
-  NEW_BOX = 'NEW_BOX',
-  DELETE_BOX = 'DELETE_BOX',
-}
-
-interface UpdateBoxPayload {
-  updatedBox: UserBox
-  targetIndex?: number
-  targetId?: string
-}
-
 interface IProps {
   user?: YellowboxUser
 	itemData?: Artist | Album | Track | Playlist
   type: string
   page?: string
   visible: boolean
-  userBoxes: UserBox[]
   boxId: string
-  dispatch: React.Dispatch<{
-    type: UserBoxesActionTypes;
-    payload: UpdateBoxPayload;
-  }>
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function Modal({user, itemData, type, page, visible, userBoxes, toggleModal, dispatch, boxId}: IProps) {
+function Modal({user, itemData, type, page, visible, toggleModal, boxId}: IProps) {
 
   let modalBody: JSX.Element | string = "";
 
   switch(type){
     case "New Box" :
-      modalBody = <NewBoxMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} user={user!}/>
+      modalBody = <NewBoxMenu toggleModal={toggleModal} user={user!}/>
     break;
     case "Sorting Options" :
-      modalBody = <SortingMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} />
+      modalBody = <SortingMenu toggleModal={toggleModal} boxId={boxId} />
     break;
     case "Delete Item" :
-      modalBody = <DeletePrompt toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={itemData!} />
+      modalBody = <DeletePrompt toggleModal={toggleModal} boxId={boxId} itemData={itemData!} />
     break;
     case "Add To" :
-      modalBody = <AddToMenu toggleModal={toggleModal} dispatch={dispatch} userBoxes={userBoxes} boxId={boxId} itemData={itemData!} page={page!}/>
+      modalBody = <AddToMenu toggleModal={toggleModal} boxId={boxId} itemData={itemData!} page={page!}/>
     break;
     default:
       modalBody = ""

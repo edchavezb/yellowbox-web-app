@@ -1,28 +1,14 @@
+import { updateUserBox } from 'core/features/userBoxes/userBoxesSlice';
+import { useAppDispatch } from 'core/hooks/useAppDispatch';
+import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../../core/types/interfaces';
 //import { useHistory } from "react-router-dom";
 
 import styles from "./SortingMenu.module.css";
 
-enum UserBoxesActionTypes {
-  UPDATE_BOX = 'UPDATE_BOX',
-  NEW_BOX = 'NEW_BOX',
-  DELETE_BOX = 'DELETE_BOX',
-}
-
-interface UpdateBoxPayload {
-  updatedBox: UserBox
-  targetIndex?: number
-  targetId?: string
-}
-
 interface IProps {
-  userBoxes: UserBox[]
   boxId: string
-  dispatch: React.Dispatch<{
-    type: UserBoxesActionTypes;
-    payload: UpdateBoxPayload;
-  }>
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
@@ -30,9 +16,10 @@ type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
 
 type BoxSorting = UserBox["sectionSorting"]
 
-function SortingMenu({boxId, userBoxes, toggleModal, dispatch}: IProps) {
+function SortingMenu({boxId, toggleModal}: IProps) {
+  const dispatch = useAppDispatch();
+  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
 
-  const targetIndex = userBoxes.findIndex(box => box._id === boxId)
   const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box._id === boxId)))
   const boxSections: BoxSections = {artists: boxCopy.artists, albums: boxCopy.albums, tracks: boxCopy.tracks, playlists: boxCopy.playlists}
   const nonEmptySections = Object.keys(boxSections).filter((section) => boxSections[section as keyof BoxSections].length > 0)
@@ -47,7 +34,7 @@ function SortingMenu({boxId, userBoxes, toggleModal, dispatch}: IProps) {
     }
     console.log(boxCopy)
     console.log(updatedBox)
-    dispatch({ type: UserBoxesActionTypes["UPDATE_BOX"], payload: { updatedBox: updatedBox, targetIndex: targetIndex }})
+    dispatch(updateUserBox({ updatedBox: updatedBox, targetId: boxId }))
     toggleModal({ visible: false, type: "", boxId:"", page:"" })
   }
 

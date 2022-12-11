@@ -1,29 +1,23 @@
+import { updateUserBox } from "core/features/userBoxes/userBoxesSlice";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
+import { useAppSelector } from "core/hooks/useAppSelector";
 import { Dispatch, SetStateAction } from "react";
-import { UserBox, UpdateBoxPayload, ModalState, Album, Artist, Playlist, Track } from "../../core/types/interfaces";
+import { UserBox, ModalState, Album, Artist, Playlist, Track } from "../../core/types/interfaces";
 import styles from "./DeletePrompt.module.css";
-
-enum UserBoxesActionTypes {
-  UPDATE_BOX = 'UPDATE_BOX',
-  NEW_BOX = 'NEW_BOX',
-  DELETE_BOX = 'DELETE_BOX',
-}
 
 type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
 
 type MusicData = Artist | Album | Track | Playlist;
 
 interface IProps {
-  userBoxes: UserBox[]
   boxId: string
   itemData: MusicData
-  dispatch: React.Dispatch<{
-    type: UserBoxesActionTypes;
-    payload: UpdateBoxPayload;
-  }>
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function DeletePrompt({itemData, userBoxes, boxId, toggleModal, dispatch}: IProps) {
+function DeletePrompt({itemData, boxId, toggleModal}: IProps) {
+  const dispatch = useAppDispatch();
+  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
 
   let sectionType: string;
 
@@ -42,13 +36,12 @@ function DeletePrompt({itemData, userBoxes, boxId, toggleModal, dispatch}: IProp
   }
 
   const handleDeleteItem = <T extends Artist & Album & Track & Playlist>() => {
-    const targetIndex = userBoxes.findIndex(box => box._id === boxId)
     const targetBox = {...userBoxes.find(box => box._id === boxId) as UserBox}
     const targetSection = targetBox[sectionType as keyof BoxSections]
     const filteredSection = (targetSection as Array<T>).filter((item: T) => item.id !== itemData.id)
     let updatedBox: UserBox = JSON.parse(JSON.stringify(targetBox))
     updatedBox[sectionType as keyof BoxSections] = filteredSection
-    dispatch({ type: UserBoxesActionTypes["UPDATE_BOX"], payload: { updatedBox: updatedBox, targetIndex: targetIndex } })
+    dispatch(updateUserBox({ updatedBox: updatedBox, targetId: boxId }))
     toggleModal({ visible: false, type: "", boxId:"", itemData: undefined, page:""})
   } //TODO: Better implementation
 

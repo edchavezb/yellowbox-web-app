@@ -5,16 +5,17 @@ import BoxUtilities from '../components/box-views/BoxUtilities';
 import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
 import { Album, Artist, ModalState, Playlist, Track, UserBox, Visibility } from '../core/types/interfaces';
-import { getBoxById } from '../core/api/userboxes';
+import { getBoxByIdApi } from '../core/api/userboxes';
+import { useAppSelector } from 'core/hooks/useAppSelector';
 
 interface IProps {
-	userBoxes: UserBox[]
   toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function BoxDetail({userBoxes, toggleModal}: IProps) {
+function BoxDetail({toggleModal}: IProps) {
 
   const {id} = useParams<{id: string}>()
+  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const [boxData, setBoxData] = useState<UserBox | null>(null)
   const [boxMetaData, setBoxMetaData] = useState({isOwner: false, boxNotEmpty: false, singleTypeBox: true})
   const [visibility, setVisibility] = useState<Visibility>({playlists: true, albums: true, artists: true, tracks: true})
@@ -29,7 +30,7 @@ function BoxDetail({userBoxes, toggleModal}: IProps) {
   }, [visibility])
 
   const fetchBoxData = async () => {
-    const data = await getBoxById(id)
+    const data = await getBoxByIdApi(id)
     if (data) {
       const isOwner = !!userBoxes.find(box => box._id === id);
       const boxNotEmpty = data?.albums.length > 0 || data?.artists.length > 0 || data?.tracks.length > 0 || data?.playlists.length > 0;
