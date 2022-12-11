@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
-import { Album, Artist, ModalState, Playlist, Track } from "../../core/types/interfaces";
+import { setModalState } from "core/features/modal/modalSlice";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
 import styles from "./DragActions.module.css";
 
 interface IProps {
@@ -7,10 +7,10 @@ interface IProps {
   boxId?: string
   isOwner?: boolean,
   elementDragging: boolean
-  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function DragActions({page, boxId, isOwner, toggleModal, elementDragging}: IProps) {
+function DragActions({page, boxId, isOwner, elementDragging}: IProps) {
+  const dispatch = useAppDispatch();
 
   const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -35,7 +35,7 @@ function DragActions({page, boxId, isOwner, toggleModal, elementDragging}: IProp
     const data = JSON.parse(event.dataTransfer.getData("data"))
     const action = event.currentTarget.getAttribute("data-action")
     event.currentTarget.className = `${styles.dragActionsButton} ${styles.idleColor}`
-    toggleModal({visible: true, type: action as string, boxId: boxId ?? "", itemData: data, page: page})
+    dispatch(setModalState({visible: true, type: action as string, boxId: boxId ?? "", itemData: data, page: page}))
   }
 
   return (

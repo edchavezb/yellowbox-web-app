@@ -1,6 +1,7 @@
-//import React, { useState, useEffect } from 'react';
+import { setModalState } from "core/features/modal/modalSlice";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { Dispatch, SetStateAction } from "react";
-import { ModalState, UserBox, Visibility } from "../../core/types/interfaces";
+import { UserBox, Visibility } from "../../core/types/interfaces";
 
 import styles from "./BoxUtilities.module.css";
 
@@ -9,11 +10,10 @@ interface IProps {
   singleTypeBox: Boolean
   visibility: Visibility
 	setVisibility: Dispatch<SetStateAction<Visibility>>
-  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function BoxUtilities({box, singleTypeBox, visibility, setVisibility, toggleModal}: IProps) {
-
+function BoxUtilities({box, singleTypeBox, visibility, setVisibility}: IProps) {
+  const dispatch = useAppDispatch();
   const handleSectionVisibility = (e: React.MouseEvent<HTMLDivElement>) => {
     const section = e.currentTarget.getAttribute("data-handles")
     let newVisibility: {[key: string]: boolean} = {}
@@ -50,7 +50,7 @@ function BoxUtilities({box, singleTypeBox, visibility, setVisibility, toggleModa
           </div>
           : ""}
       </div>
-      <button id={styles.sortingButton} onClick={() => toggleModal({visible: true, type: "Sorting Options", boxId: box._id, page:"Box"})}> Sorting Options </button>
+      <button id={styles.sortingButton} onClick={() => dispatch(setModalState({visible: true, type: "Sorting Options", boxId: box._id, page:"Box"}))}> Sorting Options </button>
     </div>
   )
 }

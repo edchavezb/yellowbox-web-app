@@ -1,7 +1,7 @@
 import { UserBox } from '../../types/interfaces'
 import api from '../index'
 
-export const getUserBoxes = async (userId: string) => {
+export const getUserBoxesApi = async (userId: string) => {
     try {
         return await api.get<UserBox[]>('boxes/userboxes', {userId})
     }
@@ -10,7 +10,7 @@ export const getUserBoxes = async (userId: string) => {
     }
 }
 
-export const getBoxById = async (boxId: string) => {
+export const getBoxByIdApi = async (boxId: string) => {
     try {
         return await api.get<UserBox>('boxes/', {boxId})
     }
@@ -19,7 +19,7 @@ export const getBoxById = async (boxId: string) => {
     }
 }
 
-export const updateUserBox = async (boxId: string, updatedBox: UserBox) => {
+export const updateUserBoxApi = async (boxId: string, updatedBox: UserBox) => {
     try {
         return await api.put<UserBox, UserBox>('boxes/', {boxId}, updatedBox)
     }
@@ -28,7 +28,7 @@ export const updateUserBox = async (boxId: string, updatedBox: UserBox) => {
     }
 }
 
-export const createUserBox = async (data: Omit<UserBox, '_id'>) => {
+export const createUserBoxApi = async (data: Omit<UserBox, '_id'>) => {
     const result = await api.post<Omit<UserBox, '_id'>, UserBox>('boxes', data)
     console.log(result)
     return result

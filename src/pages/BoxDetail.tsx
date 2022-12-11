@@ -1,20 +1,16 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import BoxUtilities from '../components/box-views/BoxUtilities';
 import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
-import { Album, Artist, ModalState, Playlist, Track, UserBox, Visibility } from '../core/types/interfaces';
-import { getBoxById } from '../core/api/userboxes';
+import { Album, Artist, Playlist, Track, UserBox, Visibility } from '../core/types/interfaces';
+import { getBoxByIdApi } from '../core/api/userboxes';
+import { useAppSelector } from 'core/hooks/useAppSelector';
 
-interface IProps {
-	userBoxes: UserBox[]
-  toggleModal: Dispatch<SetStateAction<ModalState>>
-}
-
-function BoxDetail({userBoxes, toggleModal}: IProps) {
-
+function BoxDetail() {
   const {id} = useParams<{id: string}>()
+  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const [boxData, setBoxData] = useState<UserBox | null>(null)
   const [boxMetaData, setBoxMetaData] = useState({isOwner: false, boxNotEmpty: false, singleTypeBox: true})
   const [visibility, setVisibility] = useState<Visibility>({playlists: true, albums: true, artists: true, tracks: true})
@@ -29,7 +25,7 @@ function BoxDetail({userBoxes, toggleModal}: IProps) {
   }, [visibility])
 
   const fetchBoxData = async () => {
-    const data = await getBoxById(id)
+    const data = await getBoxByIdApi(id)
     if (data) {
       const isOwner = !!userBoxes.find(box => box._id === id);
       const boxNotEmpty = data?.albums.length > 0 || data?.artists.length > 0 || data?.tracks.length > 0 || data?.playlists.length > 0;
@@ -50,7 +46,6 @@ function BoxDetail({userBoxes, toggleModal}: IProps) {
           singleTypeBox={boxMetaData.singleTypeBox} 
           visibility={visibility} 
           setVisibility={setVisibility}
-          toggleModal={toggleModal}
         /> 
         : 
         ""
@@ -64,8 +59,7 @@ function BoxDetail({userBoxes, toggleModal}: IProps) {
           box={boxData}
           data={boxData.artists} 
           sorting={boxData.sectionSorting.artists}
-          visible={visibility.artists}
-          toggleModal={toggleModal} />
+          visible={visibility.artists} />
         : ""}
       {boxData?.albums?.length ? 
         <BoxSection<Album>
@@ -74,8 +68,7 @@ function BoxDetail({userBoxes, toggleModal}: IProps) {
           box={boxData} 
           data={boxData.albums}
           sorting={boxData.sectionSorting.albums}
-          visible={visibility.albums}
-          toggleModal={toggleModal}  /> 
+          visible={visibility.albums} /> 
         : ""}
       {boxData?.tracks?.length ? 
         <BoxSection<Track>
@@ -84,8 +77,7 @@ function BoxDetail({userBoxes, toggleModal}: IProps) {
           box={boxData} 
           data={boxData.tracks}
           sorting={boxData.sectionSorting.tracks}
-          visible={visibility.tracks}
-          toggleModal={toggleModal}  /> 
+          visible={visibility.tracks} /> 
         : ""}
         {boxData?.playlists?.length ? 
         <BoxSection<Playlist> 
@@ -94,8 +86,7 @@ function BoxDetail({userBoxes, toggleModal}: IProps) {
           box={boxData} 
           data={boxData.playlists}
           sorting={boxData.sectionSorting.playlists}
-          visible={visibility.playlists}
-          toggleModal={toggleModal}  /> 
+          visible={visibility.playlists} /> 
         : ""}
       {boxMetaData.boxNotEmpty ? "" : <div id={styles.emptyMsgDiv}><h3 id={styles.emptyMsg}> You have not added any items to this box yet. <br/> Start by searching some music you like! </h3></div>}
     </div>

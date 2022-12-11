@@ -1,20 +1,11 @@
-//import React, { useState, useEffect } from 'react';
-//import axios from 'axios'
-
 import styles from "./Home.module.css"
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import querystring from 'querystring'
 import credentials from '../keys'
-import { SpotifyLoginData } from "../core/types/interfaces";
-import { useEffect } from "react";
-import { getUserBoxes } from "../core/api/userboxes";
+import { useAppSelector } from "core/hooks/useAppSelector";
 
-interface IProps {
-  user: SpotifyLoginData
-}
-
-function Home({location, user}: RouteComponentProps & IProps) {
-
+function Home({location}: RouteComponentProps) {
+  const login = useAppSelector(state => state.spotifyLoginData.data)
   const generateRandomString = (length: number) => {
     var text = '';
     var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -46,7 +37,7 @@ function Home({location, user}: RouteComponentProps & IProps) {
     }));
   }
 
-  if (!user.auth.code){
+  if (!login.auth?.code){
     return (
       <div className="main-div">
         <h1> Please log in with one of your accounts </h1>
@@ -61,7 +52,7 @@ function Home({location, user}: RouteComponentProps & IProps) {
   } else {
     return (
       <div className="main-div">
-        <h1> Welcome {user.userData.displayName.split(" ")[0]} </h1>
+        <h1> Welcome {login.userData.displayName.split(" ")[0]} </h1>
         <h4> Use the search box to find your favorite music </h4>
       </div>
     );

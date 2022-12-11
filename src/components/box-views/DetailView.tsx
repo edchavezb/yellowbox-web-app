@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useState } from 'react';
-import { Artist, Album, Track, Playlist, ModalState } from "../../core/types/interfaces";
+import { useState } from 'react';
+import { Artist, Album, Track, Playlist } from "../../core/types/interfaces";
 
 import DetailRow from './DetailRow';
 import DragActions from "../layout/DragActions"
@@ -11,10 +11,9 @@ interface IProps<T> {
   boxId: string
   isOwner?: boolean
   customSorting: boolean
-  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function DetailView<T extends Artist | Album | Track | Playlist>({isOwner, data, page, toggleModal, boxId}: IProps<T>) {
+function DetailView<T extends Artist | Album | Track | Playlist>({isOwner, data, page, boxId}: IProps<T>) {
   const [elementDragging, setElementDragging] = useState(false)
 
   return (
@@ -22,7 +21,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({isOwner, data,
       {data.map((e) => {
           return <DetailRow key={e.id} index={data.indexOf(e)} element={e} setElementDragging={setElementDragging} />
       })}
-      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
+      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} boxId={boxId} />
     </div>
   )
 }

@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Artist, Album, Track, Playlist, ModalState } from "../../core/types/interfaces";
+import { useState } from 'react';
+import { Artist, Album, Track, Playlist } from "../../core/types/interfaces";
 
 import GridItem from "./GridItem"
 import DragActions from "../layout/DragActions"
@@ -11,10 +11,9 @@ interface IProps<T> {
   boxId?: string
   isOwner?: boolean,
   customSorting?: boolean
-  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function GridView<T extends Artist | Album | Track | Playlist> ({data, isOwner, page, toggleModal, boxId, customSorting}: IProps<T>) {
+function GridView<T extends Artist | Album | Track | Playlist> ({data, isOwner, page, boxId, customSorting}: IProps<T>) {
 
   const [elementDragging, setElementDragging] = useState(false)
 
@@ -23,7 +22,7 @@ function GridView<T extends Artist | Album | Track | Playlist> ({data, isOwner, 
       {data.map((e) => {
           return <GridItem<T> key={e.id} element={e} setElementDragging={setElementDragging} />
       })}
-      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} toggleModal={toggleModal} boxId={boxId} />
+      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} boxId={boxId} />
     </div>
   )
 }

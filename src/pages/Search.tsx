@@ -1,19 +1,13 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
 import querystring from 'querystring'
 import credentials from '../keys'
-
 import SearchResults from "./SearchResults"
-
 import styles from "./Search.module.css"
-import { Album, Artist, ModalState, Playlist, Track } from '../core/types/interfaces';
+import { Album, Artist, Playlist, Track } from '../core/types/interfaces';
 
-interface IProps {
-  toggleModal: Dispatch<SetStateAction<ModalState>>
-}
-
-function Search({toggleModal}: IProps) {
+function Search() {
 
   const params = useParams<{query: string}>()
   const [spotifyToken, setToken] = useState('')
@@ -80,10 +74,10 @@ function Search({toggleModal}: IProps) {
   return (
     <div className="main-div">
       <h1> Is this what you're looking for? </h1>
-      {searchData.artists.length > 0 && <SearchResults<Artist> type="Artists" data={searchData.artists.slice(0,12)} toggleModal={toggleModal}/>}
-      {searchData.albums.length > 0 && <SearchResults<Album> type="Albums" data={searchData.albums.slice(0,12)} toggleModal={toggleModal} />}
-      {searchData.tracks.length > 0 && <SearchResults<Track> type="Tracks" data={searchData.tracks.slice(0,12)} toggleModal={toggleModal}/>}
-      {searchData.playlists.length > 0 && <SearchResults<Playlist> type="Playlists" data={searchData.playlists.slice(0,12)} toggleModal={toggleModal}/>}
+      {searchData.artists.length > 0 && <SearchResults<Artist> type="Artists" data={searchData.artists.slice(0,12)}/>}
+      {searchData.albums.length > 0 && <SearchResults<Album> type="Albums" data={searchData.albums.slice(0,12)}/>}
+      {searchData.tracks.length > 0 && <SearchResults<Track> type="Tracks" data={searchData.tracks.slice(0,12)}/>}
+      {searchData.playlists.length > 0 && <SearchResults<Playlist> type="Playlists" data={searchData.playlists.slice(0,12)}/>}
     </div>
   );
 }

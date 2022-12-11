@@ -1,4 +1,4 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios'
 import querystring from 'querystring'
@@ -9,20 +9,16 @@ import ListView from '../components/box-views/ListView';
 import TrackVisualizer from '../components/box-views/TrackVisualizer';
 
 import styles from "./ItemDetail.module.css"
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../core/types/interfaces';
+import { Album, Artist, Playlist, Track, UserBox } from '../core/types/interfaces';
 import * as checkType from '../core/helpers/typeguards';
 
 // TODO: Handle promises better
-
-interface IProps {
-  toggleModal: Dispatch<SetStateAction<ModalState>>
-}
 
 type MusicData = Artist | Album | Track | Playlist;
 
 type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
 
-function ItemDetail({toggleModal}: IProps) {
+function ItemDetail() {
 
   const history = useHistory();
   const params = useParams<{id: string, type: string}>()
@@ -190,19 +186,19 @@ function ItemDetail({toggleModal}: IProps) {
     switch (params.type){
       case "album" :
         listComponent = 
-        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData as Album)} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
+        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData as Album)} page="detail" customSorting={false} boxId={undefined} />
       break;
       case "playlist" :
         listComponent = 
-        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
+        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} boxId={undefined} />
       break;
       case "artist" :
         listComponent = 
-        <GridView data={removeDuplicatesByProperty(itemContents.items, "name")} page="detail" customSorting={false} toggleModal={toggleModal} boxId={undefined} />
+        <GridView data={removeDuplicatesByProperty(itemContents.items, "name")} page="detail" customSorting={false} boxId={undefined} />
       break;
       case "track" :
         listComponent = 
-        <TrackVisualizer data={itemData as Track} album={itemAlbum} page="detail" toggleModal={toggleModal} boxId={undefined}/>
+        <TrackVisualizer data={itemData as Track} album={itemAlbum} page="detail" boxId={undefined}/>
       break;
       default:
         listComponent = <div></div>

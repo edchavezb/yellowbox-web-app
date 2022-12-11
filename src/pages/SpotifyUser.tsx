@@ -2,24 +2,19 @@ import styles from "./SpotifyUser.module.css"
 import querystring from 'querystring'
 import credentials from '../keys'
 import axios from 'axios';
-import { Artist, ModalState, Track, SpotifyLoginData } from "../core/types/interfaces";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Artist, Track } from "../core/types/interfaces";
+import { useEffect, useState } from "react";
 import GridView from "../components/box-views/GridView";
+import { useAppSelector } from "core/hooks/useAppSelector";
 
-interface IProps {
-  user: SpotifyLoginData
-  dispatchUser: any
-  toggleModal: Dispatch<SetStateAction<ModalState>>
-}
-
-function SpotifyUser({ dispatchUser, user, toggleModal }: IProps) {
-
+function SpotifyUser() {
+  const spotifyLogin = useAppSelector(state => state.spotifyLoginData.data)
   const [recentlyPlayed, setRecentlyPlayed] = useState<Track[]>([]);
   const [topArtists, setTopArtists] = useState<Artist[]>([]);
   const [topTracks, setTopTracks] = useState<Track[]>([]);
 
   useEffect(() => {
-    getRefreshedToken(user.auth.code as string);
+    getRefreshedToken(spotifyLogin.auth.code as string);
   }, [])
 
   const getRefreshedToken = (code: string) => {
@@ -28,7 +23,7 @@ function SpotifyUser({ dispatchUser, user, toggleModal }: IProps) {
       url: 'https://accounts.spotify.com/api/token',
       data: querystring.stringify({
         grant_type: 'refresh_token',
-        refresh_token: user.auth.refreshToken
+        refresh_token: spotifyLogin.auth.refreshToken
       }),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -100,26 +95,26 @@ function SpotifyUser({ dispatchUser, user, toggleModal }: IProps) {
 
   return (
     <div className="main-div">
-      <h1> {user.userData.displayName.split(" ")[0]}'s Spotify dashboard </h1>
+      <h1> {spotifyLogin.userData.displayName.split(" ")[0]}'s Spotify dashboard </h1>
       { 
         !!topArtists.length &&
         <>
           <h3> Your top artists this month </h3>
-          <GridView<Artist> data={topArtists} toggleModal={toggleModal} page={'spotifyUser'} /> 
+          <GridView<Artist> data={topArtists} page={'spotifyUser'} /> 
         </>
       }
       { 
         !!topTracks.length &&
         <>
           <h3> Your top tracks this month </h3>
-          <GridView<Track> data={topTracks} toggleModal={toggleModal} page={'spotifyUser'} /> 
+          <GridView<Track> data={topTracks} page={'spotifyUser'} /> 
         </>
       }
       { 
         !!recentlyPlayed.length &&
         <>
           <h3> Recently played tracks </h3>
-          <GridView<Track> data={recentlyPlayed} toggleModal={toggleModal} page={'spotifyUser'} /> 
+          <GridView<Track> data={recentlyPlayed} page={'spotifyUser'} /> 
         </>
       }
     </div>

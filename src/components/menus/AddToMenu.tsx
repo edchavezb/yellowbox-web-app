@@ -1,37 +1,24 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import { updateUserBox } from '../../core/api/userboxes';
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../core/types/interfaces";
+import { setModalState } from 'core/features/modal/modalSlice';
+import { updateUserBox } from 'core/features/userBoxes/userBoxesSlice';
+import { useAppDispatch } from 'core/hooks/useAppDispatch';
+import { useAppSelector } from 'core/hooks/useAppSelector';
+import { useState, useEffect } from 'react';
+import { updateUserBoxApi } from '../../core/api/userboxes';
+import { Album, Artist, Playlist, Track, UserBox } from "../../core/types/interfaces";
 
 import styles from "./AddToMenu.module.css";
-
-enum UserBoxesActionTypes {
-  UPDATE_BOX = 'UPDATE_BOX',
-  NEW_BOX = 'NEW_BOX',
-  DELETE_BOX = 'DELETE_BOX',
-}
-
-interface UpdateBoxPayload {
-  updatedBox: UserBox
-  targetIndex?: number
-  targetId?: string
-}
 
 type MusicData = Artist | Album | Track | Playlist;
 
 interface IProps {
 	page: string
   itemData: MusicData
-  userBoxes: UserBox[]
   boxId: string 
-  dispatch: React.Dispatch<{
-    type: UserBoxesActionTypes;
-    payload: UpdateBoxPayload;
-  }>
-  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function AddToMenu({page, itemData, userBoxes, boxId, toggleModal, dispatch}: IProps) {
-
+function AddToMenu({page, itemData, boxId}: IProps) {
+  const dispatch = useAppDispatch();
+  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const currentBox = {...userBoxes.find(box => box._id === boxId) as UserBox}
   const itemCopy = JSON.parse(JSON.stringify(itemData))
 
@@ -45,7 +32,6 @@ function AddToMenu({page, itemData, userBoxes, boxId, toggleModal, dispatch}: IP
 
   const handleAddItem = () => {
     const targetId = addType === "box" ? addBox : currentBox._id
-    const targetIndex = userBoxes.findIndex(box => box._id === targetId)
     const targetBox = {...userBoxes.find(box => box._id === targetId) as UserBox}
     console.log(targetBox)
     const updatedItem = {...extractCrucialData(itemCopy), subSection: addType === "box" ? "default" : addSub}
@@ -71,12 +57,12 @@ function AddToMenu({page, itemData, userBoxes, boxId, toggleModal, dispatch}: IP
     }
     console.log("Dispatch call")
     try {
-      updateUserBox(targetId, updatedBox)
-      dispatch({type: UserBoxesActionTypes["UPDATE_BOX"], payload: {updatedBox: updatedBox, targetIndex: targetIndex}})
+      updateUserBoxApi(targetId, updatedBox)
+      dispatch(updateUserBox({updatedBox, targetId: boxId}))
     } catch {
       console.log('Could not add item to box')
     }
-    toggleModal({ visible: false, type: "", boxId:"", page: "", itemData: undefined})
+    dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
   }
 
   const extractCrucialData = (data: MusicData) => {

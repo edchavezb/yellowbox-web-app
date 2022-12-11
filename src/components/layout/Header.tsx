@@ -3,16 +3,11 @@ import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
 import styles from "./Header.module.css";
-import { Album, Artist, Playlist, Track, UserBox } from "../../core/types/interfaces";
+import { setModalState } from "core/features/modal/modalSlice";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
 
-interface IProps {
-  boxes: UserBox[]
-  dispatch: any //TODO: Change any type
-  toggleModal: (toggle: {visible: boolean, type: string, boxId: string, page: string, itemData?: Artist | Album | Track | Playlist}) => void
-}
-
-function Header({toggleModal}: IProps) {
-
+function Header() {
+  const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const history = useHistory();
   let searchTimeout:  ReturnType<typeof setTimeout>;
@@ -44,7 +39,7 @@ function Header({toggleModal}: IProps) {
             </div>
             <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
           </div>
-          <div id={styles.newButton} onClick={() => toggleModal({visible: true, type: "New Box", boxId: "", page: "", itemData: undefined})}>
+          <div id={styles.newButton} onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}>
             <img id={styles.plusIcon} src="/icons/plus.svg"></img>
           </div>
         </div>

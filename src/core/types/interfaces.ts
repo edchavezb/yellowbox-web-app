@@ -1,9 +1,9 @@
-interface SpotifyLoginData {
+export interface SpotifyLoginData {
   auth: SpotifyUserAuth
   userData: SpotifyUserData
 }
 
-interface SpotifyUserData {
+export interface SpotifyUserData {
   displayName: string
   userId: string
   uri: string
@@ -11,12 +11,12 @@ interface SpotifyUserData {
   email: string
 }
 
-interface SpotifyUserAuth {
+export interface SpotifyUserAuth {
   code: string | null
   refreshToken: string | null
 }
 
-interface YellowboxUser {
+export interface YellowboxUser {
   _id: string
   displayName: string
   image: string
@@ -26,7 +26,7 @@ interface YellowboxUser {
   }
 }
 
-interface UserBox {
+export interface UserBox {
   _id: string
   name: string
   public: boolean
@@ -46,7 +46,7 @@ interface UserBox {
   subSections : {type: string, name: string}[]
 }
 
-interface Sorting {
+export interface Sorting {
   primarySorting: string
   secondarySorting: string
   view: string
@@ -54,20 +54,20 @@ interface Sorting {
   displaySubSections: boolean
 }
 
-interface Visibility {
+export interface Visibility {
   artists: boolean
   albums: boolean
   tracks: boolean
   playlists: boolean
 }
 
-interface UpdateBoxPayload {
+export interface UpdateBoxPayload {
   updatedBox: UserBox
   targetIndex?: number
   targetId?: string
 }
 
-interface Album {
+export interface Album {
   album_type: string
   artists: Artist[]
   external_urls: {
@@ -92,7 +92,7 @@ interface Album {
   subSection?: string
 }
 
-interface Artist {
+export interface Artist {
   external_urls: {
     spotify: string
   }
@@ -106,7 +106,7 @@ interface Artist {
   subSection?: string
 }
 
-interface Track {
+export interface Track {
   album?: Album
   artists: Artist[]
   duration_ms: number
@@ -124,7 +124,7 @@ interface Track {
   subSection?: string 
 }
 
-interface Playlist {
+export interface Playlist {
   description: string
   external_urls: {
     spotify: string
@@ -147,7 +147,7 @@ interface Playlist {
   subSection?: string 
 }
 
-interface SpotifyUser {
+export interface SpotifyUser {
   display_name?: string
   external_urls: {
     spotify: string
@@ -158,7 +158,7 @@ interface SpotifyUser {
   uri: string
 }
 
-interface PlaylistItem {
+export interface PlaylistItem {
   added_at: string
   added_by: SpotifyUser
   is_local: boolean
@@ -166,18 +166,8 @@ interface PlaylistItem {
   track: any // TODO: Hey bro you need to do something here
 }
 
-interface ItemImage {
+export interface ItemImage {
   height?: number | null
   url: string
   width?: number | null
 }
-
-interface ModalState {
-  itemData?: Artist | Album | Track | Playlist
-  visible: boolean
-  type: string
-  boxId: string
-  page: string
-}
-
-export type { SpotifyLoginData, YellowboxUser, UserBox, Visibility, Sorting, UpdateBoxPayload, Artist, Album, Track, Playlist, SpotifyUser, PlaylistItem, ItemImage, ModalState }
