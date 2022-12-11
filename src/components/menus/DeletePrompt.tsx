@@ -1,8 +1,8 @@
+import { setModalState } from "core/features/modal/modalSlice";
 import { updateUserBox } from "core/features/userBoxes/userBoxesSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { Dispatch, SetStateAction } from "react";
-import { UserBox, ModalState, Album, Artist, Playlist, Track } from "../../core/types/interfaces";
+import { UserBox, Album, Artist, Playlist, Track } from "../../core/types/interfaces";
 import styles from "./DeletePrompt.module.css";
 
 type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
@@ -12,10 +12,9 @@ type MusicData = Artist | Album | Track | Playlist;
 interface IProps {
   boxId: string
   itemData: MusicData
-  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function DeletePrompt({itemData, boxId, toggleModal}: IProps) {
+function DeletePrompt({itemData, boxId}: IProps) {
   const dispatch = useAppDispatch();
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
 
@@ -42,7 +41,7 @@ function DeletePrompt({itemData, boxId, toggleModal}: IProps) {
     let updatedBox: UserBox = JSON.parse(JSON.stringify(targetBox))
     updatedBox[sectionType as keyof BoxSections] = filteredSection
     dispatch(updateUserBox({ updatedBox: updatedBox, targetId: boxId }))
-    toggleModal({ visible: false, type: "", boxId:"", itemData: undefined, page:""})
+    dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
   } //TODO: Better implementation
 
   return (
@@ -52,7 +51,7 @@ function DeletePrompt({itemData, boxId, toggleModal}: IProps) {
       </div>
       <div id={styles.modalFooter}>
         <button onClick={() => handleDeleteItem()}> Yes, delete item </button>
-        <button onClick={() => toggleModal({ visible: false, type: "", boxId:"", itemData: undefined, page:"" })}> Cancel </button>
+        <button onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}> Cancel </button>
       </div>
     </div>
   )

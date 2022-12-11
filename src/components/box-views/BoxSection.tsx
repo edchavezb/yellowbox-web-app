@@ -3,7 +3,7 @@ import AnimateHeight from 'react-animate-height';
 
 import SubSection from "./SubSection"
 import styles from "./BoxSection.module.css";
-import { Album, Artist, ModalState, Playlist, Sorting, Track, UserBox } from '../../core/types/interfaces';
+import { Album, Artist, Playlist, Sorting, Track, UserBox } from '../../core/types/interfaces';
 import  * as checkType from  "../../core/helpers/typeguards";
 import ItemDetail from '../../pages/ItemDetail';
 
@@ -14,10 +14,9 @@ interface IProps<T> {
   sorting: Sorting
   visible: boolean
   isOwner?: boolean
-	toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function BoxSection<T extends Artist | Album | Track | Playlist>({isOwner, data, type, box, sorting, visible, toggleModal}: IProps<T>) {
+function BoxSection<T extends Artist | Album | Track | Playlist>({isOwner, data, type, box, sorting, visible}: IProps<T>) {
 
   const [height, setHeight] = useState<string | number>("auto")
 
@@ -88,7 +87,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({isOwner, data,
         : sortedData.filter(e => getProperty(e, type, sorting.primarySorting, false) === s)
       
       return itemsMatch.length > 0 &&
-        <SubSection itemsMatch={itemsMatch} page="box" subName={s} key={s} viewType={sorting.view} toggleModal={toggleModal} 
+        <SubSection itemsMatch={itemsMatch} page="box" subName={s} key={s} viewType={sorting.view} 
           sectionType={""} isDefault={false} customSorting={sorting.primarySorting === "custom"} boxId={""}/>
 
     })
@@ -123,7 +122,6 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({isOwner, data,
                 isDefault={true} 
                 page="box" 
                 customSorting={sorting.primarySorting === "custom"} 
-                toggleModal={toggleModal} 
                 boxId={box._id}
               />
             </div>
@@ -139,7 +137,6 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({isOwner, data,
             isDefault={true} 
             page="box" 
             customSorting={sorting.primarySorting === "custom"} 
-            toggleModal={toggleModal} 
             boxId={box._id} 
           />
         }

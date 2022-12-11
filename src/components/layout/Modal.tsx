@@ -3,48 +3,40 @@ import SortingMenu from "../menus/SortingMenu";
 import NewBoxMenu from "../menus/NewBoxMenu";
 import DeletePrompt from "../menus/DeletePrompt";
 import AddToMenu from "../menus/AddToMenu";
-import { Album, Artist, ModalState, Playlist, Track, UserBox, YellowboxUser } from "../../core/types/interfaces";
-import { Dispatch, SetStateAction } from "react";
+import { useAppSelector } from "core/hooks/useAppSelector";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
+import { setModalState } from "core/features/modal/modalSlice";
 
-interface IProps {
-  user?: YellowboxUser
-	itemData?: Artist | Album | Track | Playlist
-  type: string
-  page?: string
-  visible: boolean
-  boxId: string
-  toggleModal: Dispatch<SetStateAction<ModalState>>
-}
-
-function Modal({user, itemData, type, page, visible, toggleModal, boxId}: IProps) {
-
+function Modal() {
+  const dispatch = useAppDispatch();
+  const modalData = useAppSelector(state => state.modalData.modalState)
   let modalBody: JSX.Element | string = "";
 
-  switch(type){
+  switch(modalData.type){
     case "New Box" :
-      modalBody = <NewBoxMenu toggleModal={toggleModal} user={user!}/>
+      modalBody = <NewBoxMenu/>
     break;
     case "Sorting Options" :
-      modalBody = <SortingMenu toggleModal={toggleModal} boxId={boxId} />
+      modalBody = <SortingMenu boxId={modalData.boxId} />
     break;
     case "Delete Item" :
-      modalBody = <DeletePrompt toggleModal={toggleModal} boxId={boxId} itemData={itemData!} />
+      modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} />
     break;
     case "Add To" :
-      modalBody = <AddToMenu toggleModal={toggleModal} boxId={boxId} itemData={itemData!} page={page!}/>
+      modalBody = <AddToMenu boxId={modalData.boxId} itemData={modalData.itemData!} page={modalData.page!}/>
     break;
     default:
       modalBody = ""
   }
 
 
-  if(visible){
+  if(modalData.visible){
     return (
       <div id={styles.modalDiv}> 
         <div id={styles.modalPanel}>
           <div id={styles.modalHeader}>
-            <div id={styles.modalTitle}> {type} </div>
-            <div id={styles.closeModal} onClick={() => toggleModal({visible: false, type:"", boxId:"", page: "", itemData: undefined})}>
+            <div id={styles.modalTitle}> {modalData.type} </div>
+            <div id={styles.closeModal} onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}>
               <img id={styles.closeIcon} alt="Close modal" src="/icons/close.svg"/>
             </div>
           </div>

@@ -1,18 +1,16 @@
 import { createUserBox } from 'core/features/userBoxes/userBoxesSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { createUserBoxApi } from 'core/api/userboxes';
-import { ModalState, UserBox, YellowboxUser } from 'core/types/interfaces';
+import { UserBox } from 'core/types/interfaces';
 
 import styles from "./NewBoxMenu.module.css";
+import { setModalState } from 'core/features/modal/modalSlice';
+import { useAppSelector } from 'core/hooks/useAppSelector';
 
-interface IProps {
-  user: YellowboxUser
-  toggleModal: Dispatch<SetStateAction<ModalState>>
-}
-
-function NewBoxMenu({user, toggleModal}: IProps) {
+function NewBoxMenu() {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(state => state.userData.authenticatedUser)
   const [boxDetails, setBoxDetails] = useState({boxName: "", boxDesc: "", public: true})
 
   const newUserBox = async () => {
@@ -72,7 +70,7 @@ function NewBoxMenu({user, toggleModal}: IProps) {
     const boxPayload = await newUserBox();
     console.log(boxPayload)
     dispatch(createUserBox(boxPayload))
-    toggleModal({ visible: false, type: "", boxId:"", page: ""})
+    dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
   }
 
   return (

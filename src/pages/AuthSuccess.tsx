@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
-
-import { RouteComponentProps, useHistory, useLocation, useParams, withRouter } from "react-router-dom";
+import { useEffect } from 'react';
+import { useHistory, useLocation } from "react-router-dom";
 import querystring from 'querystring'
 import credentials from '../keys'
 import axios from 'axios';
-import { createUser, getUserDataBySpotifyId } from '../core/api/users';
-import { YellowboxUser } from '../core/types/interfaces';
+import { createUser, getUserDataBySpotifyId } from 'core/api/users';
+import { YellowboxUser } from 'core/types/interfaces';
+import { useAppDispatch } from 'core/hooks/useAppDispatch';
+import { setAuthenticatedUser } from 'core/features/user/userSlice';
+import { setSpotifyLoginData } from 'core/features/spotifyService/spotifyLoginSlice';
 
-function AuthSuccess({dispatchSpotifyLogin, dispatchUser} : {dispatchSpotifyLogin: any, dispatchUser: any}) {
+function AuthSuccess() {
   let location = useLocation();
   let history = useHistory();
+  const dispatch = useAppDispatch();
 
   const spotifyAuthorization = (code: string) => {
     axios({
@@ -70,8 +73,8 @@ function AuthSuccess({dispatchSpotifyLogin, dispatchUser} : {dispatchSpotifyLogi
           }
           user = await createUser(userObj)
         }
-        dispatchSpotifyLogin({ type: 'UPDATE_LOGIN', payload: spotifyLogin })
-        dispatchUser({ type: 'UPDATE_USER', payload: user })
+        dispatch(setSpotifyLoginData(spotifyLogin))
+        dispatch(setAuthenticatedUser(user!))
         history.push('/')
       })
       .catch(error => {

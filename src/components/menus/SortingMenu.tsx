@@ -1,22 +1,22 @@
+import { setModalState } from 'core/features/modal/modalSlice';
 import { updateUserBox } from 'core/features/userBoxes/userBoxesSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from '../../core/types/interfaces';
+import { useState, useEffect } from 'react';
+import { UserBox } from '../../core/types/interfaces';
 //import { useHistory } from "react-router-dom";
 
 import styles from "./SortingMenu.module.css";
 
 interface IProps {
   boxId: string
-  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
 type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
 
 type BoxSorting = UserBox["sectionSorting"]
 
-function SortingMenu({boxId, toggleModal}: IProps) {
+function SortingMenu({boxId}: IProps) {
   const dispatch = useAppDispatch();
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
 
@@ -35,7 +35,7 @@ function SortingMenu({boxId, toggleModal}: IProps) {
     console.log(boxCopy)
     console.log(updatedBox)
     dispatch(updateUserBox({ updatedBox: updatedBox, targetId: boxId }))
-    toggleModal({ visible: false, type: "", boxId:"", page:"" })
+    dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
   }
 
   useEffect(() => {

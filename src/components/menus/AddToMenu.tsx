@@ -1,9 +1,10 @@
+import { setModalState } from 'core/features/modal/modalSlice';
 import { updateUserBox } from 'core/features/userBoxes/userBoxesSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 import { updateUserBoxApi } from '../../core/api/userboxes';
-import { Album, Artist, ModalState, Playlist, Track, UserBox } from "../../core/types/interfaces";
+import { Album, Artist, Playlist, Track, UserBox } from "../../core/types/interfaces";
 
 import styles from "./AddToMenu.module.css";
 
@@ -13,10 +14,9 @@ interface IProps {
 	page: string
   itemData: MusicData
   boxId: string 
-  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function AddToMenu({page, itemData, boxId, toggleModal}: IProps) {
+function AddToMenu({page, itemData, boxId}: IProps) {
   const dispatch = useAppDispatch();
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const currentBox = {...userBoxes.find(box => box._id === boxId) as UserBox}
@@ -32,7 +32,6 @@ function AddToMenu({page, itemData, boxId, toggleModal}: IProps) {
 
   const handleAddItem = () => {
     const targetId = addType === "box" ? addBox : currentBox._id
-    const targetIndex = userBoxes.findIndex(box => box._id === targetId)
     const targetBox = {...userBoxes.find(box => box._id === targetId) as UserBox}
     console.log(targetBox)
     const updatedItem = {...extractCrucialData(itemCopy), subSection: addType === "box" ? "default" : addSub}
@@ -63,7 +62,7 @@ function AddToMenu({page, itemData, boxId, toggleModal}: IProps) {
     } catch {
       console.log('Could not add item to box')
     }
-    toggleModal({ visible: false, type: "", boxId:"", page: "", itemData: undefined})
+    dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
   }
 
   const extractCrucialData = (data: MusicData) => {

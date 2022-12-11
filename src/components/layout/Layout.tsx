@@ -1,26 +1,24 @@
 import SideBar from "./SideBar"
 import Header from "./Header"
 import styles from "./Layout.module.css";
-
-import { Album, Artist, ModalState, Playlist, Track, SpotifyLoginData, UserBox, YellowboxUser } from "../../core/types/interfaces";
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { ReactNode } from "react";
+import { useAppSelector } from "core/hooks/useAppSelector";
 
 interface IProps {
   children: ReactNode
-  user: YellowboxUser
-  login: SpotifyLoginData
-  toggleModal: Dispatch<SetStateAction<ModalState>>
 }
 
-function Layout({user, login, toggleModal, children}: IProps) {
+function Layout({children}: IProps) {
+  const user = useAppSelector(state => state.userData.authenticatedUser)
+  const spotifyLogin = useAppSelector(state => state.spotifyLoginData.data)
 
   return (
     <div id={styles.layout}>
       <section id={styles.headerWrapper}>
-        <Header toggleModal={toggleModal}/>
+        <Header/>
       </section>
       <section id={styles.sideBar}>
-        <SideBar user={user} login={login}/>
+        <SideBar user={user} login={spotifyLogin}/>
       </section>
       <section id={styles.mainView}>
         {children}
