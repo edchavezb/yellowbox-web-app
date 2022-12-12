@@ -195,7 +195,7 @@ function ItemDetail() {
       case "artist" :
         listComponent = 
         <GridView 
-          data={removeDuplicatesByProperty(itemContents.items, "name")} 
+          data={removeDuplicatesByProperty(itemContents.items, "name").filter((album: Album) => album.album_type !== 'compilation')} 
           page="detail" 
           customSorting={false} 
           boxId={undefined} 
