@@ -1,0 +1,31 @@
+.mostPlayedWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px 0px;
+}
+
+.mostPlayedImage {
+    width: 85%
+}
+
+.mostPlayedData {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sectionTitle {
+    font-size: .9em;
+}
+
+.itemName {
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.itemName, .itemArtist {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

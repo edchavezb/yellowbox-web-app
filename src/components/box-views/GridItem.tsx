@@ -56,7 +56,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({element, setElem
 			<div className={styles.imageContainer}>
 				<a href={`${uri}:play`}>
 					<div className={styles.instantPlay}>
-						<img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
+						<img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'/>
 						{type === "track" ? <span> Play </span> : <span> Open </span>}
 					</div>
 				</a>

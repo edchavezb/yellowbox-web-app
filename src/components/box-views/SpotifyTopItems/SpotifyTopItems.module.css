@@ -1,0 +1,37 @@
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sectionTitle {
+    display: flex;
+    gap: 10px;
+    font-size: 1.17em;
+    font-weight: bold;
+}
+
+.timeRangeSelect {
+    display: flex;
+    gap: 10px;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.topItemsColumnsWrapper {
+    display: flex;
+    margin-top: 20px;
+    column-gap: 20px;
+}
+
+.mostPlayedColumn {
+    width: 35%
+}
+
+.topItemsColumn {
+    width: 65%;
+    background-color: rgb(61, 61, 61);
+    border-radius: 10px;
+    padding: 20px 20px;
+    max-height: 360px;
+}
