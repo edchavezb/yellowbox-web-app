@@ -86,8 +86,8 @@ function SpotifyTopItems({token}: IProps) {
   }
 
   const computeTopAlbums = (tracks: Track[]) => {
-    const allAlbums = tracks.map(track => track.album!);
-    const scoreBoard: {[key: string]: number}= {}
+    const allAlbums = tracks.map(track => track.album!).filter(album => album.album_type !== 'SINGLE');
+    const scoreBoard: {[key: string]: number} = {}
     allAlbums.forEach(album => {
       const id = album?.id!;
       if (!Object.keys(scoreBoard).includes(id)){
@@ -123,7 +123,7 @@ function SpotifyTopItems({token}: IProps) {
             <option value={TopItemsSelectItems.ALBUMS}> albums </option>
             <option value={TopItemsSelectItems.TRACKS}> tracks </option>
           </select>
-          <span> on your library </span>
+          <span> in your library </span>
         </div>
         <div className={styles.timeRangeSelect}>
           <span> Time Range </span>
