@@ -194,7 +194,12 @@ function ItemDetail() {
       break;
       case "artist" :
         listComponent = 
-        <GridView data={removeDuplicatesByProperty(itemContents.items, "name")} page="detail" customSorting={false} boxId={undefined} />
+        <GridView 
+          data={removeDuplicatesByProperty(itemContents.items, "name")} 
+          page="detail" 
+          customSorting={false} 
+          boxId={undefined} 
+        />
       break;
       case "track" :
         listComponent = 
@@ -228,7 +233,6 @@ function ItemDetail() {
                     </span> 
                   )
                 })}
-                {itemData.genres ? " | " : ""}Popular releases
               </div>
               : ""
             }
@@ -267,6 +271,10 @@ function ItemDetail() {
           </div>
         </div>
         <hr />
+        {
+          checkType.isArtist(itemData) &&
+          <h3 className={styles.popularReleases}>Popular releases</h3>
+        }
         {getListComponent()}
       </div>
     );
