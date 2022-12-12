@@ -2,22 +2,24 @@ import styles from "./SpotifyUser.module.css"
 import querystring from 'querystring'
 import credentials from '../keys'
 import axios from 'axios';
-import { Artist, Track } from "../core/types/interfaces";
+import { Artist, Playlist, Track } from "../core/types/interfaces";
 import { useEffect, useState } from "react";
 import GridView from "../components/box-views/GridView";
 import { useAppSelector } from "core/hooks/useAppSelector";
+import SpotifyTopItems from "components/box-views/SpotifyTopItems/SpotifyTopItems";
+import ListView from "components/box-views/ListView";
 
 function SpotifyUser() {
   const spotifyLogin = useAppSelector(state => state.spotifyLoginData.data)
   const [recentlyPlayed, setRecentlyPlayed] = useState<Track[]>([]);
-  const [topArtists, setTopArtists] = useState<Artist[]>([]);
-  const [topTracks, setTopTracks] = useState<Track[]>([]);
+  const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
+  const [authToken, setAuthToken] = useState('')
 
   useEffect(() => {
-    getRefreshedToken(spotifyLogin.auth.code as string);
+    getRefreshedToken();
   }, [])
 
-  const getRefreshedToken = (code: string) => {
+  const getRefreshedToken = () => {
     axios({
       method: 'post',
       url: 'https://accounts.spotify.com/api/token',
@@ -33,9 +35,9 @@ function SpotifyUser() {
     })
       .then(response => {
         console.log(response)
-        getTopArtists(response.data.access_token)
-        getTopTracks(response.data.access_token)
+        setAuthToken(response.data.access_token)
         getRecentlyPlayed(response.data.access_token)
+        getUserPlaylists(response.data.access_token)
       })
       .catch(error => {
         console.log(error);
@@ -52,41 +54,24 @@ function SpotifyUser() {
     })
       .then(response => {
         console.log(response.data)
-        setRecentlyPlayed(response.data.items.map((item: {track: Track}) => item.track).slice(0, 12))
+        setRecentlyPlayed(response.data.items.map((item: {track: Track}) => item.track).slice(0, 10))
       })
       .catch(error => {
         console.log(error);
       });
   }
 
-  const getTopArtists = (token: string) => {
+  const getUserPlaylists = (token: string) => {
     axios({
       method: 'get',
-      url: `https://api.spotify.com/v1/me/top/artists?time_range=short_term`,
+      url: `https://api.spotify.com/v1/me/playlists`,
       headers: {
         'Authorization': `Bearer ${token}`
       }
     })
       .then(response => {
         console.log(response.data)
-        setTopArtists(response.data.items.slice(0, 6))
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
-  const getTopTracks = (token: string) => {
-    axios({
-      method: 'get',
-      url: `https://api.spotify.com/v1/me/top/tracks?time_range=short_term`,
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(response => {
-        console.log(response.data)
-        setTopTracks(response.data.items.slice(0, 6))
+        setUserPlaylists(response.data.items)
       })
       .catch(error => {
         console.log(error);
@@ -96,26 +81,23 @@ function SpotifyUser() {
   return (
     <div className="main-div">
       <h1> {spotifyLogin.userData.displayName.split(" ")[0]}'s Spotify dashboard </h1>
-      { 
-        !!topArtists.length &&
-        <>
-          <h3> Your top artists this month </h3>
-          <GridView<Artist> data={topArtists} page={'spotifyUser'} /> 
-        </>
-      }
-      { 
-        !!topTracks.length &&
-        <>
-          <h3> Your top tracks this month </h3>
-          <GridView<Track> data={topTracks} page={'spotifyUser'} /> 
-        </>
+      {
+        authToken && 
+        <SpotifyTopItems token={authToken}></SpotifyTopItems>
       }
       { 
         !!recentlyPlayed.length &&
-        <>
+        <div className={styles.recentlyPlayedSection}>
           <h3> Recently played tracks </h3>
-          <GridView<Track> data={recentlyPlayed} page={'spotifyUser'} /> 
-        </>
+          <ListView<Track> data={recentlyPlayed} page={'spotifyUser'} listType={'tracklist'} customSorting={false}/> 
+        </div>
+      }
+      { 
+        !!userPlaylists.length &&
+        <div className={styles.userPlaylistsSection}>
+          <h3> Your playlists </h3>
+          <GridView<Playlist> data={userPlaylists} page={'spotifyUser'} customSorting={false}/> 
+        </div>
       }
     </div>
   );

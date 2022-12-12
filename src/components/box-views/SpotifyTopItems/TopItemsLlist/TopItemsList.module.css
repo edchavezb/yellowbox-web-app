@@ -1,0 +1,13 @@
+.topListTitle{
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+.itemList {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 360px;
+    flex-wrap: wrap;
+}

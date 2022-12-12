@@ -1,0 +1,33 @@
+.topItem {
+    display: flex;
+    align-items: center;
+    width: 50%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.itemImage {
+    width: 50px;
+    height: 50px;
+}
+
+.itemData {
+    margin-left: 12px;
+    flex-grow: 1;
+    max-width: calc(100% - 62px);
+}
+
+.artistName {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.itemDataName {
+    font-weight: bold;
+}
+
+.itemDataName, .itemDataArtist {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
