@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios'
 import { Album, Track } from 'core/types/interfaces';
 import styles from "./SpotifyTopItems.module.css";
 import { Artist } from 'core/types/interfaces';
 import TopItemsList from './TopItemsLlist/TopItemsList';
 import MostPlayedItem from './MostPlayedItem/MostPlayedItem';
-import { updateBoxAlbums } from 'core/features/userBoxes/userBoxesSlice';
 
 interface IProps {
   token: string

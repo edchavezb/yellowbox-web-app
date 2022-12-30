@@ -1,9 +1,9 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 import { Artist, Album, Track, Playlist } from "../../core/types/interfaces";
 
-import ListRowTrack from "./list-row/ListRowTrack"
-import ListRowAlbum from "./list-row/ListRowAlbum"
-import ListRowPlaylist from "./list-row/ListRowPlaylist"
+import ListRowTrack from "./ListRow/ListRowTrack"
+import ListRowAlbum from "./ListRow/ListRowAlbum"
+import ListRowPlaylist from "./ListRow/ListRowPlaylist"
 import DragActions from "../layout/DragActions"
 import styles from "./ListView.module.css";
 
