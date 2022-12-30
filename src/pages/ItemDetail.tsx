@@ -3,10 +3,9 @@ import { Link, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios'
 import querystring from 'querystring'
 import credentials from '../keys'
-
-import GridView from '../components/box-views/GridView';
-import ListView from '../components/box-views/ListView';
-import TrackVisualizer from '../components/box-views/TrackVisualizer';
+import GridView from 'components/box-views/GridView';
+import ListView from 'components/box-views/ListView';
+import TrackVisualizer from 'components/box-views/TrackVisualizer';
 
 import styles from "./ItemDetail.module.css"
 import { Album, Artist, Playlist, Track, UserBox } from '../core/types/interfaces';
