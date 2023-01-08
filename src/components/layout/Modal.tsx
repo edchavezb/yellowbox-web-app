@@ -17,7 +17,7 @@ function Modal() {
       modalBody = <NewBoxMenu/>
     break;
     case "Sorting Options" :
-      modalBody = <SortingMenu boxId={modalData.boxId} />
+      modalBody = <SortingMenu/>
     break;
     case "Delete Item" :
       modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} />

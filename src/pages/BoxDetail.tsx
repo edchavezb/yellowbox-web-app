@@ -1,48 +1,35 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-
 import BoxUtilities from '../components/box-views/BoxUtilities';
 import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
-import { Album, Artist, Playlist, Track, UserBox, Visibility } from '../core/types/interfaces';
-import { getBoxByIdApi } from '../core/api/userboxes';
+import { Album, Artist, Playlist, Track, Visibility } from '../core/types/interfaces';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 
 function BoxDetail() {
-  const {id} = useParams<{id: string}>()
+  const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
-  const [boxData, setBoxData] = useState<UserBox | null>(null)
   const [boxMetaData, setBoxMetaData] = useState({isOwner: false, boxNotEmpty: false, singleTypeBox: true})
   const [visibility, setVisibility] = useState<Visibility>({playlists: true, albums: true, artists: true, tracks: true})
 
   useEffect(() => {
-    fetchBoxData()
-  }, [id])
+    boxDetailsInit()
+  }, [currentBox])
 
-  useEffect(() => {
-    console.log(visibility)
-    console.log(boxData)
-  }, [visibility])
-
-  const fetchBoxData = async () => {
-    const data = await getBoxByIdApi(id)
-    if (data) {
-      const isOwner = !!userBoxes.find(box => box._id === id);
-      const boxNotEmpty = data?.albums.length > 0 || data?.artists.length > 0 || data?.tracks.length > 0 || data?.playlists.length > 0;
-      const singleTypeBox = [data.albums, data.artists, data.tracks].filter((section) => section.length > 0).length === 1;
+  const boxDetailsInit = () => {
+    if (currentBox._id) {
+      const isOwner = !!userBoxes.find(box => box._id === currentBox?._id);
+      const boxNotEmpty = currentBox?.albums?.length > 0 || currentBox?.artists?.length > 0 || currentBox?.tracks?.length > 0 || currentBox?.playlists?.length > 0;
+      const singleTypeBox = [currentBox?.albums, currentBox?.artists, currentBox?.tracks, currentBox?.playlists].filter((section) => section?.length > 0).length === 1;
       setBoxMetaData({isOwner, boxNotEmpty, singleTypeBox})
-      setBoxData(data as UserBox)
-      if (isOwner){
-        setVisibility(data.sectionVisibility)
-      }
+      setVisibility(currentBox.sectionVisibility)
     }
   }
 
   return (
     <div id={styles.mainPanel}>
-      {boxData && boxMetaData.boxNotEmpty && boxMetaData.isOwner ? 
+      {boxMetaData.boxNotEmpty ? 
         <BoxUtilities 
-          box={boxData} 
+          box={currentBox} 
           singleTypeBox={boxMetaData.singleTypeBox} 
           visibility={visibility} 
           setVisibility={setVisibility}
@@ -50,42 +37,42 @@ function BoxDetail() {
         : 
         ""
       }
-      <h2 id={styles.boxName}> {boxData?.name} </h2>
-      <div id={styles.boxDesc}> {boxData?.description} </div>
-      {boxData?.artists?.length ? 
+      <h2 id={styles.boxName}> {currentBox?.name} </h2>
+      <div id={styles.boxDesc}> {currentBox?.description} </div>
+      {currentBox?.artists?.length ? 
         <BoxSection<Artist> 
           isOwner={boxMetaData.isOwner}
           type="Artists"
-          box={boxData}
-          data={boxData.artists} 
-          sorting={boxData.sectionSorting.artists}
+          box={currentBox}
+          data={currentBox.artists} 
+          sorting={currentBox.sectionSorting.artists}
           visible={visibility.artists} />
         : ""}
-      {boxData?.albums?.length ? 
+      {currentBox?.albums?.length ? 
         <BoxSection<Album>
           isOwner={boxMetaData.isOwner}
           type="Albums" 
-          box={boxData} 
-          data={boxData.albums}
-          sorting={boxData.sectionSorting.albums}
+          box={currentBox} 
+          data={currentBox.albums}
+          sorting={currentBox.sectionSorting.albums}
           visible={visibility.albums} /> 
         : ""}
-      {boxData?.tracks?.length ? 
+      {currentBox?.tracks?.length ? 
         <BoxSection<Track>
           isOwner={boxMetaData.isOwner}
           type="Tracks" 
-          box={boxData} 
-          data={boxData.tracks}
-          sorting={boxData.sectionSorting.tracks}
+          box={currentBox} 
+          data={currentBox.tracks}
+          sorting={currentBox.sectionSorting.tracks}
           visible={visibility.tracks} /> 
         : ""}
-        {boxData?.playlists?.length ? 
+        {currentBox?.playlists?.length ? 
         <BoxSection<Playlist> 
           isOwner={boxMetaData.isOwner}
           type="Playlists" 
-          box={boxData} 
-          data={boxData.playlists}
-          sorting={boxData.sectionSorting.playlists}
+          box={currentBox} 
+          data={currentBox.playlists}
+          sorting={currentBox.sectionSorting.playlists}
           visible={visibility.playlists} /> 
         : ""}
       {boxMetaData.boxNotEmpty ? "" : <div id={styles.emptyMsgDiv}><h3 id={styles.emptyMsg}> You have not added any items to this box yet. <br/> Start by searching some music you like! </h3></div>}

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { getUserBoxesApi } from "core/api/userboxes"
+import { getUserBoxesApi } from "core/api/users"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, Track, UserBox } from "core/types/interfaces"
 
@@ -19,42 +19,35 @@ const userBoxesSlice = createSlice({
             state.boxes = action.payload
         },
         updateUserBox(state, action: PayloadAction<{targetId: string, updatedBox: UserBox}>) {
-            state.boxes.map((item) => item._id === action.payload.targetId ? action.payload.updatedBox : item)
+            const targetIndex = state.boxes.findIndex(box => box._id === action.payload.targetId);
+            state.boxes[targetIndex] = action.payload.updatedBox;
         },
         createUserBox(state, action: PayloadAction<UserBox>) {
             state.boxes.push(action.payload);
         },
         deleteUserBox(state, action: PayloadAction<{targetId: string}>) {
-            state.boxes.filter((item) => item._id !== action.payload.targetId)
+            state.boxes.splice(state.boxes.findIndex(box => box._id === action.payload.targetId), 1);
         },
-        updateBoxArtists(state, action: PayloadAction<{targetBoxId: string, updatedArtists: Artist[]}>) {
-            const {targetBoxId, updatedArtists} = action.payload
-            const targetBox = state.boxes.find(box => box._id === targetBoxId);
-            if(targetBox) {
-               targetBox.artists = updatedArtists;
-            }
+        updateBoxArtists(state, action: PayloadAction<{targetId: string, updatedArtists: Artist[]}>) {
+            const {targetId, updatedArtists} = action.payload;
+            const targetIndex = state.boxes.findIndex(box => box._id === targetId);
+            state.boxes[targetIndex].artists = updatedArtists;
         },
-        updateBoxAlbums(state, action: PayloadAction<{targetBoxId: string, updatedAlbums: Album[]}>) {
-            const {targetBoxId, updatedAlbums} = action.payload
-            const targetBox = state.boxes.find(box => box._id === targetBoxId);
-            if(targetBox) {
-               targetBox.albums = updatedAlbums;
-            }
+        updateBoxAlbums(state, action: PayloadAction<{targetId: string, updatedAlbums: Album[]}>) {
+            const {targetId, updatedAlbums} = action.payload;
+            const targetIndex = state.boxes.findIndex(box => box._id === targetId);
+            state.boxes[targetIndex].albums = updatedAlbums;
         },
-        updateBoxTracks(state, action: PayloadAction<{targetBoxId: string, updatedTracks: Track[]}>) {
-            const {targetBoxId, updatedTracks} = action.payload
-            const targetBox = state.boxes.find(box => box._id === targetBoxId);
-            if(targetBox) {
-               targetBox.tracks = updatedTracks;
-            }
+        updateBoxTracks(state, action: PayloadAction<{targetId: string, updatedTracks: Track[]}>) {
+            const {targetId, updatedTracks} = action.payload;
+            const targetIndex = state.boxes.findIndex(box => box._id === targetId);
+            state.boxes[targetIndex].tracks = updatedTracks;
         },
-        updateBoxPlaylists(state, action: PayloadAction<{targetBoxId: string, updatedPlaylists: Playlist[]}>) {
-            const {targetBoxId, updatedPlaylists} = action.payload
-            const targetBox = state.boxes.find(box => box._id === targetBoxId);
-            if(targetBox) {
-               targetBox.playlists = updatedPlaylists;
-            }
-        },
+        updateBoxPlaylists(state, action: PayloadAction<{targetId: string, updatedPlaylists: Playlist[]}>) {
+            const {targetId, updatedPlaylists} = action.payload;
+            const targetIndex = state.boxes.findIndex(box => box._id === targetId);
+            state.boxes[targetIndex].playlists = updatedPlaylists;
+        }
     }
 })
 

@@ -36,14 +36,16 @@ export interface UserBox {
   albums: Album[]
   tracks: Track[]
   playlists: Playlist[]
-  sectionSorting: {
-    artists: Sorting
-    albums: Sorting
-    tracks: Sorting
-    playlists: Sorting
-  }
+  sectionSorting: SectionSorting
   sectionVisibility: Visibility
   subSections : {type: string, name: string}[]
+}
+
+export interface SectionSorting {
+  artists: Sorting
+  albums: Sorting
+  tracks: Sorting
+  playlists: Sorting
 }
 
 export interface Sorting {
