@@ -23,9 +23,8 @@ export default {
     const responseData = await response.json()
     return responseData
   },
-  put: async <D, R>(endpoint: string, params: { [key: string]: string }, putData: D): Promise<R> => {
+  put: async <D, R>(endpoint: string, putData: D): Promise<R> => {
     const url = new URL(`${apiURL}/${endpoint}`);
-    url.search = new URLSearchParams(params).toString()
     const response = await fetch(url.toString(), {
       method: 'PUT',
       headers: {

@@ -1,5 +1,5 @@
 import { setModalState } from 'core/features/modal/modalSlice';
-import { updateUserBox } from 'core/features/userBoxes/userBoxesSlice';
+import { updateBoxSorting, updateBoxSortingThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState, useEffect } from 'react';
@@ -8,39 +8,33 @@ import { UserBox } from '../../core/types/interfaces';
 
 import styles from "./SortingMenu.module.css";
 
-interface IProps {
-  boxId: string
-}
-
 type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
 
 type BoxSorting = UserBox["sectionSorting"]
 
-function SortingMenu({boxId}: IProps) {
+function SortingMenu() {
   const dispatch = useAppDispatch();
+  const targetBox = useAppSelector(state => state.currentBoxDetailData.box);
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
-
-  const boxCopy = JSON.parse(JSON.stringify(userBoxes.find(box => box._id === boxId)))
-  const boxSections: BoxSections = {artists: boxCopy.artists, albums: boxCopy.albums, tracks: boxCopy.tracks, playlists: boxCopy.playlists}
+  const isOwner = !!userBoxes.find(box => box._id === targetBox?._id);
+  const boxSections: BoxSections = {artists: targetBox!.artists, albums: targetBox!.albums, tracks: targetBox!.tracks, playlists: targetBox!.playlists}
   const nonEmptySections = Object.keys(boxSections).filter((section) => boxSections[section as keyof BoxSections].length > 0)
-  const boxSorting = boxCopy.sectionSorting
-
-  const [sorting, setSorting] = useState<BoxSorting>({...boxSorting})
+  const [sorting, setSorting] = useState<BoxSorting>(targetBox?.sectionSorting!)
 
   const handleUpdateSorting = () => {
-    const updatedBox = {
-      ...boxCopy,
-      sectionSorting: sorting
+    // API only called if current user is box owner, otherwise updates are local
+    if (isOwner) {
+      dispatch(updateBoxSortingThunk(targetBox._id, sorting))
+    } else {
+      dispatch(updateBoxSorting(sorting))
     }
-    console.log(boxCopy)
-    console.log(updatedBox)
-    dispatch(updateUserBox({ updatedBox: updatedBox, targetId: boxId }))
-    dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
+    dispatch(setModalState({ visible: false, type:"", boxId:"", page: "", itemData: undefined }))
   }
 
   useEffect(() => {
-    console.log(sorting)
-  }, [sorting]) 
+    console.log(targetBox)
+    setSorting(targetBox?.sectionSorting!)
+  }, [targetBox]) 
 
   return (
     <div id={styles.modalBody}>
@@ -53,7 +47,7 @@ function SortingMenu({boxId}: IProps) {
 
               <div className={styles.formInput}>
                 <label htmlFor="view"> View as </label>
-                <select name="view" defaultValue={boxSorting[section].view}  
+                <select name="view" value={sorting[section as keyof BoxSorting].view}  
                   onChange={e => {
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
                     let updatedSection = {...sectionCopy, view: e.target.value}
@@ -70,7 +64,7 @@ function SortingMenu({boxId}: IProps) {
 
               <div className={styles.formInput}>
                 <label htmlFor="sorting"> Sort by </label>
-                <select name="sorting" defaultValue={boxSorting[section].primarySorting}
+                <select name="sorting" value={sorting[section as keyof BoxSorting].primarySorting}
                   onChange={e => {
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
                     console.log(sectionCopy)
@@ -95,7 +89,9 @@ function SortingMenu({boxId}: IProps) {
               
               <div className={styles.formInput}>
                 <label htmlFor="sec-sorting"> then by </label>
-                <select className="sec-sorting" name="sec-sorting" disabled={sorting[section as keyof BoxSorting].primarySorting === "custom"} defaultValue={boxSorting[section].secondarySorting}
+                <select className="sec-sorting" name="sec-sorting" 
+                  disabled={sorting[section as keyof BoxSorting].primarySorting === "custom"} 
+                  value={sorting[section as keyof BoxSorting].secondarySorting}
                   onChange={e => {
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
                     let updatedSection = {...sectionCopy, secondarySorting: e.target.value}
@@ -120,7 +116,7 @@ function SortingMenu({boxId}: IProps) {
 
               <div className={styles.formInput}>
                 <label htmlFor="order"> Order </label>
-                <select name="order" defaultValue={boxSorting[section].ascendingOrder.toString()} disabled={sorting[section as keyof BoxSorting].primarySorting === "custom"}
+                <select name="order" defaultValue={sorting[section as keyof BoxSorting].ascendingOrder.toString()} disabled={sorting[section as keyof BoxSorting].primarySorting === "custom"}
                   onChange={e => {
                     const booleanValue = e.target.value === "true"
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
@@ -138,7 +134,7 @@ function SortingMenu({boxId}: IProps) {
               
 
               <div className={styles.formInput}>
-                <input type="checkbox" name="sub-section" defaultChecked={boxSorting[section].displaySubSections}
+                <input type="checkbox" name="sub-section" defaultChecked={sorting[section as keyof BoxSorting].displaySubSections}
                   onChange={e => {
                     console.log(e.target.checked)
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))

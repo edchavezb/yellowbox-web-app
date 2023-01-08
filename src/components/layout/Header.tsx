@@ -39,7 +39,7 @@ function Header() {
             </div>
             <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
           </div>
-          <div id={styles.newButton} onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}>
+          <div id={styles.newButton} onClick={() => dispatch(setModalState({visible: true, type:"New Box", boxId:"", page: "", itemData: undefined}))}>
             <img id={styles.plusIcon} src="/icons/plus.svg"></img>
           </div>
         </div>
