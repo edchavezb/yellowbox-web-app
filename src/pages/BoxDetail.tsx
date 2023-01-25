@@ -4,8 +4,11 @@ import BoxSection from '../components/box-views/BoxSection';
 import styles from "./BoxDetail.module.css";
 import { Album, Artist, Playlist, Track, Visibility } from '../core/types/interfaces';
 import { useAppSelector } from 'core/hooks/useAppSelector';
+import { useAppDispatch } from 'core/hooks/useAppDispatch';
+import { setIsUserViewing } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 
 function BoxDetail() {
+  const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const [boxMetaData, setBoxMetaData] = useState({isOwner: false, boxNotEmpty: false, singleTypeBox: true})
@@ -14,6 +17,12 @@ function BoxDetail() {
   useEffect(() => {
     boxDetailsInit()
   }, [currentBox])
+
+  useEffect(() => {
+    return () => {
+      dispatch(setIsUserViewing(false))
+    }
+  }, [])
 
   const boxDetailsInit = () => {
     if (currentBox._id) {

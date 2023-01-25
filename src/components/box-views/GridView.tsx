@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Artist, Album, Track, Playlist } from "../../core/types/interfaces";
 
 import GridItem from "./GridItem"
-import DragActions from "../layout/DragActions"
 import styles from "./GridView.module.css";
 
 interface IProps<T> {
@@ -22,7 +21,6 @@ function GridView<T extends Artist | Album | Track | Playlist> ({data, isOwner, 
       {data.map((e) => {
           return <GridItem<T> key={e.id} element={e} setElementDragging={setElementDragging} />
       })}
-      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} boxId={boxId} />
     </div>
   )
 }

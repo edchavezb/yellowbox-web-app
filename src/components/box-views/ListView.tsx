@@ -4,7 +4,6 @@ import { Artist, Album, Track, Playlist } from "../../core/types/interfaces";
 import ListRowTrack from "./ListRow/ListRowTrack"
 import ListRowAlbum from "./ListRow/ListRowAlbum"
 import ListRowPlaylist from "./ListRow/ListRowPlaylist"
-import DragActions from "../layout/DragActions"
 import styles from "./ListView.module.css";
 
 interface IProps<T> {
@@ -91,7 +90,6 @@ function ListView<T extends Artist | Album | Track | Playlist>({isOwner, data, p
       {data.map((element) => {
           return getListItemComponent(element)
       })}
-      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} boxId={boxId} />
     </div>
   )
 }

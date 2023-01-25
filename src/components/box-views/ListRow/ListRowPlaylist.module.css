@@ -3,7 +3,7 @@
     padding: 0px 10px;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [title] 1fr [description] 2fr [tracks] 60px [owner] 100px  [spotify] 60px;
+    grid-template-columns: [index] 30px [title] 1fr [description] 2fr [tracks] 60px [owner] 100px  [spotify] 60px [options] 20px;
     align-items: center;
 }
 
@@ -30,6 +30,13 @@
 .spotifyIcon {
     width: 10px;
     margin-right: 3px;
+}
+
+.itemMenu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 .colCentered {

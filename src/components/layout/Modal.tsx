@@ -22,7 +22,7 @@ function Modal() {
     case "Delete Item" :
       modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} />
     break;
-    case "Add To" :
+    case "Add To Box" :
       modalBody = <AddToMenu boxId={modalData.boxId} itemData={modalData.itemData!} page={modalData.page!}/>
     break;
     default:
@@ -36,7 +36,7 @@ function Modal() {
         <div id={styles.modalPanel}>
           <div id={styles.modalHeader}>
             <div id={styles.modalTitle}> {modalData.type} </div>
-            <div id={styles.closeModal} onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}>
+            <div id={styles.closeModal} onClick={() => dispatch(setModalState({visible: false, type:"New Box", boxId:"", page: "", itemData: undefined}))}>
               <img id={styles.closeIcon} alt="Close modal" src="/icons/close.svg"/>
             </div>
           </div>

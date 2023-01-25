@@ -21,8 +21,8 @@
     background-color: #282c34CC;
     position: absolute;
     top: 5px;
-    right: 5px;
-    z-index: 100;
+    left: 5px;
+    z-index: 70;
     cursor: pointer;
     font-size: .7em;
     text-align: center;
@@ -35,9 +35,33 @@
     visibility: visible;
 }
 
+.imageContainer:hover .itemMenu {
+    visibility: visible;
+}
+
 .spotifyIcon {
     width: 10px;
     margin-right: 3px;
+}
+
+.itemMenu {
+    visibility: hidden;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #282c34CC;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 70;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dotsIcon {
+    width: 20px;
 }
 
 .itemImage {

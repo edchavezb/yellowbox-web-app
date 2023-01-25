@@ -49,7 +49,8 @@ const defaultBoxes: UserBox[] = [
     },
     subSections : [
       {type: "artists", name: "Da Worst"}
-    ]
+    ],
+    notes: []
   },
   {
     _id: "2454",
@@ -143,7 +144,8 @@ const defaultBoxes: UserBox[] = [
     subSections : [
       {type: "artists", name: "Da Best"},
       {type: "artists", name: "Super hits"},
-    ]
+    ],
+    notes: []
   }
 ];
 

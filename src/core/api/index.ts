@@ -34,5 +34,16 @@ export default {
     })
     const responseData = await response.json()
     return responseData
+  },
+  delete: async <R>(endpoint: string): Promise<R> => {
+    const url = new URL(`${apiURL}/${endpoint}`);
+    const response = await fetch(url.toString(), {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    const responseData = await response.json()
+    return responseData
   }
 }
