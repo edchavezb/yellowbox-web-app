@@ -1,3 +1,6 @@
+import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
+import PopperMenu from "components/menus/popper/PopperMenu";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Track } from "../../../core/types/interfaces";
 
@@ -11,7 +14,8 @@ interface IProps {
 }
 
 function ListRowTrack({ element, setElementDragging, index, page }: IProps) {
-
+  const trackRowRef = useRef(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
 
   const getArtistLinks = () => {
@@ -33,40 +37,40 @@ function ListRowTrack({ element, setElementDragging, index, page }: IProps) {
   }
 
   return (
-    <div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
-
-      <div className={styles.colLeftAlgn}>{index + 1}</div>
-
-      <div className={styles.colLeftAlgn}>
-        <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
+    <>
+      <div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
+        <div className={styles.colLeftAlgn}>{index + 1}</div>
+        <div className={styles.colLeftAlgn}>
+          <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
+        </div>
+        <div className={styles.colLeftAlgn}>
+          {getArtistLinks()}
+        </div>
+        <div className={styles.colLeftAlgn}>
+          <Link to={`/detail/album/${album!.id}`}>{album!.name}</Link>
+        </div>
+        <div className={styles.colCentered}>
+          {`${Math.floor(duration_ms/60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
+        </div>
+        <div className={styles.colCentered}>
+          {explicit ? "Explicit" : "Clean"}
+        </div>
+        <div className={styles.colCentered}>
+          <a href={`${uri}:play`}>
+            <div className={styles.instantPlay}>
+              <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
+              {type === "track" ? <span> Play </span> : <span> Open </span>}
+            </div>
+          </a>
+        </div>
+        <div className={styles.itemMenu} ref={trackRowRef} onClick={() => setIsMenuOpen(true)}>
+          <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
+        </div>
       </div>
-
-      <div className={styles.colLeftAlgn}>
-        {getArtistLinks()}
-      </div>
-
-      <div className={styles.colLeftAlgn}>
-        <Link to={`/detail/album/${album!.id}`}>{album!.name}</Link>
-      </div>
-
-      <div className={styles.colCentered}>
-        {`${Math.floor(duration_ms/60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
-      </div>
-
-      <div className={styles.colCentered}>
-        {explicit ? "Explicit" : "Clean"}
-      </div>
-
-      <div className={styles.colCentered}>
-        <a href={`${uri}:play`}>
-          <div className={styles.instantPlay}>
-            <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-            {type === "track" ? <span> Play </span> : <span> Open </span>}
-          </div>
-        </a>
-      </div>
-
-    </div>
+      <PopperMenu referenceRef={trackRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
+        <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} />
+      </PopperMenu>
+    </>
   )
 }
 

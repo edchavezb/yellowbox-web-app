@@ -2,7 +2,6 @@ import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios'
 import { Album, Track } from '../../core/types/interfaces';
-import DragActions from "../layout/DragActions"
 import styles from "./TrackVisualizer.module.css";
 import defaultLyrics from '../../core/mocks/DefaultLyrics';
 

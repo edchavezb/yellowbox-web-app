@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Artist, Album, Track, Playlist } from "../../core/types/interfaces";
 
 import DetailRow from './DetailRow';
-import DragActions from "../layout/DragActions"
 import styles from "./DetailView.module.css";
 
 interface IProps<T> {
@@ -21,7 +20,6 @@ function DetailView<T extends Artist | Album | Track | Playlist>({isOwner, data,
       {data.map((e) => {
           return <DetailRow key={e.id} index={data.indexOf(e)} element={e} setElementDragging={setElementDragging} />
       })}
-      <DragActions isOwner={isOwner} elementDragging={elementDragging} page={page} boxId={boxId} />
     </div>
   )
 }

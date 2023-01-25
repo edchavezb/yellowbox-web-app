@@ -38,7 +38,8 @@ export interface UserBox {
   playlists: Playlist[]
   sectionSorting: SectionSorting
   sectionVisibility: Visibility
-  subSections : {type: string, name: string}[]
+  subSections: {type: string, name: string}[]
+  notes: {itemId: string, noteText: string}[]
 }
 
 export interface SectionSorting {
@@ -70,6 +71,7 @@ export interface UpdateBoxPayload {
 }
 
 export interface Album {
+  _id?: string
   album_type: string
   artists: Artist[]
   external_urls: {
@@ -95,6 +97,7 @@ export interface Album {
 }
 
 export interface Artist {
+  _id?: string
   external_urls: {
     spotify: string
   }
@@ -109,6 +112,7 @@ export interface Artist {
 }
 
 export interface Track {
+  _id?: string
   album?: Album
   artists: Artist[]
   duration_ms: number
@@ -127,6 +131,7 @@ export interface Track {
 }
 
 export interface Playlist {
+  _id?: string
   description: string
   external_urls: {
     spotify: string

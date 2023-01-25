@@ -1,11 +1,9 @@
+import { removeBoxAlbumThunk, removeBoxArtistThunk, removeBoxPlaylistThunk, removeBoxTrackThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 import { setModalState } from "core/features/modal/modalSlice";
-import { updateUserBox } from "core/features/userBoxes/userBoxesSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
-import { useAppSelector } from "core/hooks/useAppSelector";
-import { UserBox, Album, Artist, Playlist, Track } from "../../core/types/interfaces";
+import { AppThunk } from "core/store/store";
+import { Album, Artist, Playlist, Track } from "../../core/types/interfaces";
 import styles from "./DeletePrompt.module.css";
-
-type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -16,33 +14,29 @@ interface IProps {
 
 function DeletePrompt({itemData, boxId}: IProps) {
   const dispatch = useAppDispatch();
-  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
-
-  let sectionType: string;
+  let deleteAction: (box: string, item: string) => AppThunk;
 
   switch(itemData.type){
     case "artist":
-      sectionType = "artists"
+      deleteAction = removeBoxArtistThunk
     break;
     case "album":
-      sectionType = "albums"
+      deleteAction = removeBoxAlbumThunk
     break;
     case "track":
-      sectionType = "tracks"
+      deleteAction = removeBoxTrackThunk
+    break;
+    case "playlist":
+      deleteAction = removeBoxPlaylistThunk
     break;
     default:
-      sectionType = "none"
+      deleteAction = removeBoxArtistThunk
   }
 
-  const handleDeleteItem = <T extends Artist & Album & Track & Playlist>() => {
-    const targetBox = {...userBoxes.find(box => box._id === boxId) as UserBox}
-    const targetSection = targetBox[sectionType as keyof BoxSections]
-    const filteredSection = (targetSection as Array<T>).filter((item: T) => item.id !== itemData.id)
-    let updatedBox: UserBox = JSON.parse(JSON.stringify(targetBox))
-    updatedBox[sectionType as keyof BoxSections] = filteredSection
-    dispatch(updateUserBox({ updatedBox: updatedBox, targetId: boxId }))
+  const handleDeleteItem = () => {
+    dispatch(deleteAction(boxId, itemData._id!))
     dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
-  } //TODO: Better implementation
+  }
 
   return (
     <div id={styles.modalBody}>

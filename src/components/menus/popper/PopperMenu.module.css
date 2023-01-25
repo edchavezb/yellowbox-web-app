@@ -1,0 +1,8 @@
+.menuPanel {
+    display: flex;
+    z-index: 80;
+}
+
+.hidden {
+    display: none;
+}

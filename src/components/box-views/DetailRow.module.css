@@ -3,7 +3,7 @@
     padding: 0px 10px;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [image] .5fr [data] 2fr [notes] 2fr;
+    grid-template-columns: [index] 30px [image] .5fr [data] 2fr [notes] 1.8fr [options] 30px;
     align-items: center;
     cursor: grab;
 }
@@ -70,6 +70,13 @@
     z-index: 50;
 }
 
+.itemMenu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
 .dataCol {
     height: 100%;
     padding: 0px 5px;
@@ -128,7 +135,7 @@
 }
 
 .notesPanel {
-    width: 90%;
+    width: 95%;
     height: 85%;
     background-color: rgb(61, 61, 61);
     border-radius: 3px;

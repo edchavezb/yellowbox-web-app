@@ -2,7 +2,7 @@ import { setModalState } from 'core/features/modal/modalSlice';
 import { updateUserBox } from 'core/features/userBoxes/userBoxesSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { updateUserBoxApi } from '../../core/api/userboxes';
 import { Album, Artist, Playlist, Track, UserBox } from "../../core/types/interfaces";
 
@@ -19,22 +19,14 @@ interface IProps {
 function AddToMenu({page, itemData, boxId}: IProps) {
   const dispatch = useAppDispatch();
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
-  const currentBox = {...userBoxes.find(box => box._id === boxId) as UserBox}
   const itemCopy = JSON.parse(JSON.stringify(itemData))
-
-  const [addType, setAddType] = useState("box")
   const [addBox, setAddBox] = useState(userBoxes[0]._id)
-  const [addSub, setAddSub] = useState(page === "box" && currentBox.subSections.length ? currentBox.subSections[0].name : "")
-
-  useEffect(() => {
-    console.log(addType)
-  }, [addType])
 
   const handleAddItem = () => {
-    const targetId = addType === "box" ? addBox : currentBox._id
+    const targetId = addBox
     const targetBox = {...userBoxes.find(box => box._id === targetId) as UserBox}
     console.log(targetBox)
-    const updatedItem = {...extractCrucialData(itemCopy), subSection: addType === "box" ? "default" : addSub}
+    const updatedItem = {...extractCrucialData(itemCopy)}
     let updatedBox!: UserBox;
     switch (itemCopy.type) {
       case "album" :
@@ -98,36 +90,12 @@ function AddToMenu({page, itemData, boxId}: IProps) {
     <div id={styles.modalBody}>
       <div id={styles.confirmation}>
         <label htmlFor="add-type"> Add this item to </label>
-        <select name="add-type" defaultValue={addType} onChange={(e) => setAddType(e.target.value)}>
-          <option value="box"> another box in your collection </option>
-          <option value="subsection" hidden={page === "search"} > a sub-section of this box </option>
-        </select>
-      </div>
-
-      {addType === "box" ? 
-        <div id={styles.boxSelect}>
-          <label htmlFor="box-select"> Select a box </label>
-          <select name="box-select" defaultValue={userBoxes[0]._id} onChange={(e) => setAddBox(e.target.value)}>
+        <select name="box-select" defaultValue={userBoxes[0]._id} onChange={(e) => setAddBox(e.target.value)}>
             {userBoxes.map(box => {
               return (<option key={box._id} value={box._id}> {box.name} </option>)
             })}
           </select>
-        </div>
-        : ""
-      }
-
-      {addType === "subsection" ? 
-        <div id={styles.subSectionSelect}>
-          <label htmlFor="subsection-select"> Select a subsection </label>
-          <select name="subsection-select" defaultValue={currentBox.subSections[0].name} onChange={(e) => setAddSub(e.target.value)}>
-            {currentBox.subSections.map(sub => {
-              return (<option key={sub.name} value={sub.name}> {sub.name} </option>)
-            })}
-          </select>
-        </div>
-        : ""
-      }
-
+      </div>
       <div id={styles.modalFooter}>
         <button onClick={() => handleAddItem()}> Add item </button>
       </div>

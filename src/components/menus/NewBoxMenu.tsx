@@ -59,7 +59,8 @@ function NewBoxMenu() {
         tracks: true,
         playlists: true
       },
-      subSections : []
+      subSections : [],
+      notes: []
     }
     const newBox = await createUserBoxApi(blankBox)
     console.log(newBox)
@@ -75,23 +76,19 @@ function NewBoxMenu() {
 
   return (
     <div id={styles.modalBody}>
-
       <form id={styles.newBoxForm}>
         <label className={styles.formElement} htmlFor="box-name"> Name </label>
         <input className={styles.formElement} type="text" name="box-name" id={styles.boxName}
           onChange={(e) => setBoxDetails(state => ({ ...state, boxName: e.target.value.trim() }))} 
         />
-
         <label className={styles.formElement} htmlFor="box-description"> Description </label>
         <textarea className={styles.formElement} name="box-description" id={styles.boxDesc} rows={3}
           onChange={(e) => setBoxDetails(state => ({ ...state, boxDesc: e.target.value.trim() }))} 
         />
       </form>
-
       <div id={styles.modalFooter}>
-        <button onClick={() => handleSaveNewBox()}> Create </button>
+        <button disabled={!boxDetails.boxName} onClick={() => handleSaveNewBox()}> Create </button>
       </div>
-
     </div>
   )
 }
