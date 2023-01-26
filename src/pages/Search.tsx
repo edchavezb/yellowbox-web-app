@@ -4,27 +4,31 @@ import axios from 'axios'
 import querystring from 'querystring'
 import credentials from '../keys'
 import SearchResults from "./SearchResults"
-import styles from "./Search.module.css"
 import { Album, Artist, Playlist, Track } from '../core/types/interfaces';
 
-function Search() {
+interface SearchResultsState {
+  artists: Artist[]
+  albums: Album[]
+  tracks: Track[]
+  playlists: Playlist[]
+}
 
+function Search() {
   const params = useParams<{query: string}>()
   const [spotifyToken, setToken] = useState('')
-  const [searchData, setSearchData] = useState({artists: [], albums: [], tracks: [], playlists:[]})
-
+  const [searchData, setSearchData] = useState<SearchResultsState>({
+    artists: [], albums: [], tracks: [], playlists:[]
+  })
 
   useEffect(() => {
     handleSearch(params.query)
   }, [params]);
 
-  useEffect(() => console.log(searchData), [searchData]);
-
   const handleSearch = (query: string) => {
     if (!spotifyToken) {
       spotifyAuthorization(query);
     } else {
-      queryAPI(query, spotifyToken);
+      processQuery(query, spotifyToken);
     }
   }
 
@@ -41,14 +45,49 @@ function Search() {
     })
       .then(response => {
         setToken(response.data.access_token)
-        queryAPI(query, response.data.access_token)
+        processQuery(query, response.data.access_token);
       })
       .catch(error => {
         console.log(error);
       });
   }
 
-  const queryAPI = (query: string, token: string) => {
+  const processQuery = (query: string, token: string) => {
+    const urlIdentifier = '%2Fopen.spotify.com%2F'
+    if (query.includes(urlIdentifier)) {
+      const identifierString = query.split(urlIdentifier)[1].split('%3F')[0]
+      const [itemType, itemId] = identifierString.split('%2F');
+      queryItemIdApi(itemType, itemId, token);
+    }
+    else {
+      querySearchAPI(query, token);
+    }
+  }
+
+  const queryItemIdApi = (type: string, id: string, token: string) => {
+    axios({
+      method: 'get',
+      url: `https://api.spotify.com/v1/${type}s/${id}`,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        const item = response.data;
+        setSearchData({
+          artists: item.type === 'artist' ? [item as Artist] : [], 
+          albums: item.type === 'album' ? [item as Album] : [], 
+          tracks: item.type === 'track' ? [item as Track] : [],
+          playlists: item.type === 'playlist' ? [item as Playlist] : []
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  const querySearchAPI = (query: string, token: string) => {
     axios({
       method: 'get',
       url: `https://api.spotify.com/v1/search?q=${query}&type=artist,track,album,playlist`,
@@ -58,7 +97,6 @@ function Search() {
       }
     })
       .then(response => {
-        console.log(response.data)
         setSearchData({artists: response.data.artists.items, 
           albums: response.data.albums.items, 
           tracks: response.data.tracks.items,
@@ -68,8 +106,6 @@ function Search() {
         console.log(error);
       });
   }
-
-  
 
   return (
     <div className="main-div">

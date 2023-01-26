@@ -17,25 +17,38 @@ const BoxItemMenu = ({itemData, setIsOpen}: BoxItemMenuProps) => {
   const isOwner = !!userBoxes.find(box => box._id === boxId);
   const { menuItemsList, menuItem } = styles;
 
-  const handleClickItem = (modalType: ModalType) => {
+  const handleAddToQueue = () => {
+    //TODO: Implement add to queue
+  }
+
+  const handleOpenModal = (modalType: ModalType) => {
     dispatch(setModalState({
       visible: true, type: modalType, page: "", boxId, itemData
     }))
     setIsOpen(false);
   }
 
+  const handleCopyURL = () => {
+    navigator.clipboard.writeText(itemData.external_urls.spotify);
+  }
+
   return (
     <div className={menuItemsList}>
       <div 
         className={menuItem}
-        onClick={() => handleClickItem("Add To Box")}>
+        onClick={() => handleAddToQueue()}>
+        Add to your queue
+      </div>
+      <div 
+        className={menuItem}
+        onClick={() => handleOpenModal("Add To Box")}>
         Add to box...
       </div>
       { 
         (boxDetailViewing && isOwner) &&
         <div 
           className={menuItem}
-          onClick={() => handleClickItem("Add To Subsection")}>
+          onClick={() => handleOpenModal("Add To Subsection")}>
           Add to subsection...
         </div>
       }
@@ -43,7 +56,7 @@ const BoxItemMenu = ({itemData, setIsOpen}: BoxItemMenuProps) => {
         (boxDetailViewing && isOwner) &&
         <div 
           className={menuItem}
-          onClick={() => handleClickItem("Delete Item")}>
+          onClick={() => handleOpenModal("Delete Item")}>
           Remove from this box
         </div>
       }
@@ -51,7 +64,7 @@ const BoxItemMenu = ({itemData, setIsOpen}: BoxItemMenuProps) => {
         (boxDetailViewing && isOwner) &&
         <div 
           className={menuItem}
-          onClick={() => handleClickItem("Change Order")}>
+          onClick={() => handleOpenModal("Change Order")}>
           Reorder box items
         </div>
       }
@@ -59,10 +72,15 @@ const BoxItemMenu = ({itemData, setIsOpen}: BoxItemMenuProps) => {
         (boxDetailViewing && isOwner) &&
         <div 
           className={menuItem}
-          onClick={() => handleClickItem("Item Note")}>
-          {notes?.some(note => note.itemId === itemData._id) ? 'Edit note' : 'Add note'}
+          onClick={() => handleOpenModal("Item Note")}>
+          {notes?.some(note => note.itemId === itemData._id) ? 'View note' : 'Add note'}
         </div>
       }
+      <div 
+        className={menuItem}
+        onClick={() => handleCopyURL()}>
+        Copy Spotify URL
+      </div>
     </div>
   );
 };

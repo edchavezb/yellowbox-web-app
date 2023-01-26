@@ -1,6 +1,6 @@
 const apiURL = process.env.REACT_APP_PROJECT_API;
 
-export default {
+const api = {
   get: <R>(endpoint: string, params: { [key: string]: string }) => {
     const url = new URL(`${apiURL}/${endpoint}`);
     url.search = new URLSearchParams(params).toString()
@@ -47,3 +47,5 @@ export default {
     return responseData
   }
 }
+
+export default api;

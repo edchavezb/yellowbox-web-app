@@ -11,9 +11,12 @@ export const getBoxByIdApi = async (boxId: string) => {
 }
 
 export const createUserBoxApi = async (data: Omit<UserBox, '_id'>) => {
-    const result = await api.post<Omit<UserBox, '_id'>, UserBox>('boxes', data)
-    console.log(result)
-    return result
+    try {
+        return await api.post<Omit<UserBox, '_id'>, UserBox>('boxes', data)
+    }
+    catch(err) {
+        console.log(err)
+    }
 }
 
 export const updateUserBoxApi = async (boxId: string, updatedBox: UserBox) => {

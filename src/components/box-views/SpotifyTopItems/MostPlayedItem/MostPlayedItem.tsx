@@ -1,6 +1,3 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios'
 import { Album, Track, Artist } from 'core/types/interfaces';
 import styles from "./MostPlayedItem.module.css";
 
@@ -36,7 +33,7 @@ function MostPlayedItem({ item, type }: IProps) {
 
   return (
     <div className={styles.mostPlayedWrapper}>
-      <img src={getItemImage()} className={styles.mostPlayedImage}/>
+      <img src={getItemImage()} className={styles.mostPlayedImage} alt={item.name}/>
       <div className={styles.mostPlayedData}>
         <div className={styles.sectionTitle}> MOST PLAYED {item.type.toUpperCase()} </div>
         <div className={styles.itemName}>

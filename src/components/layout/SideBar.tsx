@@ -27,22 +27,16 @@ function SideBar({user, login}: IProps) {
     }
   }, [user])
 
-  useEffect(() => {
-    console.log(userBoxes)
-  }, [userBoxes])
-
   const navigateToBox = (boxId: string) => {
     dispatch(fetchBoxDetailThunk(boxId))
     history.push(`/box/${boxId}`)
   }
 
   const addToBox = (draggedData: MusicData, targetBoxId: string, userBoxes: UserBox[]) => {
-    console.log(JSON.stringify(draggedData))
     const targetBox = {...userBoxes.find(box => box._id === targetBoxId) as UserBox}
     let updatedBox!: UserBox;
     switch (draggedData.type) {
       case "album" :
-        console.log(targetBox.albums)
         const updatedAlbums = [...targetBox.albums as Album[], draggedData as Album]
         updatedBox = {...targetBox, albums: updatedAlbums}
       break;
@@ -61,8 +55,6 @@ function SideBar({user, login}: IProps) {
       default :
         updatedBox = targetBox
     }
-    console.log(updatedBox)
-    console.log("Dispatch call")
     try {
       updateUserBoxApi(targetBoxId, updatedBox)
       dispatch(updateUserBox({targetId: targetBoxId, updatedBox}))
@@ -123,8 +115,6 @@ function SideBar({user, login}: IProps) {
     (event.target as Element).className = styles.boxLink
     const data = JSON.parse(event.dataTransfer.getData("data"))
     const crucialData = extractCrucialData(data)
-    console.log(data)
-    console.log(event.currentTarget.id)
     addToBox(crucialData, event.currentTarget.id, userBoxes)
   }
 

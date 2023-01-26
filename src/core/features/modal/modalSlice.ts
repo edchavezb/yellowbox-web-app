@@ -1,7 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Album, Artist, Playlist, Track } from "core/types/interfaces"
 
-export type ModalType = "New Box" | "Sorting Options" | "Delete Item" | "Add To Box" | "Add To Subsection" | "Change Order" | "Item Note" | ""
+export type ModalType = 
+    "New Box" 
+    | "Sorting Options" 
+    | "Delete Item" 
+    | "Add To Box" 
+    | "Add To Subsection" 
+    | "Change Order" 
+    | "Item Note" 
+    | "";
 
 interface IModal {
     modalState: {

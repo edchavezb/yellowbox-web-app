@@ -1,6 +1,6 @@
 .menuPanel {
     display: flex;
-    z-index: 80;
+    z-index: 120;
 }
 
 .hidden {

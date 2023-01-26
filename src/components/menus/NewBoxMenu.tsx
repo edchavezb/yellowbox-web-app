@@ -63,14 +63,12 @@ function NewBoxMenu() {
       notes: []
     }
     const newBox = await createUserBoxApi(blankBox)
-    console.log(newBox)
     return newBox;
   }
 
   const handleSaveNewBox = async () => {
     const boxPayload = await newUserBox();
-    console.log(boxPayload)
-    dispatch(createUserBox(boxPayload))
+    dispatch(createUserBox(boxPayload!))
     dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
   }
 

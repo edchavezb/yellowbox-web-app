@@ -59,7 +59,6 @@ export const {
 export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch) => {
     try {
         const currentBoxDetail = await getBoxByIdApi(boxId);
-        console.log(currentBoxDetail)
         dispatch(setCurrentBoxDetail(currentBoxDetail!))
         dispatch(setIsUserViewing(true))
     } catch (err) {
@@ -70,7 +69,6 @@ export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch)
 export const updateBoxSortingThunk = (boxId: string, updatedSorting: SectionSorting): AppThunk => async (dispatch) => {
     try {
         const newSorting = await updateBoxSortingApi(boxId, updatedSorting);
-        console.log(newSorting)
         dispatch(updateBoxSorting(newSorting!))
     } catch (err) {
         // TODO: Handle api error

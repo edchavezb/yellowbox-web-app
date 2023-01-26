@@ -25,7 +25,6 @@ function AddToMenu({page, itemData, boxId}: IProps) {
   const handleAddItem = () => {
     const targetId = addBox
     const targetBox = {...userBoxes.find(box => box._id === targetId) as UserBox}
-    console.log(targetBox)
     const updatedItem = {...extractCrucialData(itemCopy)}
     let updatedBox!: UserBox;
     switch (itemCopy.type) {
@@ -47,7 +46,6 @@ function AddToMenu({page, itemData, boxId}: IProps) {
       break;
       default :
     }
-    console.log("Dispatch call")
     try {
       updateUserBoxApi(targetId, updatedBox)
       dispatch(updateUserBox({updatedBox, targetId: boxId}))

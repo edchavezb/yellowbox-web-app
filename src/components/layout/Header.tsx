@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-
 import styles from "./Header.module.css";
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
@@ -18,7 +17,8 @@ function Header() {
 
   const debounceSearch = (input: string) => {
     clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => setSearchQuery(input), 500);
+    const encodedQuery = encodeURIComponent(input.trim());
+    searchTimeout = setTimeout(() => setSearchQuery(encodedQuery), 500);
   }
 
   return (
@@ -34,13 +34,13 @@ function Header() {
         <div id={styles.headerTools}>
           <div id={styles.searchBox}>
             <div id={styles.inputWrapper}>
-              <input id={styles.searchInput} type="text" onChange={(e) => debounceSearch(e.target.value.trim().replace(" ", "%20"))} 
+              <input id={styles.searchInput} type="text" onChange={(e) => debounceSearch(e.target.value)} 
                 onFocus={() => {if(searchQuery) history.push(`/search/${searchQuery}`)}}/>
             </div>
             <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
           </div>
           <div id={styles.newButton} onClick={() => dispatch(setModalState({visible: true, type:"New Box", boxId:"", page: "", itemData: undefined}))}>
-            <img id={styles.plusIcon} src="/icons/plus.svg"></img>
+            <img id={styles.plusIcon} src="/icons/plus.svg" alt="new box"></img>
           </div>
         </div>
     </div>

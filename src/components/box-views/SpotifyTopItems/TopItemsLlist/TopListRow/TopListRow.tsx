@@ -37,7 +37,7 @@ function TopListRow({item, type}: IProps) {
       {
         type === TopItemsSelectItems.ARTISTS &&
         <div className={styles.topItem}>
-          <img src={getItemImage() ?? ''} className={styles.itemImage}></img>
+          <img src={getItemImage() ?? ''} className={styles.itemImage} alt={item.name}/>
           <div className={styles.itemData}>
             <Link to={`/detail/artist/${(item as Artist).id}`}>
               <div className={styles.artistName}> {item.name} </div>
@@ -48,7 +48,7 @@ function TopListRow({item, type}: IProps) {
       {
         type === TopItemsSelectItems.TRACKS &&
         <div className={styles.topItem}>
-          <img src={getItemImage() ?? ''} className={styles.itemImage}></img>
+          <img src={getItemImage() ?? ''} className={styles.itemImage} alt={item.name}/>
           <div className={styles.itemData}> 
             <Link to={`/detail/track/${(item as Track).id}`}>
               <div className={styles.itemDataName}>
@@ -66,7 +66,7 @@ function TopListRow({item, type}: IProps) {
       {
         type === TopItemsSelectItems.ALBUMS &&
         <div className={styles.topItem}>
-          <img src={getItemImage() ?? ''} className={styles.itemImage}></img>
+          <img src={getItemImage() ?? ''} className={styles.itemImage} alt={item.name}/>
           <div className={styles.itemData}> 
             <Link to={`/detail/album/${(item as Album).id}`}>
               <div className={styles.itemDataName}>

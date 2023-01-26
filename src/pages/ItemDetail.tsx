@@ -8,14 +8,14 @@ import ListView from 'components/box-views/ListView';
 import TrackVisualizer from 'components/box-views/TrackVisualizer';
 
 import styles from "./ItemDetail.module.css"
-import { Album, Artist, Playlist, Track, UserBox } from '../core/types/interfaces';
+import { Album, Artist, Playlist, Track } from '../core/types/interfaces';
 import * as checkType from '../core/helpers/typeguards';
 
 // TODO: Handle promises better
 
 type MusicData = Artist | Album | Track | Playlist;
 
-type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
+//type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
 
 function ItemDetail() {
 
@@ -36,8 +36,6 @@ function ItemDetail() {
       setIsLoading(false)
     }
   }, [itemData]);
-
-  useEffect(() => console.log(itemContents), [itemContents]);
 
   const handleDetailData = async (typeParam: string, idParam: string) => {
 
@@ -96,7 +94,6 @@ function ItemDetail() {
       }
     })
       .then(response => {
-        console.log(response.data)
         setItemData(response.data)
         if (type === "track") {
           getItemAlbum(`https://api.spotify.com/v1/albums/${response.data.album.id}`, auth)
@@ -117,7 +114,6 @@ function ItemDetail() {
       }
     })
       .then(response => {
-        console.log(response.data)
         setItemContents(response.data)
       })
       .catch(error => {
@@ -135,7 +131,6 @@ function ItemDetail() {
       }
     })
       .then(response => {
-        console.log(response.data)
         setItemAlbum(response.data)
       })
       .catch(error => {
@@ -166,7 +161,6 @@ function ItemDetail() {
   }
 
   const attachAlbumDataToTracks = (parentItem: Album) => {
-    console.log(parentItem);
     return parentItem.tracks!.items.map(e => ({'album': {
       "album_type" : parentItem.album_type, 
       "artists" : parentItem.artists, 
