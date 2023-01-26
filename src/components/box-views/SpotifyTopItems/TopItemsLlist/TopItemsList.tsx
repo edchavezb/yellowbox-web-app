@@ -1,6 +1,3 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios'
 import { Album, Track, Artist } from 'core/types/interfaces';
 import styles from "./TopItemsList.module.css";
 import TopListRow from './TopListRow/TopListRow';

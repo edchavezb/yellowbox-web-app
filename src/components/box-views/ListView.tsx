@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Artist, Album, Track, Playlist } from "../../core/types/interfaces";
 
 import ListRowTrack from "./ListRow/ListRowTrack"
@@ -16,10 +16,7 @@ interface IProps<T> {
 }
 
 function ListView<T extends Artist | Album | Track | Playlist>({isOwner, data, page, listType, boxId}: IProps<T>) {
-
   const [elementDragging, setElementDragging] = useState(false)
-
-  useEffect(() => console.log(data), [data]);
 
   const getListHeader = () => {
     let listHeader;

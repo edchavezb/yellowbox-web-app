@@ -46,7 +46,6 @@ function AuthSuccess() {
       }
     })
       .then(async response => {
-        console.log(response.data)
         const {display_name, email, id, images, uri} = response.data
         const spotifyLogin = {
           auth: {
@@ -84,9 +83,8 @@ function AuthSuccess() {
 
   useEffect(() => {
     const searchParams = querystring.parse(location.search.split("?")[1])
-    const { code, state } = searchParams
+    const { code } = searchParams
     spotifyAuthorization(code as string)
-    console.log(searchParams)
   }, [location])
 
   return (

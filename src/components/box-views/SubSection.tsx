@@ -17,8 +17,6 @@ interface IProps<T> {
 }
 
 function SubSection<T extends Artist | Album | Track | Playlist>({itemsMatch, subName, viewType, sectionType, boxId, isOwner, isDefault, page, customSorting}: IProps<T>) {
-  console.log(itemsMatch)
-
   const getListType = (sectionType: string) => {
     let listType;
     switch (sectionType) {

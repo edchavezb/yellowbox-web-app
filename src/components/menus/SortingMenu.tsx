@@ -32,7 +32,6 @@ function SortingMenu() {
   }
 
   useEffect(() => {
-    console.log(targetBox)
     setSorting(targetBox?.sectionSorting!)
   }, [targetBox]) 
 
@@ -53,7 +52,6 @@ function SortingMenu() {
                     let updatedSection = {...sectionCopy, view: e.target.value}
                     let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
-                    console.log(newSortingObject)
                     setSorting((state: BoxSorting) => ({...state, ...newSortingObject})) 
                   }}> 
                     <option value="grid"> Grid </option> 
@@ -67,12 +65,9 @@ function SortingMenu() {
                 <select name="sorting" value={sorting[section as keyof BoxSorting].primarySorting}
                   onChange={e => {
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
-                    console.log(sectionCopy)
                     let updatedSection = {...sectionCopy, primarySorting: e.target.value}
-                    console.log(updatedSection)
                     let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
-                    console.log(newSortingObject)
                     setSorting(state => ({...state, ...newSortingObject})) 
                     if (section !== "artists") ((e.target as Element).closest("div")!.nextElementSibling!.querySelector(".sec-sorting")! as HTMLSelectElement).selectedIndex = 0
                   }}> 
@@ -97,7 +92,6 @@ function SortingMenu() {
                     let updatedSection = {...sectionCopy, secondarySorting: e.target.value}
                     let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
-                    console.log(newSortingObject)
                     setSorting(state => ({...state, ...newSortingObject})) 
                   }}
                   >
@@ -123,7 +117,6 @@ function SortingMenu() {
                     let updatedSection = {...sectionCopy, ascendingOrder: booleanValue}
                     let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
-                    console.log(newSortingObject)
                     setSorting(state => ({...state, ...newSortingObject})) 
                   }}
                   > 
@@ -136,12 +129,10 @@ function SortingMenu() {
               <div className={styles.formInput}>
                 <input type="checkbox" name="sub-section" defaultChecked={sorting[section as keyof BoxSorting].displaySubSections}
                   onChange={e => {
-                    console.log(e.target.checked)
                     let sectionCopy = JSON.parse(JSON.stringify(sorting[section as keyof BoxSorting]))
                     let updatedSection = {...sectionCopy, displaySubSections: e.target.checked}
                     let newSortingObject: Partial<BoxSorting> = {};
                     newSortingObject[section as keyof BoxSorting] = updatedSection
-                    console.log(newSortingObject)
                     setSorting(state => ({...state, ...newSortingObject})) 
                   }}
                 />

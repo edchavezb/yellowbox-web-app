@@ -1,5 +1,5 @@
 import { Placement } from "@popperjs/core";
-import { ReactElement, RefObject, useEffect, useRef, useState } from "react";
+import { ReactElement, RefObject, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
 import componentStyles from "./PopperMenu.module.css";

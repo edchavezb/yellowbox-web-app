@@ -2,7 +2,7 @@ import styles from "./SpotifyUser.module.css"
 import querystring from 'querystring'
 import credentials from '../keys'
 import axios from 'axios';
-import { Artist, Playlist, Track } from "../core/types/interfaces";
+import { Playlist, Track } from "../core/types/interfaces";
 import { useEffect, useState } from "react";
 import GridView from "../components/box-views/GridView";
 import { useAppSelector } from "core/hooks/useAppSelector";
@@ -34,7 +34,6 @@ function SpotifyUser() {
       }
     })
       .then(response => {
-        console.log(response)
         setAuthToken(response.data.access_token)
         getRecentlyPlayed(response.data.access_token)
         getUserPlaylists(response.data.access_token)
@@ -53,7 +52,6 @@ function SpotifyUser() {
       }
     })
       .then(response => {
-        console.log(response.data)
         setRecentlyPlayed(response.data.items.map((item: {track: Track}) => item.track).slice(0, 10))
       })
       .catch(error => {
@@ -70,7 +68,6 @@ function SpotifyUser() {
       }
     })
       .then(response => {
-        console.log(response.data)
         setUserPlaylists(response.data.items)
       })
       .catch(error => {

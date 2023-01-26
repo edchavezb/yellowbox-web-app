@@ -1,11 +1,10 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect} from 'react';
 import AnimateHeight from 'react-animate-height';
 
 import SubSection from "./SubSection"
 import styles from "./BoxSection.module.css";
 import { Album, Artist, Playlist, Sorting, Track, UserBox } from '../../core/types/interfaces';
-import  * as checkType from  "../../core/helpers/typeguards";
-import ItemDetail from '../../pages/ItemDetail';
+import * as checkType from  "../../core/helpers/typeguards";
 
 interface IProps<T> {
 	data: T[]
@@ -100,7 +99,6 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({isOwner, data,
     box.subSections.filter(s => s.type === type.toLowerCase()).map((acc) => acc.name).sort()
     //This gets subsections defined by sorting scheme
     : Array.from(new Set(data.map(e => getProperty(e, type, sorting.primarySorting, false) as string))).sort()
-  console.log(subSectionNameArr)
 
   return (
     <AnimateHeight duration={250} height={height}>

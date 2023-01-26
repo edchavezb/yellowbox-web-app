@@ -27,7 +27,6 @@ function ListRowTrack({ element, setElementDragging, index, page }: IProps) {
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element:IProps["element"]) => {
-    console.log(element)
     e.dataTransfer.setData("data", JSON.stringify(element))
     setElementDragging(true)
   }

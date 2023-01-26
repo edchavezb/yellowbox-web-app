@@ -66,7 +66,6 @@ export const {
 export const fetchUserBoxes = (userId: string): AppThunk => async (dispatch) => {
     try {
         const userBoxes = await getUserBoxesApi(userId);
-        console.log(userBoxes)
         dispatch(setUserBoxes(userBoxes!))
     } catch (err) {
         dispatch(setUserBoxes([]))
