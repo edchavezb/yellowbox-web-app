@@ -28,7 +28,6 @@ function SideBar({user, login}: IProps) {
   }, [user])
 
   const navigateToBox = (boxId: string) => {
-    dispatch(fetchBoxDetailThunk(boxId))
     history.push(`/box/${boxId}`)
   }
 
