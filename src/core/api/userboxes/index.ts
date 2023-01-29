@@ -72,3 +72,12 @@ export const updateBoxSortingApi = async (boxId: string, updatedSorting: Section
         console.log(err)
     }
 }
+
+export const addNoteToBoxApi = async (boxId: string, noteObj: {itemId: string, noteText: string}) => {
+    try {
+        return await api.post<{itemId: string, noteText: string}, {itemId: string, noteText: string}[]>(`boxes/${boxId}/notes`, noteObj)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
