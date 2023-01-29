@@ -1,0 +1,81 @@
+#modalBody {
+    padding: 20px 30px 0px 30px;
+}
+
+#modalFooter {
+    height: 50px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.columnsWrapper {
+    display: flex;
+    gap: 30px;
+    width: 800px;
+}
+
+#imageColumn {
+    width: 40%;
+}
+
+#noteColumn {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.itemImage {
+    width: 100%;
+    flex-grow: 1;
+}
+
+.name {
+    overflow: hidden;
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    font-size: 1.15em;
+}
+
+.nameItalic {
+    font-style: italic;
+    overflow: hidden;
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    font-size: 1.15em;
+}
+
+.author {
+    margin-bottom: 15px;
+}
+
+.notePanel {
+    flex-grow: 1;
+    background-color: rgb(61, 61, 61);
+    border-radius: 3px;
+    padding: 15px;
+    cursor: pointer;
+}
+
+.noteText {
+    padding: 0px;
+    margin: 0px;
+}
+
+#noteEditor {
+    width: 100%;
+    background-color: rgb(61, 61, 61);
+    color: #ffffff;
+    caret-color: #ffffff;
+    resize: none;
+}

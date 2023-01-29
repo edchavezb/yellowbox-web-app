@@ -6,6 +6,9 @@ import * as checkType from "../../core/helpers/typeguards";
 import styles from "./DetailRow.module.css";
 import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
+import { setModalState } from "core/features/modal/modalSlice";
+import { useAppSelector } from "core/hooks/useAppSelector";
 
 interface IProps<T> {
   element: T
@@ -15,6 +18,8 @@ interface IProps<T> {
 }
 
 function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index }: IProps<T>) {
+  const dispatch = useAppDispatch();
+  const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const detailRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, uri, id } = element;
@@ -138,7 +143,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           {metadata}
         </div>
         <div className={styles.notesCol}>
-          <div className={styles.notesPanel}>
+          <div className={styles.notesPanel} onClick={() => dispatch(setModalState({ visible: true, type: "Item Note", boxId: currentBox._id, page: "", itemData: element }))}>
             <div className={styles.notesTitle}> NOTES </div>
             <div className={styles.notesDisplay}></div>
             <div className={styles.notesOverlay}>
