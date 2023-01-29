@@ -19,10 +19,11 @@ interface IProps<T> {
 
 function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index }: IProps<T>) {
   const dispatch = useAppDispatch();
+  const { name, type, uri, id } = element;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
+  const itemNote = currentBox.notes.find(note => note.itemId === id)
   const detailRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { name, type, uri, id } = element;
 
   //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)
   let elementImages!: ItemImage[];
@@ -145,7 +146,9 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         <div className={styles.notesCol}>
           <div className={styles.notesPanel} onClick={() => dispatch(setModalState({ visible: true, type: "Item Note", boxId: currentBox._id, page: "", itemData: element }))}>
             <div className={styles.notesTitle}> NOTES </div>
-            <div className={styles.notesDisplay}></div>
+            <div className={styles.notesDisplay}>
+              {itemNote?.noteText}
+            </div>
             <div className={styles.notesOverlay}>
               <div className={styles.overlayTitle}> EXPAND ⛶ </div>
             </div>

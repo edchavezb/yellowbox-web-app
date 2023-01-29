@@ -1,9 +1,7 @@
-import { removeBoxAlbumThunk, removeBoxArtistThunk, removeBoxPlaylistThunk, removeBoxTrackThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { addNoteToBoxThunk} from "core/features/currentBoxDetail/currentBoxDetailSlice";
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
-import { AppThunk } from "core/store/store";
-import { ReactElement, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { Album, Artist, ItemImage, Playlist, Track } from "../../core/types/interfaces";
 import * as checkType from "../../core/helpers/typeguards";
 import styles from "./ItemNote.module.css";
@@ -18,7 +16,7 @@ interface IProps {
 
 function ItemNote({ itemData, boxId }: IProps) {
   const dispatch = useAppDispatch();
-  const { name, type, uri, id } = itemData;
+  const { name, id } = itemData;
   const boxNotes = useAppSelector(state => state.currentBoxDetailData.box.notes)
   const itemNote = boxNotes.find(note => note.itemId === id)
   const [isEditorEnabled, setIsEditorEnabled] = useState(false);
@@ -42,6 +40,11 @@ function ItemNote({ itemData, boxId }: IProps) {
     if (editorRef.current && !editorRef.current.contains(e.target as Node)) {
       setIsEditorEnabled(false);
     }
+  }
+
+  const saveNoteHandler = () => {
+    dispatch(addNoteToBoxThunk(boxId, itemData.id!, editorNote || ''));
+    dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
   }
 
   let elementImages: ItemImage[] | undefined;
@@ -107,7 +110,7 @@ function ItemNote({ itemData, boxId }: IProps) {
         </div>
       </div>
       <div id={styles.modalFooter}>
-        <button onClick={() => ({})}> Save changes </button>
+        <button onClick={saveNoteHandler}> Save changes </button>
         <button onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}> Cancel </button>
       </div>
     </div>

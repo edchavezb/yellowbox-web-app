@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, updateBoxSortingApi } from "core/api/userboxes"
+import { addNoteToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, updateBoxSortingApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Track, UserBox } from "core/types/interfaces"
 
@@ -41,6 +41,9 @@ const currentBoxDetailSlice = createSlice({
         updateBoxPlaylists(state, action: PayloadAction<{updatedPlaylists: Playlist[]}>) {
             const {updatedPlaylists} = action.payload;
             state.box.playlists = updatedPlaylists;
+        },
+        updateBoxNotes(state, action: PayloadAction<{itemId: string, noteText: string}[]>) {
+            state.box.notes = action.payload;
         }
     }
 })
@@ -52,7 +55,8 @@ export const {
     updateBoxArtists,
     updateBoxAlbums,
     updateBoxTracks,
-    updateBoxPlaylists
+    updateBoxPlaylists,
+    updateBoxNotes
 } = currentBoxDetailSlice.actions;
 
 //Thunks for this slice
@@ -106,6 +110,16 @@ export const removeBoxPlaylistThunk = (boxId: string, itemId: string): AppThunk 
     try {
         const updatedPlaylists = await removeBoxPlaylistApi(boxId, itemId);
         dispatch(updateBoxPlaylists({updatedPlaylists: updatedPlaylists!}))
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const addNoteToBoxThunk = (boxId: string, itemId: string, noteText: string): AppThunk => async (dispatch) => {
+    try {
+        const noteObj = {itemId, noteText}
+        const updatedNotes = await addNoteToBoxApi(boxId, noteObj);
+        dispatch(updateBoxNotes(updatedNotes!))
     } catch (err) {
         console.log(err)
     }
