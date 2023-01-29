@@ -3,6 +3,7 @@ import SortingMenu from "../menus/SortingMenu";
 import NewBoxMenu from "../menus/NewBoxMenu";
 import DeletePrompt from "../menus/DeletePrompt";
 import AddToMenu from "../menus/AddToMenu";
+import ItemNote from "components/menus/ItemNote";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
@@ -24,6 +25,9 @@ function Modal() {
     break;
     case "Add To Box" :
       modalBody = <AddToMenu boxId={modalData.boxId} itemData={modalData.itemData!} page={modalData.page!}/>
+    break;
+    case "Item Note" :
+      modalBody = <ItemNote boxId={modalData.boxId} itemData={modalData.itemData!} />
     break;
     default:
       modalBody = ""
