@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addNoteToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, updateBoxSortingApi } from "core/api/userboxes"
+import { addNoteToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, updateBoxSortingApi, updateItemNoteApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Track, UserBox } from "core/types/interfaces"
 
@@ -119,6 +119,16 @@ export const addNoteToBoxThunk = (boxId: string, itemId: string, noteText: strin
     try {
         const noteObj = {itemId, noteText}
         const updatedNotes = await addNoteToBoxApi(boxId, noteObj);
+        dispatch(updateBoxNotes(updatedNotes!))
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const updateItemNoteThunk = (boxId: string, itemId: string, noteText: string): AppThunk => async (dispatch) => {
+    try {
+        const noteObj = {noteText}
+        const updatedNotes = await updateItemNoteApi(boxId, itemId, noteObj);
         dispatch(updateBoxNotes(updatedNotes!))
     } catch (err) {
         console.log(err)

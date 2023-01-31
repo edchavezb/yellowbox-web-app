@@ -150,7 +150,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
               {itemNote?.noteText}
             </div>
             <div className={styles.notesOverlay}>
-              <div className={styles.overlayTitle}> EXPAND ⛶ </div>
+              <div className={styles.overlayTitle}> {itemNote?.noteText ? 'EXPAND ⛶' : 'ADD NOTE ✎'} </div>
             </div>
           </div>
         </div>

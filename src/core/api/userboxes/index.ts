@@ -81,3 +81,12 @@ export const addNoteToBoxApi = async (boxId: string, noteObj: {itemId: string, n
         console.log(err)
     }
 }
+
+export const updateItemNoteApi = async (boxId: string, itemId: string, noteObj: {noteText: string}) => {
+    try {
+        return await api.put<{noteText: string}, {itemId: string, noteText: string}[]>(`boxes/${boxId}/notes/${itemId}`, noteObj)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}

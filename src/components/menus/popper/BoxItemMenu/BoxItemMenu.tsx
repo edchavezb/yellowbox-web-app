@@ -73,7 +73,7 @@ const BoxItemMenu = ({itemData, setIsOpen}: BoxItemMenuProps) => {
         <div 
           className={menuItem}
           onClick={() => handleOpenModal("Item Note")}>
-          {notes?.some(note => note.itemId === itemData._id) ? 'View note' : 'Add note'}
+          {notes?.some(note => note.itemId === itemData.id) ? 'View note' : 'Add note'}
         </div>
       }
       <div 

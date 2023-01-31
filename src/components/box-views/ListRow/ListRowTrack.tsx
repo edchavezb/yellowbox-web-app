@@ -46,7 +46,7 @@ function ListRowTrack({ element, setElementDragging, index, page }: IProps) {
           {getArtistLinks()}
         </div>
         <div className={styles.colLeftAlgn}>
-          <Link to={`/detail/album/${album!.id}`}>{album!.name}</Link>
+          <Link to={`/detail/album/${album!.id}`}><span className={styles.albumName}> {album!.name} </span></Link>
         </div>
         <div className={styles.colCentered}>
           {`${Math.floor(duration_ms/60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
