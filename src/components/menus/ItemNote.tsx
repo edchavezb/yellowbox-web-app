@@ -1,4 +1,4 @@
-import { addNoteToBoxThunk} from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { addNoteToBoxThunk, updateItemNoteThunk} from "core/features/currentBoxDetail/currentBoxDetailSlice";
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useEffect, useRef, useState } from "react";
@@ -43,7 +43,12 @@ function ItemNote({ itemData, boxId }: IProps) {
   }
 
   const saveNoteHandler = () => {
-    dispatch(addNoteToBoxThunk(boxId, itemData.id!, editorNote || ''));
+    if(itemNote) {
+      dispatch(updateItemNoteThunk(boxId, itemData.id!, editorNote!));
+    }
+    else {
+      dispatch(addNoteToBoxThunk(boxId, itemData.id!, editorNote || ""));
+    }
     dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
   }
 
@@ -103,14 +108,14 @@ function ItemNote({ itemData, boxId }: IProps) {
                 setIsEditorEnabled(true);
               }}>
               <p className={styles.noteText}>
-                {editorNote || 'No notes available for this item. Click here to write one.'}
+                {editorNote || 'Click here to write a note'}
               </p>
             </div>
           }
         </div>
       </div>
       <div id={styles.modalFooter}>
-        <button onClick={saveNoteHandler}> Save changes </button>
+        <button onClick={saveNoteHandler} disabled={!itemNote?.noteText && !editorNote}> Save changes </button>
         <button onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}> Cancel </button>
       </div>
     </div>

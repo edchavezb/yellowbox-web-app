@@ -93,6 +93,12 @@
     font-weight: bold;
     font-size: 1.1em;
     padding: 0px 5px;
+    overflow: hidden;
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
 }
 
 .itemNameItalic {
@@ -102,6 +108,11 @@
 
 .artist {
     padding: 0px 5px;
+    overflow: hidden;
+    word-wrap: break-word;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
 }
 
 .artistName {

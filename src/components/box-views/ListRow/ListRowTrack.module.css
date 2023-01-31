@@ -50,8 +50,10 @@
     text-overflow: ellipsis;
 }
 
-.name {
+.name, .artistName, .albumName {
     overflow: hidden;
     word-wrap: break-word;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     text-overflow: ellipsis;
 }
