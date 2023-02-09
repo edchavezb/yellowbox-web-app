@@ -9,6 +9,7 @@ export type ModalType =
     | "Add To Subsection" 
     | "Change Order" 
     | "Item Note" 
+    | "Box Subsections"
     | "";
 
 interface IModal {

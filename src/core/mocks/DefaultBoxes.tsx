@@ -47,7 +47,7 @@ const defaultBoxes: UserBox[] = [
       tracks: true,
       playlists: true
     },
-    subSections : [
+    subSections: [
       {type: "artists", name: "Da Worst"}
     ],
     notes: []

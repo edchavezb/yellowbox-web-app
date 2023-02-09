@@ -75,7 +75,7 @@ export const updateBoxSortingApi = async (boxId: string, updatedSorting: Section
 
 export const addNoteToBoxApi = async (boxId: string, noteObj: {itemId: string, noteText: string}) => {
     try {
-        return await api.post<{itemId: string, noteText: string}, {itemId: string, noteText: string}[]>(`boxes/${boxId}/notes`, noteObj)
+        return await api.post<{itemId: string, noteText: string}, UserBox['notes']>(`boxes/${boxId}/notes`, noteObj)
     }
     catch(err) {
         console.log(err)
@@ -84,7 +84,25 @@ export const addNoteToBoxApi = async (boxId: string, noteObj: {itemId: string, n
 
 export const updateItemNoteApi = async (boxId: string, itemId: string, noteObj: {noteText: string}) => {
     try {
-        return await api.put<{noteText: string}, {itemId: string, noteText: string}[]>(`boxes/${boxId}/notes/${itemId}`, noteObj)
+        return await api.put<{noteText: string}, UserBox['notes']>(`boxes/${boxId}/notes/${itemId}`, noteObj)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const addSubsectionToBoxApi = async (boxId: string, subsectionObj: {type: string, name: string, index: number}) => {
+    try {
+        return await api.post<{type: string, name: string, index: number}, UserBox['subSections']>(`boxes/${boxId}/subsections`, subsectionObj)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const updateSubsectionNameApi = async (boxId: string, subsectionId: string, name: string) => {
+    try {
+        return await api.put<{name: string}, UserBox['subSections']>(`boxes/${boxId}/subsections/${subsectionId}`, {name})
     }
     catch(err) {
         console.log(err)

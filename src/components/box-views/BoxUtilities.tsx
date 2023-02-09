@@ -1,28 +1,32 @@
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
+import { useAppSelector } from "core/hooks/useAppSelector";
 import { Dispatch, SetStateAction } from "react";
 import { UserBox, Visibility } from "../../core/types/interfaces";
 
 import styles from "./BoxUtilities.module.css";
 
 interface IProps {
-	box: UserBox
+  box: UserBox
   singleTypeBox: Boolean
   visibility: Visibility
-	setVisibility: Dispatch<SetStateAction<Visibility>>
+  setVisibility: Dispatch<SetStateAction<Visibility>>
 }
 
-function BoxUtilities({box, singleTypeBox, visibility, setVisibility}: IProps) {
+function BoxUtilities({ box, singleTypeBox, visibility, setVisibility }: IProps) {
   const dispatch = useAppDispatch();
+  const { _id: boxId } = useAppSelector(state => state.currentBoxDetailData.box)
+  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
+  const isOwner = !!userBoxes.find(box => box._id === boxId);
   const handleSectionVisibility = (e: React.MouseEvent<HTMLDivElement>) => {
     const section = e.currentTarget.getAttribute("data-handles")
-    let newVisibility: {[key: string]: boolean} = {}
-    if (visibility[section as keyof Visibility]){
+    let newVisibility: { [key: string]: boolean } = {}
+    if (visibility[section as keyof Visibility]) {
       newVisibility[section as keyof typeof newVisibility] = false
     }
-    else 
+    else
       newVisibility[section as keyof typeof newVisibility] = true
-    setVisibility((state: Visibility) => ({...state, ...newVisibility}))
+    setVisibility((state: Visibility) => ({ ...state, ...newVisibility }))
   }
 
   return (
@@ -50,7 +54,10 @@ function BoxUtilities({box, singleTypeBox, visibility, setVisibility}: IProps) {
           </div>
           : ""}
       </div>
-      <button id={styles.sortingButton} onClick={() => dispatch(setModalState({visible: true, type: "Sorting Options", boxId: box._id, page:"Box"}))}> Sorting Options </button>
+      <button id={styles.sortingButton} onClick={() => dispatch(setModalState({ visible: true, type: "Sorting Options", boxId: box._id, page: "Box" }))}> Sorting Options </button>
+      {isOwner &&
+        <button id={styles.sortingButton} onClick={() => dispatch(setModalState({ visible: true, type: "Box Subsections", boxId: box._id, page: "Box" }))}> Manage Sections </button>
+      }
     </div>
   )
 }
