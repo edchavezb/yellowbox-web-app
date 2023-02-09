@@ -7,6 +7,7 @@ import ItemNote from "components/menus/ItemNote";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
+import SubsectionsMenu from "components/menus/SubsectionsMenu/SubsectionsMenu";
 
 function Modal() {
   const dispatch = useAppDispatch();
@@ -29,6 +30,9 @@ function Modal() {
     case "Item Note" :
       modalBody = <ItemNote boxId={modalData.boxId} itemData={modalData.itemData!} />
     break;
+    case "Box Subsections" :
+      modalBody = <SubsectionsMenu />
+    break;
     default:
       modalBody = ""
   }
@@ -40,7 +44,7 @@ function Modal() {
         <div id={styles.modalPanel}>
           <div id={styles.modalHeader}>
             <div id={styles.modalTitle}> {modalData.type} </div>
-            <div id={styles.closeModal} onClick={() => dispatch(setModalState({visible: false, type:"New Box", boxId:"", page: "", itemData: undefined}))}>
+            <div id={styles.closeModal} onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}>
               <img id={styles.closeIcon} alt="Close modal" src="/icons/close.svg"/>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addNoteToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, updateBoxSortingApi, updateItemNoteApi } from "core/api/userboxes"
+import { addNoteToBoxApi, addSubsectionToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Track, UserBox } from "core/types/interfaces"
 
@@ -42,8 +42,11 @@ const currentBoxDetailSlice = createSlice({
             const {updatedPlaylists} = action.payload;
             state.box.playlists = updatedPlaylists;
         },
-        updateBoxNotes(state, action: PayloadAction<{itemId: string, noteText: string}[]>) {
+        updateBoxNotes(state, action: PayloadAction<UserBox['notes']>) {
             state.box.notes = action.payload;
+        },
+        updateBoxSubsections(state, action: PayloadAction<UserBox['subSections']>) {
+            state.box.subSections = action.payload;
         }
     }
 })
@@ -56,7 +59,8 @@ export const {
     updateBoxAlbums,
     updateBoxTracks,
     updateBoxPlaylists,
-    updateBoxNotes
+    updateBoxNotes,
+    updateBoxSubsections
 } = currentBoxDetailSlice.actions;
 
 //Thunks for this slice
@@ -130,6 +134,25 @@ export const updateItemNoteThunk = (boxId: string, itemId: string, noteText: str
         const noteObj = {noteText}
         const updatedNotes = await updateItemNoteApi(boxId, itemId, noteObj);
         dispatch(updateBoxNotes(updatedNotes!))
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const addSubsectionToBoxThunk = (boxId: string, type: string, index: number, name: string): AppThunk => async (dispatch) => {
+    try {
+        const subsectionObj = {type, index, name}
+        const updatedSubsections = await addSubsectionToBoxApi(boxId, subsectionObj);
+        dispatch(updateBoxSubsections(updatedSubsections!))
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const updateSubsectionNameThunk = (boxId: string, subsectionId: string, name: string): AppThunk => async (dispatch) => {
+    try {
+        const updatedSubsections = await updateSubsectionNameApi(boxId, subsectionId, name);
+        dispatch(updateBoxSubsections(updatedSubsections!))
     } catch (err) {
         console.log(err)
     }

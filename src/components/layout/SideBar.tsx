@@ -22,7 +22,7 @@ function SideBar({user, login}: IProps) {
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
 
   useEffect(() => {
-    if (user._id){
+    if (user?._id){
       dispatch(fetchUserBoxes(user._id))
     }
   }, [user])

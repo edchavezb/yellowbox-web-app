@@ -1,3 +1,5 @@
+import { BoxSections } from "./types"
+
 export interface SpotifyLoginData {
   auth: SpotifyUserAuth
   userData: SpotifyUserData
@@ -38,7 +40,7 @@ export interface UserBox {
   playlists: Playlist[]
   sectionSorting: SectionSorting
   sectionVisibility: Visibility
-  subSections: {type: string, name: string}[]
+  subSections: {_id?: string, type: BoxSections, name: string, index?: number}[]
   notes: {itemId: string, noteText: string}[]
 }
 

@@ -1,0 +1,53 @@
+.modalBody {
+  min-width: 600px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modalFooter {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sectionsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section {
+
+}
+
+.rowsWrapper {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.newButtonWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.newButton {
+  width: calc(100% - 50px);
+  height: 20px;
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(43, 43, 43);
+  cursor: pointer;
+}
+
+.newButton:hover {
+  background-color: rgb(56, 56, 56);
+}
+
+.plusIcon {
+  height: 15px;
+}
