@@ -2,12 +2,13 @@ import styles from "./Modal.module.css";
 import SortingMenu from "../menus/SortingMenu";
 import NewBoxMenu from "../menus/NewBoxMenu";
 import DeletePrompt from "../menus/DeletePrompt";
-import AddToMenu from "../menus/AddToMenu";
+import AddToBoxMenu from "../menus/AddToBoxMenu";
 import ItemNote from "components/menus/ItemNote";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
 import SubsectionsMenu from "components/menus/SubsectionsMenu/SubsectionsMenu";
+import AddToSubsectionMenu from "components/menus/AddToSubsectionMenu";
 
 function Modal() {
   const dispatch = useAppDispatch();
@@ -25,7 +26,10 @@ function Modal() {
       modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} />
     break;
     case "Add To Box" :
-      modalBody = <AddToMenu boxId={modalData.boxId} itemData={modalData.itemData!} page={modalData.page!}/>
+      modalBody = <AddToBoxMenu boxId={modalData.boxId} itemData={modalData.itemData!} page={modalData.page!}/>
+    break;
+    case "Add To Subsection" :
+      modalBody = <AddToSubsectionMenu itemData={modalData.itemData!}/>
     break;
     case "Item Note" :
       modalBody = <ItemNote boxId={modalData.boxId} itemData={modalData.itemData!} />
