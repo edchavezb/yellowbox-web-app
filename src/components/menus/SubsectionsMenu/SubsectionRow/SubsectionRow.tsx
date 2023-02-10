@@ -2,7 +2,7 @@ import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import styles from "./SubsectionRow.module.css";
 import { BoxSections } from 'core/types/types';
 import { useEffect, useRef, useState } from 'react';
-import { updateSubsectionNameThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
+import { removeSubsectionThunk, updateSubsectionNameThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 
 interface SubsectionRowProps {
@@ -22,6 +22,10 @@ function SubsectionRow({ rowId, section, name }: SubsectionRowProps) {
   const handleSaveName = () => {
     dispatch(updateSubsectionNameThunk(currentBox._id, rowId, nameInput))
     setIsInputEnabled(false);
+  }
+  
+  const handleDeleteRow = () => {
+    dispatch(removeSubsectionThunk(currentBox._id, rowId, section))
   }
 
   const handleFocusOut = (e: React.FocusEvent) => {
@@ -67,7 +71,7 @@ function SubsectionRow({ rowId, section, name }: SubsectionRowProps) {
           </div>
         }
       </div>
-      <div className={deleteButton}>
+      <div className={deleteButton} onClick={handleDeleteRow}>
         <img className={styles.deleteIcon} src="/icons/circleminus.svg" alt="delete"></img>
       </div>
     </div>

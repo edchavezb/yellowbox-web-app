@@ -14,13 +14,8 @@ function SubsectionsMenu() {
   const trackSubsections = currentBox.subSections.filter(subsection => subsection.type === 'tracks')
   const playlistSubsections = currentBox.subSections.filter(subsection => subsection.type === 'playlists')
 
-
   const handleCreateSubsection = async (type: BoxSections, index: number) => {
     dispatch(addSubsectionToBoxThunk(currentBox._id, type, index, ''));
-  }
-
-  const handleEditSubsection = async (type: string) => {
-    //dispatch(addSubsectionToBoxThunk(currentBox._id, type, ''));
   }
 
   return (
