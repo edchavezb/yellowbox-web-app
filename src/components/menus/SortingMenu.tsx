@@ -136,7 +136,7 @@ function SortingMenu() {
                     setSorting(state => ({...state, ...newSortingObject})) 
                   }}
                 />
-                <label htmlFor="sub-section"> Show sub-sections </label>
+                <label htmlFor="sub-section"> Show grouping </label>
               </div>
 
             </div>

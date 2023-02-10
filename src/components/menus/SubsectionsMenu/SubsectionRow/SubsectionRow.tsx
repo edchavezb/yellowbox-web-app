@@ -24,6 +24,12 @@ function SubsectionRow({ rowId, section, name }: SubsectionRowProps) {
     setIsInputEnabled(false);
   }
 
+  const handleFocusOut = (e: React.FocusEvent) => {
+    if (!(e.currentTarget! as Node).contains(e.relatedTarget as Node)) {
+      setIsInputEnabled(false);
+    }
+  }
+
   useEffect(() => {
     if(isInputEnabled) {
       inputRef.current!.focus();
@@ -35,10 +41,13 @@ function SubsectionRow({ rowId, section, name }: SubsectionRowProps) {
       <div className={dragHandle}>
         <img className={styles.reorderIcon} src="/icons/reorder.svg" alt="reorder"></img>
       </div>
-      <div className={subSectionRow} onClick={() => setIsInputEnabled(true)}>
+      <div className={subSectionRow} onBlur={e => handleFocusOut(e)}>
         {
           !isInputEnabled &&
-          <div className={name ? styles.nameRow : styles.nameRowEmpty}>
+          <div 
+            className={name ? styles.nameRow : styles.nameRowEmpty}
+            onClick={() => setIsInputEnabled(true)}
+          >
             {name || 'Enter a name for this section'}
           </div>
         }
@@ -51,8 +60,8 @@ function SubsectionRow({ rowId, section, name }: SubsectionRowProps) {
               value={nameInput}
               ref={inputRef}
               onChange={(e) => setNameInput(e.target.value)}
-              onBlur={() => setIsInputEnabled(false)} />
-            <div className={styles.saveNameBtn} onClick={handleSaveName}>
+            />
+            <div className={styles.saveNameBtn} onClick={handleSaveName} tabIndex={-1}>
               <img className={styles.checkmark} src="/icons/checkmark.svg" alt="save name"></img>
             </div>
           </div>
