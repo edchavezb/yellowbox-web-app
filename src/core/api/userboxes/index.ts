@@ -108,3 +108,12 @@ export const updateSubsectionNameApi = async (boxId: string, subsectionId: strin
         console.log(err)
     }
 }
+
+export const removeSubsectionApi = async (boxId: string, subsectionId: string, type: string) => {
+    try {
+        return await api.delete<UserBox>(`boxes/${boxId}/subsections/${subsectionId}?section=${type}`)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}

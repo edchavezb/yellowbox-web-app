@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addNoteToBoxApi, addSubsectionToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi } from "core/api/userboxes"
+import { addNoteToBoxApi, addSubsectionToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removeSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Track, UserBox } from "core/types/interfaces"
+import { BoxSections } from "core/types/types"
 
 interface CurrentBoxDetailState {
     box: UserBox
@@ -153,6 +154,33 @@ export const updateSubsectionNameThunk = (boxId: string, subsectionId: string, n
     try {
         const updatedSubsections = await updateSubsectionNameApi(boxId, subsectionId, name);
         dispatch(updateBoxSubsections(updatedSubsections!))
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const removeSubsectionThunk = (boxId: string, subsectionId: string, type: BoxSections): AppThunk => async (dispatch) => {
+    try {
+        const updatedBox = await removeSubsectionApi(boxId, subsectionId, type);
+        const updatedSubsections = updatedBox?.subSections;
+        dispatch(updateBoxSubsections(updatedSubsections!))
+        const updatedSection = updatedBox![type as keyof Pick<UserBox, 'albums' | 'artists' | 'tracks' | 'playlists'>];
+        switch(type){
+            case 'artists':
+                dispatch(updateBoxArtists({updatedArtists: updatedSection! as Artist[]}))
+            return;
+            case 'albums':
+                dispatch(updateBoxAlbums({updatedAlbums: updatedSection! as Album[]}))
+            return;
+            case 'tracks':
+                dispatch(updateBoxTracks({updatedTracks: updatedSection! as Track[]}))
+            return;
+            case 'playlists':
+                dispatch(updateBoxPlaylists({updatedPlaylists: updatedSection! as Playlist[]}))
+            return;
+            default:
+            return;
+        }
     } catch (err) {
         console.log(err)
     }
