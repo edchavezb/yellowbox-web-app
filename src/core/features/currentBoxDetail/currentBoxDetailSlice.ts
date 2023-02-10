@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addNoteToBoxApi, addSubsectionToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removeSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi } from "core/api/userboxes"
+import { addNoteToBoxApi, addSubsectionToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removeSubsectionApi, setAlbumSubsectionApi, setArtistSubsectionApi, setPlaylistSubsectionApi, setTrackSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Track, UserBox } from "core/types/interfaces"
 import { BoxSections } from "core/types/types"
@@ -177,6 +177,33 @@ export const removeSubsectionThunk = (boxId: string, subsectionId: string, type:
             return;
             case 'playlists':
                 dispatch(updateBoxPlaylists({updatedPlaylists: updatedSection! as Playlist[]}))
+            return;
+            default:
+            return;
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const setItemSubsectionThunk = (boxId: string, itemId: string, type: BoxSections, subsectionId: string): AppThunk => async (dispatch) => {
+    try {
+        switch(type){
+            case 'artists':
+                const artists = await setArtistSubsectionApi(boxId, itemId, subsectionId)
+                dispatch(updateBoxArtists({updatedArtists: artists!}))
+            return;
+            case 'albums':
+                const albums = await setAlbumSubsectionApi(boxId, itemId, subsectionId)
+                dispatch(updateBoxAlbums({updatedAlbums: albums!}))
+            return;
+            case 'tracks':
+                const tracks = await setTrackSubsectionApi(boxId, itemId, subsectionId)
+                dispatch(updateBoxTracks({updatedTracks: tracks!}))
+            return;
+            case 'playlists':
+                const playlists = await setPlaylistSubsectionApi(boxId, itemId, subsectionId)
+                dispatch(updateBoxPlaylists({updatedPlaylists: playlists!}))
             return;
             default:
             return;

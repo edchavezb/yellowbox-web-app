@@ -3,10 +3,9 @@ import { updateUserBox } from 'core/features/userBoxes/userBoxesSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState } from 'react';
-import { updateUserBoxApi } from '../../core/api/userboxes';
-import { Album, Artist, Playlist, Track, UserBox } from "../../core/types/interfaces";
-
-import styles from "./AddToMenu.module.css";
+import { updateUserBoxApi } from 'core/api/userboxes';
+import { Album, Artist, Playlist, Track, UserBox } from "core/types/interfaces";
+import styles from "./AddToBoxMenu.module.css";
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -16,7 +15,7 @@ interface IProps {
   boxId: string 
 }
 
-function AddToMenu({page, itemData, boxId}: IProps) {
+function AddToBoxMenu({page, itemData, boxId}: IProps) {
   const dispatch = useAppDispatch();
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const itemCopy = JSON.parse(JSON.stringify(itemData))
@@ -101,4 +100,4 @@ function AddToMenu({page, itemData, boxId}: IProps) {
   )
 }
 
-export default AddToMenu;
+export default AddToBoxMenu;
