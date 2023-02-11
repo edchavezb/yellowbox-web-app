@@ -1,13 +1,12 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
-
 import SubSection from "./SubSection"
 import styles from "./BoxSection.module.css";
-import { Album, Artist, Playlist, Sorting, Track, UserBox } from '../../core/types/interfaces';
-import * as checkType from  "../../core/helpers/typeguards";
+import { Album, Artist, Playlist, Sorting, Subsection, Track, UserBox } from '../../core/types/interfaces';
+import { twoFactorSort } from 'core/helpers/twoFactorSort';
 
 interface IProps<T> {
-	data: T[]
+  data: T[]
   type: string
   box: UserBox
   sorting: Sorting
@@ -15,90 +14,22 @@ interface IProps<T> {
   isOwner?: boolean
 }
 
-function BoxSection<T extends Artist | Album | Track | Playlist>({isOwner, data, type, box, sorting, visible}: IProps<T>) {
-
+function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data, type, box, sorting, visible }: IProps<T>) {
   const [height, setHeight] = useState<string | number>("auto")
+  const sectionIconSrc = `/icons/${type.toLowerCase()}.svg`
+  const sortedData = twoFactorSort<T>([...data], sorting.primarySorting, sorting.secondarySorting, sorting.ascendingOrder)
+  const subSectionArray = box.subSections.filter(s => s.type === type.toLowerCase()).sort(
+    (a: Subsection, b: Subsection) => {
+      if (a.index! < b.index!) return -1
+      else if (a.index! > b.index!) return 1
+      return 0
+    }
+  )
 
   useEffect(() => {
     const heightProp = visible ? "auto" : 0
     setHeight(heightProp)
   }, [visible])
-
-  function getProperty(item: T, itemType: string, propertyName: string, upperCased: boolean): string | number | Date{
-    let propertyValue!: string | number | Date
-
-    switch (propertyName) {
-      case "release_year":
-        propertyValue = checkType.isTrack(item) ? parseInt(item.album!["release_date"].split("-")[0]) 
-            : checkType.isAlbum(item) ? parseInt(item["release_date"].split("-")[0]) : ""
-      break;
-      case "release_date":
-        propertyValue = checkType.isTrack(item) ? new Date(item.album!.release_date) 
-            : checkType.isAlbum(item) ? new Date(item.release_date) : ""
-      break;
-      case "artist":   
-        propertyValue = checkType.isTrack(item) || checkType.isAlbum(item) ? item.artists[0].name : ""
-      break;
-      case "name":
-        propertyValue = item.name
-      break;
-      case "album":
-        propertyValue = checkType.isTrack(item) ? item.album!.name : ""
-      break;
-      case "duration":
-        propertyValue = checkType.isTrack(item) ? item.duration_ms : ""
-      break;
-      case "track_number":
-        propertyValue = checkType.isTrack(item) ? item.track_number : ""
-      break;
-      default:
-        propertyValue = ""
-    }
-
-    return typeof propertyValue === "string" && upperCased ? propertyValue.toUpperCase() : propertyValue
-  }
-
-  const twoFactorSort = (array: T[], type: string, sortFactorOne: string, sortFactorTwo: string, ascending: boolean) => {
-    if (sortFactorOne === "custom") return array
-    const sortOrderFactor = ascending ? 1 : -1;
-
-    array.sort((a, b) => {
-      const [factorOneInA, factorOneInB] = [getProperty(a, type, sortFactorOne, true), getProperty(b, type, sortFactorOne, true)]
-      const [factorTwoInA, factorTwoInB] = [getProperty(a, type, sortFactorTwo, true), getProperty(b, type, sortFactorTwo, true)]
-
-      if (factorOneInA < factorOneInB) return -1 * sortOrderFactor;
-      else if (factorOneInA > factorOneInB) return 1 * sortOrderFactor; 
-      else if (sortFactorTwo){
-        if(factorTwoInA < factorTwoInB) return -1 * sortOrderFactor;
-        else if (factorTwoInA > factorTwoInB) return 1 * sortOrderFactor;
-      }
-      return 0
-    }) 
-
-    return array
-  }
-
-  const showSubSections = (array: string[]) => {
-    return array.map(s => {
-
-      const itemsMatch = sorting.primarySorting === "custom" ? 
-        sortedData.filter(e => e.subSection === s) 
-        : sortedData.filter(e => getProperty(e, type, sorting.primarySorting, false) === s)
-      
-      return itemsMatch.length > 0 &&
-        <SubSection itemsMatch={itemsMatch} page="box" subName={s} key={s} viewType={sorting.view} 
-          sectionType={""} isDefault={false} customSorting={sorting.primarySorting === "custom"} boxId={""}/>
-
-    })
-  } 
-
-  const sectionIconSrc = `/icons/${type.toLowerCase()}.svg`
-  const sortedData = twoFactorSort([...data], type, sorting.primarySorting, sorting.secondarySorting, sorting.ascendingOrder)
-  const subSectionNameArr = sorting.primarySorting === "custom" ? 
-    //This gets the user-defined subsections, only available in custom sorting
-    box.subSections.filter(s => s.type === type.toLowerCase()).map((acc) => acc.name).sort()
-    //This gets subsections defined by sorting scheme
-    : Array.from(new Set(data.map(e => getProperty(e, type, sorting.primarySorting, false) as string))).sort()
 
   return (
     <AnimateHeight duration={250} height={height}>
@@ -108,34 +39,44 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({isOwner, data,
           <span> {type} ({data.length}) </span>
         </div>
 
-        {sorting.displaySubSections ? 
+        {sorting.displaySubSections ?
           <div className={styles.sectionWithSubs}>
-            <div className={sorting.primarySorting === "custom" ? styles.defaultSubSection : styles.hidden}>
-              <SubSection 
+            <div className={styles.defaultSubSection}>
+              <SubSection
                 isOwner={isOwner}
-                itemsMatch={sortedData.filter(e => e.subSection === "default")} 
-                subName = "default"
-                viewType={sorting.view} 
+                itemsMatch={(sortedData as T[]).filter(e => e.subSection === "default")}
+                subName="default"
+                viewType={sorting.view}
                 sectionType={type}
-                isDefault={true} 
-                page="box" 
-                customSorting={sorting.primarySorting === "custom"} 
+                isDefault={true}
+                page="box"
+                customSorting={sorting.primarySorting === "custom"}
                 boxId={box._id}
               />
             </div>
-            {showSubSections(subSectionNameArr)}
+            {
+              subSectionArray.map(subsection => {
+                const { name, _id } = subsection
+                const matchedItems = (sortedData as T[]).filter(e => e.subSection === _id)
+                return (
+                  !!matchedItems.length &&
+                  <SubSection itemsMatch={matchedItems} page="box" subName={name} key={_id} viewType={sorting.view}
+                    sectionType={""} isDefault={false} customSorting={sorting.primarySorting === "custom"} boxId={box._id} />
+                )
+              })
+            }
           </div>
-        : 
-          <SubSection 
+          :
+          <SubSection
             isOwner={isOwner}
-            itemsMatch={sortedData} 
-            subName = "default"
-            viewType={sorting.view} 
+            itemsMatch={sortedData}
+            subName="default"
+            viewType={sorting.view}
             sectionType={type}
-            isDefault={true} 
-            page="box" 
-            customSorting={sorting.primarySorting === "custom"} 
-            boxId={box._id} 
+            isDefault={true}
+            page="box"
+            customSorting={sorting.primarySorting === "custom"}
+            boxId={box._id}
           />
         }
 

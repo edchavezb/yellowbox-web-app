@@ -9,7 +9,7 @@ import { fetchBoxDetailThunk, setIsUserViewing } from 'core/features/currentBoxD
 import { useParams } from 'react-router-dom';
 
 function BoxDetail() {
-  const params = useParams<{id: string}>();
+  const { id: boxId } = useParams<{id: string}>();
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
@@ -17,12 +17,12 @@ function BoxDetail() {
   const [visibility, setVisibility] = useState<Visibility>({playlists: true, albums: true, artists: true, tracks: true})
 
   useEffect(() => {
-    dispatch(fetchBoxDetailThunk(params.id))
+    dispatch(fetchBoxDetailThunk(boxId))
     dispatch(setIsUserViewing(true))
     return () => {
       dispatch(setIsUserViewing(false))
     }
-  }, [params])
+  }, [boxId])
 
   useEffect(() => {
     boxDetailsInit()

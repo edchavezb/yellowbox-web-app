@@ -40,7 +40,7 @@ export interface UserBox {
   playlists: Playlist[]
   sectionSorting: SectionSorting
   sectionVisibility: Visibility
-  subSections: {_id?: string, type: BoxSections, name: string, index?: number}[]
+  subSections: Subsection[]
   notes: {itemId: string, noteText: string}[]
 }
 
@@ -56,6 +56,7 @@ export interface Sorting {
   secondarySorting: string
   view: string
   ascendingOrder: boolean
+  displayGrouping?: boolean
   displaySubSections: boolean
 }
 
@@ -64,6 +65,13 @@ export interface Visibility {
   albums: boolean
   tracks: boolean
   playlists: boolean
+}
+
+export interface Subsection {
+  _id?: string, 
+  type: BoxSections, 
+  name: string, 
+  index?: number
 }
 
 export interface UpdateBoxPayload {

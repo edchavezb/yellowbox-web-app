@@ -29,28 +29,32 @@ function NewBoxMenu() {
           secondarySorting: "none",
           view: "grid",
           ascendingOrder: false,
-          displaySubSections: false
+          displaySubSections: false,
+          displayGrouping: false
         },
         albums: {
           primarySorting: "custom",
           secondarySorting: "none",
           view: "grid",
           ascendingOrder: false,
-          displaySubSections: false
+          displaySubSections: false,
+          displayGrouping: false
         },
         tracks: {
           primarySorting: "custom",
           secondarySorting: "none",
           view: "grid",
           ascendingOrder: false,
-          displaySubSections: false
+          displaySubSections: false,
+          displayGrouping: false
         },
         playlists: {
           primarySorting: "custom",
           secondarySorting: "none",
           view: "grid",
           ascendingOrder: false,
-          displaySubSections: false
+          displaySubSections: false,
+          displayGrouping: false
         }
       },
       sectionVisibility: {
