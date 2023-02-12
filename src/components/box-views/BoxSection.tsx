@@ -3,6 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import SubSection from "./SubSection"
 import styles from "./BoxSection.module.css";
 import { Album, Artist, Playlist, Sorting, Subsection, Track, UserBox } from '../../core/types/interfaces';
+import { getItemProperty } from "core/helpers/getItemProperty";
 import { twoFactorSort } from 'core/helpers/twoFactorSort';
 
 interface IProps<T> {
@@ -25,6 +26,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
       return 0
     }
   )
+  const groupingArray = Array.from(new Set(data.map(e => getItemProperty(e, sorting.primarySorting, false) as string))).sort()
 
   useEffect(() => {
     const heightProp = visible ? "auto" : 0
@@ -39,28 +41,43 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
           <span> {type} ({data.length}) </span>
         </div>
 
-        {sorting.displaySubSections ?
+        {sorting.displaySubSections || sorting.displayGrouping ?
           <div className={styles.sectionWithSubs}>
-            <div className={styles.defaultSubSection}>
-              <SubSection
-                isOwner={isOwner}
-                itemsMatch={(sortedData as T[]).filter(e => e.subSection === "default")}
-                subName="default"
-                viewType={sorting.view}
-                sectionType={type}
-                isDefault={true}
-                page="box"
-                customSorting={sorting.primarySorting === "custom"}
-                boxId={box._id}
-              />
-            </div>
             {
+              sorting.displaySubSections &&
+              <div className={styles.defaultSubSection}>
+                <SubSection
+                  isOwner={isOwner}
+                  itemsMatch={(sortedData as T[]).filter(e => e.subSection === "default")}
+                  subName="default"
+                  viewType={sorting.view}
+                  sectionType={type}
+                  isDefault={true}
+                  page="box"
+                  customSorting={sorting.primarySorting === "custom"}
+                  boxId={box._id}
+                />
+              </div>
+            }
+            {
+              sorting.displaySubSections &&
               subSectionArray.map(subsection => {
                 const { name, _id } = subsection
                 const matchedItems = (sortedData as T[]).filter(e => e.subSection === _id)
                 return (
                   !!matchedItems.length &&
                   <SubSection itemsMatch={matchedItems} page="box" subName={name} key={_id} viewType={sorting.view}
+                    sectionType={""} isDefault={false} customSorting={sorting.primarySorting === "custom"} boxId={box._id} />
+                )
+              })
+            }
+            {
+              sorting.displayGrouping &&
+              groupingArray.map(group => {
+                const matchedItems = sortedData.filter(e => getItemProperty(e, sorting.primarySorting, false) === group)
+                return (
+                  !!matchedItems.length &&
+                  <SubSection itemsMatch={matchedItems} page="box" subName={group} key={group} viewType={sorting.view}
                     sectionType={""} isDefault={false} customSorting={sorting.primarySorting === "custom"} boxId={box._id} />
                 )
               })

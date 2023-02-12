@@ -18,14 +18,19 @@
     align-items: center;
 }
 
-.sortingRow {
-    display: flex;
-    margin-bottom: 15px;
+.section {
+    margin-bottom: 20px;
 }
 
-.rowNameSpan {
+.sortingRow {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.rowName {
     width: 75px;
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
 .formInput {

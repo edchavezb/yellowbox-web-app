@@ -17,28 +17,32 @@ const defaultBoxes: UserBox[] = [
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        displaySubSections: false
+        displaySubSections: false,
+        displayGrouping: false
       },
       albums: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        displaySubSections: false
+        displaySubSections: false,
+        displayGrouping: false
       },
       tracks: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        displaySubSections: false
+        displaySubSections: false,
+        displayGrouping: false
       },
       playlists: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        displaySubSections: false
+        displaySubSections: false,
+        displayGrouping: false
       }
     },
     sectionVisibility: {
@@ -111,28 +115,32 @@ const defaultBoxes: UserBox[] = [
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        displaySubSections: true
+        displaySubSections: true,
+        displayGrouping: false
       },
       albums: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        displaySubSections: false
+        displaySubSections: false,
+        displayGrouping: false
       },
       tracks: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        displaySubSections: false
+        displaySubSections: false,
+        displayGrouping: false
       },
       playlists: {
         primarySorting: "custom",
         secondarySorting: "none",
         view: "grid",
         ascendingOrder: true,
-        displaySubSections: false
+        displaySubSections: false,
+        displayGrouping: false
       }
     },
     sectionVisibility: {

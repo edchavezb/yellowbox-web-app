@@ -56,7 +56,7 @@ export interface Sorting {
   secondarySorting: string
   view: string
   ascendingOrder: boolean
-  displayGrouping?: boolean
+  displayGrouping: boolean
   displaySubSections: boolean
 }
 
