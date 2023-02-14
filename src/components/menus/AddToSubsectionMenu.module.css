@@ -2,14 +2,21 @@
     padding: 20px 30px 0px 30px;
 }
 
-#confirmation {
-    display: flex;
-}
-
 #modalFooter {
     height: 50px;
     padding-bottom: 10px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
+}
+
+.title {
+    margin-bottom: 5px;
+}
+
+.subsectionList {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
 }

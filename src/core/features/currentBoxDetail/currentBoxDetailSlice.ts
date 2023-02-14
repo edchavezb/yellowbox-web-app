@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addNoteToBoxApi, addSubsectionToBoxApi, getBoxByIdApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removeSubsectionApi, setAlbumSubsectionApi, setArtistSubsectionApi, setPlaylistSubsectionApi, setTrackSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi } from "core/api/userboxes"
+import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Track, UserBox } from "core/types/interfaces"
-import { BoxSections } from "core/types/types"
+import { BoxSections, ItemData } from "core/types/types"
 
 interface CurrentBoxDetailState {
     box: UserBox
@@ -142,7 +142,7 @@ export const updateItemNoteThunk = (boxId: string, itemId: string, noteText: str
 
 export const addSubsectionToBoxThunk = (boxId: string, type: string, index: number, name: string): AppThunk => async (dispatch) => {
     try {
-        const subsectionObj = {type, index, name}
+        const subsectionObj = {type, index, name, items: []}
         const updatedSubsections = await addSubsectionToBoxApi(boxId, subsectionObj);
         dispatch(updateBoxSubsections(updatedSubsections!))
     } catch (err) {
@@ -168,45 +168,80 @@ export const removeSubsectionThunk = (boxId: string, subsectionId: string, type:
         switch(type){
             case 'artists':
                 dispatch(updateBoxArtists({updatedArtists: updatedSection! as Artist[]}))
-            return;
+            break;
             case 'albums':
                 dispatch(updateBoxAlbums({updatedAlbums: updatedSection! as Album[]}))
-            return;
+            break;
             case 'tracks':
                 dispatch(updateBoxTracks({updatedTracks: updatedSection! as Track[]}))
-            return;
+            break;
             case 'playlists':
                 dispatch(updateBoxPlaylists({updatedPlaylists: updatedSection! as Playlist[]}))
-            return;
+            break;
             default:
-            return;
+            break;
         }
     } catch (err) {
         console.log(err)
     }
 }
 
-export const setItemSubsectionThunk = (boxId: string, itemId: string, type: BoxSections, subsectionId: string): AppThunk => async (dispatch) => {
+export const addItemToSubsectionThunk = (boxId: string, type: BoxSections, subsectionId: string, itemData: ItemData): AppThunk => async (dispatch) => {
     try {
+        let response: UserBox | null = null;
         switch(type){
             case 'artists':
-                const artists = await setArtistSubsectionApi(boxId, itemId, subsectionId)
-                dispatch(updateBoxArtists({updatedArtists: artists!}))
-            return;
+                response = await addArtistToSubsectionApi(boxId, itemData._id!, subsectionId, itemData as Artist) as UserBox
+                dispatch(updateBoxArtists({updatedArtists: response.artists!}))
+            break;
             case 'albums':
-                const albums = await setAlbumSubsectionApi(boxId, itemId, subsectionId)
-                dispatch(updateBoxAlbums({updatedAlbums: albums!}))
-            return;
+                response = await addAlbumToSubsectionApi(boxId, itemData._id!, subsectionId, itemData as Album) as UserBox
+                dispatch(updateBoxAlbums({updatedAlbums: response.albums!}))
+            break;
             case 'tracks':
-                const tracks = await setTrackSubsectionApi(boxId, itemId, subsectionId)
-                dispatch(updateBoxTracks({updatedTracks: tracks!}))
-            return;
+                response = await addTrackToSubsectionApi(boxId, itemData._id!, subsectionId, itemData as Track) as UserBox
+                dispatch(updateBoxTracks({updatedTracks: response.tracks!}))
+            break;
             case 'playlists':
-                const playlists = await setPlaylistSubsectionApi(boxId, itemId, subsectionId)
-                dispatch(updateBoxPlaylists({updatedPlaylists: playlists!}))
-            return;
+                response = await addPlaylistToSubsectionApi(boxId, itemData._id!, subsectionId, itemData as Playlist) as UserBox
+                dispatch(updateBoxPlaylists({updatedPlaylists: response.playlists!}))
+            break;
             default:
-            return;
+            break;
+        }
+        if(response){
+            dispatch(updateBoxSubsections(response.subSections))
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const removeItemFromSubsectionThunk = (boxId: string, type: BoxSections, subsectionId: string, itemId: string): AppThunk => async (dispatch) => {
+    try {
+        let response: UserBox | null = null;
+        switch(type){
+            case 'artists':
+                response = await removeArtistFromSubsectionApi(boxId, itemId, subsectionId) as UserBox
+                dispatch(updateBoxArtists({updatedArtists: response.artists!}))
+            break;
+            case 'albums':
+                response = await removeAlbumFromSubsectionApi(boxId, itemId, subsectionId) as UserBox
+                dispatch(updateBoxAlbums({updatedAlbums: response.albums!}))
+            break;
+            case 'tracks':
+                response = await removeTrackFromSubsectionApi(boxId, itemId, subsectionId) as UserBox
+                dispatch(updateBoxTracks({updatedTracks: response.tracks!}))
+            break;
+            case 'playlists':
+                response = await removePlaylistFromSubsectionApi(boxId, itemId, subsectionId) as UserBox
+                dispatch(updateBoxPlaylists({updatedPlaylists: response.playlists!}))
+            break;
+            default:
+            break;
+        }
+        if(response){
+            dispatch(updateBoxSubsections(response.subSections))
         }
     } catch (err) {
         console.log(err)

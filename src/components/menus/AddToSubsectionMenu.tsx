@@ -1,41 +1,58 @@
 import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { useState } from 'react';
-import { Album, Artist, Playlist, Track, UserBox } from "core/types/interfaces";
 import styles from "./AddToSubsectionMenu.module.css";
-import { setItemSubsectionThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
-import { BoxSections } from 'core/types/types';
-
-type MusicData = Artist | Album | Track | Playlist;
+import { addItemToSubsectionThunk, removeItemFromSubsectionThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
+import { BoxSections, ItemData } from 'core/types/types';
 
 interface IProps {
-  itemData: MusicData
+  itemData: ItemData
 }
 
 function AddToSubsectionMenu({ itemData }: IProps) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const validSubsections = currentBox.subSections.filter(subsection => subsection.type === `${itemData.type}s`)
-  const [targetSubsection, setTargetSubsection] = useState(validSubsections[0]?._id)
 
-  const handleAddItem = () => {
-    dispatch(setItemSubsectionThunk(currentBox._id, itemData._id!, `${itemData.type}s` as BoxSections, targetSubsection!))
-    dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))
+  const handleAddItem = (subsectionId: string) => {
+    dispatch(addItemToSubsectionThunk(currentBox._id, `${itemData.type}s` as BoxSections, subsectionId, itemData))
+  }
+
+  const handleRemoveItem = (subsectionId: string) => {
+    dispatch(removeItemFromSubsectionThunk(currentBox._id, `${itemData.type}s` as BoxSections, subsectionId, itemData._id!))
   }
 
   return (
     <div id={styles.modalBody}>
-      <div id={styles.confirmation}>
-        <label htmlFor="add-type"> Add this item to </label>
-        <select name="subsection-select" defaultValue={targetSubsection} onChange={(e) => setTargetSubsection(e.target.value)}>
+      <div id={styles.menu}>
+        <div className={styles.title}>
+          <label htmlFor="add-type"> Add this item to </label>
+        </div>
+        <div className={styles.subsectionList}>
           {validSubsections.map(subsection => {
-            return (<option key={subsection._id} value={subsection._id}> {subsection.name} </option>)
+            return (
+              <div key={subsection._id} className={styles.subsectionRow}>
+                <input
+                  type={'checkbox'}
+                  value={subsection._id}
+                  checked={subsection.items.some((item: ItemData) => item._id === itemData._id)}
+                  onChange={(e) => {
+                    if (e.target.checked){
+                      handleAddItem(e.target.value);
+                    } 
+                    else {
+                      handleRemoveItem(e.target.value);
+                    }
+                  }}
+                />
+                <span> {subsection.name} </span>
+              </div>
+            )
           })}
-        </select>
+        </div>
       </div>
       <div id={styles.modalFooter}>
-        <button onClick={() => handleAddItem()} disabled={!validSubsections.length}> Add item </button>
+        <button onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}> Done </button>
       </div>
     </div>
   )
