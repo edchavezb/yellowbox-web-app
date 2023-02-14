@@ -1,4 +1,4 @@
-import { Album, Artist, Playlist, SectionSorting, Track, UserBox } from '../../types/interfaces'
+import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from '../../types/interfaces'
 import api from '../index'
 
 export const getBoxByIdApi = async (boxId: string) => {
@@ -28,9 +28,23 @@ export const updateUserBoxApi = async (boxId: string, updatedBox: UserBox) => {
     }
 }
 
-export const setArtistSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+export const addArtistToSubsectionApi = async (boxId: string, itemId: string, subsectionId: string, itemData: Artist) => {
     try {
-        return await api.put<{subsectionId: string}, Artist[]>(`boxes/${boxId}/artists/${itemId}/subsection`, {subsectionId})
+        return await api.put<{subsectionId: string, itemData: Artist}, UserBox>(`boxes/${boxId}/artists/${itemId}/subsection`, {
+            subsectionId,
+            itemData
+        })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const removeArtistFromSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+    try {
+        return await api.put<{subsectionId: string}, UserBox>(`boxes/${boxId}/artists/${itemId}/subsection/remove`, {
+            subsectionId
+        })
     }
     catch(err) {
         console.log(err)
@@ -46,9 +60,23 @@ export const removeBoxArtistApi = async (boxId: string, itemId: string) => {
     }
 }
 
-export const setAlbumSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+export const addAlbumToSubsectionApi = async (boxId: string, itemId: string, subsectionId: string, itemData: Album) => {
     try {
-        return await api.put<{subsectionId: string}, Album[]>(`boxes/${boxId}/albums/${itemId}/subsection`, {subsectionId})
+        return await api.put<{subsectionId: string, itemData: Album}, UserBox>(`boxes/${boxId}/albums/${itemId}/subsection`, {
+            subsectionId,
+            itemData
+        })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const removeAlbumFromSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+    try {
+        return await api.put<{subsectionId: string}, UserBox>(`boxes/${boxId}/albums/${itemId}/subsection/remove`, {
+            subsectionId
+        })
     }
     catch(err) {
         console.log(err)
@@ -64,9 +92,23 @@ export const removeBoxAlbumApi = async (boxId: string, itemId: string) => {
     }
 }
 
-export const setTrackSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+export const addTrackToSubsectionApi = async (boxId: string, itemId: string, subsectionId: string, itemData: Track) => {
     try {
-        return await api.put<{subsectionId: string}, Track[]>(`boxes/${boxId}/tracks/${itemId}/subsection`, {subsectionId})
+        return await api.put<{subsectionId: string, itemData: Track}, UserBox>(`boxes/${boxId}/tracks/${itemId}/subsection`, {
+            subsectionId,
+            itemData
+        })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const removeTrackFromSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+    try {
+        return await api.put<{subsectionId: string}, UserBox>(`boxes/${boxId}/tracks/${itemId}/subsection/remove`, {
+            subsectionId
+        })
     }
     catch(err) {
         console.log(err)
@@ -82,9 +124,23 @@ export const removeBoxTrackApi = async (boxId: string, itemId: string) => {
     }
 }
 
-export const setPlaylistSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+export const addPlaylistToSubsectionApi = async (boxId: string, itemId: string, subsectionId: string, itemData: Playlist) => {
     try {
-        return await api.put<{subsectionId: string}, Playlist[]>(`boxes/${boxId}/playlists/${itemId}/subsection`, {subsectionId})
+        return await api.put<{subsectionId: string, itemData: Playlist}, UserBox>(`boxes/${boxId}/playlists/${itemId}/subsection`, {
+            subsectionId,
+            itemData
+        })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const removePlaylistFromSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+    try {
+        return await api.put<{subsectionId: string}, UserBox>(`boxes/${boxId}/playlist/${itemId}/subsection/remove`, {
+            subsectionId
+        })
     }
     catch(err) {
         console.log(err)

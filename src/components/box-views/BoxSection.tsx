@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 import SubSection from "./SubSection"
 import styles from "./BoxSection.module.css";
-import { Album, Artist, Playlist, Sorting, Subsection, Track, UserBox } from '../../core/types/interfaces';
+import { Album, Artist, Playlist, Sorting, Subsection, Track, UserBox } from 'core/types/interfaces';
 import { getItemProperty } from "core/helpers/getItemProperty";
 import { twoFactorSort } from 'core/helpers/twoFactorSort';
 
@@ -48,7 +48,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
               <div className={styles.defaultSubSection}>
                 <SubSection
                   isOwner={isOwner}
-                  itemsMatch={(sortedData as T[]).filter(e => e.subSection === "default")}
+                  itemsMatch={(sortedData as T[]).filter(e => !e.subSectionCount)}
                   subName="default"
                   viewType={sorting.view}
                   sectionType={type}
@@ -62,11 +62,10 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
             {
               sorting.displaySubSections &&
               subSectionArray.map(subsection => {
-                const { name, _id } = subsection
-                const matchedItems = (sortedData as T[]).filter(e => e.subSection === _id)
+                const { name, _id, items } = subsection
                 return (
-                  !!matchedItems.length &&
-                  <SubSection itemsMatch={matchedItems} page="box" subName={name} key={_id} viewType={sorting.view}
+                  !!items.length &&
+                  <SubSection itemsMatch={items} page="box" subName={name} key={_id} viewType={sorting.view}
                     sectionType={""} isDefault={false} customSorting={sorting.primarySorting === "custom"} boxId={box._id} />
                 )
               })

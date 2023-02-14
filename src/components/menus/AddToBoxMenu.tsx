@@ -59,22 +59,22 @@ function AddToBoxMenu({page, itemData, boxId}: IProps) {
     switch(data.type){
       case "artist" : {
         const {external_urls, genres, id, images, name, popularity, type, uri} = data as Artist
-        extractedData = {external_urls, genres, id, images, name, popularity, type, uri, subSection: "default"}
+        extractedData = {external_urls, genres, id, images, name, popularity, type, uri, subSectionCount: 0}
       break;
       }
       case "album" : {
         const {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri} = data as Album
-        extractedData = {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri, subSection: "default"}
+        extractedData = {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri, subSectionCount: 0}
       break;
       }
       case "track" : {
         const {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri} = data as Track
-        extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSection: "default"}
+        extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSectionCount: 0}
       break;
       }
       case "playlist" : {
         const {description, external_urls, id, images, name, owner, tracks, type, uri} = data as Playlist
-        extractedData = {description, external_urls, id, images, name, owner, tracks, type, uri, subSection: "default"}
+        extractedData = {description, external_urls, id, images, name, owner, tracks, type, uri, subSectionCount: 0}
       break;
       }
       default :

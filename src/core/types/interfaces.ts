@@ -71,6 +71,7 @@ export interface Subsection {
   _id?: string, 
   type: BoxSections, 
   name: string, 
+  items: Artist[] | Album[] | Track[] | Playlist[]
   index?: number
 }
 
@@ -103,7 +104,7 @@ export interface Album {
   }
   type: string
   uri: string
-  subSection?: string
+  subSectionCount?: number
 }
 
 export interface Artist {
@@ -118,7 +119,7 @@ export interface Artist {
   popularity?: number
   type: string
   uri: string
-  subSection?: string
+  subSectionCount?: number
 }
 
 export interface Track {
@@ -137,7 +138,7 @@ export interface Track {
   track_number: number
   type: string
   uri: string
-  subSection?: string 
+  subSectionCount?: number 
 }
 
 export interface Playlist {
@@ -161,7 +162,7 @@ export interface Playlist {
   }
   type: string
   uri: string
-  subSection?: string 
+  subSectionCount?: number 
 }
 
 export interface SpotifyUser {
