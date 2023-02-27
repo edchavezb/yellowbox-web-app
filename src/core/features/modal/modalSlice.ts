@@ -3,7 +3,9 @@ import { Album, Artist, Playlist, Track } from "core/types/interfaces"
 
 export type ModalType = 
     "New Box" 
+    | "Edit Box"
     | "Sorting Options" 
+    | "Delete Box"
     | "Delete Item" 
     | "Add To Box" 
     | "Add To Subsection" 

@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi } from "core/api/userboxes"
+import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi, updateUserBoxApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
+import { updateUserBox } from "../userBoxes/userBoxesSlice"
 
 interface CurrentBoxDetailState {
     box: UserBox
@@ -20,6 +21,12 @@ const currentBoxDetailSlice = createSlice({
     reducers: {
         setCurrentBoxDetail(state, action: PayloadAction<UserBox>) {
             state.box = action.payload
+        },
+        updateCurrentBoxDetail(state, action: PayloadAction<UserBox>) {
+            const {name, description} = action.payload;
+            state.box.name = name
+            state.box.description = description
+            state.box.public = action.payload.public
         },
         setIsUserViewing(state, action: PayloadAction<boolean>){
             state.isUserViewing = action.payload
@@ -55,6 +62,7 @@ const currentBoxDetailSlice = createSlice({
 export const { 
     setIsUserViewing,
     setCurrentBoxDetail, 
+    updateCurrentBoxDetail,
     updateBoxSorting, 
     updateBoxArtists,
     updateBoxAlbums,
@@ -72,6 +80,16 @@ export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch)
         dispatch(setIsUserViewing(true))
     } catch (err) {
         dispatch(setCurrentBoxDetail({} as UserBox))
+    }
+}
+
+export const updateCurrentBoxDetailThunk = (boxId: string, updatedBox: UserBox): AppThunk => async (dispatch) => {
+    try {
+        const boxDetail = await updateUserBoxApi(boxId, updatedBox);
+        dispatch(updateCurrentBoxDetail(boxDetail!))
+        dispatch(updateUserBox({targetId: boxId, updatedBox}))
+    } catch (err) {
+        console.log(err)
     }
 }
 

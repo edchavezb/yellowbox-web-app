@@ -19,6 +19,15 @@ export const createUserBoxApi = async (data: Omit<UserBox, '_id'>) => {
     }
 }
 
+export const deleteUserBoxApi = async (boxId: string) => {
+    try {
+        return await api.delete<string>(`boxes/${boxId}`)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
 export const updateUserBoxApi = async (boxId: string, updatedBox: UserBox) => {
     try {
         return await api.put<UserBox, UserBox>(`boxes/${boxId}`, updatedBox)

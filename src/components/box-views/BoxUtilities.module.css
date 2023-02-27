@@ -4,6 +4,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    gap: 5px
 }
 
 .includeButton {
@@ -43,5 +44,16 @@
     background-color: black;
     color: white;
     cursor: pointer;
-    margin-left: 5px
+}
+
+.boxMenu {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: black;
+    z-index: 70;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
