@@ -40,7 +40,7 @@ const api = {
     const response = await fetch(url.toString(), {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain',
       }
     })
     const responseData = await response.json()

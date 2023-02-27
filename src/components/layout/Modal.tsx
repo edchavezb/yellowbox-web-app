@@ -17,13 +17,19 @@ function Modal() {
 
   switch(modalData.type){
     case "New Box" :
-      modalBody = <NewBoxMenu/>
+      modalBody = <NewBoxMenu editMode={false}/>
+    break;
+    case "Edit Box" :
+      modalBody = <NewBoxMenu editMode={true} />
+    break;
+    case "Delete Box" :
+      modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} deleteType={"Box"} />
     break;
     case "Sorting Options" :
       modalBody = <SortingMenu/>
     break;
     case "Delete Item" :
-      modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} />
+      modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} deleteType={"Item"} />
     break;
     case "Add To Box" :
       modalBody = <AddToBoxMenu boxId={modalData.boxId} itemData={modalData.itemData!} page={modalData.page!}/>

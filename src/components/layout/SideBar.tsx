@@ -16,7 +16,7 @@ type MusicData = Artist | Album | Track | Playlist;
 
 function SideBar({user, login}: IProps) {
   const dispatch = useAppDispatch();
-  let history = useHistory();
+  const history = useHistory();
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
 
   useEffect(() => {

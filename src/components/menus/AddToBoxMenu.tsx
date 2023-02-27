@@ -47,7 +47,7 @@ function AddToBoxMenu({page, itemData, boxId}: IProps) {
     }
     try {
       updateUserBoxApi(targetId, updatedBox)
-      dispatch(updateUserBox({updatedBox, targetId: boxId}))
+      dispatch(updateUserBox({updatedBox, targetId: addBox}))
     } catch {
       console.log('Could not add item to box')
     }

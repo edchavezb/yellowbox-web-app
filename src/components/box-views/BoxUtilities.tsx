@@ -1,7 +1,9 @@
+import BoxMenu from "components/menus/popper/BoxMenu/BoxMenu";
+import PopperMenu from "components/menus/popper/PopperMenu";
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { UserBox, Visibility } from "../../core/types/interfaces";
 
 import styles from "./BoxUtilities.module.css";
@@ -14,10 +16,14 @@ interface IProps {
 }
 
 function BoxUtilities({ box, singleTypeBox, visibility, setVisibility }: IProps) {
+  const menuToggleRef = useRef(null);
   const dispatch = useAppDispatch();
   const { _id: boxId } = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const isOwner = !!userBoxes.find(box => box._id === boxId);
+  const boxNotEmpty = box?.albums?.length > 0 || box?.artists?.length > 0 || box?.tracks?.length > 0 || box?.playlists?.length > 0;
+  const [isBoxMenuOpen, setIsBoxMenuOpen] = useState(false);
+
   const handleSectionVisibility = (e: React.MouseEvent<HTMLDivElement>) => {
     const section = e.currentTarget.getAttribute("data-handles")
     let newVisibility: { [key: string]: boolean } = {}
@@ -30,35 +36,43 @@ function BoxUtilities({ box, singleTypeBox, visibility, setVisibility }: IProps)
   }
 
   return (
-    <div id={styles.boxUtilities}>
-      <div id={singleTypeBox ? styles.noInclude : styles.includeToggler}>
-        <span id={styles.includeTitle}> Show: </span>
-        {box.artists.length ?
-          <div className={visibility.artists ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} data-handles="artists">
-            <img className={styles.buttonIcon} alt="Toggle artists" src="/icons/artists.svg" />
-          </div>
-          : ""}
-        {box.albums.length ?
-          <div className={visibility.albums ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} data-handles="albums">
-            <img className={styles.buttonIcon} alt="Toggle albums" src="/icons/albums.svg" />
-          </div>
-          : ""}
-        {box.tracks.length ?
-          <div className={visibility.tracks ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} data-handles="tracks">
-            <img className={styles.buttonIcon} alt="Toggle songs" src="/icons/tracks.svg" />
-          </div>
-          : ""}
-        {box.playlists.length ?
-          <div className={visibility.playlists ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} data-handles="playlists">
-            <img className={styles.buttonIcon} alt="Toggle playlists" src="/icons/playlists.svg" />
-          </div>
-          : ""}
+    <>
+      <div id={styles.boxUtilities}>
+        <div id={singleTypeBox || !boxNotEmpty ? styles.noInclude : styles.includeToggler}>
+          <span id={styles.includeTitle}> Show: </span>
+          {box?.artists?.length ?
+            <div className={visibility.artists ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} data-handles="artists">
+              <img className={styles.buttonIcon} alt="Toggle artists" src="/icons/artists.svg" />
+            </div>
+            : ""}
+          {box?.albums?.length ?
+            <div className={visibility.albums ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} data-handles="albums">
+              <img className={styles.buttonIcon} alt="Toggle albums" src="/icons/albums.svg" />
+            </div>
+            : ""}
+          {box?.tracks?.length ?
+            <div className={visibility.tracks ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} data-handles="tracks">
+              <img className={styles.buttonIcon} alt="Toggle songs" src="/icons/tracks.svg" />
+            </div>
+            : ""}
+          {box?.playlists?.length ?
+            <div className={visibility.playlists ? styles.includeButton : styles.includeButtonPressed} onClick={(e) => handleSectionVisibility(e)} data-handles="playlists">
+              <img className={styles.buttonIcon} alt="Toggle playlists" src="/icons/playlists.svg" />
+            </div>
+            : ""}
+        </div>
+        <button id={styles.sortingButton} onClick={() => dispatch(setModalState({ visible: true, type: "Sorting Options", boxId: box._id, page: "Box" }))}> Sorting Options </button>
+        {isOwner &&
+          <button id={styles.sortingButton} onClick={() => dispatch(setModalState({ visible: true, type: "Box Subsections", boxId: box._id, page: "Box" }))}> Manage Sections </button>
+        }
+        <div className={styles.boxMenu} ref={menuToggleRef} onClick={() => setIsBoxMenuOpen(true)}>
+          <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
+        </div>
       </div>
-      <button id={styles.sortingButton} onClick={() => dispatch(setModalState({ visible: true, type: "Sorting Options", boxId: box._id, page: "Box" }))}> Sorting Options </button>
-      {isOwner &&
-        <button id={styles.sortingButton} onClick={() => dispatch(setModalState({ visible: true, type: "Box Subsections", boxId: box._id, page: "Box" }))}> Manage Sections </button>
-      }
-    </div>
+      <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isBoxMenuOpen} setIsOpen={setIsBoxMenuOpen}>
+        <BoxMenu setIsOpen={setIsBoxMenuOpen} />
+      </PopperMenu>
+    </>
   )
 }
 
