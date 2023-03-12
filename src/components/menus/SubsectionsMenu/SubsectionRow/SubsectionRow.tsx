@@ -4,6 +4,8 @@ import { BoxSections } from 'core/types/types';
 import { useEffect, useRef, useState } from 'react';
 import { removeSubsectionThunk, updateSubsectionNameThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface SubsectionRowProps {
   rowId: string;
@@ -12,12 +14,16 @@ interface SubsectionRowProps {
 }
 
 function SubsectionRow({ rowId, section, name }: SubsectionRowProps) {
+  const { attributes, listeners, setNodeRef, transform } = useSortable({id: rowId})
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isInputEnabled, setIsInputEnabled] = useState(false);
   const [nameInput, setNameInput] = useState(name);
   const { subSectionRow, dragHandle, nameInputBox, deleteButton } = styles;
+  const draggableStyle = {
+    transform: CSS.Transform.toString(transform),
+  }
 
   const handleSaveName = () => {
     dispatch(updateSubsectionNameThunk(currentBox._id, rowId, nameInput))
@@ -41,8 +47,8 @@ function SubsectionRow({ rowId, section, name }: SubsectionRowProps) {
   }, [isInputEnabled])
 
   return (
-    <div className={styles.rowWrapper}>
-      <div className={dragHandle}>
+    <div className={styles.rowWrapper} ref={setNodeRef} style={draggableStyle}>
+      <div className={dragHandle} {...attributes} {...listeners}>
         <img className={styles.reorderIcon} src="/icons/reorder.svg" alt="reorder"></img>
       </div>
       <div className={subSectionRow} onBlur={e => handleFocusOut(e)}>
