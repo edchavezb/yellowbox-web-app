@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi, updateUserBoxApi } from "core/api/userboxes"
+import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi, updateSubsectionsApi, updateUserBoxApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
-import { Album, Artist, Playlist, SectionSorting, Track, UserBox } from "core/types/interfaces"
+import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
 import { updateUserBox } from "../userBoxes/userBoxesSlice"
 
@@ -199,6 +199,33 @@ export const removeSubsectionThunk = (boxId: string, subsectionId: string, type:
             default:
             break;
         }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const reorderSubsectionsThunk = (boxId: string, subSections: Subsection[], draggedId: string, targetId: string, type: string): AppThunk => async (dispatch, getState) => {
+    const partition = (arr: Subsection[], type: string) => {
+        const passed = arr.filter(sub => sub.type === type);
+        const failed = arr.filter(sub => sub.type !== type);
+        return [passed, failed];
+    };
+    try {
+        const subsectionsCopy = JSON.parse(JSON.stringify(subSections));
+        const [subsToReorder, rest] = partition(subsectionsCopy, type);
+        const draggedSub = subsToReorder.find(sub => sub._id === draggedId)
+        const draggedIndex = subsToReorder.findIndex(sub => sub._id === draggedId);
+        const targetIndex = subsToReorder.findIndex(sub => sub._id === targetId);
+        subsToReorder.splice(draggedIndex, 1);
+        subsToReorder.splice(targetIndex, 0, draggedSub!)
+        const reorderedSubs = subsToReorder.map(
+            (sub, newIndex) => ({
+                ...sub,
+                index: newIndex
+            })
+        )
+        dispatch(updateBoxSubsections([...reorderedSubs, ...rest]))
+        await updateSubsectionsApi(boxId, [...reorderedSubs, ...rest])
     } catch (err) {
         console.log(err)
     }

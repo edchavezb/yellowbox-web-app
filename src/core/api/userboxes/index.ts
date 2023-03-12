@@ -194,7 +194,16 @@ export const updateItemNoteApi = async (boxId: string, itemId: string, noteObj: 
 
 export const addSubsectionToBoxApi = async (boxId: string, subsectionObj: {type: string, name: string, index: number}) => {
     try {
-        return await api.post<{type: string, name: string, index: number}, UserBox['subSections']>(`boxes/${boxId}/subsections`, subsectionObj)
+        return await api.post<{type: string, name: string, index: number}, Subsection[]>(`boxes/${boxId}/subsections`, subsectionObj)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const updateSubsectionsApi = async (boxId: string, updatedSubsections: Subsection[]) => {
+    try {
+        return await api.put<Subsection[], Subsection[]>(`boxes/${boxId}/subsections`, updatedSubsections)
     }
     catch(err) {
         console.log(err)
