@@ -9,21 +9,29 @@ import PopperMenu from "components/menus/popper/PopperMenu";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppSelector } from "core/hooks/useAppSelector";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from '@dnd-kit/utilities';
 
 interface IProps<T> {
   element: T
   index: number
   page?: string
   setElementDragging: (dragging: boolean) => void
+  reorderingMode: boolean
+  setIsReordering: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index }: IProps<T>) {
+function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index, reorderingMode, setIsReordering }: IProps<T>) {
+  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const dispatch = useAppDispatch();
   const { name, type, uri, id } = element;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const itemNote = currentBox.notes.find(note => note.itemId === id)
   const detailRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const draggableStyle = {
+    transform: CSS.Transform.toString(transform),
+  }
 
   //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)
   let elementImages!: ItemImage[];
@@ -119,9 +127,17 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   }
 
   return (
-    <>
-      <div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
-        <div className={styles.colLeftAlgn}>{index + 1}</div>
+    reorderingMode ?
+      <div
+        className={styles.itemRow}
+        ref={setNodeRef}
+        style={draggableStyle}
+        {...listeners}
+        {...attributes}
+      >
+        <div className={styles.dragHandle}>
+          <img className={styles.reorderIcon} src="/icons/reorder.svg" alt="reorder"></img>
+        </div>
         <div className={styles.imageContainer}>
           <a href={`${uri}:play`}>
             <div className={styles.instantPlay}>
@@ -154,14 +170,51 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
             </div>
           </div>
         </div>
-        <div className={styles.itemMenu} ref={detailRowRef} onClick={() => setIsMenuOpen(true)}>
-          <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
-        </div>
       </div>
-      <PopperMenu referenceRef={detailRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-        <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} />
-      </PopperMenu>
-    </>
+      :
+      <>
+        <div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
+          <div className={styles.colLeftAlgn}>{index + 1}</div>
+          <div className={styles.imageContainer}>
+            <a href={`${uri}:play`}>
+              <div className={styles.instantPlay}>
+                <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
+                {type === "track" ? <span> Play </span> : <span> Open </span>}
+              </div>
+            </a>
+            <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+          </div>
+          <div className={styles.dataCol}>
+            <div className={type === "track" || type === "album" ? styles.itemNameItalic : styles.itemName}>
+              <Link to={`/detail/${type}/${id}`}> {name} </Link>
+            </div>
+            {type !== "artist" ?
+              <div className={styles.artist}>
+                {authorName}
+              </div>
+              : ""
+            }
+            {metadata}
+          </div>
+          <div className={styles.notesCol}>
+            <div className={styles.notesPanel} onClick={() => dispatch(setModalState({ visible: true, type: "Item Note", boxId: currentBox._id, page: "", itemData: element }))}>
+              <div className={styles.notesTitle}> NOTES </div>
+              <div className={styles.notesDisplay}>
+                {itemNote?.noteText}
+              </div>
+              <div className={styles.notesOverlay}>
+                <div className={styles.overlayTitle}> {itemNote?.noteText ? 'EXPAND ⛶' : 'ADD NOTE ✎'} </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.itemMenu} ref={detailRowRef} onClick={() => setIsMenuOpen(true)}>
+            <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
+          </div>
+        </div>
+        <PopperMenu referenceRef={detailRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} toggleReordering={setIsReordering} itemType={element.type} />
+        </PopperMenu>
+      </>
   )
 }
 

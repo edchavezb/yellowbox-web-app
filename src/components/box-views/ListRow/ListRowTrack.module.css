@@ -57,3 +57,12 @@
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
 }
+
+.dragHandle {
+    height: 10px;
+    width: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+}

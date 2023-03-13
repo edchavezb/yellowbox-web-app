@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi, updateSubsectionsApi, updateUserBoxApi } from "core/api/userboxes"
+import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, updateBoxAlbumsApi, updateBoxArtistsApi, updateBoxPlaylistsApi, updateBoxSortingApi, updateBoxTracksApi, updateItemNoteApi, updateSubsectionNameApi, updateSubsectionsApi, updateUserBoxApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
@@ -53,7 +53,7 @@ const currentBoxDetailSlice = createSlice({
         updateBoxNotes(state, action: PayloadAction<UserBox['notes']>) {
             state.box.notes = action.payload;
         },
-        updateBoxSubsections(state, action: PayloadAction<UserBox['subSections']>) {
+        updateBoxSubsections(state, action: PayloadAction<Subsection[]>) {
             state.box.subSections = action.payload;
         }
     }
@@ -204,7 +204,7 @@ export const removeSubsectionThunk = (boxId: string, subsectionId: string, type:
     }
 }
 
-export const reorderSubsectionsThunk = (boxId: string, subSections: Subsection[], draggedId: string, targetId: string, type: string): AppThunk => async (dispatch, getState) => {
+export const reorderSubsectionsThunk = (boxId: string, subSections: Subsection[], draggedId: string, targetId: string, type: string): AppThunk => async (dispatch) => {
     const partition = (arr: Subsection[], type: string) => {
         const passed = arr.filter(sub => sub.type === type);
         const failed = arr.filter(sub => sub.type !== type);
@@ -288,6 +288,72 @@ export const removeItemFromSubsectionThunk = (boxId: string, type: BoxSections, 
         if(response){
             dispatch(updateBoxSubsections(response.subSections))
         }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const reorderBoxItemsThunk = (boxId: string, draggedId: string, targetId: string, itemType: string ): AppThunk => async (dispatch, getState) => {
+    console.log('Got here before error 1')
+    const reorderItems = <T extends {_id?: string}[]>(items: T) => {
+        const draggedItem = items.find(item => item._id === draggedId)
+        const draggedIndex = items.findIndex(item => item._id === draggedId);
+        const targetIndex = items.findIndex(item => item._id === targetId);
+        items.splice(draggedIndex, 1);
+        items.splice(targetIndex, 0, draggedItem!)
+        return items;
+    }
+    try {
+        let response: UserBox | null = null;
+        switch(itemType){
+            case 'artist':
+                console.log('Got here before error 2')
+                const artistsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.artists));
+                const updatedArtists = reorderItems<Artist[]>(artistsCopy)
+                dispatch(updateBoxArtists({updatedArtists}))
+                await updateBoxArtistsApi(boxId, updatedArtists)
+            break;
+            case 'album':
+                const albumsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.albums));
+                const updatedAlbums = reorderItems<Album[]>(albumsCopy)
+                dispatch(updateBoxAlbums({updatedAlbums}))
+                await updateBoxAlbumsApi(boxId, updatedAlbums)
+            break;
+            case 'track':
+                const tracksCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.tracks));
+                const updatedTracks = reorderItems<Track[]>(tracksCopy)
+                dispatch(updateBoxTracks({updatedTracks}))
+                await updateBoxTracksApi(boxId, updatedTracks)
+            break;
+            case 'playlist':
+                const playlistsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.playlists));
+                const updatedPlaylists = reorderItems<Playlist[]>(playlistsCopy)
+                dispatch(updateBoxPlaylists({updatedPlaylists}))
+                await updateBoxPlaylistsApi(boxId, updatedPlaylists)
+            break;
+            default:
+            break;
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const reorderSubsectionItemsThunk = (boxId: string, draggedId: string, targetId: string, subId: string): AppThunk => async (dispatch, getState) => {
+    try {
+        const subsections = getState().currentBoxDetailData.box.subSections;
+        const targetSub = subsections.find(sub => sub._id === subId);
+        const otherSubs = subsections.filter(sub => sub._id !== subId);
+        const itemsCopy: {_id: string}[] = JSON.parse(JSON.stringify(targetSub?.items));
+        const draggedItem = itemsCopy.find(item => item._id === draggedId)
+        const draggedIndex = itemsCopy.findIndex(item => item._id === draggedId);
+        const targetIndex = itemsCopy.findIndex(item => item._id === targetId);
+        itemsCopy.splice(draggedIndex, 1);
+        itemsCopy.splice(targetIndex, 0, draggedItem!)
+        const updatedSub = {...targetSub, items: itemsCopy};
+        const subsectionsPayload = [...otherSubs, updatedSub] as Subsection[]
+        dispatch(updateBoxSubsections(subsectionsPayload))
+        await updateSubsectionsApi(boxId, subsectionsPayload)
     } catch (err) {
         console.log(err)
     }
