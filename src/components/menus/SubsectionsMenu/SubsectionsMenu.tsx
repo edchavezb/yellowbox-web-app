@@ -26,7 +26,6 @@ function SubsectionsMenu() {
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log('Drag Ended')
     const { over, active } = event;
     const subsectionType = currentBox.subSections.find(sub => sub._id === active.id)?.type
     dispatch(

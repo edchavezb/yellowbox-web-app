@@ -179,11 +179,11 @@ function ItemDetail() {
     switch (params.type){
       case "album" :
         listComponent = 
-        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData as Album)} page="detail" customSorting={false} boxId={undefined} />
+        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData as Album)} page="detail" customSorting={false} />
       break;
       case "playlist" :
         listComponent = 
-        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} boxId={undefined} />
+        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} />
       break;
       case "artist" :
         listComponent = 

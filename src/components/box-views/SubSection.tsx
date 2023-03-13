@@ -5,8 +5,9 @@ import styles from "./SubSection.module.css";
 import { Album, Artist, Playlist, Track } from "../../core/types/interfaces";
 
 interface IProps<T> {
-	itemsMatch: T[]
+  itemsMatch: T[]
   subName: string
+  subId?: string
   viewType: string
   sectionType: string
   boxId: string
@@ -16,7 +17,7 @@ interface IProps<T> {
   page?: string
 }
 
-function SubSection<T extends Artist | Album | Track | Playlist>({itemsMatch, subName, viewType, sectionType, boxId, isOwner, isDefault, page, customSorting}: IProps<T>) {
+function SubSection<T extends Artist | Album | Track | Playlist>({ itemsMatch, subName, subId, viewType, sectionType, boxId, isOwner, isDefault, page, customSorting }: IProps<T>) {
   const getListType = (sectionType: string) => {
     let listType;
     switch (sectionType) {
@@ -39,18 +40,18 @@ function SubSection<T extends Artist | Album | Track | Playlist>({itemsMatch, su
     return listType;
   }
 
-  const displayView = (data: T[], page: string, isCustom: boolean) => {
+  const displayView = (data: T[], page: string, isCustom: boolean, isDefault: boolean) => {
     let sectionView: JSX.Element;
-    switch (viewType){
+    switch (viewType) {
       case "grid":
-        sectionView = <GridView isOwner={isOwner} data={data} page={page} customSorting={isCustom} boxId={boxId} />
-      break;
+        sectionView = <GridView isOwner={isOwner} data={data} page={page} customSorting={isCustom} boxId={boxId} isDefaultSubSection={isDefault} subId={subId} />
+        break;
       case "list":
-        sectionView = <ListView isOwner={isOwner} data={data} page={page} customSorting={isCustom} boxId={boxId} listType={getListType(sectionType)}/>
-      break;
+        sectionView = <ListView isOwner={isOwner} data={data} page={page} customSorting={isCustom} isDefaultSubSection={isDefault} listType={getListType(sectionType)} subId={subId} />
+        break;
       case "details":
-        sectionView = <DetailView isOwner={isOwner} data={data} page={page} customSorting={isCustom} boxId={boxId} />
-      break;
+        sectionView = <DetailView isOwner={isOwner} data={data} page={page} customSorting={isCustom} boxId={boxId} isDefaultSubSection={isDefault} subId={subId}/>
+        break;
       default:
         sectionView = <div></div>
     }
@@ -59,8 +60,8 @@ function SubSection<T extends Artist | Album | Track | Playlist>({itemsMatch, su
 
   return (
     <div className={styles.subSectionWrapper} key={subName}>
-      {!isDefault ? <div className={styles.subSectionName}> {subName} </div> : "" }
-        {displayView(itemsMatch, page as string, customSorting)}
+      {!isDefault ? <div className={styles.subSectionName}> {subName} </div> : ""}
+      {displayView(itemsMatch, page as string, customSorting, isDefault)}
     </div>
   )
 }

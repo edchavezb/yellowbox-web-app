@@ -65,8 +65,19 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
                 const { name, _id, items } = subsection
                 return (
                   !!items.length &&
-                  <SubSection itemsMatch={items} page="box" subName={name} key={_id} viewType={sorting.view}
-                    sectionType={""} isDefault={false} customSorting={sorting.primarySorting === "custom"} boxId={box._id} />
+                  <SubSection
+                    isOwner={isOwner}
+                    itemsMatch={items}
+                    page="box"
+                    subName={name}
+                    subId={_id}
+                    key={_id}
+                    viewType={sorting.view}
+                    sectionType={type}
+                    isDefault={false}
+                    customSorting={sorting.primarySorting === "custom"}
+                    boxId={box._id}
+                  />
                 )
               })
             }
@@ -76,8 +87,18 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
                 const matchedItems = sortedData.filter(e => getItemProperty(e, sorting.primarySorting, false) === group)
                 return (
                   !!matchedItems.length &&
-                  <SubSection itemsMatch={matchedItems} page="box" subName={group} key={group} viewType={sorting.view}
-                    sectionType={""} isDefault={false} customSorting={sorting.primarySorting === "custom"} boxId={box._id} />
+                  <SubSection
+                    isOwner={isOwner}
+                    itemsMatch={matchedItems}
+                    page="box"
+                    subName={group}
+                    key={group}
+                    viewType={sorting.view}
+                    sectionType={""}
+                    isDefault={false}
+                    customSorting={sorting.primarySorting === "custom"}
+                    boxId={box._id}
+                  />
                 )
               })
             }

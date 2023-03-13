@@ -10,6 +10,12 @@
     overflow: hidden;
 }
 
+.imageContainerReorder {
+    composes: imageContainer;
+    border: 3px solid #313338;
+    cursor: grab;
+}
+
 .instantPlay {
     visibility: hidden;
     width: 50px;

@@ -37,6 +37,50 @@ export const updateUserBoxApi = async (boxId: string, updatedBox: UserBox) => {
     }
 }
 
+export const updateBoxArtistsApi = async (boxId: string, updatedItems: Artist[]) => {
+    try {
+        return await api.put<{updatedItems: Artist[]}, UserBox>(`boxes/${boxId}/artists`, {
+            updatedItems
+        })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const updateBoxAlbumsApi = async (boxId: string, updatedItems: Album[]) => {
+    try {
+        return await api.put<{updatedItems: Album[]}, UserBox>(`boxes/${boxId}/albums`, {
+            updatedItems
+        })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const updateBoxTracksApi = async (boxId: string, updatedItems: Track[]) => {
+    try {
+        return await api.put<{updatedItems: Track[]}, UserBox>(`boxes/${boxId}/tracks`, {
+            updatedItems
+        })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const updateBoxPlaylistsApi = async (boxId: string, updatedItems: Playlist[]) => {
+    try {
+        return await api.put<{updatedItems: Playlist[]}, UserBox>(`boxes/${boxId}/playlists`, {
+            updatedItems
+        })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
 export const addArtistToSubsectionApi = async (boxId: string, itemId: string, subsectionId: string, itemData: Artist) => {
     try {
         return await api.put<{subsectionId: string, itemData: Artist}, UserBox>(`boxes/${boxId}/artists/${itemId}/subsection`, {

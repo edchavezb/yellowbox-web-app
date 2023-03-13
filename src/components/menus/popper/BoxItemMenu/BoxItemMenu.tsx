@@ -1,17 +1,20 @@
 import { ModalType, setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { Artist, Album, Track, Playlist } from "core/types/interfaces";
+import { Artist, Album, Track, Playlist, SectionSorting } from "core/types/interfaces";
 import styles from "./BoxItemMenu.module.css";
 
 interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  toggleReordering?: React.Dispatch<React.SetStateAction<boolean>>
+  itemType: string
 }
 
-const BoxItemMenu = ({itemData, setIsOpen}: BoxItemMenuProps) => {
+const BoxItemMenu = ({itemData, setIsOpen, toggleReordering, itemType}: BoxItemMenuProps) => {
   const dispatch = useAppDispatch();
   const boxDetailViewing = useAppSelector(state => state.currentBoxDetailData.isUserViewing)
+  const isCustomSorting = useAppSelector(state => state.currentBoxDetailData.box.sectionSorting[`${itemType}s` as keyof SectionSorting].primarySorting === 'custom')
   const { _id: boxId, notes } = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const isOwner = !!userBoxes.find(box => box._id === boxId);
@@ -61,10 +64,10 @@ const BoxItemMenu = ({itemData, setIsOpen}: BoxItemMenuProps) => {
         </div>
       }
       { 
-        (boxDetailViewing && isOwner) &&
+        (boxDetailViewing && isOwner && isCustomSorting) &&
         <div 
           className={menuItem}
-          onClick={() => handleOpenModal("Change Order")}>
+          onClick={() => toggleReordering!(true)}>
           Reorder box items
         </div>
       }
