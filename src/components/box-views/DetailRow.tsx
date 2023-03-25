@@ -26,6 +26,8 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   const dispatch = useAppDispatch();
   const { name, type, uri, id } = element;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
+  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
+  const isOwner = userBoxes.some(box => box._id === currentBox._id);
   const itemNote = currentBox.notes.find(note => note.itemId === id)
   const detailRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -203,7 +205,9 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
                 {itemNote?.noteText}
               </div>
               <div className={styles.notesOverlay}>
-                <div className={styles.overlayTitle}> {itemNote?.noteText ? 'EXPAND ⛶' : 'ADD NOTE ✎'} </div>
+                <div className={styles.overlayTitle}> 
+                  {!itemNote?.noteText && isOwner ? 'ADD NOTE ✎' : 'EXPAND ⛶'} 
+                </div>
               </div>
             </div>
           </div>

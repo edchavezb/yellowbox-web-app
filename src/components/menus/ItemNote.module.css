@@ -79,3 +79,9 @@
     caret-color: #ffffff;
     resize: none;
 }
+
+.disabledWarning {
+    margin-top: 5px;
+    text-align: end;
+    font-size: .8em;
+}

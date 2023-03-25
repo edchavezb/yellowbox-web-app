@@ -1,4 +1,4 @@
-import { addNoteToBoxThunk, updateItemNoteThunk} from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { addNoteToBoxThunk, updateItemNoteThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useEffect, useRef, useState } from "react";
@@ -17,7 +17,10 @@ interface IProps {
 function ItemNote({ itemData, boxId }: IProps) {
   const dispatch = useAppDispatch();
   const { name, id } = itemData;
-  const boxNotes = useAppSelector(state => state.currentBoxDetailData.box.notes)
+  const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
+  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
+  const isOwner = userBoxes.some(box => box._id === currentBox._id);
+  const boxNotes = currentBox.notes;
   const itemNote = boxNotes.find(note => note.itemId === id)
   const [isEditorEnabled, setIsEditorEnabled] = useState(false);
   const [editorNote, setEditorNote] = useState(itemNote?.noteText);
@@ -31,7 +34,7 @@ function ItemNote({ itemData, boxId }: IProps) {
   }, [])
 
   useEffect(() => {
-    if(isEditorEnabled){
+    if (isEditorEnabled) {
       editorRef.current?.focus();
     }
   }, [isEditorEnabled])
@@ -43,13 +46,13 @@ function ItemNote({ itemData, boxId }: IProps) {
   }
 
   const saveNoteHandler = () => {
-    if(itemNote) {
+    if (itemNote) {
       dispatch(updateItemNoteThunk(boxId, itemData.id!, editorNote!));
     }
     else {
       dispatch(addNoteToBoxThunk(boxId, itemData.id!, editorNote || ""));
     }
-    dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
+    dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))
   }
 
   let elementImages: ItemImage[] | undefined;
@@ -77,7 +80,7 @@ function ItemNote({ itemData, boxId }: IProps) {
   }
 
   const itemCoverArt = elementImages && elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
-  const isNameItalic = (item: MusicData) => item.type === 'album' ||  item.type === 'track'
+  const isNameItalic = (item: MusicData) => item.type === 'album' || item.type === 'track'
 
   return (
     <div id={styles.modalBody}>
@@ -94,24 +97,30 @@ function ItemNote({ itemData, boxId }: IProps) {
           </div>
           {
             isEditorEnabled ?
-            <textarea 
-              id={styles.noteEditor} 
-              rows={15} 
-              ref={editorRef} 
-              onChange={e => setEditorNote(e.target.value)}
-              value={editorNote}
-            />
-            :
-            <div 
-              className={styles.notePanel} 
-              onClick={() => {
-                setIsEditorEnabled(true);
-              }}>
-              <p className={styles.noteText}>
-                {editorNote || 'Click here to write a note'}
-              </p>
-            </div>
+              <textarea
+                id={styles.noteEditor}
+                rows={15}
+                ref={editorRef}
+                onChange={e => setEditorNote(e.target.value)}
+                value={editorNote}
+              />
+              :
+              <div
+                className={styles.notePanel}
+                onClick={() => {
+                  if (isOwner) {
+                    setIsEditorEnabled(true);
+                  }
+                }}>
+                <p className={styles.noteText}>
+                  {editorNote
+                    || (isOwner ? 'Click here to write a note' : '')}
+                </p>
+              </div>
           }
+          <div className={styles.disabledWarning}>
+            Only box owners can add notes to an item
+          </div>
         </div>
       </div>
       <div id={styles.modalFooter}>
