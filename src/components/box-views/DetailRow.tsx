@@ -184,7 +184,9 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
                 {type === "track" ? <span> Play </span> : <span> Open </span>}
               </div>
             </a>
-            <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+            <Link to={`/detail/${type}/${id}`}>
+              <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+            </Link>
           </div>
           <div className={styles.dataCol}>
             <div className={type === "track" || type === "album" ? styles.itemNameItalic : styles.itemName}>

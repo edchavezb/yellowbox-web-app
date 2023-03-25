@@ -99,13 +99,15 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, setEle
             <div className={styles.itemMenu} onClick={() => setIsMenuOpen(true)}>
               <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
             </div>
-            <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+            <Link to={`/detail/${type}/${id}`}>
+              <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+            </Link>
           </div>
           <Link to={`/detail/${type}/${id}`}> <div className={styles.name}> {name} </div> </Link>
           {authorName}
         </div>
         <PopperMenu referenceRef={gridItemRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} toggleReordering={setIsReordering} itemType={type}/>
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} toggleReordering={setIsReordering} itemType={type} />
         </PopperMenu>
       </>
   )

@@ -118,9 +118,12 @@ function ItemNote({ itemData, boxId }: IProps) {
                 </p>
               </div>
           }
-          <div className={styles.disabledWarning}>
-            Only box owners can add notes to an item
-          </div>
+          {
+            !isOwner &&
+            <div className={styles.disabledWarning}>
+              Only box owners can add notes to an item
+            </div>
+          }
         </div>
       </div>
       <div id={styles.modalFooter}>

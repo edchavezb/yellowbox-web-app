@@ -5,7 +5,6 @@
     column-gap: 10px;
     grid-template-columns: [index] 30px [image] .5fr [data] 2fr [notes] 1.8fr [options] 30px;
     align-items: center;
-    cursor: grab;
 }
 
 .itemRow:hover {

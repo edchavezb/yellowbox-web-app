@@ -25,34 +25,43 @@ function AddToSubsectionMenu({ itemData }: IProps) {
   return (
     <div id={styles.modalBody}>
       <div id={styles.menu}>
-        <div className={styles.title}>
-          <label htmlFor="add-type"> Add this item to </label>
-        </div>
-        <div className={styles.subsectionList}>
-          {validSubsections.map(subsection => {
-            return (
-              <div key={subsection._id} className={styles.subsectionRow}>
-                <input
-                  type={'checkbox'}
-                  value={subsection._id}
-                  checked={subsection.items.some((item: ItemData) => item._id === itemData._id)}
-                  onChange={(e) => {
-                    if (e.target.checked){
-                      handleAddItem(e.target.value);
-                    } 
-                    else {
-                      handleRemoveItem(e.target.value);
-                    }
-                  }}
-                />
-                <span> {subsection.name} </span>
+        {
+          validSubsections.length ?
+            <>
+              <div className={styles.title}>
+                <label htmlFor="add-type"> Add this item to </label>
               </div>
-            )
-          })}
-        </div>
+              <div className={styles.subsectionList}>
+                {validSubsections.map(subsection => {
+                  return (
+                    <div key={subsection._id} className={styles.subsectionRow}>
+                      <input
+                        type={'checkbox'}
+                        value={subsection._id}
+                        checked={subsection.items.some((item: ItemData) => item._id === itemData._id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            handleAddItem(e.target.value);
+                          }
+                          else {
+                            handleRemoveItem(e.target.value);
+                          }
+                        }}
+                      />
+                      <span> {subsection.name} </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+            :
+            <div>
+              {'No subsections available for this item type. \n Go to "Manage Sections" to create one.'}
+            </div>
+        }
       </div>
       <div id={styles.modalFooter}>
-        <button onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}> Done </button>
+        <button onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}> Done </button>
       </div>
     </div>
   )
