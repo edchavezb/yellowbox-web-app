@@ -13,11 +13,13 @@ interface BoxItemMenuProps {
 
 const BoxItemMenu = ({itemData, setIsOpen, toggleReordering, itemType}: BoxItemMenuProps) => {
   const dispatch = useAppDispatch();
-  const boxDetailViewing = useAppSelector(state => state.currentBoxDetailData.isUserViewing)
-  const isCustomSorting = useAppSelector(state => state.currentBoxDetailData.box.sectionSorting[`${itemType}s` as keyof SectionSorting].primarySorting === 'custom')
-  const { _id: boxId, notes } = useAppSelector(state => state.currentBoxDetailData.box)
+  const {isUserViewing: boxDetailViewing, box} = useAppSelector(state => state.currentBoxDetailData)
+  const isCustomSorting = boxDetailViewing ? 
+    box.sectionSorting[`${itemType}s` as keyof SectionSorting]?.primarySorting === 'custom'
+    : false;
+  const { _id: boxId, notes } = box || {};
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
-  const isOwner = !!userBoxes.find(box => box._id === boxId);
+  const isOwner = userBoxes.some(box => box._id === boxId);
   const { menuItemsList, menuItem } = styles;
 
   const handleAddToQueue = () => {
