@@ -1,9 +1,12 @@
 .topItem {
     display: flex;
     align-items: center;
-    width: 50%;
     box-sizing: border-box;
     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    gap: 12px;
+    max-width: 100%;
 }
 
 .itemImage {
@@ -12,9 +15,8 @@
 }
 
 .itemData {
-    margin-left: 12px;
+    overflow: hidden;
     flex-grow: 1;
-    max-width: calc(100% - 62px);
 }
 
 .artistName {
@@ -24,6 +26,7 @@
 
 .itemDataName {
     font-weight: bold;
+    min-width: 0;
 }
 
 .itemDataName, .itemDataArtist {
