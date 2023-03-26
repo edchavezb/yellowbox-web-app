@@ -207,7 +207,7 @@ function ItemDetail() {
 
   if (!isLoading) {
     return (
-      <div className="main-div">
+      <div className={styles.itemDetailContainer}>
         <div className={styles.itemDataViewer}>
           <img className={styles.itemImage} src={itemData.type === "track" ? (itemData as Track).album!.images[0].url : ((itemData as Album | Artist | Playlist).images![0].url || "https://via.placeholder.com/150")} alt={itemData.name}></img>
           <div className={styles.metadataContainer}>

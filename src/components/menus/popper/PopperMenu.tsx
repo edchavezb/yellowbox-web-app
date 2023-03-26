@@ -1,4 +1,4 @@
-import { Placement } from "@popperjs/core";
+import { Placement, State } from "@popperjs/core";
 import { ReactElement, RefObject, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
@@ -28,11 +28,12 @@ const PopperMenu = ({ referenceRef, placement, isOpen, setIsOpen, children }: Po
     containerEl = createWrapperAndAppendToBody();
   }
 
-  const { styles, attributes } = usePopper(
+  const { styles, attributes, update } = usePopper(
     referenceRef.current,
     popperRef.current,
     {
       placement: placement,
+      strategy: 'fixed',
       modifiers: [
         {
           name: "offset",
@@ -45,6 +46,10 @@ const PopperMenu = ({ referenceRef, placement, isOpen, setIsOpen, children }: Po
     }
   );
 
+  const updateTooltip = async (update: () => Promise<Partial<State>>) => {
+    return await update();
+  }
+
   useEffect(() => {
     // listen for clicks and close dropdown on body
     document.addEventListener("mousedown", handleDocumentClick);
@@ -53,8 +58,14 @@ const PopperMenu = ({ referenceRef, placement, isOpen, setIsOpen, children }: Po
     };
   }, []);
 
+  useEffect(() => {
+    if (update){
+      updateTooltip(update);
+    }
+  }, [isOpen]);
+
   function handleDocumentClick(event: MouseEvent) {
-    if (popperRef.current!.contains(event.target as Node)) {
+    if (popperRef.current?.contains(event.target as Node)) {
       return;
     }
     setIsOpen(false);

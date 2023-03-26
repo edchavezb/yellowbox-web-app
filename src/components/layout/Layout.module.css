@@ -2,7 +2,7 @@
     height: 100vh;
     display: grid;
     grid-template-columns: 200px auto;
-    grid-template-rows: 80px auto;
+    grid-template-rows: 80px calc(100vh - 80px);
     grid-template-areas: 
     "header header"
     "sidebar main"
@@ -11,7 +11,7 @@
 #headerWrapper {
     background-color: rgb(15, 15, 15);
     grid-area: header;
-    border-bottom: 1px solid gray
+    border-bottom: 1px solid gray;
 }
 
 #sideBar {
@@ -22,7 +22,6 @@
 #mainView {
     background-color: rgb(26, 26, 26);
     grid-area: main;
-    padding: 20px 30px;
     color: #ffffff;
     position: relative;
 }

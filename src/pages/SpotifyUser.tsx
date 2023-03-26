@@ -76,7 +76,7 @@ function SpotifyUser() {
   }
 
   return (
-    <div className="main-div">
+    <div className={styles.spotifyWrapper}>
       <h1> {spotifyLogin.userData.displayName.split(" ")[0]}'s Spotify dashboard </h1>
       {
         authToken && 

@@ -3,6 +3,11 @@
     z-index: 120;
 }
 
+.menuPanel[data-popper-reference-hidden="true"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .hidden {
     display: none;
 }

@@ -39,7 +39,7 @@ function Home({location}: RouteComponentProps) {
 
   if (!login.auth?.code){
     return (
-      <div className="main-div">
+      <div className={styles.homeContainer}>
         <h1> Please log in with one of your accounts </h1>
         <button className={styles.roundedButton} onClick={handleLogin}>
           <div className={styles.buttonContents}>
@@ -51,7 +51,7 @@ function Home({location}: RouteComponentProps) {
     );
   } else {
     return (
-      <div className="main-div">
+      <div className={styles.homeContainer}>
         <h1> Welcome {login.userData.displayName.split(" ")[0]} </h1>
         <h4> Use the search box to find your favorite music </h4>
       </div>

@@ -1,3 +1,10 @@
+.homeContainer {
+    height: 100%;
+    overflow-x: hidden;
+    padding: 20px 30px;
+    box-sizing: border-box;
+}
+
 .resultsContainer {
     display: flex;
     flex-wrap: wrap;
@@ -13,7 +20,7 @@
     border: 0px;
 }
 
-.buttonContents{
+.buttonContents {
     display: flex;
     align-items: center;
     gap: 6px;
