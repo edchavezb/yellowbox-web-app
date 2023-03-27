@@ -1,3 +1,4 @@
+import styles from "./Search.module.css"
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios'
@@ -108,7 +109,7 @@ function Search() {
   }
 
   return (
-    <div className="main-div">
+    <div className={styles.searchPage}>
       <h1> Is this what you're looking for? </h1>
       {searchData.artists.length > 0 && <SearchResults<Artist> type="Artists" data={searchData.artists.slice(0,12)}/>}
       {searchData.albums.length > 0 && <SearchResults<Album> type="Albums" data={searchData.albums.slice(0,12)}/>}
