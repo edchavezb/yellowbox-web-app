@@ -11,6 +11,10 @@
     background-color: rgb(48, 48, 48);
 }
 
+.dragHandle {
+    cursor: grab;
+}
+
 .spotifyIcon {
     width: 10px;
     margin-right: 3px;
