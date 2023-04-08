@@ -14,10 +14,9 @@ interface IProps {
   page: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
-  setIsReordering: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function ListRowPlaylist({ element, setElementDragging, index, page, reorderingMode, setIsReordering }: IProps) {
+function ListRowPlaylist({ element, setElementDragging, index, page, reorderingMode }: IProps) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -97,7 +96,7 @@ function ListRowPlaylist({ element, setElementDragging, index, page, reorderingM
           </div>
         </div>
         <PopperMenu referenceRef={playlistRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} toggleReordering={setIsReordering} itemType={element.type} />
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} />
         </PopperMenu>
       </>
   )

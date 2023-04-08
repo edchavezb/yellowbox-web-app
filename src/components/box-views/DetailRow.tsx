@@ -18,10 +18,9 @@ interface IProps<T> {
   page?: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
-  setIsReordering: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index, reorderingMode, setIsReordering }: IProps<T>) {
+function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index, reorderingMode }: IProps<T>) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const dispatch = useAppDispatch();
   const { name, type, uri, id } = element;
@@ -218,7 +217,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           </div>
         </div>
         <PopperMenu referenceRef={detailRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} toggleReordering={setIsReordering} itemType={element.type} />
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} />
         </PopperMenu>
       </>
   )

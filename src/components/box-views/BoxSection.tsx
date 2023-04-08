@@ -5,6 +5,10 @@ import styles from "./BoxSection.module.css";
 import { Album, Artist, Playlist, Sorting, Subsection, Track, UserBox } from 'core/types/interfaces';
 import { getItemProperty } from "core/helpers/getItemProperty";
 import { twoFactorSort } from 'core/helpers/twoFactorSort';
+import { useAppDispatch } from 'core/hooks/useAppDispatch';
+import { updateBoxSorting, updateBoxSortingThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
+import { useAppSelector } from 'core/hooks/useAppSelector';
+import { ARTIST_VIEW_MODES, VIEW_MODES } from 'core/constants/constants';
 
 interface IProps<T> {
   data: T[]
@@ -16,7 +20,10 @@ interface IProps<T> {
 }
 
 function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data, type, box, sorting, visible }: IProps<T>) {
+  const dispatch = useAppDispatch();
+  const boxSectionSorting = useAppSelector(state => state.currentBoxDetailData.box.sectionSorting)
   const [height, setHeight] = useState<string | number>("auto")
+  const [isReorderingMode, setIsReorderingMode] = useState(false)
   const sectionIconSrc = `/icons/${type.toLowerCase()}.svg`
   const sortedData = twoFactorSort<T>([...data], sorting.primarySorting, sorting.secondarySorting, sorting.ascendingOrder)
   const subSectionArray = box.subSections.filter(s => s.type === type.toLowerCase()).sort(
@@ -33,12 +40,56 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
     setHeight(heightProp)
   }, [visible])
 
+  const handleCycleViewMode = () => {
+    const viewModes = type === 'Artists' ? ARTIST_VIEW_MODES : VIEW_MODES;
+    const viewIndex = Object.keys(viewModes).indexOf(sorting.view);
+    const newIndex = viewIndex === Object.keys(viewModes).length - 1 ? 0 : viewIndex + 1
+    const newViewMode = viewModes[Object.keys(viewModes)[newIndex] as keyof typeof viewModes]
+    const updatedSorting = {
+      ...boxSectionSorting,
+      [type.toLowerCase()]: { ...sorting, view: newViewMode }
+    }
+    if (isOwner) {
+      dispatch(updateBoxSortingThunk(box._id, updatedSorting))
+    } else {
+      dispatch(updateBoxSorting(updatedSorting))
+    }
+  }
+
+  const handleToggleSubsections = () => {
+    const updatedSorting = {
+      ...boxSectionSorting,
+      [type.toLowerCase()]: { ...sorting, displaySubSections: !sorting.displaySubSections }
+    }
+    if (isOwner) {
+      dispatch(updateBoxSortingThunk(box._id, updatedSorting))
+    } else {
+      dispatch(updateBoxSorting(updatedSorting))
+    }
+  }
+
   return (
     <AnimateHeight duration={250} height={height}>
       <div className={styles.sectionPanel}>
         <div className={styles.sectionUtilities}>
-          <img className={styles.sectionIcon} src={sectionIconSrc} alt="Section icon"></img>
-          <span> {type} ({data.length}) </span>
+          <div className={styles.sectionDescriptor}>
+            <img className={styles.sectionIcon} src={sectionIconSrc} alt="Section icon"></img>
+            <span> {type} ({data.length}) </span>
+          </div>
+          <div className={styles.toggleButtonDashboard}>
+            <div className={styles.toggleButton} onClick={handleCycleViewMode}>
+              {`View as: ${sorting.view.slice(0, 1).toUpperCase()}${sorting.view.slice(1)}`}
+            </div>
+            <div className={styles.toggleButton} onClick={handleToggleSubsections}>
+              {`Show subsections: ${sorting.displaySubSections ? 'On' : 'Off'}`}
+            </div>
+            {
+              (sorting.primarySorting === 'custom' && isOwner) &&
+              <div className={styles.toggleButton} onClick={() => setIsReorderingMode(!isReorderingMode)}>
+                {`Reordering: ${isReorderingMode ? 'On' : 'Off'}`}
+              </div>
+            }
+          </div>
         </div>
 
         {sorting.displaySubSections || sorting.displayGrouping ?
@@ -56,6 +107,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
                   page="box"
                   customSorting={sorting.primarySorting === "custom"}
                   boxId={box._id}
+                  isReorderingMode={isReorderingMode}
                 />
               </div>
             }
@@ -77,6 +129,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
                     isDefault={false}
                     customSorting={sorting.primarySorting === "custom"}
                     boxId={box._id}
+                    isReorderingMode={isReorderingMode}
                   />
                 )
               })
@@ -98,6 +151,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
                     isDefault={false}
                     customSorting={sorting.primarySorting === "custom"}
                     boxId={box._id}
+                    isReorderingMode={isReorderingMode}
                   />
                 )
               })
@@ -114,6 +168,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
             page="box"
             customSorting={sorting.primarySorting === "custom"}
             boxId={box._id}
+            isReorderingMode={isReorderingMode}
           />
         }
 
