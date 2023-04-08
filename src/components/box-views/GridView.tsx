@@ -16,12 +16,12 @@ interface IProps<T> {
   customSorting?: boolean
   isDefaultSubSection?: boolean
   subId?: string
+  isReorderingMode?: boolean
 }
 
-function GridView<T extends Artist | Album | Track | Playlist>({ data, isOwner, page, boxId, customSorting, isDefaultSubSection, subId }: IProps<T>) {
+function GridView<T extends Artist | Album | Track | Playlist>({ data, isOwner, page, boxId, customSorting, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
-  const [isReorderingMode, setIsReorderingMode] = useState(false)
   const [elementDragging, setElementDragging] = useState(false)
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -54,7 +54,6 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isOwner, 
       {
         isOwner && isReorderingMode ?
           <>
-            <button onClick={() => setIsReorderingMode(false)} className={styles.doneButton}> Done Reordering </button>
             <DndContext
               collisionDetection={closestCenter}
               onDragEnd={handleDragEnd}>
@@ -70,7 +69,6 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isOwner, 
                         element={e}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
-                        setIsReordering={setIsReorderingMode}
                       />
                     )
                   })}
@@ -87,7 +85,6 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isOwner, 
                   element={e}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode}
-                  setIsReordering={setIsReorderingMode}
                 />
               )
             })}

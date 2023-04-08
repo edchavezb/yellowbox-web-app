@@ -13,10 +13,9 @@ interface IProps {
   page: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
-  setIsReordering: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function ListRowTrack({ element, setElementDragging, index, page, reorderingMode, setIsReordering }: IProps) {
+function ListRowTrack({ element, setElementDragging, index, page, reorderingMode }: IProps) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -119,7 +118,7 @@ function ListRowTrack({ element, setElementDragging, index, page, reorderingMode
           </div>
         </div>
         <PopperMenu referenceRef={trackRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} toggleReordering={setIsReordering} itemType={element.type} />
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} />
         </PopperMenu>
       </>
   )

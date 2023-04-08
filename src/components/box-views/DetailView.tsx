@@ -4,7 +4,7 @@ import { reorderBoxItemsThunk, reorderSubsectionItemsThunk } from 'core/features
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState } from 'react';
-import { Artist, Album, Track, Playlist } from "../../core/types/interfaces";
+import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 
 import DetailRow from './DetailRow';
 import styles from "./DetailView.module.css";
@@ -17,12 +17,12 @@ interface IProps<T> {
   customSorting: boolean
   isDefaultSubSection?: boolean
   subId?: string
+  isReorderingMode?: boolean
 }
 
-function DetailView<T extends Artist | Album | Track | Playlist>({ isOwner, data, page, boxId, isDefaultSubSection, subId }: IProps<T>) {
+function DetailView<T extends Artist | Album | Track | Playlist>({ isOwner, data, page, boxId, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
-  const [isReorderingMode, setIsReorderingMode] = useState(false)
   const [elementDragging, setElementDragging] = useState(false)
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -55,7 +55,6 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ isOwner, data
       {
         isOwner && isReorderingMode ?
           <>
-            <button onClick={() => setIsReorderingMode(false)}> Done Reordering </button>
             <DndContext
               collisionDetection={closestCenter}
               onDragEnd={handleDragEnd}>
@@ -72,7 +71,6 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ isOwner, data
                         element={e}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
-                        setIsReordering={setIsReorderingMode}
                       />
                     )
                   })}
@@ -89,8 +87,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ isOwner, data
                   index={data.indexOf(e)}
                   element={e}
                   setElementDragging={setElementDragging}
-                  reorderingMode={isReorderingMode}
-                  setIsReordering={setIsReorderingMode}
+                  reorderingMode={isReorderingMode ? isReorderingMode : false}
                 />
               )
             })}

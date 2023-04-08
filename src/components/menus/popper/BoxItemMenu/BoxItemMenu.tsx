@@ -7,16 +7,12 @@ import styles from "./BoxItemMenu.module.css";
 interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  toggleReordering?: React.Dispatch<React.SetStateAction<boolean>>
   itemType: string
 }
 
-const BoxItemMenu = ({itemData, setIsOpen, toggleReordering, itemType}: BoxItemMenuProps) => {
+const BoxItemMenu = ({itemData, setIsOpen, itemType}: BoxItemMenuProps) => {
   const dispatch = useAppDispatch();
   const {isUserViewing: boxDetailViewing, box} = useAppSelector(state => state.currentBoxDetailData)
-  const isCustomSorting = boxDetailViewing ? 
-    box.sectionSorting[`${itemType}s` as keyof SectionSorting]?.primarySorting === 'custom'
-    : false;
   const { _id: boxId, notes } = box || {};
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const isOwner = userBoxes.some(box => box._id === boxId);
@@ -63,14 +59,6 @@ const BoxItemMenu = ({itemData, setIsOpen, toggleReordering, itemType}: BoxItemM
           className={menuItem}
           onClick={() => handleOpenModal("Delete Item")}>
           Remove from this box
-        </div>
-      }
-      { 
-        (boxDetailViewing && isOwner && isCustomSorting) &&
-        <div 
-          className={menuItem}
-          onClick={() => toggleReordering!(true)}>
-          Reorder box items
         </div>
       }
       { 

@@ -4,10 +4,29 @@
 }
 
 .sectionUtilities {
+    margin-top: 5px;
     height: 35px;
     padding: 0px 5px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggleButtonDashboard {
+    display: flex;
+    gap: 5px;
+}
+
+.toggleButton {
+    cursor: pointer;
+    background-color: gray;
+    border-radius: 500px;
+    padding: 5px 8px;
+    font-size: .75em;
+}
+
+.sectionDescriptor {
+    display: flex;
     align-items: center;
 }
 

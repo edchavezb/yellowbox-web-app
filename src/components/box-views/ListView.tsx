@@ -18,13 +18,13 @@ interface IProps<T> {
   customSorting: boolean
   isDefaultSubSection?: boolean
   subId?: string
+  isReorderingMode?: boolean
 }
 
-function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, page, listType, isDefaultSubSection, subId }: IProps<T>) {
+function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, page, listType, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
-  const [isReorderingMode, setIsReorderingMode] = useState(false)
 
   const getListHeader = () => {
     let listHeader;
@@ -81,8 +81,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
             element={e as Track}
             page={page}
             setElementDragging={setElementDragging}
-            reorderingMode={isReorderingMode}
-            setIsReordering={setIsReorderingMode}
+            reorderingMode={isReorderingMode ? isReorderingMode : false}
           />
         break;
       case "albumlist":
@@ -93,8 +92,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
             element={e as Album}
             page={page}
             setElementDragging={setElementDragging}
-            reorderingMode={isReorderingMode}
-            setIsReordering={setIsReorderingMode}
+            reorderingMode={isReorderingMode ? isReorderingMode : false}
           />
         break;
       case "playlists":
@@ -105,8 +103,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
           element={e as Playlist} 
           page={page} 
           setElementDragging={setElementDragging} 
-          reorderingMode={isReorderingMode}
-          setIsReordering={setIsReorderingMode}
+          reorderingMode={isReorderingMode ? isReorderingMode : false}
         />
         break;
       default:
@@ -117,8 +114,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
             element={e as Track}
             page={page}
             setElementDragging={setElementDragging}
-            reorderingMode={isReorderingMode}
-            setIsReordering={setIsReorderingMode}
+            reorderingMode={isReorderingMode ? isReorderingMode : false}
           />
         break;
     }
@@ -155,7 +151,6 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
       {
         isOwner && isReorderingMode ?
           <>
-            <button onClick={() => setIsReorderingMode(false)}> Done Reordering </button>
             <DndContext
               collisionDetection={closestCenter}
               onDragEnd={handleDragEnd}>

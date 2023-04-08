@@ -15,9 +15,22 @@ interface IProps<T> {
   isOwner?: boolean
   customSorting: boolean
   page?: string
+  isReorderingMode?: boolean
 }
 
-function SubSection<T extends Artist | Album | Track | Playlist>({ itemsMatch, subName, subId, viewType, sectionType, boxId, isOwner, isDefault, page, customSorting }: IProps<T>) {
+function SubSection<T extends Artist | Album | Track | Playlist>({
+  itemsMatch,
+  subName,
+  subId,
+  viewType,
+  sectionType,
+  boxId,
+  isOwner,
+  isDefault,
+  page,
+  customSorting,
+  isReorderingMode
+}: IProps<T>) {
   const getListType = (sectionType: string) => {
     let listType;
     switch (sectionType) {
@@ -44,13 +57,13 @@ function SubSection<T extends Artist | Album | Track | Playlist>({ itemsMatch, s
     let sectionView: JSX.Element;
     switch (viewType) {
       case "grid":
-        sectionView = <GridView isOwner={isOwner} data={data} page={page} customSorting={isCustom} boxId={boxId} isDefaultSubSection={isDefault} subId={subId} />
+        sectionView = <GridView isOwner={isOwner} data={data} page={page} customSorting={isCustom} boxId={boxId} isDefaultSubSection={isDefault} subId={subId} isReorderingMode={isReorderingMode} />
         break;
       case "list":
-        sectionView = <ListView isOwner={isOwner} data={data} page={page} customSorting={isCustom} isDefaultSubSection={isDefault} listType={getListType(sectionType)} subId={subId} />
+        sectionView = <ListView isOwner={isOwner} data={data} page={page} customSorting={isCustom} isDefaultSubSection={isDefault} listType={getListType(sectionType)} subId={subId} isReorderingMode={isReorderingMode} />
         break;
       case "details":
-        sectionView = <DetailView isOwner={isOwner} data={data} page={page} customSorting={isCustom} boxId={boxId} isDefaultSubSection={isDefault} subId={subId}/>
+        sectionView = <DetailView isOwner={isOwner} data={data} page={page} customSorting={isCustom} boxId={boxId} isDefaultSubSection={isDefault} subId={subId} isReorderingMode={isReorderingMode} />
         break;
       default:
         sectionView = <div></div>
