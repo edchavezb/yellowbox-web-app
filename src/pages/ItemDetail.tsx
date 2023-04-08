@@ -20,11 +20,11 @@ type MusicData = Artist | Album | Track | Playlist;
 function ItemDetail() {
 
   const history = useHistory();
-  const params = useParams<{id: string, type: string}>()
+  const params = useParams<{ id: string, type: string }>()
   const [itemData, setItemData] = useState<MusicData>({} as MusicData)
   const [itemListType, setItemListType] = useState("")
   const [itemContents, setItemContents] = useState({ items: [] })
-  const [itemAlbum, setItemAlbum] = useState<Album>({name: "", release_date: "", album_id:"", album_type:"", artists: [], external_urls: {spotify: ""}, id:"", images: [], total_tracks:0, type:"album", uri:""} as Album)
+  const [itemAlbum, setItemAlbum] = useState<Album>({ name: "", release_date: "", album_id: "", album_type: "", artists: [], external_urls: { spotify: "" }, id: "", images: [], total_tracks: 0, type: "album", uri: "" } as Album)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
@@ -32,7 +32,7 @@ function ItemDetail() {
   }, [params.type, params.id, history.location.pathname]);
 
   useEffect(() => {
-    if (itemData.id !== undefined){
+    if (itemData.id !== undefined) {
       setIsLoading(false)
     }
   }, [itemData]);
@@ -140,7 +140,7 @@ function ItemDetail() {
 
   const getArtistLinks = (artists: Artist[]) => {
     const artistLinks = artists.slice(0, 3).map((artist, idx, arr) => {
-      return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx+1] ? ", " : ""}`} </span> </Link>;
+      return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
     })
 
     return artistLinks;
@@ -154,53 +154,55 @@ function ItemDetail() {
   }
 
   const getAlbumRunningTime = (tracks: Track[]) => {
-    const milliSecs = tracks.map(track => track.duration_ms).reduce((prev, curr) => {return prev + curr});
+    const milliSecs = tracks.map(track => track.duration_ms).reduce((prev, curr) => { return prev + curr });
     const minutes = Math.floor(milliSecs / 60000);
     const seconds = Math.floor((milliSecs % 60000) / 1000);
     return `${minutes} min, ${seconds} sec`
   }
 
   const attachAlbumDataToTracks = (parentItem: Album) => {
-    return parentItem.tracks!.items.map(e => ({'album': {
-      "album_type" : parentItem.album_type, 
-      "artists" : parentItem.artists, 
-      "external_urls" : parentItem.external_urls, 
-      "id" : parentItem.id,
-      'images': parentItem.images,
-      "name" : parentItem.name, 
-      "release_date" : parentItem.release_date, 
-      "type" : parentItem.type, 
-      "uri" : parentItem.uri
-    }, ...e}))
+    return parentItem.tracks!.items.map(e => ({
+      'album': {
+        "album_type": parentItem.album_type,
+        "artists": parentItem.artists,
+        "external_urls": parentItem.external_urls,
+        "id": parentItem.id,
+        'images': parentItem.images,
+        "name": parentItem.name,
+        "release_date": parentItem.release_date,
+        "type": parentItem.type,
+        "uri": parentItem.uri
+      }, ...e
+    }))
   }
 
   const getListComponent = () => {
     let listComponent;
-    switch (params.type){
-      case "album" :
-        listComponent = 
-        <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData as Album)} page="detail" customSorting={false} />
-      break;
-      case "playlist" :
-        listComponent = 
-        <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} />
-      break;
-      case "artist" :
-        listComponent = 
-        <GridView 
-          data={removeDuplicatesByProperty(itemContents.items, "name").filter((album: Album) => album.album_type !== 'compilation')} 
-          page="detail" 
-          customSorting={false} 
-          boxId={undefined} 
-        />
-      break;
-      case "track" :
-        listComponent = 
-        <TrackVisualizer data={itemData as Track} album={itemAlbum} page="detail" boxId={undefined}/>
-      break;
+    switch (params.type) {
+      case "album":
+        listComponent =
+          <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData as Album)} page="detail" customSorting={false} />
+        break;
+      case "playlist":
+        listComponent =
+          <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} />
+        break;
+      case "artist":
+        listComponent =
+          <GridView
+            data={removeDuplicatesByProperty(itemContents.items, "name").filter((album: Album) => album.album_type !== 'compilation')}
+            page="detail"
+            customSorting={false}
+            boxId={undefined}
+          />
+        break;
+      case "track":
+        listComponent =
+          <TrackVisualizer data={itemData as Track} album={itemAlbum} page="detail" boxId={undefined} />
+        break;
       default:
         listComponent = <div></div>
-      break;
+        break;
     }
     return listComponent;
   }
@@ -209,30 +211,42 @@ function ItemDetail() {
     return (
       <div className={styles.itemDetailContainer}>
         <div className={styles.itemDataViewer}>
-          <img className={styles.itemImage} src={itemData.type === "track" ? (itemData as Track).album!.images[0].url : ((itemData as Album | Artist | Playlist).images![0].url || "https://via.placeholder.com/150")} alt={itemData.name}></img>
+          <img
+            className={styles.itemImage}
+            src={
+              (
+                itemData.type === "track"
+                  ? (itemData as Track).album!.images[0]?.url
+                  : (itemData as Album | Artist | Playlist).images![0]?.url
+              )
+              || "https://via.placeholder.com/150"
+            }
+            alt={itemData.name}
+          >
+          </img>
           <div className={styles.metadataContainer}>
 
             <div className={styles.itemTitle}> {itemData.name} </div>
 
             {checkType.isArtist(itemData) ?
               <div className={styles.itemDetails}>
-                {itemData.genres && 
-                  itemData.genres.slice(0,3).map((genre, idx, arr) => {
-                  return (
-                    <span key={genre}>
-                        {genre.split(" ").map((word, i ,a) => {
-                          return `${word.charAt(0).toUpperCase()}${word.slice(1)}${a[i+1] ? " " : ""}`
-                        })}{arr[idx+1] ? ", " : ""}
-                    </span> 
-                  )
-                })}
+                {itemData.genres &&
+                  itemData.genres.slice(0, 3).map((genre, idx, arr) => {
+                    return (
+                      <span key={genre}>
+                        {genre.split(" ").map((word, i, a) => {
+                          return `${word.charAt(0).toUpperCase()}${word.slice(1)}${a[i + 1] ? " " : ""}`
+                        })}{arr[idx + 1] ? ", " : ""}
+                      </span>
+                    )
+                  })}
               </div>
               : ""
             }
 
             {checkType.isAlbum(itemData) ?
               <div className={styles.itemDetails}>
-                {`${itemData.album_type.charAt(0).toUpperCase()}${itemData.album_type.slice(1)}`}  
+                {`${itemData.album_type.charAt(0).toUpperCase()}${itemData.album_type.slice(1)}`}
                 {` by `}{getArtistLinks(itemData.artists)} |
                 {` ${itemData.release_date.split("-")[0]}`} |
                 {` ${itemData.total_tracks} tracks`} |
@@ -246,7 +260,7 @@ function ItemDetail() {
                 {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
                 {` by `}{getArtistLinks(itemData.artists)} |
                 {` ${itemData.album!.release_date.split("-")[0]}`} |
-                {` ${Math.floor(itemData.duration_ms/60000)}`.padStart(2,"0")+":"+`${Math.floor(itemData.duration_ms%60000/1000)}`.padStart(2,"0")}
+                {` ${Math.floor(itemData.duration_ms / 60000)}`.padStart(2, "0") + ":" + `${Math.floor(itemData.duration_ms % 60000 / 1000)}`.padStart(2, "0")}
               </div>
               : ""
             }
