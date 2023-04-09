@@ -74,7 +74,8 @@ function AddToBoxMenu({page, itemData, boxId}: IProps) {
       }
       case "playlist" : {
         const {description, external_urls, id, images, name, owner, tracks, type, uri} = data as Playlist
-        extractedData = {description, external_urls, id, images, name, owner, tracks, type, uri, subSectionCount: 0}
+        const {items, ...tracksData} = tracks
+        extractedData = {description, external_urls, id, images, name, owner, tracks: tracksData, type, uri, subSectionCount: 0}
       break;
       }
       default :
