@@ -140,7 +140,7 @@ function SideBar({user, login}: IProps) {
                   onDragLeave={(e) => handleDragLeave(e)}
                   onDragOver={(e) => handleDragOver(e)}
                   onDrop={(e) => handleDrop(e)}>
-                    <span> {box.name} </span>
+                    <div className={styles.boxName}> {box.name} </div>
                 </div>
               )
             })}

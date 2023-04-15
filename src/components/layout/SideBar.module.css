@@ -29,11 +29,21 @@
     padding: 0px 10px;
 }
 
+#boxList {
+    width: 100%;
+}
+
 .boxLink {
-    display: block;
     margin: 4px 0px;
     text-decoration: none;
     cursor: pointer;
+}
+
+.boxName {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .boxLink, .boxLink:link:active:visited {
