@@ -9,6 +9,7 @@ import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { updateBoxSorting, updateBoxSortingThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { ARTIST_VIEW_MODES, VIEW_MODES } from 'core/constants/constants';
+import { setModalState } from 'core/features/modal/modalSlice';
 
 interface IProps<T> {
   data: T[]
@@ -68,6 +69,10 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
     }
   }
 
+  const handleOpenSortingMenu = () => {
+    dispatch(setModalState({ visible: true, type: "Sorting Options", boxId: box._id, page: "Box" }))
+  }
+
   return (
     <AnimateHeight duration={250} height={height}>
       <div className={styles.sectionPanel}>
@@ -78,10 +83,13 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ isOwner, data
           </div>
           <div className={styles.toggleButtonDashboard}>
             <div className={styles.toggleButton} onClick={handleCycleViewMode}>
-              {`View as: ${sorting.view.slice(0, 1).toUpperCase()}${sorting.view.slice(1)}`}
+              {`View as: ${sorting.view?.slice(0, 1).toUpperCase()}${sorting.view?.slice(1)}`}
             </div>
             <div className={styles.toggleButton} onClick={handleToggleSubsections}>
               {`Show subsections: ${sorting.displaySubSections ? 'On' : 'Off'}`}
+            </div>
+            <div className={styles.toggleButton} onClick={handleOpenSortingMenu}>
+              {`Sort by: ${sorting.primarySorting?.slice(0, 1).toUpperCase()}${sorting.primarySorting?.slice(1)}`}
             </div>
             {
               (sorting.primarySorting === 'custom' && isOwner) &&
