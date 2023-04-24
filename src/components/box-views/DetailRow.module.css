@@ -3,8 +3,9 @@
     padding: 0px 10px;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [image] .5fr [data] 2fr [notes] 1.8fr [options] 30px;
+    grid-template-columns: 30px 150px 2fr 1.8fr 30px;
     align-items: center;
+    overflow: hidden;
 }
 
 .itemRow:hover {
@@ -24,16 +25,31 @@
     text-align: center;
 }
 
-.colLeftAlgn {
-    text-align: left;
+.itemPosition {
+    display: flex;
+    justify-content: center;
 }
 
 
 .imageContainer {
     position: relative;
     width: 100%;
-    padding-top: 100%;
+    height: 100%;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.itemLink {
+    position: relative;
+    width: 85%;
+    height: 85%;
+}
+
+.itemImage {
+    width: 100%;
+    z-index: 50;
 }
 
 .instantPlay {
@@ -46,8 +62,8 @@
     border-radius: 5000px;
     background-color: #282c34CC;
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 3px;
+    right: 3px;
     z-index: 100;
     cursor: pointer;
     font-size: .7em;
@@ -66,13 +82,6 @@
     margin-right: 3px;
 }
 
-.itemImage {
-    width: 100%;
-    position: absolute;
-    top: 0;
-    z-index: 50;
-}
-
 .itemMenu {
     width: 20px;
     height: 20px;
@@ -86,6 +95,7 @@
 
 .dataCol {
     height: 100%;
+    overflow: hidden;
     padding: 0px 5px;
     display: flex;
     flex-direction: column;
@@ -122,7 +132,8 @@
     display: inline;
 }
 
-.metaDataContainer{
+.metaDataContainer {
+    max-width: 100%;
     margin-top: 10px;
     display: flex;
     column-gap: 3px;
@@ -132,12 +143,16 @@
 
 .metaDataPill {
     height: 22px;
+    max-width: 100%;
     font-size: .8em;
     border-radius: 500px;
     padding: 0px 8px;
     background-color: #1a1a1a;
     line-height: 22px;
     vertical-align: bottom;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .playlistDesc {
@@ -150,6 +165,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 .notesPanel {
@@ -161,21 +177,12 @@
     box-sizing: border-box;
     cursor: pointer;
     position: relative;
+    overflow: hidden;
 }
 
 .notesTitle {
     font-size: .7em;
     letter-spacing: 1.5px;
-}
-
-.notesEditor {
-    margin-top: 5px;
-    width: 100%;
-    resize: none;
-    background-color: rgb(61, 61, 61);
-    border: 0px;
-    caret-color: #ffffff;
-    color: #ffffff;
 }
 
 .notesOverlay {
@@ -204,4 +211,10 @@
 .notesDisplay {
     padding-top: 5px;
     font-size: .8em;
+    overflow: hidden;
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
 }

@@ -112,10 +112,10 @@ function ItemNote({ itemData, boxId }: IProps) {
                     setIsEditorEnabled(true);
                   }
                 }}>
-                <p className={styles.noteText}>
+                <div className={styles.noteText}>
                   {editorNote
                     || (isOwner ? 'Click here to write a note' : '')}
-                </p>
+                </div>
               </div>
           }
           {
@@ -126,10 +126,13 @@ function ItemNote({ itemData, boxId }: IProps) {
           }
         </div>
       </div>
-      <div id={styles.modalFooter}>
-        <button onClick={saveNoteHandler} disabled={!itemNote?.noteText && !editorNote}> Save changes </button>
-        <button onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}> Cancel </button>
-      </div>
+      {
+        isOwner &&
+        <div id={styles.modalFooter}>
+          <button onClick={saveNoteHandler} disabled={!itemNote?.noteText && !editorNote}> Save changes </button>
+          <button onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}> Cancel </button>
+        </div>
+      }
     </div>
   )
 }

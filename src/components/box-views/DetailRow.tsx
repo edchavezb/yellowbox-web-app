@@ -175,15 +175,15 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
       :
       <>
         <div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
-          <div className={styles.colLeftAlgn}>{index + 1}</div>
+          <div className={styles.itemPosition}>{index + 1}</div>
           <div className={styles.imageContainer}>
-            <a href={`${uri}:play`}>
-              <div className={styles.instantPlay}>
-                <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-                {type === "track" ? <span> Play </span> : <span> Open </span>}
-              </div>
-            </a>
-            <Link to={`/detail/${type}/${id}`}>
+            <Link to={`/detail/${type}/${id}`}  className={styles.itemLink} draggable="false">
+              <a href={`${uri}:play`}>
+                <div className={styles.instantPlay}>
+                  <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
+                  {type === "track" ? <span> Play </span> : <span> Open </span>}
+                </div>
+              </a>
               <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
             </Link>
           </div>

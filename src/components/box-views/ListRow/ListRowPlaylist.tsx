@@ -81,7 +81,7 @@ function ListRowPlaylist({ element, setElementDragging, index, page, reorderingM
             {tracks.total}
           </div>
           <div className={styles.colLeftAlgn}>
-            <Link to={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></Link>
+            <Link to={owner.uri}><div className={styles.ownerName}> {owner.display_name} </div></Link>
           </div>
           <div className={styles.colCentered}>
             <a href={`${uri}:play`}>

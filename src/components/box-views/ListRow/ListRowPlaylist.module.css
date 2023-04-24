@@ -50,12 +50,9 @@
     text-overflow: ellipsis;
 }
 
-.name, .artistName {
+.name, .ownerName {
     overflow: hidden;
-    word-wrap: break-word;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     text-overflow: ellipsis;
 }
 
