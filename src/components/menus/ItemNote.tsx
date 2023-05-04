@@ -6,25 +6,33 @@ import { Album, Artist, ItemImage, Playlist, Track } from "../../core/types/inte
 import * as checkType from "../../core/helpers/typeguards";
 import styles from "./ItemNote.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
+import PopperMenu from "./popper/PopperMenu";
+import AddNoteContextMenu from "./popper/AddNoteContextMenu/AddNoteContextMenu";
 
 type MusicData = Artist | Album | Track | Playlist;
 
 interface IProps {
   boxId: string
   itemData: MusicData
+  subId?: string
 }
 
-function ItemNote({ itemData, boxId }: IProps) {
+function ItemNote({ itemData, boxId, subId }: IProps) {
   const dispatch = useAppDispatch();
   const { name, id } = itemData;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const isOwner = userBoxes.some(box => box._id === currentBox._id);
-  const boxNotes = currentBox.notes;
-  const itemNote = boxNotes.find(note => note.itemId === id)
+  const itemNotes = currentBox.notes.filter(note => note.itemId === id);
+  const subSectionsWithItem = currentBox.subSections.filter(subSection => subSection.items.some(item => item.id === id))
+  const subSectionsWithItemNote = itemNotes.filter(note => note.subSectionId).map(note => note.subSectionId);
+  const subSectionsWithoutItemNote = subSectionsWithItem.filter(subSection => !subSectionsWithItemNote.includes(subSection._id));
+  const [currentSubSection, setCurrentSubSection] = useState(subId && subSectionsWithItemNote.includes(subId) ? subId : "")
+  const [editorNote, setEditorNote] = useState("");
   const [isEditorEnabled, setIsEditorEnabled] = useState(false);
-  const [editorNote, setEditorNote] = useState(itemNote?.noteText);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
+  const menuButtonRef = useRef(null);
 
   useEffect(() => {
     document.addEventListener('mousedown', isClickOutsideEditor)
@@ -39,6 +47,12 @@ function ItemNote({ itemData, boxId }: IProps) {
     }
   }, [isEditorEnabled])
 
+  useEffect(() => {
+    setEditorNote(
+      currentSubSection ? itemNotes.find(note => note.subSectionId === currentSubSection)?.noteText! : itemNotes.find(note => !note.subSectionId)?.noteText!
+    )
+  }, [currentSubSection])
+
   const isClickOutsideEditor = (e: MouseEvent) => {
     if (editorRef.current && !editorRef.current.contains(e.target as Node)) {
       setIsEditorEnabled(false);
@@ -46,11 +60,12 @@ function ItemNote({ itemData, boxId }: IProps) {
   }
 
   const saveNoteHandler = () => {
-    if (itemNote) {
-      dispatch(updateItemNoteThunk(boxId, itemData.id!, editorNote!));
+    if (itemNotes.length) {
+      const currentNoteId = itemNotes.find(note => note.subSectionId === currentSubSection)?._id;
+      dispatch(updateItemNoteThunk(boxId, currentNoteId!, editorNote!));
     }
     else {
-      dispatch(addNoteToBoxThunk(boxId, itemData.id!, editorNote || ""));
+      dispatch(addNoteToBoxThunk(boxId, itemData.id!, editorNote || "", subId));
     }
     dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))
   }
@@ -95,6 +110,25 @@ function ItemNote({ itemData, boxId }: IProps) {
           <div className={styles.author}>
             {authorName}
           </div>
+          <div className={styles.subSectionSelect}>
+            <div className={!currentSubSection ? styles.subSectionPillSelected : styles.subSectionPill} onClick={() => setCurrentSubSection('')}>{'General'}</div>
+            {
+              subSectionsWithItemNote.map(subSection => {
+                const { name, _id: subSectionId } = currentBox.subSections.find(sub => sub._id === subSection)!
+                return (
+                  <div className={currentSubSection === subSectionId ? styles.subSectionPillSelected : styles.subSectionPill} onClick={() => setCurrentSubSection(subSectionId!)}>
+                    {name}
+                  </div>
+                )
+              })
+            }
+            {
+              (!!subSectionsWithoutItemNote.length && isOwner) &&
+              <div className={styles.addButton} onClick={() => setIsMenuOpen(true)} ref={menuButtonRef}>
+                <img id={styles.plusIcon} src="/icons/plus_white.svg" alt="new box"></img>
+              </div>
+            }
+          </div>
           {
             isEditorEnabled ?
               <textarea
@@ -129,10 +163,13 @@ function ItemNote({ itemData, boxId }: IProps) {
       {
         isOwner &&
         <div id={styles.modalFooter}>
-          <button onClick={saveNoteHandler} disabled={!itemNote?.noteText && !editorNote}> Save changes </button>
+          <button onClick={saveNoteHandler} disabled={itemNotes.find(note => note.subSectionId === currentSubSection)?.noteText === editorNote || !editorNote}> Save changes </button>
           <button onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}> Cancel </button>
         </div>
       }
+      <PopperMenu referenceRef={menuButtonRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
+        <AddNoteContextMenu setIsOpen={setIsMenuOpen} subSections={subSectionsWithoutItemNote} item={itemData} />
+      </PopperMenu>
     </div>
   )
 }

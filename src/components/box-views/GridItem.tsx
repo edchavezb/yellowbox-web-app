@@ -11,10 +11,11 @@ import { CSS } from '@dnd-kit/utilities';
 interface IProps<T> {
   element: T
   setElementDragging: (dragging: boolean) => void
-  reorderingMode?: boolean
+  reorderingMode?: boolean,
+  subId?: string
 }
 
-function GridItem<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, reorderingMode }: IProps<T>) {
+function GridItem<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, reorderingMode, subId }: IProps<T>) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const gridItemRef = useRef(null);
   const { name, type, uri, id } = element;
@@ -106,7 +107,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, setEle
           {authorName}
         </div>
         <PopperMenu referenceRef={gridItemRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={type} />
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={type} subId={subId}/>
         </PopperMenu>
       </>
   )

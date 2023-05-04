@@ -82,6 +82,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
             page={page}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
+            subId={subId}
           />
         break;
       case "albumlist":
@@ -93,6 +94,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
             page={page}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
+            subId={subId}
           />
         break;
       case "playlists":
@@ -104,6 +106,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
           page={page} 
           setElementDragging={setElementDragging} 
           reorderingMode={isReorderingMode ? isReorderingMode : false}
+          subId={subId}
         />
         break;
       default:
@@ -115,6 +118,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
             page={page}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
+            subId={subId}
           />
         break;
     }

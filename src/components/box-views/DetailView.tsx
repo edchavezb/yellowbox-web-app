@@ -71,6 +71,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ isOwner, data
                         element={e}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
+                        subId={subId}
                       />
                     )
                   })}
@@ -88,6 +89,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ isOwner, data
                   element={e}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode ? isReorderingMode : false}
+                  subId={subId}
                 />
               )
             })}

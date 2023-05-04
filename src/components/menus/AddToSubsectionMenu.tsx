@@ -19,7 +19,7 @@ function AddToSubsectionMenu({ itemData }: IProps) {
   }
 
   const handleRemoveItem = (subsectionId: string) => {
-    dispatch(removeItemFromSubsectionThunk(currentBox._id, `${itemData.type}s` as BoxSections, subsectionId, itemData._id!))
+    dispatch(removeItemFromSubsectionThunk(currentBox._id, `${itemData.type}s` as BoxSections, subsectionId, itemData._id!, itemData.id))
   }
 
   return (
@@ -38,7 +38,7 @@ function AddToSubsectionMenu({ itemData }: IProps) {
                       <input
                         type={'checkbox'}
                         value={subsection._id}
-                        checked={subsection.items.some((item: ItemData) => item._id === itemData._id)}
+                        checked={subsection.items.some((item: ItemData) => item.id === itemData.id)}
                         onChange={(e) => {
                           if (e.target.checked) {
                             handleAddItem(e.target.value);

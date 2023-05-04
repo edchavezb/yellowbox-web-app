@@ -18,16 +18,17 @@ interface IProps<T> {
   page?: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
+  subId?: string
 }
 
-function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index, reorderingMode }: IProps<T>) {
+function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index, reorderingMode, subId }: IProps<T>) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const dispatch = useAppDispatch();
   const { name, type, uri, id } = element;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
   const isOwner = userBoxes.some(box => box._id === currentBox._id);
-  const itemNote = currentBox.notes.find(note => note.itemId === id)
+  const itemNote = currentBox.notes.find(note => note.itemId === id && note.subSectionId === subId) || currentBox.notes.find(note => note.itemId === id && !note.subSectionId)
   const detailRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const draggableStyle = {
@@ -200,7 +201,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
             {metadata}
           </div>
           <div className={styles.notesCol}>
-            <div className={styles.notesPanel} onClick={() => dispatch(setModalState({ visible: true, type: "Item Note", boxId: currentBox._id, page: "", itemData: element }))}>
+            <div className={styles.notesPanel} onClick={() => dispatch(setModalState({ visible: true, type: "Item Note", boxId: currentBox._id, page: "", subId, itemData: element }))}>
               <div className={styles.notesTitle}> NOTES </div>
               <div className={styles.notesDisplay}>
                 {itemNote?.noteText}
@@ -217,7 +218,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           </div>
         </div>
         <PopperMenu referenceRef={detailRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} />
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId}/>
         </PopperMenu>
       </>
   )

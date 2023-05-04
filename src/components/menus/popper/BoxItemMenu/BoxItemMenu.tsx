@@ -8,9 +8,10 @@ interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   itemType: string
+  subId?: string
 }
 
-const BoxItemMenu = ({itemData, setIsOpen, itemType}: BoxItemMenuProps) => {
+const BoxItemMenu = ({itemData, setIsOpen, itemType, subId}: BoxItemMenuProps) => {
   const dispatch = useAppDispatch();
   const {isUserViewing: boxDetailViewing, box} = useAppSelector(state => state.currentBoxDetailData)
   const { _id: boxId, notes } = box || {};
@@ -24,7 +25,7 @@ const BoxItemMenu = ({itemData, setIsOpen, itemType}: BoxItemMenuProps) => {
 
   const handleOpenModal = (modalType: ModalType) => {
     dispatch(setModalState({
-      visible: true, type: modalType, page: "", boxId, itemData
+      visible: true, type: modalType, page: "", boxId, subId, itemData
     }))
     setIsOpen(false);
   }

@@ -13,9 +13,10 @@ interface IProps {
   page: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
+  subId?: string
 }
 
-function ListRowTrack({ element, setElementDragging, index, page, reorderingMode }: IProps) {
+function ListRowTrack({ element, setElementDragging, index, page, reorderingMode, subId }: IProps) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -118,7 +119,7 @@ function ListRowTrack({ element, setElementDragging, index, page, reorderingMode
           </div>
         </div>
         <PopperMenu referenceRef={trackRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} />
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId}/>
         </PopperMenu>
       </>
   )
