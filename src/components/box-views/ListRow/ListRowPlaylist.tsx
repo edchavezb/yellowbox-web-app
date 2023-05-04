@@ -14,9 +14,10 @@ interface IProps {
   page: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
+  subId?: string
 }
 
-function ListRowPlaylist({ element, setElementDragging, index, page, reorderingMode }: IProps) {
+function ListRowPlaylist({ element, setElementDragging, index, page, reorderingMode, subId }: IProps) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -96,7 +97,7 @@ function ListRowPlaylist({ element, setElementDragging, index, page, reorderingM
           </div>
         </div>
         <PopperMenu referenceRef={playlistRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} />
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId}/>
         </PopperMenu>
       </>
   )

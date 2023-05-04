@@ -138,9 +138,9 @@ export const removeBoxPlaylistThunk = (boxId: string, itemId: string): AppThunk 
     }
 }
 
-export const addNoteToBoxThunk = (boxId: string, itemId: string, noteText: string): AppThunk => async (dispatch) => {
+export const addNoteToBoxThunk = (boxId: string, spotifyId: string, noteText: string, subSectionId?: string): AppThunk => async (dispatch) => {
     try {
-        const noteObj = {itemId, noteText}
+        const noteObj = {itemId: spotifyId, noteText, subSectionId}
         const updatedNotes = await addNoteToBoxApi(boxId, noteObj);
         dispatch(updateBoxNotes(updatedNotes!))
     } catch (err) {
@@ -148,10 +148,10 @@ export const addNoteToBoxThunk = (boxId: string, itemId: string, noteText: strin
     }
 }
 
-export const updateItemNoteThunk = (boxId: string, itemId: string, noteText: string): AppThunk => async (dispatch) => {
+export const updateItemNoteThunk = (boxId: string, noteId: string, noteText: string): AppThunk => async (dispatch) => {
     try {
         const noteObj = {noteText}
-        const updatedNotes = await updateItemNoteApi(boxId, itemId, noteObj);
+        const updatedNotes = await updateItemNoteApi(boxId, noteId, noteObj);
         dispatch(updateBoxNotes(updatedNotes!))
     } catch (err) {
         console.log(err)
@@ -233,22 +233,23 @@ export const reorderSubsectionsThunk = (boxId: string, subSections: Subsection[]
 
 export const addItemToSubsectionThunk = (boxId: string, type: BoxSections, subsectionId: string, itemData: ItemData): AppThunk => async (dispatch) => {
     try {
+        const {_id, ...itemFields} = itemData
         let response: UserBox | null = null;
         switch(type){
             case 'artists':
-                response = await addArtistToSubsectionApi(boxId, itemData._id!, subsectionId, itemData as Artist) as UserBox
+                response = await addArtistToSubsectionApi(boxId, itemData._id!, subsectionId, itemFields as Artist) as UserBox
                 dispatch(updateBoxArtists({updatedArtists: response.artists!}))
             break;
             case 'albums':
-                response = await addAlbumToSubsectionApi(boxId, itemData._id!, subsectionId, itemData as Album) as UserBox
+                response = await addAlbumToSubsectionApi(boxId, itemData._id!, subsectionId, itemFields as Album) as UserBox
                 dispatch(updateBoxAlbums({updatedAlbums: response.albums!}))
             break;
             case 'tracks':
-                response = await addTrackToSubsectionApi(boxId, itemData._id!, subsectionId, itemData as Track) as UserBox
+                response = await addTrackToSubsectionApi(boxId, itemData._id!, subsectionId, itemFields as Track) as UserBox
                 dispatch(updateBoxTracks({updatedTracks: response.tracks!}))
             break;
             case 'playlists':
-                response = await addPlaylistToSubsectionApi(boxId, itemData._id!, subsectionId, itemData as Playlist) as UserBox
+                response = await addPlaylistToSubsectionApi(boxId, itemData._id!, subsectionId, itemFields as Playlist) as UserBox
                 dispatch(updateBoxPlaylists({updatedPlaylists: response.playlists!}))
             break;
             default:
@@ -262,24 +263,24 @@ export const addItemToSubsectionThunk = (boxId: string, type: BoxSections, subse
     }
 }
 
-export const removeItemFromSubsectionThunk = (boxId: string, type: BoxSections, subsectionId: string, itemId: string): AppThunk => async (dispatch) => {
+export const removeItemFromSubsectionThunk = (boxId: string, type: BoxSections, subsectionId: string, itemId: string, spotifyId: string): AppThunk => async (dispatch) => {
     try {
         let response: UserBox | null = null;
         switch(type){
             case 'artists':
-                response = await removeArtistFromSubsectionApi(boxId, itemId, subsectionId) as UserBox
+                response = await removeArtistFromSubsectionApi(boxId, itemId, spotifyId, subsectionId) as UserBox
                 dispatch(updateBoxArtists({updatedArtists: response.artists!}))
             break;
             case 'albums':
-                response = await removeAlbumFromSubsectionApi(boxId, itemId, subsectionId) as UserBox
+                response = await removeAlbumFromSubsectionApi(boxId, itemId, spotifyId, subsectionId) as UserBox
                 dispatch(updateBoxAlbums({updatedAlbums: response.albums!}))
             break;
             case 'tracks':
-                response = await removeTrackFromSubsectionApi(boxId, itemId, subsectionId) as UserBox
+                response = await removeTrackFromSubsectionApi(boxId, itemId, spotifyId, subsectionId) as UserBox
                 dispatch(updateBoxTracks({updatedTracks: response.tracks!}))
             break;
             case 'playlists':
-                response = await removePlaylistFromSubsectionApi(boxId, itemId, subsectionId) as UserBox
+                response = await removePlaylistFromSubsectionApi(boxId, itemId, spotifyId, subsectionId) as UserBox
                 dispatch(updateBoxPlaylists({updatedPlaylists: response.playlists!}))
             break;
             default:

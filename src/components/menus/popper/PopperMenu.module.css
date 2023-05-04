@@ -1,6 +1,6 @@
 .menuPanel {
     display: flex;
-    z-index: 120;
+    z-index: 1100;
 }
 
 .menuPanel[data-popper-reference-hidden="true"] {

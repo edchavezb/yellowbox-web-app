@@ -41,7 +41,7 @@ export interface UserBox {
   sectionSorting: SectionSorting
   sectionVisibility: Visibility
   subSections: Subsection[]
-  notes: {itemId: string, noteText: string}[]
+  notes: {_id: string, itemId: string, noteText: string, subSectionId?: string}[]
 }
 
 export interface SectionSorting {

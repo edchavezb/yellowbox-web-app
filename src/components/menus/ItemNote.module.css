@@ -89,3 +89,48 @@
     text-align: end;
     font-size: .8em;
 }
+
+.subSectionSelect {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.subSectionPill {
+    background-color: gray;
+    font-size: .8em;
+    height: 22px;
+    border-radius: 500px;
+    padding: 0px 8px;
+    line-height: 22px;
+    cursor: pointer;
+}
+
+.subSectionPillSelected {
+    box-sizing: border-box;
+    background-color: gray;
+    font-size: .8em;
+    height: 22px;
+    border-radius: 500px;
+    padding: 0px 8px;
+    line-height: 20px;
+    cursor: pointer;
+    border: 1px solid #ffffff;
+}
+
+.addButton {
+    box-sizing: border-box;
+    height: 22px;
+    width: 22px;
+    border-radius: 50%;
+    background-color: gray;
+    font-size: .8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#plusIcon {
+    width: 50%
+}

@@ -93,10 +93,11 @@ export const addArtistToSubsectionApi = async (boxId: string, itemId: string, su
     }
 }
 
-export const removeArtistFromSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+export const removeArtistFromSubsectionApi = async (boxId: string, itemId: string, spotifyId: string, subsectionId: string) => {
     try {
-        return await api.put<{subsectionId: string}, UserBox>(`boxes/${boxId}/artists/${itemId}/subsection/remove`, {
-            subsectionId
+        return await api.put<{subsectionId: string, spotifyId: string}, UserBox>(`boxes/${boxId}/artists/${itemId}/subsection/remove`, {
+            subsectionId,
+            spotifyId
         })
     }
     catch(err) {
@@ -125,10 +126,11 @@ export const addAlbumToSubsectionApi = async (boxId: string, itemId: string, sub
     }
 }
 
-export const removeAlbumFromSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+export const removeAlbumFromSubsectionApi = async (boxId: string, itemId: string, spotifyId: string, subsectionId: string) => {
     try {
-        return await api.put<{subsectionId: string}, UserBox>(`boxes/${boxId}/albums/${itemId}/subsection/remove`, {
-            subsectionId
+        return await api.put<{subsectionId: string, spotifyId: string}, UserBox>(`boxes/${boxId}/albums/${itemId}/subsection/remove`, {
+            subsectionId,
+            spotifyId
         })
     }
     catch(err) {
@@ -157,10 +159,11 @@ export const addTrackToSubsectionApi = async (boxId: string, itemId: string, sub
     }
 }
 
-export const removeTrackFromSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+export const removeTrackFromSubsectionApi = async (boxId: string, itemId: string, spotifyId: string, subsectionId: string) => {
     try {
-        return await api.put<{subsectionId: string}, UserBox>(`boxes/${boxId}/tracks/${itemId}/subsection/remove`, {
-            subsectionId
+        return await api.put<{subsectionId: string, spotifyId: string}, UserBox>(`boxes/${boxId}/tracks/${itemId}/subsection/remove`, {
+            subsectionId,
+            spotifyId
         })
     }
     catch(err) {
@@ -189,10 +192,11 @@ export const addPlaylistToSubsectionApi = async (boxId: string, itemId: string, 
     }
 }
 
-export const removePlaylistFromSubsectionApi = async (boxId: string, itemId: string, subsectionId: string) => {
+export const removePlaylistFromSubsectionApi = async (boxId: string, itemId: string, spotifyId: string, subsectionId: string) => {
     try {
-        return await api.put<{subsectionId: string}, UserBox>(`boxes/${boxId}/playlist/${itemId}/subsection/remove`, {
-            subsectionId
+        return await api.put<{subsectionId: string, spotifyId: string}, UserBox>(`boxes/${boxId}/playlist/${itemId}/subsection/remove`, {
+            subsectionId,
+            spotifyId
         })
     }
     catch(err) {
@@ -218,18 +222,18 @@ export const updateBoxSortingApi = async (boxId: string, updatedSorting: Section
     }
 }
 
-export const addNoteToBoxApi = async (boxId: string, noteObj: {itemId: string, noteText: string}) => {
+export const addNoteToBoxApi = async (boxId: string, noteObj: {itemId: string, subSectionId?: string, noteText: string}) => {
     try {
-        return await api.post<{itemId: string, noteText: string}, UserBox['notes']>(`boxes/${boxId}/notes`, noteObj)
+        return await api.post<{itemId: string, subSectionId?: string, noteText: string}, UserBox['notes']>(`boxes/${boxId}/notes`, noteObj)
     }
     catch(err) {
         console.log(err)
     }
 }
 
-export const updateItemNoteApi = async (boxId: string, itemId: string, noteObj: {noteText: string}) => {
+export const updateItemNoteApi = async (boxId: string, noteId: string, noteObj: {noteText: string}) => {
     try {
-        return await api.put<{noteText: string}, UserBox['notes']>(`boxes/${boxId}/notes/${itemId}`, noteObj)
+        return await api.put<{noteText: string}, UserBox['notes']>(`boxes/${boxId}/notes/${noteId}`, noteObj)
     }
     catch(err) {
         console.log(err)

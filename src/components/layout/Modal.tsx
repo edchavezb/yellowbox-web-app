@@ -38,7 +38,7 @@ function Modal() {
       modalBody = <AddToSubsectionMenu itemData={modalData.itemData!}/>
     break;
     case "Item Note" :
-      modalBody = <ItemNote boxId={modalData.boxId} itemData={modalData.itemData!} />
+      modalBody = <ItemNote boxId={modalData.boxId} itemData={modalData.itemData!} subId={modalData.subId} />
     break;
     case "Box Subsections" :
       modalBody = <SubsectionsMenu />

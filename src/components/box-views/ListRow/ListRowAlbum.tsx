@@ -14,9 +14,10 @@ interface IProps {
   page: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
+  subId?: string
 }
 
-function ListRowAlbum({ element, setElementDragging, index, page, reorderingMode }: IProps) {
+function ListRowAlbum({ element, setElementDragging, index, page, reorderingMode, subId }: IProps) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -104,7 +105,7 @@ function ListRowAlbum({ element, setElementDragging, index, page, reorderingMode
           </div>
         </div>
         <PopperMenu referenceRef={albumRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} />
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId}/>
         </PopperMenu>
       </>
   )

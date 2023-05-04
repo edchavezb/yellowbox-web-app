@@ -20,6 +20,7 @@ interface IModal {
         visible: boolean
         type: ModalType
         boxId: string
+        subId?: string
         page: string
     }
 }
