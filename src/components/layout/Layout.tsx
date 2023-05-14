@@ -1,4 +1,4 @@
-import SideBar from "./SideBar"
+import Sidebar from "./Sidebar/Sidebar"
 import Header from "./Header"
 import styles from "./Layout.module.css";
 import { ReactNode } from "react";
@@ -22,7 +22,7 @@ function Layout({ children }: IProps) {
         <ResizablePane 
           leftContent={
             <section id={styles.sideBar}>
-              <SideBar user={user} login={spotifyLogin} />
+              <Sidebar user={user} login={spotifyLogin} />
             </section>
           }
           rightContent={

@@ -1,0 +1,63 @@
+
+.folderWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.folderLink {
+    text-decoration: none;
+    color: greenyellow;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.folderIcon, .chevronIcon {
+    width: 15px
+}
+
+.folderName {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.folderContents {
+    padding-left: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.chevronWrapper {
+    height: 21px;
+    display: flex;
+    align-items: flex-end;
+    cursor: pointer;
+}
+
+.chevronIcon {
+    margin-bottom: 2px;
+    transition: transform 0.1s ease-in-out;
+}
+
+.boxLink {
+    margin: 2px 0px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.boxName {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.boxLink, .boxLink:link:active:visited {
+    color: #ffffff;
+    text-decoration: none;
+}
