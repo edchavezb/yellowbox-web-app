@@ -13,8 +13,8 @@ type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
 function SortingMenu() {
   const dispatch = useAppDispatch();
   const targetBox = useAppSelector(state => state.currentBoxDetailData.box);
-  const userBoxes = useAppSelector(state => state.userBoxesData.boxes);
-  const isOwner = !!userBoxes.find(box => box._id === targetBox?._id);
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
+  const isOwner = userBoxes.some(box => box.boxId === targetBox?._id);
   const boxSections: BoxSections = { artists: targetBox!.artists, albums: targetBox!.albums, tracks: targetBox!.tracks, playlists: targetBox!.playlists }
   const nonEmptySections = Object.keys(boxSections).filter((section) => boxSections[section as keyof BoxSections].length > 0)
   const [sorting, setSorting] = useState<SectionSorting>(targetBox?.sectionSorting!)

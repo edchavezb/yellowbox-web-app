@@ -1,11 +1,11 @@
 import { setModalState } from 'core/features/modal/modalSlice';
-import { updateUserBox } from 'core/features/userBoxes/userBoxesSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState } from 'react';
-import { updateUserBoxApi } from 'core/api/userboxes';
+import { addAlbumToBoxApi, addArtistToBoxApi, addPlaylistToBoxApi, addTrackToBoxApi, updateUserBoxApi } from 'core/api/userboxes';
 import { Album, Artist, Playlist, Track, UserBox } from "core/types/interfaces";
 import styles from "./AddToBoxMenu.module.css";
+import { isAlbum, isArtist, isPlaylist, isTrack } from 'core/helpers/typeguards';
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -17,39 +17,31 @@ interface IProps {
 
 function AddToBoxMenu({page, itemData, boxId}: IProps) {
   const dispatch = useAppDispatch();
-  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const itemCopy = JSON.parse(JSON.stringify(itemData))
-  const [addBox, setAddBox] = useState(userBoxes[0]._id)
+  const [addBox, setAddBox] = useState(userBoxes[0].boxId)
 
   const handleAddItem = () => {
     const targetId = addBox
-    const targetBox = {...userBoxes.find(box => box._id === targetId) as UserBox}
     const updatedItem = {...extractCrucialData(itemCopy)}
-    let updatedBox!: UserBox;
-    switch (itemCopy.type) {
-      case "album" :
-        const updatedAlbums = [...targetBox.albums.filter(a => a.id !== updatedItem.id), updatedItem as Album]
-        updatedBox = {...targetBox, albums: updatedAlbums}
-      break;
-      case "artist" :
-        const updatedArtists = [...targetBox.artists.filter(a => a.id !== updatedItem.id), updatedItem as Artist]
-        updatedBox = {...targetBox, artists: updatedArtists}
-      break;
-      case "track" :
-        const updatedTracks = [...targetBox.tracks.filter(a => a.id !== updatedItem.id), updatedItem as Track]
-        updatedBox = {...targetBox, tracks: updatedTracks}
-      break;
-      case "playlist" :
-        const updatedPlaylists = [...targetBox.playlists.filter(a => a.id !== updatedItem.id), updatedItem as Playlist]
-        updatedBox = {...targetBox, playlists: updatedPlaylists}
-      break;
-      default :
-    }
-    try {
-      updateUserBoxApi(targetId, updatedBox)
-      dispatch(updateUserBox({updatedBox, targetId: addBox}))
-    } catch {
-      console.log('Could not add item to box')
+    const isOwner = !!userBoxes.find(box => box.boxId === targetId);
+    if (isOwner) {
+      try {
+        if (isArtist(updatedItem)) {
+          addArtistToBoxApi(targetId, updatedItem)
+        }
+        else if (isAlbum(updatedItem)) {
+          addAlbumToBoxApi(targetId, updatedItem)
+        }
+        else if (isTrack(updatedItem)) {
+          addTrackToBoxApi(targetId, updatedItem)
+        }
+        else if (isPlaylist(updatedItem)) {
+          addPlaylistToBoxApi(targetId, updatedItem)
+        }
+      } catch {
+        console.log('Could not add item to box')
+      }
     }
     dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
   }
@@ -88,9 +80,9 @@ function AddToBoxMenu({page, itemData, boxId}: IProps) {
     <div id={styles.modalBody}>
       <div id={styles.confirmation}>
         <label htmlFor="add-type"> Add this item to </label>
-        <select name="box-select" defaultValue={userBoxes[0]._id} onChange={(e) => setAddBox(e.target.value)}>
+        <select name="box-select" defaultValue={userBoxes[0].boxId} onChange={(e) => setAddBox(e.target.value)}>
             {userBoxes.map(box => {
-              return (<option key={box._id} value={box._id}> {box.name} </option>)
+              return (<option key={box.boxId} value={box.boxId}> {box.boxName} </option>)
             })}
           </select>
       </div>

@@ -1,27 +1,33 @@
-import { fetchUserBoxes, updateUserBox } from "core/features/userBoxes/userBoxesSlice";
+import { fetchDashboardBoxes, fetchUserBoxes } from "core/features/userBoxes/userBoxesSlice";
+import { fetchDashboardFolders } from "core/features/userFolders/userFoldersSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { updateUserBoxApi } from "core/api/userboxes";
-import { Album, Artist, Playlist, Track, SpotifyLoginData, UserBox, YellowboxUser } from "core/types/interfaces";
+import { addAlbumToBoxApi, addArtistToBoxApi, addPlaylistToBoxApi, addTrackToBoxApi, updateUserBoxApi } from "core/api/userboxes";
+import { Album, Artist, Playlist, Track, SpotifyLoginData, UserBox, YellowboxUser, DashboardBox } from "core/types/interfaces";
 import styles from "./SideBar.module.css";
+import { isAlbum, isArtist, isPlaylist, isTrack } from "core/helpers/typeguards";
 
 interface IProps {
-	user: YellowboxUser
+  user: YellowboxUser
   login: SpotifyLoginData
 }
 
 type MusicData = Artist | Album | Track | Playlist;
 
-function SideBar({user, login}: IProps) {
+function SideBar({ user, login }: IProps) {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
+  const userFolders = useAppSelector(state => state.userFoldersData.folders)
+  const userCreatedBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
+  const userDashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes)
 
   useEffect(() => {
-    if (user?._id){
-      dispatch(fetchUserBoxes(user._id))
+    if (user?._id) {
+      dispatch(fetchDashboardFolders(user.dashboardFolders!))
+      dispatch(fetchDashboardBoxes(user.dashboardBoxes!))
+      dispatch(fetchUserBoxes(user._id!))
     }
   }, [user])
 
@@ -29,62 +35,53 @@ function SideBar({user, login}: IProps) {
     history.push(`/box/${boxId}`)
   }
 
-  const addToBox = (draggedData: MusicData, targetBoxId: string, userBoxes: UserBox[]) => {
-    const targetBox = {...userBoxes.find(box => box._id === targetBoxId) as UserBox}
-    let updatedBox!: UserBox;
-    switch (draggedData.type) {
-      case "album" :
-        const updatedAlbums = [...targetBox.albums as Album[], draggedData as Album]
-        updatedBox = {...targetBox, albums: updatedAlbums}
-      break;
-      case "artist" :
-        const updatedArtists = [...targetBox.artists as Artist[], draggedData as Artist]
-        updatedBox = {...targetBox, artists: updatedArtists}
-      break;
-      case "track" :
-        const updatedTracks = [...targetBox.tracks as Track[], draggedData as Track]
-        updatedBox = {...targetBox, tracks: updatedTracks}
-      break;
-      case "playlist" :
-        const updatedPlaylists = [...targetBox.playlists as Playlist[], draggedData as Playlist]
-        updatedBox = {...targetBox, playlists: updatedPlaylists}
-      break;
-      default :
-        updatedBox = targetBox
-    }
-    try {
-      updateUserBoxApi(targetBoxId, updatedBox)
-      dispatch(updateUserBox({targetId: targetBoxId, updatedBox}))
-    } catch {
-      console.log('Could not add item to box')
+  const addToBox = (draggedData: MusicData, targetBoxId: string, userBoxes: DashboardBox[]) => {
+    const isOwner = !!userBoxes.find(box => box.boxId === targetBoxId);
+    if (isOwner) {
+      try {
+        if (isArtist(draggedData)) {
+          addArtistToBoxApi(targetBoxId, draggedData)
+        }
+        else if (isAlbum(draggedData)) {
+          addAlbumToBoxApi(targetBoxId, draggedData)
+        }
+        else if (isTrack(draggedData)) {
+          addTrackToBoxApi(targetBoxId, draggedData)
+        }
+        else if (isPlaylist(draggedData)) {
+          addPlaylistToBoxApi(targetBoxId, draggedData)
+        }
+      } catch {
+        console.log('Could not add item to box')
+      }
     }
   }
 
   const extractCrucialData = (data: MusicData) => {
     let extractedData: MusicData;
-    switch(data.type){
-      case "artist" : {
-        const {external_urls, genres, id, images, name, popularity, type, uri} = data as Artist
-        extractedData = {external_urls, genres, id, images, name, popularity, type, uri, subSectionCount: 0}
-      break;
+    switch (data.type) {
+      case "artist": {
+        const { external_urls, genres, id, images, name, popularity, type, uri } = data as Artist
+        extractedData = { external_urls, genres, id, images, name, popularity, type, uri, subSectionCount: 0 }
+        break;
       }
-      case "album" : {
-        const {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri} = data as Album
-        extractedData = {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri, subSectionCount: 0}
-      break;
+      case "album": {
+        const { album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri } = data as Album
+        extractedData = { album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri, subSectionCount: 0 }
+        break;
       }
-      case "track" : {
-        const {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri} = data as Track
-        extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSectionCount: 0}
-      break;
+      case "track": {
+        const { album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri } = data as Track
+        extractedData = { album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSectionCount: 0 }
+        break;
       }
-      case "playlist" : {
-        const {description, external_urls, id, images, name, owner, tracks, type, uri} = data as Playlist
-        const {items, ...tracksData} = tracks
-        extractedData = {description, external_urls, id, images, name, owner, tracks: tracksData, type, uri, subSectionCount: 0}
-      break;
+      case "playlist": {
+        const { description, external_urls, id, images, name, owner, tracks, type, uri } = data as Playlist
+        const { items, ...tracksData } = tracks
+        extractedData = { description, external_urls, id, images, name, owner, tracks: tracksData, type, uri, subSectionCount: 0 }
+        break;
       }
-      default :
+      default:
         extractedData = data
     }
     return extractedData
@@ -113,7 +110,7 @@ function SideBar({user, login}: IProps) {
     (event.target as Element).className = styles.boxLink
     const data = JSON.parse(event.dataTransfer.getData("data"))
     const crucialData = extractCrucialData(data)
-    addToBox(crucialData, event.currentTarget.id, userBoxes)
+    addToBox(crucialData, event.currentTarget.id, userCreatedBoxes)
   }
 
   return (
@@ -133,14 +130,38 @@ function SideBar({user, login}: IProps) {
           </div>
           <div id={styles.boxList}>
             <h4 className={styles.sectionTitle}> Your Boxes </h4>
-            {!!userBoxes.length && userBoxes.map((box) => {
+            {!!userFolders.length && userFolders.map(folder => {
               return (
-                <div className={styles.boxLink} id={box._id} key={box._id} onClick={() => navigateToBox(box._id)}
-                  onDragEnter={(e) => handleDragEnter(e)} 
+                <div className={styles.folderWrapper}>
+                  <div className={styles.folderLink} id={folder._id} key={folder._id}>
+                    <img className={styles.folderIcon} src="/icons/folder.svg" alt="folder"></img>
+                    <div className={styles.boxName}> {folder.name} </div>
+                  </div>
+                  <div className={styles.folderContents}>
+                    {folder.boxes.map(box => {
+                      const { boxId, boxName } = box;
+                      return (
+                        <div className={styles.boxLink} id={boxId} key={boxId} onClick={() => navigateToBox(boxId)}
+                          onDragEnter={(e) => handleDragEnter(e)}
+                          onDragLeave={(e) => handleDragLeave(e)}
+                          onDragOver={(e) => handleDragOver(e)}
+                          onDrop={(e) => handleDrop(e)}>
+                          <div className={styles.boxName}> {boxName} </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+            {!!userDashboardBoxes.length && userDashboardBoxes.map((box) => {
+              return (
+                <div className={styles.boxLink} id={box.boxId} key={box.boxId} onClick={() => navigateToBox(box.boxId)}
+                  onDragEnter={(e) => handleDragEnter(e)}
                   onDragLeave={(e) => handleDragLeave(e)}
                   onDragOver={(e) => handleDragOver(e)}
                   onDrop={(e) => handleDrop(e)}>
-                    <div className={styles.boxName}> {box.name} </div>
+                  <div className={styles.boxName}> {box.boxName} </div>
                 </div>
               )
             })}

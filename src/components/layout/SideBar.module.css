@@ -33,6 +33,29 @@
     padding: 0px 10px;
 }
 
+.folderWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.folderLink {
+    margin: 4px 0px;
+    text-decoration: none;
+    cursor: pointer;
+    color: greenyellow;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.folderIcon {
+    width: 15px
+}
+
+.folderContents {
+    padding-left: 20px;
+}
+
 #boxList {
     box-sizing: border-box;
     width: 100%;

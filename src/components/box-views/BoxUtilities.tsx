@@ -19,8 +19,8 @@ function BoxUtilities({ box, singleTypeBox, visibility, setVisibility }: IProps)
   const menuToggleRef = useRef(null);
   const dispatch = useAppDispatch();
   const { _id: boxId } = useAppSelector(state => state.currentBoxDetailData.box)
-  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
-  const isOwner = !!userBoxes.find(box => box._id === boxId);
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
+  const isOwner = !!userBoxes.find(box => box.boxId === boxId);
   const boxNotEmpty = box?.albums?.length > 0 || box?.artists?.length > 0 || box?.tracks?.length > 0 || box?.playlists?.length > 0;
   const [isBoxMenuOpen, setIsBoxMenuOpen] = useState(false);
 

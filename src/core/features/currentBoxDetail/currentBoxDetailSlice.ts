@@ -3,7 +3,7 @@ import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, add
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
-import { updateUserBox } from "../userBoxes/userBoxesSlice"
+import { updateBoxName } from "../userBoxes/userBoxesSlice"
 
 interface CurrentBoxDetailState {
     box: UserBox
@@ -87,7 +87,7 @@ export const updateCurrentBoxDetailThunk = (boxId: string, updatedBox: UserBox):
     try {
         const boxDetail = await updateUserBoxApi(boxId, updatedBox);
         dispatch(updateCurrentBoxDetail(boxDetail!))
-        dispatch(updateUserBox({targetId: boxId, updatedBox}))
+        dispatch(updateBoxName({targetId: boxId, newName: updatedBox.name}))
     } catch (err) {
         console.log(err)
     }
