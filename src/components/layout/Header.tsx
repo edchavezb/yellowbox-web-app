@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory } from "react-router-dom";
 import styles from "./Header.module.css";
-import { setModalState } from "core/features/modal/modalSlice";
-import { useAppDispatch } from "core/hooks/useAppDispatch";
+import PopperMenu from "components/menus/popper/PopperMenu";
+import AddButtonMenu from "components/menus/popper/AddButtonMenu/AddButtonMenu";
 
 function Header() {
-  const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const history = useHistory();
-  let searchTimeout:  ReturnType<typeof setTimeout>;
+  const buttonRef = useRef(null);
+  let searchTimeout: ReturnType<typeof setTimeout>;
 
   useEffect(() => {
     if (searchQuery) history.push(`/search/${searchQuery}`)
@@ -22,7 +23,8 @@ function Header() {
   }
 
   return (
-    <div id={styles.header}> 
+    <>
+      <div id={styles.header}>
         <div id={styles.logoSide}>
           <Link to="/">
             <div id={styles.logoContainer}>
@@ -34,16 +36,20 @@ function Header() {
         <div id={styles.headerTools}>
           <div id={styles.searchBox}>
             <div id={styles.inputWrapper}>
-              <input id={styles.searchInput} type="text" onChange={(e) => debounceSearch(e.target.value)} 
-                onFocus={() => {if(searchQuery) history.push(`/search/${searchQuery}`)}}/>
+              <input id={styles.searchInput} type="text" onChange={(e) => debounceSearch(e.target.value)}
+                onFocus={() => { if (searchQuery) history.push(`/search/${searchQuery}`) }} />
             </div>
             <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
           </div>
-          <div id={styles.newButton} onClick={() => dispatch(setModalState({visible: true, type:"New Box", boxId:"", page: "", itemData: undefined}))}>
+          <div id={styles.newButton} ref={buttonRef} onClick={() => setIsMenuOpen(true)}>
             <img id={styles.plusIcon} src="/icons/plus.svg" alt="new box"></img>
           </div>
         </div>
-    </div>
+      </div>
+      <PopperMenu referenceRef={buttonRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
+        <AddButtonMenu setIsOpen={setIsMenuOpen} />
+      </PopperMenu>
+    </>
   );
 }
 

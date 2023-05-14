@@ -7,11 +7,13 @@ export type ModalType =
     | "Sorting Options" 
     | "Delete Box"
     | "Delete Item" 
+    | "Add To Folder"
     | "Add To Box" 
     | "Add To Subsection" 
     | "Change Order" 
     | "Item Note" 
     | "Box Subsections"
+    | "New Folder"
     | "";
 
 interface IModal {

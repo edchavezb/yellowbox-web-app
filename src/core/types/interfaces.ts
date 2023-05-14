@@ -26,6 +26,8 @@ export interface YellowboxUser {
   services: {
     [key: string]: string
   }
+  dashboardFolders?: string[]
+  dashboardBoxes?: string[]
 }
 
 export interface UserBox {
@@ -41,7 +43,21 @@ export interface UserBox {
   sectionSorting: SectionSorting
   sectionVisibility: Visibility
   subSections: Subsection[]
-  notes: {_id: string, itemId: string, noteText: string, subSectionId?: string}[]
+  notes: { _id: string, itemId: string, noteText: string, subSectionId?: string }[]
+}
+
+export interface UserFolder {
+  _id: string
+  name: string,
+  public: boolean,
+  creator: string
+  description: string,
+  boxes: DashboardBox[]
+}
+
+export interface DashboardBox {
+  boxId: string,
+  boxName: string
 }
 
 export interface SectionSorting {
@@ -68,9 +84,9 @@ export interface Visibility {
 }
 
 export interface Subsection {
-  _id?: string, 
-  type: BoxSections, 
-  name: string, 
+  _id?: string,
+  type: BoxSections,
+  name: string,
   items: Artist[] | Album[] | Track[] | Playlist[]
   index?: number
 }
@@ -138,7 +154,7 @@ export interface Track {
   track_number: number
   type: string
   uri: string
-  subSectionCount?: number 
+  subSectionCount?: number
 }
 
 export interface Playlist {
@@ -150,7 +166,7 @@ export interface Playlist {
   id: string
   images: ItemImage[]
   name: string
-  owner : SpotifyUser
+  owner: SpotifyUser
   tracks: {
     href: string
     items?: PlaylistItem[]
@@ -162,7 +178,7 @@ export interface Playlist {
   }
   type: string
   uri: string
-  subSectionCount?: number 
+  subSectionCount?: number
 }
 
 export interface SpotifyUser {

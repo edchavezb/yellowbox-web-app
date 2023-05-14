@@ -26,8 +26,8 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   const dispatch = useAppDispatch();
   const { name, type, uri, id } = element;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
-  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
-  const isOwner = userBoxes.some(box => box._id === currentBox._id);
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
+  const isOwner = userBoxes.some(box => box.boxId === currentBox._id);
   const itemNote = currentBox.notes.find(note => note.itemId === id && note.subSectionId === subId) || currentBox.notes.find(note => note.itemId === id && !note.subSectionId)
   const detailRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);

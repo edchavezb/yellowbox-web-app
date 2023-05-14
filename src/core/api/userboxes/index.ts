@@ -1,4 +1,4 @@
-import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from '../../types/interfaces'
+import { Album, Artist, DashboardBox, Playlist, SectionSorting, Subsection, Track, UserBox, UserFolder, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
 export const getBoxByIdApi = async (boxId: string) => {
@@ -10,18 +10,29 @@ export const getBoxByIdApi = async (boxId: string) => {
     }
 }
 
-export const createUserBoxApi = async (data: Omit<UserBox, '_id'>) => {
+export const getDashboardBoxesApi = async (boxIds: string[]) => {
     try {
-        return await api.post<Omit<UserBox, '_id'>, UserBox>('boxes', data)
+        return await api.getManyById<DashboardBox[]>('boxes/multiple', boxIds)
     }
     catch(err) {
         console.log(err)
     }
 }
 
-export const deleteUserBoxApi = async (boxId: string) => {
+export const createUserBoxApi = async (data: Omit<UserBox, '_id'>) => {
     try {
-        return await api.delete<string>(`boxes/${boxId}`)
+        return await api.post<Omit<UserBox, '_id'>, DashboardBox>('boxes', data)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const deleteUserBoxApi = async (boxId: string, containingFolder: boolean, folderId?: string) => {
+    try {
+        return await api.put<{boxId: string, containingFolder: boolean, folderId: string | undefined}, YellowboxUser | UserFolder>(`boxes/${boxId}/delete`, 
+            {boxId, containingFolder, folderId}
+        )
     }
     catch(err) {
         console.log(err)
@@ -31,6 +42,42 @@ export const deleteUserBoxApi = async (boxId: string) => {
 export const updateUserBoxApi = async (boxId: string, updatedBox: UserBox) => {
     try {
         return await api.put<UserBox, UserBox>(`boxes/${boxId}`, updatedBox)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const addArtistToBoxApi = async (boxId: string, artist: Artist) => {
+    try {
+        return await api.post<{ newArtist: Artist }, UserBox>(`boxes/${boxId}/artists`, { newArtist: artist })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const addAlbumToBoxApi = async (boxId: string, album: Album) => {
+    try {
+        return await api.post<{ newAlbum: Album }, UserBox>(`boxes/${boxId}/albums`, { newAlbum: album })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const addTrackToBoxApi = async (boxId: string, track: Track) => {
+    try {
+        return await api.post<{ newTrack: Track }, UserBox>(`boxes/${boxId}/tracks`, { newTrack: track })
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const addPlaylistToBoxApi = async (boxId: string, playlist: Playlist) => {
+    try {
+        return await api.post<{ newPlaylist: Playlist }, UserBox>(`boxes/${boxId}/playlists`, { newPlaylist: playlist })
     }
     catch(err) {
         console.log(err)

@@ -12,6 +12,17 @@ const api = {
         return response.json() as Promise<R>
       })
   },
+  getManyById: <R>(endpoint: string, ids: string[]) => {
+    const url = new URL(`${apiURL}/${endpoint}`);
+    url.search = new URLSearchParams(ids.map(s => ['id', s])).toString()
+    return fetch(url.toString())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText)
+        }
+        return response.json() as Promise<R>
+      })
+  },
   post: async <D, R>(endpoint: string, postData: D): Promise<R> => {
     const response = await fetch(`${apiURL}/${endpoint}`, {
       method: 'POST',

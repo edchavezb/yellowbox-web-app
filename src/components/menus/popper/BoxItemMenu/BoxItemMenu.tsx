@@ -15,8 +15,8 @@ const BoxItemMenu = ({itemData, setIsOpen, itemType, subId}: BoxItemMenuProps) =
   const dispatch = useAppDispatch();
   const {isUserViewing: boxDetailViewing, box} = useAppSelector(state => state.currentBoxDetailData)
   const { _id: boxId, notes } = box || {};
-  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
-  const isOwner = userBoxes.some(box => box._id === boxId);
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
+  const isOwner = userBoxes.some(box => box.boxId === boxId);
   const { menuItemsList, menuItem } = styles;
 
   const handleAddToQueue = () => {

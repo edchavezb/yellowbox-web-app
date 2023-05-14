@@ -21,8 +21,8 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
   const dispatch = useAppDispatch();
   const { name, id } = itemData;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
-  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
-  const isOwner = userBoxes.some(box => box._id === currentBox._id);
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
+  const isOwner = userBoxes.some(box => box.boxId === currentBox._id);
   const itemNotes = currentBox.notes.filter(note => note.itemId === id);
   const subSectionsWithItem = currentBox.subSections.filter(subSection => subSection.items.some(item => item.id === id))
   const subSectionsWithItemNote = itemNotes.filter(note => note.subSectionId).map(note => note.subSectionId);

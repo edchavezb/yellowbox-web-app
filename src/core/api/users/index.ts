@@ -1,4 +1,4 @@
-import { UserBox, YellowboxUser } from '../../types/interfaces'
+import { DashboardBox, UserBox, UserFolder, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
 export const getUserDataBySpotifyId = async (spotifyId: string) => {
@@ -21,7 +21,16 @@ export const createUser = async (userData: Omit<YellowboxUser, '_id'>) => {
 
 export const getUserBoxesApi = async (userId: string) => {
     try {
-        return await api.get<UserBox[]>(`users/${userId}/boxes`, {userId})
+        return await api.get<DashboardBox[]>(`users/${userId}/boxes`, {userId})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const getUserFoldersApi = async (userId: string) => {
+    try {
+        return await api.get<UserFolder[]>(`users/${userId}/folders`, {userId})
     }
     catch(err) {
         console.log(err)

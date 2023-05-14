@@ -6,6 +6,8 @@ import { AppThunk } from "core/store/store";
 import { useHistory } from "react-router-dom";
 import { Album, Artist, Playlist, Track } from "../../core/types/interfaces";
 import styles from "./DeletePrompt.module.css";
+import { useSelector } from "react-redux";
+import { useAppSelector } from "core/hooks/useAppSelector";
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -17,6 +19,7 @@ interface IProps {
 
 function DeletePrompt({itemData, boxId, deleteType}: IProps) {
   const dispatch = useAppDispatch();
+  const userFolders = useAppSelector(state => state.userFoldersData.folders)
   const history = useHistory();
   let promptMessage: string;
   let deleteItem: (box: string, item: string) => AppThunk;
@@ -53,8 +56,8 @@ function DeletePrompt({itemData, boxId, deleteType}: IProps) {
 
   const handleDeleteAction = () => {
     if (deleteType === "Box"){
-      console.log('Delete action')
-      dispatch(deleteUserBoxThunk(boxId));
+      const containingFolderId = userFolders.find(folder => folder.boxes.map(dashboardBox => dashboardBox.boxId).includes(boxId))?._id;
+      dispatch(deleteUserBoxThunk(boxId, !!containingFolderId, containingFolderId));
       history.push('/')
     }
     else if (deleteType === "Item" && itemData){

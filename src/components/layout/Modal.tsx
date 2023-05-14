@@ -9,6 +9,8 @@ import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
 import SubsectionsMenu from "components/menus/SubsectionsMenu/SubsectionsMenu";
 import AddToSubsectionMenu from "components/menus/AddToSubsectionMenu";
+import NewFolderMenu from "components/menus/NewFolderMenu";
+import AddToFolderMenu from "components/menus/AddToFolderMenu";
 
 function Modal() {
   const dispatch = useAppDispatch();
@@ -25,11 +27,17 @@ function Modal() {
     case "Delete Box" :
       modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} deleteType={"Box"} />
     break;
+    case "New Folder" :
+      modalBody = <NewFolderMenu editMode={false}/>
+    break;
     case "Sorting Options" :
       modalBody = <SortingMenu/>
     break;
     case "Delete Item" :
       modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} deleteType={"Item"} />
+    break;
+    case "Add To Folder" :
+      modalBody = <AddToFolderMenu boxId={modalData.boxId} page={modalData.page!}/>
     break;
     case "Add To Box" :
       modalBody = <AddToBoxMenu boxId={modalData.boxId} itemData={modalData.itemData!} page={modalData.page!}/>

@@ -12,7 +12,7 @@ function BoxDetail() {
   const { id: boxId } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
-  const userBoxes = useAppSelector(state => state.userBoxesData.boxes)
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const [boxMetaData, setBoxMetaData] = useState({ isOwner: false, boxNotEmpty: false, singleTypeBox: true })
   const [visibility, setVisibility] = useState<Visibility>({ playlists: true, albums: true, artists: true, tracks: true })
 
@@ -30,7 +30,7 @@ function BoxDetail() {
 
   const boxDetailsInit = () => {
     if (currentBox._id) {
-      const isOwner = !!userBoxes.find(box => box._id === currentBox?._id);
+      const isOwner = !!userBoxes.find(box => box.boxId === currentBox?._id);
       const boxNotEmpty = currentBox?.albums?.length > 0 || currentBox?.artists?.length > 0 || currentBox?.tracks?.length > 0 || currentBox?.playlists?.length > 0;
       const singleTypeBox = [currentBox?.albums, currentBox?.artists, currentBox?.tracks, currentBox?.playlists].filter((section) => section?.length > 0).length === 1;
       setBoxMetaData({ isOwner, boxNotEmpty, singleTypeBox })
