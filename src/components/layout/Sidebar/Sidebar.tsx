@@ -6,8 +6,9 @@ import { useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { addAlbumToBoxApi, addArtistToBoxApi, addPlaylistToBoxApi, addTrackToBoxApi, updateUserBoxApi } from "core/api/userboxes";
 import { Album, Artist, Playlist, Track, SpotifyLoginData, UserBox, YellowboxUser, DashboardBox } from "core/types/interfaces";
-import styles from "./SideBar.module.css";
+import styles from "./Sidebar.module.css";
 import { isAlbum, isArtist, isPlaylist, isTrack } from "core/helpers/typeguards";
+import DashboardFolder from "./DashboardFolder/DashboardFolder";
 
 interface IProps {
   user: YellowboxUser
@@ -16,7 +17,7 @@ interface IProps {
 
 type MusicData = Artist | Album | Track | Playlist;
 
-function SideBar({ user, login }: IProps) {
+function Sidebar({ user, login }: IProps) {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
@@ -130,41 +131,26 @@ function SideBar({ user, login }: IProps) {
           </div>
           <div id={styles.boxList}>
             <h4 className={styles.sectionTitle}> Your Boxes </h4>
-            {!!userFolders.length && userFolders.map(folder => {
-              return (
-                <div className={styles.folderWrapper}>
-                  <div className={styles.folderLink} id={folder._id} key={folder._id}>
-                    <img className={styles.folderIcon} src="/icons/folder.svg" alt="folder"></img>
-                    <div className={styles.boxName}> {folder.name} </div>
+            <div className={styles.folderList}>
+              {!!userFolders.length && userFolders.map(folder => {
+                return (
+                  <DashboardFolder folder={folder} />
+                )
+              })}
+            </div>
+            <div className={styles.dashboardBoxesList}>
+              {!!userDashboardBoxes.length && userDashboardBoxes.map((box) => {
+                return (
+                  <div className={styles.boxLink} id={box.boxId} key={box.boxId} onClick={() => navigateToBox(box.boxId)}
+                    onDragEnter={(e) => handleDragEnter(e)}
+                    onDragLeave={(e) => handleDragLeave(e)}
+                    onDragOver={(e) => handleDragOver(e)}
+                    onDrop={(e) => handleDrop(e)}>
+                    <div className={styles.boxName}> {box.boxName} </div>
                   </div>
-                  <div className={styles.folderContents}>
-                    {folder.boxes.map(box => {
-                      const { boxId, boxName } = box;
-                      return (
-                        <div className={styles.boxLink} id={boxId} key={boxId} onClick={() => navigateToBox(boxId)}
-                          onDragEnter={(e) => handleDragEnter(e)}
-                          onDragLeave={(e) => handleDragLeave(e)}
-                          onDragOver={(e) => handleDragOver(e)}
-                          onDrop={(e) => handleDrop(e)}>
-                          <div className={styles.boxName}> {boxName} </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
-            {!!userDashboardBoxes.length && userDashboardBoxes.map((box) => {
-              return (
-                <div className={styles.boxLink} id={box.boxId} key={box.boxId} onClick={() => navigateToBox(box.boxId)}
-                  onDragEnter={(e) => handleDragEnter(e)}
-                  onDragLeave={(e) => handleDragLeave(e)}
-                  onDragOver={(e) => handleDragOver(e)}
-                  onDrop={(e) => handleDrop(e)}>
-                  <div className={styles.boxName}> {box.boxName} </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         </>
       }
@@ -172,4 +158,4 @@ function SideBar({ user, login }: IProps) {
   )
 }
 
-export default SideBar;
+export default Sidebar;

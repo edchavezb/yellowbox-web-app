@@ -33,27 +33,11 @@
     padding: 0px 10px;
 }
 
-.folderWrapper {
+.folderList {
     display: flex;
     flex-direction: column;
-}
-
-.folderLink {
-    margin: 4px 0px;
-    text-decoration: none;
-    cursor: pointer;
-    color: greenyellow;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.folderIcon {
-    width: 15px
-}
-
-.folderContents {
-    padding-left: 20px;
+    gap: 4px;
+    margin-bottom: 6px;
 }
 
 #boxList {
@@ -61,8 +45,13 @@
     width: 100%;
 }
 
+.dashboardBoxesList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .boxLink {
-    margin: 4px 0px;
     text-decoration: none;
     cursor: pointer;
 }
