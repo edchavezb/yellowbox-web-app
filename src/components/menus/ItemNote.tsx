@@ -60,8 +60,8 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
   }
 
   const saveNoteHandler = () => {
-    if (itemNotes.length) {
-      const currentNoteId = itemNotes.find(note => note.subSectionId === currentSubSection)?._id;
+    const currentNoteId = currentSubSection ? itemNotes.find(note => note.subSectionId === currentSubSection)?._id : itemNotes.find(note => !note.subSectionId)?._id;
+    if (currentNoteId) {
       dispatch(updateItemNoteThunk(boxId, currentNoteId!, editorNote!));
     }
     else {
