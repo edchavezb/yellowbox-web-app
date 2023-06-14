@@ -3,6 +3,8 @@
     padding: 20px 10px;
     height: 100%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 #user {
@@ -41,31 +43,11 @@
 }
 
 #boxList {
-    box-sizing: border-box;
-    width: 100%;
-}
-
-.dashboardBoxesList {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-}
-
-.boxLink {
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.boxName {
+    box-sizing: border-box;
     width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.boxLink, .boxLink:link:active:visited {
-    color: #ffffff;
-    text-decoration: none;
 }
 
 .serviceButton {
@@ -78,9 +60,4 @@
     height: 15px;
     margin-right: 5px;
     margin-top: 2px;
-}
-
-.linkDragOver {
-    composes: boxLink;
-    background-color: rgb(54, 54, 54);
 }

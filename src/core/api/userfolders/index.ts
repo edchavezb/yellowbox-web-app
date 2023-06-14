@@ -54,3 +54,12 @@ export const removeBoxFromFolderApi = async (folderId: string, boxId: string) =>
         console.log(err)
     }
 }
+
+export const moveBoxBetweenFoldersApi = async (sourceId: string, targetId: string, boxId: string, boxName: string) => {
+    try {
+        return await api.put<{targetId: string, boxName: string}, {updatedSourceFolder: UserFolder, updatedTargetFolder: UserFolder}>(`folders/${sourceId}/boxes/${boxId}`, {boxName, targetId})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
