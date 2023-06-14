@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addBoxToFolderApi, createUserFolderApi, deleteUserFolderApi, getFoldersByIdsApi, removeBoxFromFolderApi } from "core/api/userfolders"
+import { addBoxToFolderApi, createUserFolderApi, deleteUserFolderApi, getFoldersByIdsApi, moveBoxBetweenFoldersApi, removeBoxFromFolderApi } from "core/api/userfolders"
 import { AppThunk } from "core/store/store"
 import { UserFolder } from "core/types/interfaces"
 import { fetchDashboardBoxes } from "../userBoxes/userBoxesSlice"
@@ -82,6 +82,16 @@ export const removeBoxFromFolderThunk = (folderId: string, boxId: string): AppTh
         const response = await removeBoxFromFolderApi(folderId, boxId)
         dispatch(updateUserFolder({targetId: folderId, updatedFolder: response?.updatedFolder!}))
         dispatch(fetchDashboardBoxes(response?.updatedDashboardBoxes!))
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const moveBoxBetweenFoldersThunk = (sourceId: string, targetId: string, boxId: string, boxName: string): AppThunk => async (dispatch) => {
+    try {
+        const response = await moveBoxBetweenFoldersApi(sourceId, targetId, boxId, boxName)
+        dispatch(updateUserFolder({targetId: sourceId, updatedFolder: response?.updatedSourceFolder!}))
+        dispatch(updateUserFolder({targetId: targetId, updatedFolder: response?.updatedTargetFolder!}))
     } catch (err) {
         console.log(err)
     }

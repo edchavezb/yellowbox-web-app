@@ -1,20 +1,54 @@
-import { Album, Artist, DashboardBox, Playlist, Track, UserFolder } from "core/types/interfaces";
-import styles from "./DashboardFolder.module.css";
+import { Album, Artist, DashboardBox, Playlist, Track } from "core/types/interfaces";
+import styles from "./SidebarBox.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useHistory } from "react-router-dom";
 import { addArtistToBoxApi, addAlbumToBoxApi, addTrackToBoxApi, addPlaylistToBoxApi } from "core/api/userboxes";
 import { isArtist, isAlbum, isTrack, isPlaylist } from "core/helpers/typeguards";
-import { useState } from "react";
+import { CSS } from '@dnd-kit/utilities';
+import { SortableData, UseSortableArguments, useSortable } from "@dnd-kit/sortable";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 type MusicData = Artist | Album | Track | Playlist;
-interface DashboardFolderProps {
-  folder: UserFolder;
+interface SidebarBoxProps {
+  box: DashboardBox;
 }
 
-const DashboardFolder = ({ folder }: DashboardFolderProps) => {
+export interface AppSortableData extends Omit<SortableData, 'sortable'> {
+  name: string;
+  sortable?: {
+    containerId: UniqueIdentifier;
+    items: UniqueIdentifier[];
+    index: number;
+};
+}
+
+interface UseSortableTypesafeArguments extends Omit<UseSortableArguments, "data"> {
+  data: AppSortableData
+}
+
+export function useAppSortable(props: UseSortableTypesafeArguments) {
+  return useSortable(props);
+}
+
+const SidebarBox = ({ box }: SidebarBoxProps) => {
   const history = useHistory();
   const userCreatedBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
-  const [isFolderOpen, setIsFolderOpen] = useState(false);
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useAppSortable({ 
+    id: box.boxId, 
+    data: {
+      name: box.boxName
+    }
+  });
+  const draggableStyle = {
+    transform: CSS.Translate.toString(transform),
+  }
 
   const navigateToBox = (boxId: string) => {
     history.push(`/box/${boxId}`)
@@ -98,40 +132,16 @@ const DashboardFolder = ({ folder }: DashboardFolderProps) => {
     addToBox(crucialData, event.currentTarget.id, userCreatedBoxes)
   }
 
-  const rotateStyle = { transform: `rotate(${isFolderOpen ? '90' : '0'}deg)` };
-
   return (
-    <div className={styles.folderWrapper}>
-      <div className={styles.folderLink} id={folder._id} key={folder._id}>
-        <img className={styles.folderIcon} src="/icons/folder.svg" alt="folder"></img>
-        <div className={styles.folderName}> {folder.name} </div>
-        <div className={styles.chevronWrapper} onClick={() => setIsFolderOpen(!isFolderOpen)}>
-          <img
-            className={styles.chevronIcon}
-            style={rotateStyle}
-            src="/icons/chevronright.svg"
-            alt="expand-collapse">
-          </img>
-        </div>
-      </div>
-      {isFolderOpen &&
-        <div className={styles.folderContents}>
-          {folder.boxes.map(box => {
-            const { boxId, boxName } = box;
-            return (
-              <div className={styles.boxLink} id={boxId} key={boxId} onClick={() => navigateToBox(boxId)}
-                onDragEnter={(e) => handleDragEnter(e)}
-                onDragLeave={(e) => handleDragLeave(e)}
-                onDragOver={(e) => handleDragOver(e)}
-                onDrop={(e) => handleDrop(e)}>
-                <div className={styles.boxName}> {boxName} </div>
-              </div>
-            )
-          })}
-        </div>
-      }
+    <div className={styles.boxLink} style={draggableStyle} id={box.boxId} onClick={() => navigateToBox(box.boxId)} 
+      ref={setNodeRef} {...listeners} {...attributes}
+      onDragEnter={(e) => handleDragEnter(e)}
+      onDragLeave={(e) => handleDragLeave(e)}
+      onDragOver={(e) => handleDragOver(e)}
+      onDrop={(e) => handleDrop(e)}>
+      <div className={styles.boxName}> {box.boxName} </div>
     </div>
   )
 }
 
-export default DashboardFolder;
+export default SidebarBox;
