@@ -90,11 +90,9 @@ export const reorderDashboardBoxesThunk = (sourceIndex: number, targetIndex: num
     const boxesCopy = JSON.parse(JSON.stringify(getState().userBoxesData.dashboardBoxes)) as DashboardBox[];
     const reorderItem = boxesCopy.splice(sourceIndex, 1)[0];
     boxesCopy.splice(targetIndex, 0, reorderItem);
+    dispatch(setDashboardBoxes(boxesCopy));
     const updatedBoxIds = boxesCopy.map(box => box.boxId);
-    const updatedBoxes = await updateUserDashboardBoxesApi(userId, updatedBoxIds)
-    if (updatedBoxes) {
-      dispatch(fetchDashboardBoxes(updatedBoxes))
-    }
+    await updateUserDashboardBoxesApi(userId, updatedBoxIds)
   } catch (err) {
     console.log(err)
   }
