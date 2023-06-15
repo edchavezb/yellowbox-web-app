@@ -102,7 +102,6 @@ function Sidebar({ user, login }: IProps) {
       if (targetSortable) {
         if (targetSortable.containerId === activeSortable?.containerId) {
           // Reorder
-          console.log(over, active)
           if (targetSortable.containerId === 'boxList') {
             dispatch(reorderDashboardBoxesThunk(activeSortable.index, targetSortable.index))
           } 
