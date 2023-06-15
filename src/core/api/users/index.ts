@@ -36,3 +36,12 @@ export const getUserFoldersApi = async (userId: string) => {
         console.log(err)
     }
 }
+
+export const updateUserDashboardBoxesApi = async (userId: string, updatedBoxIdList: string[]) => {
+    try {
+        return await api.put<{updatedBoxIdList: string[]}, string[]>(`users/${userId}/dashboardBoxes`, {updatedBoxIdList})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}

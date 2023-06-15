@@ -1,4 +1,4 @@
-import { UserFolder } from 'core/types/interfaces'
+import { DashboardBox, UserFolder } from 'core/types/interfaces'
 import api from '../index'
 
 export const getFolderByIdApi = async (folderId: string) => {
@@ -31,6 +31,17 @@ export const createUserFolderApi = async (data: Omit<UserFolder, '_id'>) => {
 export const deleteUserFolderApi = async (folderId: string) => {
     try {
         return await api.delete<string>(`folders/${folderId}`)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const updateFolderBoxesApi = async (folderId: string, updatedItems: DashboardBox[]) => {
+    try {
+        return await api.put<{updatedItems: DashboardBox[]}, {updatedFolder: UserFolder}>(`folders/${folderId}/boxes`, {
+            updatedItems
+        })
     }
     catch(err) {
         console.log(err)

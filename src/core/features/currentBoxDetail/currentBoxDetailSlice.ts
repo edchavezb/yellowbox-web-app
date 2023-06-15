@@ -295,7 +295,6 @@ export const removeItemFromSubsectionThunk = (boxId: string, type: BoxSections, 
 }
 
 export const reorderBoxItemsThunk = (boxId: string, draggedId: string, targetId: string, itemType: string ): AppThunk => async (dispatch, getState) => {
-    console.log('Got here before error 1')
     const reorderItems = <T extends {_id?: string}[]>(items: T) => {
         const draggedItem = items.find(item => item._id === draggedId)
         const draggedIndex = items.findIndex(item => item._id === draggedId);
@@ -305,10 +304,8 @@ export const reorderBoxItemsThunk = (boxId: string, draggedId: string, targetId:
         return items;
     }
     try {
-        let response: UserBox | null = null;
         switch(itemType){
             case 'artist':
-                console.log('Got here before error 2')
                 const artistsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.artists));
                 const updatedArtists = reorderItems<Artist[]>(artistsCopy)
                 dispatch(updateBoxArtists({updatedArtists}))
