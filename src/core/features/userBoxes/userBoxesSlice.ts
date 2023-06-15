@@ -37,14 +37,16 @@ const userBoxesSlice = createSlice({
         },
         deleteBox(state, action: PayloadAction<{targetId: string}>) {
             const targetIndex = state.userBoxes.findIndex(box => box.boxId === action.payload.targetId);
-            console.log(targetIndex)
             if (targetIndex != undefined) {
                 state.userBoxes.splice(targetIndex, 1);
             }
         },
+        addBoxToDashboard(state, action: PayloadAction<{boxId: string, boxName: string}>) {
+            const {boxId, boxName} = action.payload;
+            state.dashboardBoxes.push({boxId, boxName})
+        },
         removeBoxFromDashboard(state, action: PayloadAction<{targetId: string}>) {
             const targetIndex = state.dashboardBoxes.findIndex(box => box.boxId === action.payload.targetId);
-            console.log(targetIndex)
             if (targetIndex != undefined) {
                 state.dashboardBoxes.splice(targetIndex, 1);
             }
@@ -58,6 +60,7 @@ export const {
     updateBoxName, 
     createBox, 
     deleteBox,
+    addBoxToDashboard,
     removeBoxFromDashboard
 } = userBoxesSlice.actions;
 

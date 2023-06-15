@@ -59,9 +59,6 @@ function Sidebar({ user, login }: IProps) {
   const userDashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes)
   const [activeDraggable, setActiveDraggable] = useState<null | {name: string, id: string}>(null);
   const [dragOverFolder, setDragOverFolder] = useState<null | string>(null);
-  const { isOver, setNodeRef } = useDroppable({
-    id: 'boxList',
-  });
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -111,7 +108,7 @@ function Sidebar({ user, login }: IProps) {
         }
         else if (targetSortable.containerId === 'boxList') {
           // Remove from folder
-          dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string))
+          dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string, boxName!))
         }
         else {
           if (activeSortable?.containerId === 'boxList' && boxName) {
@@ -126,7 +123,7 @@ function Sidebar({ user, login }: IProps) {
       }
       else if (over.id === 'boxList') {
         // Remove from folder
-        dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string))
+        dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string, boxName!))
       }
       else {
         if (activeSortable?.containerId === 'boxList' && boxName) {

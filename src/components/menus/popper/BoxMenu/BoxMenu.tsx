@@ -11,7 +11,7 @@ interface BoxMenuProps {
 const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
   const dispatch = useAppDispatch();
   const boxDetailViewing = useAppSelector(state => state.currentBoxDetailData.isUserViewing)
-  const { _id: boxId } = useAppSelector(state => state.currentBoxDetailData.box)
+  const { _id: boxId, name: boxName } = useAppSelector(state => state.currentBoxDetailData.box)
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
   const containingFolder = userFolders.find(folder => folder.boxes.map(dashboardBox => dashboardBox.boxId).includes(boxId));
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
@@ -35,7 +35,7 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
 
   const handleRemoveFromFolder = () => {
     if (containingFolder) {
-      dispatch(removeBoxFromFolderThunk(containingFolder._id, boxId));
+      dispatch(removeBoxFromFolderThunk(containingFolder._id, boxId, boxName));
     }
   }
 
