@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addBoxToFolderApi, createUserFolderApi, deleteUserFolderApi, getFoldersByIdsApi, moveBoxBetweenFoldersApi, removeBoxFromFolderApi } from "core/api/userfolders"
+import { addBoxToFolderApi, createUserFolderApi, deleteUserFolderApi, getFoldersByIdsApi, moveBoxBetweenFoldersApi, removeBoxFromFolderApi, updateFolderBoxesApi } from "core/api/userfolders"
 import { AppThunk } from "core/store/store"
-import { UserFolder } from "core/types/interfaces"
+import { DashboardBox, UserFolder } from "core/types/interfaces"
 import { fetchDashboardBoxes } from "../userBoxes/userBoxesSlice"
 
 interface UserFoldersState {
@@ -92,6 +92,18 @@ export const moveBoxBetweenFoldersThunk = (sourceId: string, targetId: string, b
         const response = await moveBoxBetweenFoldersApi(sourceId, targetId, boxId, boxName)
         dispatch(updateUserFolder({targetId: sourceId, updatedFolder: response?.updatedSourceFolder!}))
         dispatch(updateUserFolder({targetId: targetId, updatedFolder: response?.updatedTargetFolder!}))
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const reorderFolderBoxesThunk = (folderId: string, sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
+    try {
+        const folderBoxesCopy = JSON.parse(JSON.stringify(getState().userFoldersData.folders.find(folder => folder._id === folderId)?.boxes)) as DashboardBox[];
+        const reorderItem = folderBoxesCopy.splice(sourceIndex, 1)[0];
+        folderBoxesCopy.splice(targetIndex, 0, reorderItem);
+        const response = await updateFolderBoxesApi(folderId, folderBoxesCopy)
+        dispatch(updateUserFolder({targetId: folderId, updatedFolder: response?.updatedFolder!}))
     } catch (err) {
         console.log(err)
     }

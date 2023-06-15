@@ -1,5 +1,5 @@
-import { fetchDashboardBoxes, fetchUserBoxes } from "core/features/userBoxes/userBoxesSlice";
-import { addBoxToFolderThunk, fetchDashboardFolders, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk } from "core/features/userFolders/userFoldersSlice";
+import { fetchDashboardBoxes, fetchUserBoxes, reorderDashboardBoxesThunk } from "core/features/userBoxes/userBoxesSlice";
+import { addBoxToFolderThunk, fetchDashboardFolders, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderFolderBoxesThunk } from "core/features/userFolders/userFoldersSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import SidebarFolder from "./SidebarFolder/SidebarFolder";
 import SidebarBox, { AppSortableData } from "./SidebarBox/SidebarBox";
 import { SortableContext } from "@dnd-kit/sortable";
 import SidebarBoxList from "./SidebarBoxList/SidebarBoxList";
+import { reorderBoxItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 
 interface IProps {
   user: YellowboxUser
@@ -101,6 +102,12 @@ function Sidebar({ user, login }: IProps) {
       if (targetSortable) {
         if (targetSortable.containerId === activeSortable?.containerId) {
           // Reorder
+          if (targetSortable.containerId === 'boxList') {
+            dispatch(reorderDashboardBoxesThunk(activeSortable.index, targetSortable.index))
+          } 
+          else {
+            dispatch(reorderFolderBoxesThunk(activeSortable?.containerId as string, activeSortable.index, targetSortable.index))
+          }
         }
         else if (targetSortable.containerId === 'boxList') {
           // Remove from folder
@@ -118,13 +125,8 @@ function Sidebar({ user, login }: IProps) {
         }
       }
       else if (over.id === 'boxList') {
-        if (activeSortable?.containerId === 'boxList') {
-          // Reorder
-        } 
-        else {
-          // Remove from folder
-          dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string))
-        }
+        // Remove from folder
+        dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string))
       }
       else {
         if (activeSortable?.containerId === 'boxList' && boxName) {

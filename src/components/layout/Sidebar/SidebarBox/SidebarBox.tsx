@@ -48,6 +48,8 @@ const SidebarBox = ({ box }: SidebarBoxProps) => {
   });
   const draggableStyle = {
     transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0 : 1,
   }
 
   const navigateToBox = (boxId: string) => {
