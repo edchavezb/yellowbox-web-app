@@ -1,26 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
-import axios from 'axios'
-import querystring from 'querystring'
-import credentials from '../keys'
 import GridView from 'components/box-views/GridView';
 import ListView from 'components/box-views/ListView';
 import TrackVisualizer from 'components/box-views/TrackVisualizer';
-
 import styles from "./ItemDetail.module.css"
 import { Album, Artist, Playlist, Track } from '../core/types/interfaces';
 import * as checkType from '../core/helpers/typeguards';
-
-// TODO: Handle promises better
+import { useAppSelector } from 'core/hooks/useAppSelector';
+import { useAppDispatch } from 'core/hooks/useAppDispatch';
+import { refreshSpotifyToken } from 'core/api/spotify';
+import { setAccessToken } from 'core/features/spotifyService/spotifyLoginSlice';
 
 type MusicData = Artist | Album | Track | Playlist;
 
-//type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
-
 function ItemDetail() {
-
   const history = useHistory();
+  const dispatch = useAppDispatch();
   const params = useParams<{ id: string, type: string }>()
+  const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.data.auth)
   const [itemData, setItemData] = useState<MusicData>({} as MusicData)
   const [itemListType, setItemListType] = useState("")
   const [itemContents, setItemContents] = useState({ items: [] })
@@ -38,104 +35,84 @@ function ItemDetail() {
   }, [itemData]);
 
   const handleDetailData = async (typeParam: string, idParam: string) => {
-
-    let itemQuery: string;
-    let contentsQuery: string;
-    switch (typeParam) {
-      case 'album':
-        itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
-        contentsQuery = `https://api.spotify.com/v1/albums/${idParam}/tracks`
-        setItemListType("tracklist")
-        break;
-      case 'artist':
-        itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
-        contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums?market=us`
-        setItemListType("albumlist")
-        break;
-      case 'track':
-        itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
-        contentsQuery = `https://api.spotify.com/v1/tracks/${idParam}`
-        break;
-      case 'playlist':
-        itemQuery = `https://api.spotify.com/v1/playlists/${idParam}`
-        contentsQuery = `https://api.spotify.com/v1/playlists/${idParam}/tracks`
-        setItemListType("tracklist")
-        break;
-      default:
-        break;
+    if (spotifyAuthData.refreshToken) {
+      let itemQuery: string;
+      let contentsQuery: string;
+      switch (typeParam) {
+        case 'album':
+          itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
+          contentsQuery = `https://api.spotify.com/v1/albums/${idParam}/tracks`
+          setItemListType("tracklist")
+          break;
+        case 'artist':
+          itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
+          contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums?market=us`
+          setItemListType("albumlist")
+          break;
+        case 'track':
+          itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
+          contentsQuery = `https://api.spotify.com/v1/tracks/${idParam}`
+          break;
+        case 'playlist':
+          itemQuery = `https://api.spotify.com/v1/playlists/${idParam}`
+          contentsQuery = `https://api.spotify.com/v1/playlists/${idParam}/tracks`
+          setItemListType("tracklist")
+          break;
+        default:
+          itemQuery = ``
+          contentsQuery = ``
+          break;
+      }
+      try {
+        const refreshResponse = await refreshSpotifyToken(spotifyAuthData.refreshToken)
+        const { access_token: accessToken } = refreshResponse!;
+        dispatch(setAccessToken({ accessToken }));
+        getItemData(typeParam, itemQuery, accessToken)
+        getContents(contentsQuery, accessToken)
+      }
+      catch (err) {
+        console.log(err)
+      }
     }
-
-    axios({
-      method: 'post',
-      url: 'https://accounts.spotify.com/api/token',
-      data: querystring.stringify({ grant_type: 'client_credentials' }),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization:
-          `Basic ${Buffer.from(credentials.id + ':' + credentials.secret).toString('base64')}`
-      }
-    })
-      .then(response => {
-        getItemData(typeParam, itemQuery, response.data.access_token)
-        getContents(contentsQuery, response.data.access_token)
-      })
-      .catch(error => {
-        console.log(error);
-      });
   }
 
-  const getItemData = (type: string, query: string, auth: string) => {
-    axios({
-      method: 'get',
-      url: query,
+  const getItemData = async (type: string, query: string, token: string) => {
+    const response = await fetch(query, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${auth}`
+        'Authorization': `Bearer ${token}`
       }
     })
-      .then(response => {
-        setItemData(response.data)
-        if (type === "track") {
-          getItemAlbum(`https://api.spotify.com/v1/albums/${response.data.album.id}`, auth)
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    const data = await response.json();
+    setItemData(data)
+    if (type === "track") {
+      getItemAlbum(`https://api.spotify.com/v1/albums/${data.album.id}`, token)
+    }
   }
 
-  const getContents = (query: string, auth: string) => {
-    axios({
-      method: 'get',
-      url: query,
+  const getContents = async (query: string, token: string) => {
+    const response = await fetch(query, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${auth}`
+        'Authorization': `Bearer ${token}`
       }
     })
-      .then(response => {
-        setItemContents(response.data)
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    const data = await response.json();
+    setItemContents(data)
   }
 
-  const getItemAlbum = (query: string, auth: string) => {
-    axios({
-      method: 'get',
-      url: query,
+  const getItemAlbum = async (query: string, token: string) => {
+    const response = await fetch(query, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${auth}`
+        'Authorization': `Bearer ${token}`
       }
     })
-      .then(response => {
-        setItemAlbum(response.data)
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    const data = await response.json();
+    setItemAlbum(data);
   }
 
   const getArtistLinks = (artists: Artist[]) => {

@@ -25,4 +25,5 @@
     background-color: rgb(26, 26, 26);
     color: #ffffff;
     position: relative;
+    overflow: hidden;
 }

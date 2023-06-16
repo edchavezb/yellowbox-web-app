@@ -19,15 +19,11 @@ function ResizablePane({ leftContent, rightContent }: ResizablePaneProps) {
 
   return (
     <div className={styles.frame}>
-      <div style={{ width: leftWidth }}>
+      <div className={styles.leftContent} style={{ width: leftWidth }}>
         {leftContent}
       </div>
       <div
-        style={{
-          width: '3px',
-          backgroundColor: 'rgb(15, 15, 15)',
-          cursor: 'ew-resize',
-        }}
+        className={styles.sliderEdge}
         onMouseDown={(event) => {
           document.addEventListener('mousemove', handleDrag);
           document.addEventListener('mouseup', () => {
@@ -35,7 +31,7 @@ function ResizablePane({ leftContent, rightContent }: ResizablePaneProps) {
           });
         }}
       />
-      <div style={{ flex: 1 }}>
+      <div className={styles.rightContent} >
         {rightContent}
       </div>
     </div>

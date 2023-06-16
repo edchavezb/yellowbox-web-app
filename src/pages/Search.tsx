@@ -1,11 +1,12 @@
 import styles from "./Search.module.css"
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios'
-import querystring from 'querystring'
-import credentials from '../keys'
 import SearchResults from "./SearchResults"
 import { Album, Artist, Playlist, Track } from '../core/types/interfaces';
+import { useAppDispatch } from "core/hooks/useAppDispatch";
+import { useAppSelector } from "core/hooks/useAppSelector";
+import { setAccessToken } from "core/features/spotifyService/spotifyLoginSlice";
+import { refreshSpotifyToken } from "core/api/spotify";
 
 interface SearchResultsState {
   artists: Artist[]
@@ -16,41 +17,28 @@ interface SearchResultsState {
 
 function Search() {
   const params = useParams<{query: string}>()
-  const [spotifyToken, setToken] = useState('')
+  const dispatch = useAppDispatch();
+  const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.data.auth)
   const [searchData, setSearchData] = useState<SearchResultsState>({
     artists: [], albums: [], tracks: [], playlists:[]
   })
 
   useEffect(() => {
     handleSearch(params.query)
-  }, [params]);
+  }, [params, spotifyAuthData.refreshToken]);
 
-  const handleSearch = (query: string) => {
-    if (!spotifyToken) {
-      spotifyAuthorization(query);
-    } else {
-      processQuery(query, spotifyToken);
-    }
-  }
-
-  const spotifyAuthorization = (query: string) => {
-    axios({
-      method: 'post',
-      url: 'https://accounts.spotify.com/api/token',
-      data: querystring.stringify({grant_type: 'client_credentials'}),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization:
-        `Basic ${Buffer.from(credentials.id + ':' + credentials.secret).toString('base64')}`
+  const handleSearch = async (query: string) => {
+    if (spotifyAuthData.refreshToken) {
+      try {
+        const refreshResponse = await refreshSpotifyToken(spotifyAuthData.refreshToken)
+        const { access_token: accessToken } = refreshResponse!;
+        processQuery(query, accessToken);
+        dispatch(setAccessToken({ accessToken }));
       }
-    })
-      .then(response => {
-        setToken(response.data.access_token)
-        processQuery(query, response.data.access_token);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+      catch(err) {
+        console.log(err)
+      }
+    }
   }
 
   const processQuery = (query: string, token: string) => {
@@ -65,47 +53,38 @@ function Search() {
     }
   }
 
-  const queryItemIdApi = (type: string, id: string, token: string) => {
-    axios({
-      method: 'get',
-      url: `https://api.spotify.com/v1/${type}s/${id}`,
+  const queryItemIdApi = async (type: string, id: string, token: string) => {
+    const response = await fetch(`https://api.spotify.com/v1/${type}s/${id}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`
       }
     })
-      .then(response => {
-        const item = response.data;
-        setSearchData({
-          artists: item.type === 'artist' ? [item as Artist] : [], 
-          albums: item.type === 'album' ? [item as Album] : [], 
-          tracks: item.type === 'track' ? [item as Track] : [],
-          playlists: item.type === 'playlist' ? [item as Playlist] : []
-        })
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    const item = await response.json();
+    setSearchData({
+      artists: item.type === 'artist' ? [item as Artist] : [], 
+      albums: item.type === 'album' ? [item as Album] : [], 
+      tracks: item.type === 'track' ? [item as Track] : [],
+      playlists: item.type === 'playlist' ? [item as Playlist] : []
+    })
   }
 
-  const querySearchAPI = (query: string, token: string) => {
-    axios({
-      method: 'get',
-      url: `https://api.spotify.com/v1/search?q=${query}&type=artist,track,album,playlist`,
+  const querySearchAPI = async (query: string, token: string) => {
+    const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=artist,track,album,playlist`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${token}`
       }
     })
-      .then(response => {
-        setSearchData({artists: response.data.artists.items, 
-          albums: response.data.albums.items, 
-          tracks: response.data.tracks.items,
-          playlists: response.data.playlists.items})
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    const { artists, albums, tracks, playlists } = await response.json();
+    setSearchData({
+      artists: artists.items, 
+      albums: albums.items, 
+      tracks: tracks.items,
+      playlists: playlists.items
+    })
   }
 
   return (
