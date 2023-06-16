@@ -1,4 +1,22 @@
 .frame { 
     display: flex;
     height: 100%; 
+    width: 100vw;
+}
+
+.leftContent {
+    visibility: visible;
+    flex-shrink: 0;
+}
+
+.sliderEdge {
+    width: 3px;
+    background-color: rgb(15, 15, 15);
+    cursor: ew-resize;
+    flex-shrink: 0;
+}
+
+.rightContent {
+    flex-grow: 1;
+    overflow: hidden;
 }

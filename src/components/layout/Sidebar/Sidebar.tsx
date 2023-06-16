@@ -8,10 +8,8 @@ import { SpotifyLoginData, YellowboxUser } from "core/types/interfaces";
 import styles from "./Sidebar.module.css";
 import { Active, DndContext, DragOverlay, Over, PointerSensor, useDroppable, useSensor, useSensors, DndContextProps, Translate, Collision } from "@dnd-kit/core";
 import SidebarFolder from "./SidebarFolder/SidebarFolder";
-import SidebarBox, { AppSortableData } from "./SidebarBox/SidebarBox";
-import { SortableContext } from "@dnd-kit/sortable";
+import { AppSortableData } from "./SidebarBox/SidebarBox";
 import SidebarBoxList from "./SidebarBoxList/SidebarBoxList";
-import { reorderBoxItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 
 interface IProps {
   user: YellowboxUser
@@ -55,7 +53,16 @@ export function AppDndContext(props: DndContextTypesafeProps) {
 
 function Sidebar({ user, login }: IProps) {
   const dispatch = useAppDispatch();
-  const userFolders = useAppSelector(state => state.userFoldersData.folders)
+  const userFolders = useAppSelector(state => state.userFoldersData.folders);
+  const sortedFolders = [...userFolders].sort((folderA, folderB) => {
+    console.log('Are we sorting')
+    if (folderA.name > folderB.name) return 1
+    if (folderA.name < folderB.name) return -1
+    else {
+      console.log('No sorting bitch')
+      return 0
+    }
+  })
   const userDashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes)
   const [activeDraggable, setActiveDraggable] = useState<null | {name: string, id: string}>(null);
   const [dragOverFolder, setDragOverFolder] = useState<null | string>(null);
@@ -143,11 +150,11 @@ function Sidebar({ user, login }: IProps) {
   return (
     <div id={styles.mainPanel}>
       {
-        login.auth.code &&
+        user._id &&
         <>
           <div id={styles.user}>
-            <img id={styles.userImage} src={login.userData.image ? login.userData.image : "/user.png"} alt="user" />
-            <span id={styles.userName}> {login.userData.displayName} </span>
+            <img id={styles.userImage} src={user.image ? user.image : "/user.png"} alt="user" />
+            <span id={styles.userName}> {user.displayName} </span>
           </div>
           <div id={styles.servicesList}>
             <h4 className={styles.sectionTitle}> Your Services </h4>
@@ -159,7 +166,7 @@ function Sidebar({ user, login }: IProps) {
             <h4 className={styles.sectionTitle}> Your Boxes </h4>
             <AppDndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd} sensors={sensors}>
               <div className={styles.folderList}>
-                {!!userFolders.length && userFolders.map(folder => {
+                {!!sortedFolders.length && sortedFolders.map(folder => {
                   return (
                     <SidebarFolder folder={folder} key={folder._id} isDraggingOver={folder._id === dragOverFolder} />
                   )

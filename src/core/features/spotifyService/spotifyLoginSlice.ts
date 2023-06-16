@@ -8,15 +8,12 @@ interface SpotifyLoginState {
 const initialState: SpotifyLoginState = {
   data: {
     auth: {
-      code: null,
+      accessToken: null,
       refreshToken: null
     },
     userData: {
       displayName: '',
       userId: '',
-      uri: '',
-      image: '',
-      email: ''
     }
   }
 };
@@ -27,12 +24,16 @@ const spotifyLoginSlice = createSlice({
   reducers: {
     setSpotifyLoginData(state, action: PayloadAction<SpotifyLoginData>) {
       state.data = action.payload
-    }
+    },
+    setAccessToken(state, action: PayloadAction<{accessToken: string}>) {
+      state.data.auth.accessToken = action.payload.accessToken;
+    },
   }
 })
 
 export const {
-  setSpotifyLoginData
+  setSpotifyLoginData,
+  setAccessToken
 } = spotifyLoginSlice.actions;
 
 export default spotifyLoginSlice.reducer;

@@ -2,20 +2,18 @@ import { BoxSections } from "./types"
 
 export interface SpotifyLoginData {
   auth: SpotifyUserAuth
-  userData: SpotifyUserData
+  userData?: SpotifyUserData
 }
 
 export interface SpotifyUserData {
-  displayName: string
+  displayName?: string
   userId: string
-  uri: string
-  image: string
-  email: string
 }
 
 export interface SpotifyUserAuth {
-  code: string | null
+  code?: string | null
   refreshToken: string | null
+  accessToken?: string | null
 }
 
 export interface YellowboxUser {
