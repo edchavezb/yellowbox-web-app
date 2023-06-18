@@ -123,9 +123,9 @@ function Sidebar({ user }: IProps) {
       {
         user._id &&
         <>
-          <div id={styles.user} ref={accountWidgetRef} onClick={() => setIsMenuOpen(true)}>
+          <div id={styles.user} onClick={() => setIsMenuOpen(true)}>
             <img id={styles.userImage} src={user.image ? user.image : "/user.png"} alt="user" />
-            <span id={styles.userName}> {user.displayName} </span>
+            <span id={styles.userName} ref={accountWidgetRef}> {user.displayName} </span>
           </div>
           <div id={styles.servicesList}>
             <h4 className={styles.sectionTitle}> Your Services </h4>
