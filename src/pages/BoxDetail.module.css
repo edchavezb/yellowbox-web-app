@@ -1,6 +1,7 @@
 #mainPanel {
     height: 100%;
     overflow-y: scroll;
+    overflow-x: hidden;
     padding: 20px 30px;
     box-sizing: border-box;
 }
@@ -24,4 +25,10 @@
 
 #emptyMsg {
     text-align: center;
+}
+
+@media (max-width: 576px) {
+    #mainPanel {
+        padding: 15px;
+    }
 }

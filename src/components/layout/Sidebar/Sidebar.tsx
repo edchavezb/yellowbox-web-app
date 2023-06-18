@@ -1,5 +1,5 @@
 import { fetchDashboardBoxes, fetchUserBoxes, reorderDashboardBoxesThunk } from "core/features/userBoxes/userBoxesSlice";
-import { addBoxToFolderThunk, fetchDashboardFolders, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderFolderBoxesThunk } from "core/features/userFolders/userFoldersSlice";
+import { addBoxToFolderThunk, fetchDashboardFolders, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderSidebarFolderBoxesThunk } from "core/features/userFolders/userFoldersSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useEffect, useRef, useState } from "react";
@@ -76,12 +76,12 @@ function Sidebar({ user }: IProps) {
       const boxName = active.data.current?.name;
       if (targetSortable) {
         if (targetSortable.containerId === activeSortable?.containerId) {
-          // Reorder
+          // Reorder dashboard boxes or within folder 
           if (targetSortable.containerId === 'boxList') {
             dispatch(reorderDashboardBoxesThunk(activeSortable.index, targetSortable.index))
           }
           else {
-            dispatch(reorderFolderBoxesThunk(activeSortable?.containerId as string, activeSortable.index, targetSortable.index))
+            dispatch(reorderSidebarFolderBoxesThunk(activeSortable?.containerId as string, activeSortable.index, targetSortable.index))
           }
         }
         else if (targetSortable.containerId === 'boxList') {

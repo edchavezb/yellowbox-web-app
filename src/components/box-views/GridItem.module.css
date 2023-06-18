@@ -96,3 +96,10 @@
     margin-bottom: 4px;
     padding: 0px 5px;
 }
+
+@media (max-width: 576px) {
+    .itemCard {
+        width: 40%;
+        margin: 5%;
+    }
+}

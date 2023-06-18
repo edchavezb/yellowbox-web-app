@@ -22,7 +22,7 @@ interface IProps<T> {
 }
 
 function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index, reorderingMode, subId }: IProps<T>) {
-  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
   const dispatch = useAppDispatch();
   const { name, type, uri, id } = element;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
@@ -33,6 +33,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
+    transition
   }
 
   //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)
@@ -141,13 +142,15 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           <img className={styles.reorderIcon} src="/icons/reorder.svg" alt="reorder"></img>
         </div>
         <div className={styles.imageContainer}>
-          <a href={`${uri}:play`}>
-            <div className={styles.instantPlay}>
-              <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-              {type === "track" ? <span> Play </span> : <span> Open </span>}
-            </div>
-          </a>
-          <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+          <div className={styles.itemLink}>
+            <a href={`${uri}:play`}>
+              <div className={styles.instantPlay}>
+                <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
+                {type === "track" ? <span> Play </span> : <span> Open </span>}
+              </div>
+            </a>
+            <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+          </div>
         </div>
         <div className={styles.dataCol}>
           <div className={type === "track" || type === "album" ? styles.itemNameItalic : styles.itemName}>
@@ -178,7 +181,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         <div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
           <div className={styles.itemPosition}>{index + 1}</div>
           <div className={styles.imageContainer}>
-            <Link to={`/detail/${type}/${id}`}  className={styles.itemLink} draggable="false">
+            <Link to={`/detail/${type}/${id}`} className={styles.itemLink} draggable="false">
               <a href={`${uri}:play`}>
                 <div className={styles.instantPlay}>
                   <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
@@ -207,8 +210,8 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
                 {itemNote?.noteText}
               </div>
               <div className={styles.notesOverlay}>
-                <div className={styles.overlayTitle}> 
-                  {!itemNote?.noteText && isOwner ? 'ADD NOTE ✎' : 'EXPAND ⛶'} 
+                <div className={styles.overlayTitle}>
+                  {!itemNote?.noteText && isOwner ? 'ADD NOTE ✎' : 'EXPAND ⛶'}
                 </div>
               </div>
             </div>
@@ -218,7 +221,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           </div>
         </div>
         <PopperMenu referenceRef={detailRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId}/>
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
   )

@@ -17,12 +17,13 @@ interface IProps {
 }
 
 function ListRowAlbum({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, artists, album_type, release_date, id, uri } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
+    transition
   }
 
   const getArtistLinks = () => {

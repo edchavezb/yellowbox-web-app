@@ -7,16 +7,18 @@ import { useHistory } from "react-router-dom";
 import { Album, Artist, Playlist, Track } from "../../core/types/interfaces";
 import styles from "./DeletePrompt.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
+import { deleteUserFolderThunk } from "core/features/userFolders/userFoldersSlice";
 
 type MusicData = Artist | Album | Track | Playlist;
 
 interface IProps {
-  boxId: string
+  folderId?: string
+  boxId?: string
   itemData?: MusicData
-  deleteType: "Box" | "Item"
+  deleteType: "Folder" | "Box" | "Item"
 }
 
-function DeletePrompt({itemData, boxId, deleteType}: IProps) {
+function DeletePrompt({itemData, boxId, folderId, deleteType}: IProps) {
   const dispatch = useAppDispatch();
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
   const history = useHistory();
@@ -43,6 +45,9 @@ function DeletePrompt({itemData, boxId, deleteType}: IProps) {
   }
 
   switch(deleteType){
+    case "Folder":
+      promptMessage = 'Are you sure you want to delete this folder? The boxes it contains will not be deleted.'
+    break;
     case "Box":
       promptMessage = 'Are you sure you want to delete this box from your collection?'
     break;
@@ -54,15 +59,19 @@ function DeletePrompt({itemData, boxId, deleteType}: IProps) {
   }
 
   const handleDeleteAction = () => {
-    if (deleteType === "Box"){
-      const containingFolderId = userFolders.find(folder => folder.boxes.map(dashboardBox => dashboardBox.boxId).includes(boxId))?._id;
-      dispatch(deleteUserBoxThunk(boxId, !!containingFolderId, containingFolderId));
+    if (deleteType === "Folder"){
+      dispatch(deleteUserFolderThunk(folderId!));
+      history.push('/')
+    }
+    else if (deleteType === "Box"){
+      const containingFolderId = userFolders.find(folder => folder.boxes.map(dashboardBox => dashboardBox.boxId).includes(boxId!))?._id;
+      dispatch(deleteUserBoxThunk(boxId!, !!containingFolderId, containingFolderId));
       history.push('/')
     }
     else if (deleteType === "Item" && itemData){
-      dispatch(deleteItem(boxId, itemData._id!));
+      dispatch(deleteItem(boxId!, itemData._id!));
     }
-    dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
+    dispatch(setModalState({visible: false, type:"", boxId:"", folderId: "", page: "", itemData: undefined}))
   }
 
   return (
@@ -72,7 +81,7 @@ function DeletePrompt({itemData, boxId, deleteType}: IProps) {
       </div>
       <div id={styles.modalFooter}>
         <button onClick={() => handleDeleteAction()}> Yes, delete it </button>
-        <button onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}> Cancel </button>
+        <button onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", folderId: "", itemData: undefined}))}> Cancel </button>
       </div>
     </div>
   )

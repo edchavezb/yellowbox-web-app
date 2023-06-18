@@ -25,19 +25,25 @@ function Modal() {
       modalBody = <NewBoxMenu editMode={true} />
     break;
     case "Delete Box" :
-      modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} deleteType={"Box"} />
+      modalBody = <DeletePrompt boxId={modalData.boxId as string} itemData={modalData.itemData!} deleteType={"Box"} />
     break;
     case "New Folder" :
       modalBody = <NewFolderMenu editMode={false}/>
+    break;
+    case "Edit Folder" :
+      modalBody = <NewFolderMenu editMode={true}/>
+    break;
+    case "Delete Folder" :
+      modalBody = <DeletePrompt folderId={modalData.folderId as string} itemData={modalData.itemData!} deleteType={"Folder"} />
     break;
     case "Sorting Options" :
       modalBody = <SortingMenu/>
     break;
     case "Delete Item" :
-      modalBody = <DeletePrompt boxId={modalData.boxId} itemData={modalData.itemData!} deleteType={"Item"} />
+      modalBody = <DeletePrompt boxId={modalData.boxId as string} itemData={modalData.itemData!} deleteType={"Item"} />
     break;
     case "Add To Folder" :
-      modalBody = <AddToFolderMenu boxId={modalData.boxId} page={modalData.page!}/>
+      modalBody = <AddToFolderMenu boxId={modalData.boxId as string} page={modalData.page!}/>
     break;
     case "Add To Box" :
       modalBody = <AddToBoxMenu itemData={modalData.itemData!} />
@@ -46,7 +52,7 @@ function Modal() {
       modalBody = <AddToSubsectionMenu itemData={modalData.itemData!}/>
     break;
     case "Item Note" :
-      modalBody = <ItemNote boxId={modalData.boxId} itemData={modalData.itemData!} subId={modalData.subId} />
+      modalBody = <ItemNote boxId={modalData.boxId as string} itemData={modalData.itemData!} subId={modalData.subId} />
     break;
     case "Box Subsections" :
       modalBody = <SubsectionsMenu />

@@ -16,12 +16,13 @@ interface IProps<T> {
 }
 
 function GridItem<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, reorderingMode, subId }: IProps<T>) {
-  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
   const gridItemRef = useRef(null);
   const { name, type, uri, id } = element;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
+    transition
   }
 
   //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)

@@ -46,3 +46,9 @@
 .hidden {
     display: none;
 }
+
+@media (max-width: 576px) {
+    .toggleButtonDashboard {
+        display: none;
+    }
+}

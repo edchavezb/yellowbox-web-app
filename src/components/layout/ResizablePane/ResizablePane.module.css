@@ -20,3 +20,15 @@
     flex-grow: 1;
     overflow: hidden;
 }
+
+@media (max-width: 576px) {
+    .leftContent {
+        display: none;
+    }
+
+    .rightContent {
+        width: 100vw;
+        flex-grow: initial;
+        overflow: hidden;
+    }
+}

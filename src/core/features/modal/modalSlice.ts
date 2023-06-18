@@ -4,8 +4,10 @@ import { Album, Artist, Playlist, Track } from "core/types/interfaces"
 export type ModalType = 
     "New Box" 
     | "Edit Box"
-    | "Sorting Options" 
     | "Delete Box"
+    | "Edit Folder"
+    | "Delete Folder"
+    | "Sorting Options" 
     | "Delete Item" 
     | "Add To Folder"
     | "Add To Box" 
@@ -21,7 +23,8 @@ interface IModal {
         itemData?: Artist | Album | Track | Playlist | undefined
         visible: boolean
         type: ModalType
-        boxId: string
+        boxId?: string
+        folderId?: string
         subId?: string
         page: string
     }
