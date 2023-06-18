@@ -4,8 +4,11 @@ import { useHistory } from "react-router-dom";
 import styles from "./Header.module.css";
 import PopperMenu from "components/menus/popper/PopperMenu";
 import AddButtonMenu from "components/menus/popper/AddButtonMenu/AddButtonMenu";
+import { useAppSelector } from "core/hooks/useAppSelector";
+import { spotifyLoginApi } from "core/api/spotify";
 
 function Header() {
+  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const history = useHistory();
@@ -22,6 +25,13 @@ function Header() {
     searchTimeout = setTimeout(() => setSearchQuery(encodedQuery), 500);
   }
 
+  const handleLogin = async () => {
+    const response = await spotifyLoginApi();
+    if (response) {
+      window.location.replace(response.url)
+    }
+  }
+
   return (
     <>
       <div id={styles.header}>
@@ -34,16 +44,28 @@ function Header() {
           </Link>
         </div>
         <div id={styles.headerTools}>
-          <div id={styles.searchBox}>
-            <div id={styles.inputWrapper}>
-              <input id={styles.searchInput} type="text" onChange={(e) => debounceSearch(e.target.value)}
-                onFocus={() => { if (searchQuery) history.push(`/search/${searchQuery}`) }} />
+          {
+            isLoggedIn &&
+            <div id={styles.searchBox}>
+              <div id={styles.inputWrapper}>
+                <input id={styles.searchInput} type="text" onChange={(e) => debounceSearch(e.target.value)}
+                  onFocus={() => { if (searchQuery) history.push(`/search/${searchQuery}`) }} />
+              </div>
+              <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
             </div>
-            <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
-          </div>
-          <div id={styles.newButton} ref={buttonRef} onClick={() => setIsMenuOpen(true)}>
-            <img id={styles.plusIcon} src="/icons/plus.svg" alt="new box"></img>
-          </div>
+          }
+          {
+            isLoggedIn &&
+            <div id={styles.newButton} ref={buttonRef} onClick={() => setIsMenuOpen(true)}>
+              <img id={styles.plusIcon} src="/icons/plus.svg" alt="new box"></img>
+            </div>
+          }
+          {
+            isLoggedIn === false &&
+            <div id={styles.loginButton} ref={buttonRef} onClick={handleLogin}>
+              Log in / Sign up
+            </div>
+          }
         </div>
       </div>
       <PopperMenu referenceRef={buttonRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>

@@ -1,7 +1,7 @@
 import { ModalType, setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { Artist, Album, Track, Playlist, SectionSorting } from "core/types/interfaces";
+import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 import styles from "./BoxItemMenu.module.css";
 
 interface BoxItemMenuProps {
@@ -11,9 +11,10 @@ interface BoxItemMenuProps {
   subId?: string
 }
 
-const BoxItemMenu = ({itemData, setIsOpen, itemType, subId}: BoxItemMenuProps) => {
+const BoxItemMenu = ({ itemData, setIsOpen, subId }: BoxItemMenuProps) => {
   const dispatch = useAppDispatch();
-  const {isUserViewing: boxDetailViewing, box} = useAppSelector(state => state.currentBoxDetailData)
+  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
+  const { isUserViewing: boxDetailViewing, box } = useAppSelector(state => state.currentBoxDetailData)
   const { _id: boxId, notes } = box || {};
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const isOwner = userBoxes.some(box => box.boxId === boxId);
@@ -36,41 +37,47 @@ const BoxItemMenu = ({itemData, setIsOpen, itemType, subId}: BoxItemMenuProps) =
 
   return (
     <div className={menuItemsList}>
-      <div 
-        className={menuItem}
-        onClick={() => handleAddToQueue()}>
-        Add to your queue
-      </div>
-      <div 
-        className={menuItem}
-        onClick={() => handleOpenModal("Add To Box")}>
-        Add to box...
-      </div>
-      { 
+      {
+        isLoggedIn &&
+        <div
+          className={menuItem}
+          onClick={() => handleAddToQueue()}>
+          Add to your queue
+        </div>
+      }
+      {
+        isLoggedIn &&
+        <div
+          className={menuItem}
+          onClick={() => handleOpenModal("Add To Box")}>
+          Add to box...
+        </div>
+      }
+      {
         (boxDetailViewing && isOwner) &&
-        <div 
+        <div
           className={menuItem}
           onClick={() => handleOpenModal("Add To Subsection")}>
           Add to subsection...
         </div>
       }
-      { 
+      {
         (boxDetailViewing && isOwner) &&
-        <div 
+        <div
           className={menuItem}
           onClick={() => handleOpenModal("Delete Item")}>
           Remove from this box
         </div>
       }
-      { 
+      {
         (boxDetailViewing && isOwner) &&
-        <div 
+        <div
           className={menuItem}
           onClick={() => handleOpenModal("Item Note")}>
           {notes?.some(note => note.itemId === itemData.id) ? 'View note' : 'Add note'}
         </div>
       }
-      <div 
+      <div
         className={menuItem}
         onClick={() => handleCopyURL()}>
         Copy Spotify URL

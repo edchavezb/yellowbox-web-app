@@ -6,7 +6,7 @@ import { YellowboxUser } from 'core/types/interfaces';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { setAuthenticatedUser } from 'core/features/user/userSlice';
 import { setSpotifyLoginData } from 'core/features/spotifyService/spotifyLoginSlice';
-import { getSpotifyToken } from 'core/api/spotify';
+import { getSpotifyUserToken } from 'core/api/spotify';
 
 function AuthSuccess() {
   let location = useLocation();
@@ -14,7 +14,7 @@ function AuthSuccess() {
   const dispatch = useAppDispatch();
 
   const getspotifyLoginData = async (code: string, state: string) => {
-    const response = await getSpotifyToken(code, state);
+    const response = await getSpotifyUserToken(code, state);
     const { access_token, refresh_token } = response!;
     getUserData(access_token, refresh_token)
   }

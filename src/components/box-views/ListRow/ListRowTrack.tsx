@@ -10,13 +10,12 @@ import styles from "./ListRowTrack.module.css";
 interface IProps {
   element: Track
   index: number
-  page: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowTrack({ element, setElementDragging, index, page, reorderingMode, subId }: IProps) {
+function ListRowTrack({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,7 +25,7 @@ function ListRowTrack({ element, setElementDragging, index, page, reorderingMode
   }
 
   const getArtistLinks = () => {
-    const artistArray = artists.slice(0, 3).map((artist, idx, arr) => {
+    const artistArray = artists?.slice(0, 3).map((artist, idx, arr) => {
       return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
     })
 

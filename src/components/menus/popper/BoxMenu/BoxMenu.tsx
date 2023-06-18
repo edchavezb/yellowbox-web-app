@@ -10,6 +10,7 @@ interface BoxMenuProps {
 
 const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
   const dispatch = useAppDispatch();
+  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const boxDetailViewing = useAppSelector(state => state.currentBoxDetailData.isUserViewing)
   const { _id: boxId, name: boxName } = useAppSelector(state => state.currentBoxDetailData.box)
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
@@ -57,11 +58,14 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
           Delete this box
         </div>
       }
-      <div
-        className={menuItem}
-        onClick={() => handleCloneBox()}>
-        Clone this box
-      </div>
+      {
+        isLoggedIn &&
+        <div
+          className={menuItem}
+          onClick={() => handleCloneBox()}>
+          Clone this box
+        </div>
+      }
       <div
         className={menuItem}
         onClick={() => handleCopyURL()}>

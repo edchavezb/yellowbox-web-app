@@ -12,24 +12,21 @@ import { reorderBoxItemsThunk, reorderSubsectionItemsThunk } from 'core/features
 
 interface IProps<T> {
   data: T[]
-  listType: string
-  page: string
-  isOwner?: boolean
-  customSorting: boolean
+  sectionType: string
   isDefaultSubSection?: boolean
   subId?: string
   isReorderingMode?: boolean
 }
 
-function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, page, listType, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
+function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionType, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
 
   const getListHeader = () => {
     let listHeader;
-    switch (listType) {
-      case "tracklist": // Tracklist is used for both album details, playlists, and tracks in boxes
+    switch (sectionType) {
+      case "tracks": // Tracklist is used for both album details, playlists, and tracks in boxes
         listHeader =
           <div className={styles.trackListHeader}>
             <div className={styles.headerLeftAlgn}> # </div>
@@ -41,7 +38,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
             <div className={styles.headerCentered}> Spotify </div>
           </div>;
         break;
-      case "albumlist": // Presents a list of albums
+      case "albums": // Presents a list of albums
         listHeader =
           <div className={styles.albumListHeader}>
             <div className={styles.headerLeftAlgn}> # </div>
@@ -72,26 +69,24 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
 
   const getListItemComponent = (e: T) => {
     let itemComponent;
-    switch (listType) {
-      case "tracklist":
+    switch (sectionType) {
+      case "tracks":
         itemComponent =
           <ListRowTrack
             key={e.id}
             index={data.indexOf(e)}
             element={e as Track}
-            page={page}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
           />
         break;
-      case "albumlist":
+      case "albums":
         itemComponent =
           <ListRowAlbum
             key={e.id}
             index={data.indexOf(e)}
             element={e as Album}
-            page={page}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -103,7 +98,6 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
           key={e.id} 
           index={data.indexOf(e)} 
           element={e as Playlist} 
-          page={page} 
           setElementDragging={setElementDragging} 
           reorderingMode={isReorderingMode ? isReorderingMode : false}
           subId={subId}
@@ -115,7 +109,6 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
             key={e.id}
             index={data.indexOf(e)}
             element={e as Track}
-            page={page}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -153,7 +146,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ isOwner, data, 
   return (
     <>
       {
-        isOwner && isReorderingMode ?
+        isReorderingMode ?
           <>
             <DndContext
               collisionDetection={closestCenter}

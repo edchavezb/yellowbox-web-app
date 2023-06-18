@@ -7,19 +7,15 @@ import styles from "./ItemDetail.module.css"
 import { Album, Artist, Playlist, Track } from '../core/types/interfaces';
 import * as checkType from '../core/helpers/typeguards';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { useAppDispatch } from 'core/hooks/useAppDispatch';
-import { refreshSpotifyToken } from 'core/api/spotify';
-import { setAccessToken } from 'core/features/spotifyService/spotifyLoginSlice';
+import { getSpotifyGenericToken } from 'core/api/spotify';
 
 type MusicData = Artist | Album | Track | Playlist;
 
 function ItemDetail() {
   const history = useHistory();
-  const dispatch = useAppDispatch();
   const params = useParams<{ id: string, type: string }>()
-  const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.data.auth)
+  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const [itemData, setItemData] = useState<MusicData>({} as MusicData)
-  const [itemListType, setItemListType] = useState("")
   const [itemContents, setItemContents] = useState({ items: [] })
   const [itemAlbum, setItemAlbum] = useState<Album>({ name: "", release_date: "", album_id: "", album_type: "", artists: [], external_urls: { spotify: "" }, id: "", images: [], total_tracks: 0, type: "album", uri: "" } as Album)
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -35,44 +31,40 @@ function ItemDetail() {
   }, [itemData]);
 
   const handleDetailData = async (typeParam: string, idParam: string) => {
-    if (spotifyAuthData.refreshToken) {
-      let itemQuery: string;
-      let contentsQuery: string;
-      switch (typeParam) {
-        case 'album':
-          itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
-          contentsQuery = `https://api.spotify.com/v1/albums/${idParam}/tracks`
-          setItemListType("tracklist")
-          break;
-        case 'artist':
-          itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
-          contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums?market=us`
-          setItemListType("albumlist")
-          break;
-        case 'track':
-          itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
-          contentsQuery = `https://api.spotify.com/v1/tracks/${idParam}`
-          break;
-        case 'playlist':
-          itemQuery = `https://api.spotify.com/v1/playlists/${idParam}`
-          contentsQuery = `https://api.spotify.com/v1/playlists/${idParam}/tracks`
-          setItemListType("tracklist")
-          break;
-        default:
-          itemQuery = ``
-          contentsQuery = ``
-          break;
-      }
-      try {
-        const refreshResponse = await refreshSpotifyToken(spotifyAuthData.refreshToken)
-        const { access_token: accessToken } = refreshResponse!;
-        dispatch(setAccessToken({ accessToken }));
+    let itemQuery: string;
+    let contentsQuery: string;
+    switch (typeParam) {
+      case 'album':
+        itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
+        contentsQuery = `https://api.spotify.com/v1/albums/${idParam}/tracks`
+        break;
+      case 'artist':
+        itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
+        contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums?market=us`
+        break;
+      case 'track':
+        itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
+        contentsQuery = `https://api.spotify.com/v1/tracks/${idParam}`
+        break;
+      case 'playlist':
+        itemQuery = `https://api.spotify.com/v1/playlists/${idParam}`
+        contentsQuery = `https://api.spotify.com/v1/playlists/${idParam}/tracks`
+        break;
+      default:
+        itemQuery = ``
+        contentsQuery = ``
+        break;
+    }
+    try {
+      const tokenResponse = await getSpotifyGenericToken()!;
+      const { access_token: accessToken } = tokenResponse!;
+      if (accessToken) {
         getItemData(typeParam, itemQuery, accessToken)
         getContents(contentsQuery, accessToken)
       }
-      catch (err) {
-        console.log(err)
-      }
+    }
+    catch (err) {
+      console.log(err)
     }
   }
 
@@ -158,19 +150,16 @@ function ItemDetail() {
     switch (params.type) {
       case "album":
         listComponent =
-          <ListView listType={itemListType} data={attachAlbumDataToTracks(itemData as Album)} page="detail" customSorting={false} />
+          <ListView sectionType={'tracks'} data={attachAlbumDataToTracks(itemData as Album)} />
         break;
       case "playlist":
         listComponent =
-          <ListView listType={itemListType} data={itemContents.items.map((e) => e['track'])} page="detail" customSorting={false} />
+          <ListView sectionType={'tracks'} data={itemContents.items.map((e) => e['track'])} />
         break;
       case "artist":
         listComponent =
           <GridView
             data={removeDuplicatesByProperty(itemContents.items, "name").filter((album: Album) => album.album_type !== 'compilation')}
-            page="detail"
-            customSorting={false}
-            boxId={undefined}
           />
         break;
       case "track":
@@ -262,9 +251,11 @@ function ItemDetail() {
         {getListComponent()}
       </div>
     );
-  } else {
-    return (<div></div>)
-  }
+  } 
+
+  return (
+    <></>
+  )
 }
 
 export default ItemDetail;

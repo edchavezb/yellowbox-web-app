@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 import styles from "./ResizablePane.module.css";
+import { useAppSelector } from 'core/hooks/useAppSelector';
 
 interface ResizablePaneProps {
   leftContent: ReactNode;
@@ -7,6 +8,7 @@ interface ResizablePaneProps {
 }
 
 function ResizablePane({ leftContent, rightContent }: ResizablePaneProps) {
+  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const [leftWidth, setLeftWidth] = useState(200);
 
   const handleDrag = (event: MouseEvent): void => {
@@ -19,9 +21,12 @@ function ResizablePane({ leftContent, rightContent }: ResizablePaneProps) {
 
   return (
     <div className={styles.frame}>
-      <div className={styles.leftContent} style={{ width: leftWidth }}>
+      {
+        isLoggedIn &&
+        <div className={styles.leftContent} style={{ width: leftWidth }}>
         {leftContent}
       </div>
+      }
       <div
         className={styles.sliderEdge}
         onMouseDown={(event) => {

@@ -10,16 +10,12 @@ import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 
 interface IProps<T> {
   data: T[]
-  page: string
-  boxId?: string
-  isOwner?: boolean,
-  customSorting?: boolean
   isDefaultSubSection?: boolean
   subId?: string
   isReorderingMode?: boolean
 }
 
-function GridView<T extends Artist | Album | Track | Playlist>({ data, isOwner, page, boxId, customSorting, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
+function GridView<T extends Artist | Album | Track | Playlist>({ data, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
@@ -52,7 +48,7 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isOwner, 
   return (
     <>
       {
-        isOwner && isReorderingMode ?
+        isReorderingMode ?
           <>
             <DndContext
               collisionDetection={closestCenter}

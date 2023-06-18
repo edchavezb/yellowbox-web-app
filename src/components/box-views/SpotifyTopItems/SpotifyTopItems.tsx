@@ -4,10 +4,7 @@ import styles from "./SpotifyTopItems.module.css";
 import { Artist } from 'core/types/interfaces';
 import TopItemsList from './TopItemsLlist/TopItemsList';
 import MostPlayedItem from './MostPlayedItem/MostPlayedItem';
-
-interface IProps {
-  token: string
-}
+import { useAppSelector } from 'core/hooks/useAppSelector';
 
 enum TopItemsSelectItems {
   ALBUMS = 'ALBUMS',
@@ -33,7 +30,8 @@ const TopItemsInitialState: TopItemsState = {
   [TopItemsSelectItems.ALBUMS]: []
 }
 
-function SpotifyTopItems({token}: IProps) {
+function SpotifyTopItems() {
+  const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.data.auth)
   const [selectedTop, setSelectedTop] = useState(TopItemsSelectItems.ARTISTS)
   const [selectedTimeRange, setSelectedTimeRange] = useState(TimeRanges.SHORT)
   const [topItems, setTopItems] = useState(TopItemsInitialState);
@@ -43,19 +41,19 @@ function SpotifyTopItems({token}: IProps) {
   }, [selectedTop, selectedTimeRange])
 
   const fetchItemsList = async () => {
-    if (selectedTop === TopItemsSelectItems.ARTISTS){
+    if (selectedTop === TopItemsSelectItems.ARTISTS) {
       const artists = await getTopArtists();
-      setTopItems({...topItems, [TopItemsSelectItems.ARTISTS]: artists.items})
-    } 
-    else if (selectedTop === TopItemsSelectItems.TRACKS){
-      const tracks = await getTopTracks();
-      setTopItems({...topItems, [TopItemsSelectItems.TRACKS]: tracks.items})
+      setTopItems({ ...topItems, [TopItemsSelectItems.ARTISTS]: artists.items })
     }
-    else if (selectedTop === TopItemsSelectItems.ALBUMS){
+    else if (selectedTop === TopItemsSelectItems.TRACKS) {
+      const tracks = await getTopTracks();
+      setTopItems({ ...topItems, [TopItemsSelectItems.TRACKS]: tracks.items })
+    }
+    else if (selectedTop === TopItemsSelectItems.ALBUMS) {
       const tracks = await getTopTracks();
       const albums = computeTopAlbums(tracks.items);
-      setTopItems({...topItems, [TopItemsSelectItems.ALBUMS]: albums})
-    } 
+      setTopItems({ ...topItems, [TopItemsSelectItems.ALBUMS]: albums })
+    }
   }
 
   const getTopArtists = async () => {
@@ -63,7 +61,7 @@ function SpotifyTopItems({token}: IProps) {
       `https://api.spotify.com/v1/me/top/artists?limit=50&time_range=${selectedTimeRange}`,
       {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${spotifyAuthData.accessToken}`
         }
       }
     )
@@ -75,7 +73,7 @@ function SpotifyTopItems({token}: IProps) {
       `https://api.spotify.com/v1/me/top/tracks?limit=50&time_range=${selectedTimeRange}`,
       {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${spotifyAuthData.accessToken}`
         }
       }
     )
@@ -84,18 +82,18 @@ function SpotifyTopItems({token}: IProps) {
 
   const computeTopAlbums = (tracks: Track[]) => {
     const allAlbums = tracks.map(track => track.album!).filter(album => album.album_type !== 'SINGLE');
-    const scoreBoard: {[key: string]: number} = {}
+    const scoreBoard: { [key: string]: number } = {}
     allAlbums.forEach(album => {
       const id = album?.id!;
-      if (!Object.keys(scoreBoard).includes(id)){
+      if (!Object.keys(scoreBoard).includes(id)) {
         scoreBoard[id] = 1;
       } else {
         scoreBoard[id]++
       }
     })
-    const uniqueAlbums = allAlbums.reduce<Album[]>((acc, curr) => 
+    const uniqueAlbums = allAlbums.reduce<Album[]>((acc, curr) =>
       acc.some(album => album.id === curr!.id) ? acc : [...acc, curr]
-    , [])
+      , [])
     const sortedAlbums = uniqueAlbums.sort((a, b) => {
       const countA = scoreBoard[a?.id!]
       const countB = scoreBoard[b?.id!]
@@ -135,7 +133,7 @@ function SpotifyTopItems({token}: IProps) {
         !!topItems[selectedTop]?.length &&
         <div className={styles.topItemsColumnsWrapper}>
           <div className={styles.mostPlayedColumn}>
-            <MostPlayedItem item={topItems[selectedTop][0]} type={selectedTop}/>
+            <MostPlayedItem item={topItems[selectedTop][0]} type={selectedTop} />
           </div>
           <div className={styles.topItemsColumn}>
             <TopItemsList items={topItems[selectedTop].slice(0, 10)} type={selectedTop} />

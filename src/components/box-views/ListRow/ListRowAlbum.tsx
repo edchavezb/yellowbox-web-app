@@ -11,13 +11,12 @@ import styles from "./ListRowAlbum.module.css";
 interface IProps {
   element: Album
   index: number
-  page: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowAlbum({ element, setElementDragging, index, page, reorderingMode, subId }: IProps) {
+function ListRowAlbum({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);

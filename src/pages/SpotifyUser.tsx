@@ -18,6 +18,7 @@ interface SpotifyUserData {
 
 function SpotifyUser() {
   const dispatch = useAppDispatch();
+  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.data.auth)
   const [userData, setUserData] = useState<SpotifyUserData>({} as SpotifyUserData);
   const [recentlyPlayed, setRecentlyPlayed] = useState<Track[]>([]);
@@ -81,32 +82,35 @@ function SpotifyUser() {
     setUserPlaylists(data.items)
   }
 
+  if (isLoggedIn) {
+    return (
+      <div className={styles.spotifyWrapper}>
+        {
+          userData.display_name &&
+          <h1> {userData?.display_name?.split(" ")[0]}'s Spotify dashboard </h1>
+        }
+          <SpotifyTopItems />
+        {
+          !!recentlyPlayed.length &&
+          <div className={styles.recentlyPlayedSection}>
+            <h3> Recently played tracks </h3>
+            <ListView<Track> data={recentlyPlayed} sectionType={'tracklist'} />
+          </div>
+        }
+        {
+          !!userPlaylists.length &&
+          <div className={styles.userPlaylistsSection}>
+            <h3> Your playlists </h3>
+            <GridView<Playlist> data={userPlaylists} />
+          </div>
+        }
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.spotifyWrapper}>
-      {
-        userData.display_name &&
-        <h1> {userData?.display_name?.split(" ")[0]}'s Spotify dashboard </h1>
-      }
-      {
-        spotifyAuthData.accessToken &&
-        <SpotifyTopItems token={spotifyAuthData.accessToken} />
-      }
-      {
-        !!recentlyPlayed.length &&
-        <div className={styles.recentlyPlayedSection}>
-          <h3> Recently played tracks </h3>
-          <ListView<Track> data={recentlyPlayed} page={'spotifyUser'} listType={'tracklist'} customSorting={false} />
-        </div>
-      }
-      {
-        !!userPlaylists.length &&
-        <div className={styles.userPlaylistsSection}>
-          <h3> Your playlists </h3>
-          <GridView<Playlist> data={userPlaylists} page={'spotifyUser'} customSorting={false} />
-        </div>
-      }
-    </div>
-  );
+    <></>
+  )
 
 }
 

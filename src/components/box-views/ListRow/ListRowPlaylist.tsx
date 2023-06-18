@@ -11,13 +11,12 @@ import styles from "./ListRowPlaylist.module.css";
 interface IProps {
   element: Playlist
   index: number
-  page: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowPlaylist({ element, setElementDragging, index, page, reorderingMode, subId }: IProps) {
+function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
   const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
