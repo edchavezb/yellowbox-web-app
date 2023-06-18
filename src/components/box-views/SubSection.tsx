@@ -1,6 +1,7 @@
 import GridView from "./GridView"
 import ListView from "./ListView"
 import DetailView from "./DetailView"
+import WallView from "./WallView";
 import styles from "./SubSection.module.css";
 import { Album, Artist, Playlist, Track } from "../../core/types/interfaces";
 
@@ -35,6 +36,9 @@ function SubSection<T extends Artist | Album | Track | Playlist>({
         break;
       case "details":
         sectionView = <DetailView data={data} isDefaultSubSection={isDefault} subId={subId} isReorderingMode={isReorderingMode} />
+        break;
+      case "wall":
+        sectionView = <WallView data={data} isDefaultSubSection={isDefault} subId={subId} isReorderingMode={isReorderingMode} />
         break;
       default:
         sectionView = <div></div>

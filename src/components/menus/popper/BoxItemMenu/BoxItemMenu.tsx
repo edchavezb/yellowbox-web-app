@@ -3,15 +3,17 @@ import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 import styles from "./BoxItemMenu.module.css";
+import { Link } from "react-router-dom";
 
 interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   itemType: string
   subId?: string
+  viewMode?: string
 }
 
-const BoxItemMenu = ({ itemData, setIsOpen, subId }: BoxItemMenuProps) => {
+const BoxItemMenu = ({ itemData, setIsOpen, subId, viewMode }: BoxItemMenuProps) => {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const { isUserViewing: boxDetailViewing, box } = useAppSelector(state => state.currentBoxDetailData)
@@ -37,6 +39,16 @@ const BoxItemMenu = ({ itemData, setIsOpen, subId }: BoxItemMenuProps) => {
 
   return (
     <div className={menuItemsList}>
+      {
+        viewMode === 'wall' &&
+        <Link to={`/detail/${itemData.type}/${itemData.id}`}>
+          <div
+            className={menuItem}
+            onClick={() => handleAddToQueue()}>
+            {`Navigate to ${itemData.type}`}
+          </div>
+        </Link>
+      }
       {
         isLoggedIn &&
         <div

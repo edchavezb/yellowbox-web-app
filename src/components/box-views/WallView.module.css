@@ -1,0 +1,6 @@
+.itemContainer {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}

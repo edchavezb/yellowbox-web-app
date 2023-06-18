@@ -48,7 +48,8 @@ function SortingMenu() {
                       setSorting((state: SectionSorting) => ({ ...state, ...newSortingObject }))
                     }}>
                     <option value="grid"> Grid </option>
-                    {section !== "artists" ? <option value="list"> List </option> : ""}
+                    {section !== "artists" && <option value="list"> List </option>}
+                    {section === "artists" && <option value="wall"> Wall </option>}
                     <option value="details"> Details </option>
                   </select>
                 </div>

@@ -6,5 +6,6 @@ export const VIEW_MODES = {
 
 export const ARTIST_VIEW_MODES = {
     grid: 'grid',
-    details: 'details'
+    details: 'details',
+    wall: 'wall'
 }
