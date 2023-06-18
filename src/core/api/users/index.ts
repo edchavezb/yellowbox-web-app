@@ -1,4 +1,4 @@
-import { DashboardBox, UserBox, UserFolder, YellowboxUser } from '../../types/interfaces'
+import { DashboardBox, UserFolder, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
 export const getUserDataBySpotifyId = async (spotifyId: string) => {

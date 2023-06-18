@@ -24,13 +24,38 @@ function App() {
   const modalData = useAppSelector(state => state.modalData.modalState)
 
   useEffect(() => {
+    const getUserData = async (refreshToken: string, spotifyId: string) => {
+      const refreshResponse = await refreshSpotifyToken(refreshToken);
+      if (refreshResponse) {
+        const { access_token: token } = refreshResponse;
+        const spotifyLogin = {
+          auth: {
+            refreshToken,
+            accessToken: token
+          },
+          userData: {
+            userId: spotifyId
+          }
+        }
+        dispatch(setSpotifyLoginData(spotifyLogin))
+        const user = await getUserDataBySpotifyId(spotifyId)
+        if (user) {
+          dispatch(setAuthenticatedUser(user!))
+          dispatch(setIsUserLoggedIn(true))
+        }
+        else {
+          dispatch(setIsUserLoggedIn(false))
+        }
+      }
+    }
+
     if (refreshToken && spotifyId) {
       getUserData(refreshToken, spotifyId);
-    } 
+    }
     else {
       dispatch(setIsUserLoggedIn(false))
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (modalData.visible) {
@@ -40,41 +65,16 @@ function App() {
     }
   }, [modalData])
 
-  const getUserData = async (refreshToken: string, spotifyId: string) => {
-    const refreshResponse = await refreshSpotifyToken(refreshToken);
-    if (refreshResponse) {
-      const { access_token: token } = refreshResponse;
-      const spotifyLogin = {
-        auth: {
-          refreshToken,
-          accessToken: token
-        },
-        userData: {
-          userId: spotifyId
-        }
-      }
-      dispatch(setSpotifyLoginData(spotifyLogin))
-      const user = await getUserDataBySpotifyId(spotifyId)
-      if (user) {
-        dispatch(setAuthenticatedUser(user!))
-        dispatch(setIsUserLoggedIn(true))
-      } 
-      else {
-        dispatch(setIsUserLoggedIn(false))
-      }
-    }
-  }
-
   return (
     <Router>
-      <Modal/>
+      <Modal />
       <Layout>
-        <Route exact path="/" render={(props) => <Home {...props}/>} />
-        <Route path="/authsuccess" render={() => <AuthSuccess/>} />
-        <Route path="/search/:query" render={() => <Search/>} />
-        <Route path="/box/:id" render={() => <BoxDetail/>} />
-        <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props}/>} />
-        <Route path="/myaccounts/spotify" render={() => <SpotifyUser/>} />
+        <Route exact path="/" render={(props) => <Home {...props} />} />
+        <Route path="/authsuccess" render={() => <AuthSuccess />} />
+        <Route path="/search/:query" render={() => <Search />} />
+        <Route path="/box/:id" render={() => <BoxDetail />} />
+        <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props} />} />
+        <Route path="/myaccounts/spotify" render={() => <SpotifyUser />} />
       </Layout>
     </Router>
   );

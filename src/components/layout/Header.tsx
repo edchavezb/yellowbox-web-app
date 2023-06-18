@@ -17,7 +17,7 @@ function Header() {
 
   useEffect(() => {
     if (searchQuery) history.push(`/search/${searchQuery}`)
-  }, [searchQuery])
+  }, [searchQuery, history])
 
   const debounceSearch = (input: string) => {
     clearTimeout(searchTimeout);

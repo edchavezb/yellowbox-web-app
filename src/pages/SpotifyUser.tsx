@@ -1,6 +1,6 @@
 import styles from "./SpotifyUser.module.css"
 import { Playlist, Track } from "../core/types/interfaces";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import GridView from "../components/box-views/GridView";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import SpotifyTopItems from "components/box-views/SpotifyTopItems/SpotifyTopItems";
@@ -24,27 +24,7 @@ function SpotifyUser() {
   const [recentlyPlayed, setRecentlyPlayed] = useState<Track[]>([]);
   const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
 
-  useEffect(() => {
-    getSpotifyData();
-  }, [spotifyAuthData.refreshToken])
-
-  const getSpotifyData = async () => {
-    if (spotifyAuthData.refreshToken) {
-      try {
-        const refreshResponse = await refreshSpotifyToken(spotifyAuthData.refreshToken)
-        const { access_token: accessToken } = refreshResponse!;
-        dispatch(setAccessToken({ accessToken }));
-        getUserData(accessToken)
-        getRecentlyPlayed(accessToken)
-        getUserPlaylists(accessToken)
-      }
-      catch(err) {
-        console.log(err)
-      }
-    } 
-  }
-
-  const getUserData = async (token: string) => {
+  const getUserData = useCallback(async (token: string) => {
     const response = await fetch('https://api.spotify.com/v1/me', {
       method: 'GET',
       headers: {
@@ -58,9 +38,9 @@ function SpotifyUser() {
       uri
     } = await response.json()
     setUserData({ display_name, email, images, uri })
-  }
+  }, [])
 
-  const getRecentlyPlayed = async (token: string) => {
+  const getRecentlyPlayed = useCallback(async (token: string) => {
     const response = await fetch('https://api.spotify.com/v1/me/player/recently-played', {
       method: 'GET',
       headers: {
@@ -69,9 +49,9 @@ function SpotifyUser() {
     })
     const data = await response.json();
     setRecentlyPlayed(data.items.map((item: { track: Track }) => item.track).slice(0, 10))
-  }
+  }, [])
 
-  const getUserPlaylists = async (token: string) => {
+  const getUserPlaylists = useCallback(async (token: string) => {
     const response = await fetch('https://api.spotify.com/v1/me/playlists', {
       method: 'GET',
       headers: {
@@ -80,7 +60,26 @@ function SpotifyUser() {
     })
     const data = await response.json();
     setUserPlaylists(data.items)
-  }
+  }, [])
+
+  useEffect(() => {
+    const getSpotifyData = async () => {
+      if (spotifyAuthData.refreshToken) {
+        try {
+          const refreshResponse = await refreshSpotifyToken(spotifyAuthData.refreshToken)
+          const { access_token: accessToken } = refreshResponse!;
+          dispatch(setAccessToken({ accessToken }));
+          getUserData(accessToken)
+          getRecentlyPlayed(accessToken)
+          getUserPlaylists(accessToken)
+        }
+        catch (err) {
+          console.log(err)
+        }
+      }
+    }
+    getSpotifyData();
+  }, [spotifyAuthData.refreshToken, getUserData, getRecentlyPlayed, getUserPlaylists, dispatch])
 
   if (isLoggedIn) {
     return (
@@ -89,7 +88,7 @@ function SpotifyUser() {
           userData.display_name &&
           <h1> {userData?.display_name?.split(" ")[0]}'s Spotify dashboard </h1>
         }
-          <SpotifyTopItems />
+        <SpotifyTopItems />
         {
           !!recentlyPlayed.length &&
           <div className={styles.recentlyPlayedSection}>

@@ -2,9 +2,8 @@ import { setModalState } from 'core/features/modal/modalSlice';
 import { updateBoxSorting, updateBoxSortingThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { SectionSorting, Sorting, UserBox } from 'core/types/interfaces';
-//import { useHistory } from "react-router-dom";
 
 import styles from "./SortingMenu.module.css";
 

@@ -19,29 +19,29 @@ function Search() {
   })
 
   useEffect(() => {
-    handleSearch(params.query)
-  }, [params]);
-
-  const handleSearch = async (query: string) => {
-    try {
-      const tokenResponse = await getSpotifyGenericToken()!;
-      const { access_token: accessToken } = tokenResponse!;
-      if (accessToken) {
-        const urlIdentifier = '%2Fopen.spotify.com%2F'
-        if (query.includes(urlIdentifier)) {
-          const identifierString = query.split(urlIdentifier)[1].split('%3F')[0]
-          const [itemType, itemId] = identifierString.split('%2F');
-          queryItemIdApi(itemType, itemId, accessToken);
-        }
-        else {
-          querySearchAPI(query, accessToken);
+    const handleSearch = async (query: string) => {
+      try {
+        const tokenResponse = await getSpotifyGenericToken()!;
+        const { access_token: accessToken } = tokenResponse!;
+        if (accessToken) {
+          const urlIdentifier = '%2Fopen.spotify.com%2F'
+          if (query.includes(urlIdentifier)) {
+            const identifierString = query.split(urlIdentifier)[1].split('%3F')[0]
+            const [itemType, itemId] = identifierString.split('%2F');
+            queryItemIdApi(itemType, itemId, accessToken);
+          }
+          else {
+            querySearchAPI(query, accessToken);
+          }
         }
       }
+      catch (err) {
+        console.log(err)
+      }
     }
-    catch (err) {
-      console.log(err)
-    }
-  }
+
+    handleSearch(params.query)
+  }, [params]);
 
   const queryItemIdApi = async (type: string, id: string, token: string) => {
     const response = await fetch(`https://api.spotify.com/v1/${type}s/${id}`, {

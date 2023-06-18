@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { addBoxToFolderApi, createUserFolderApi, deleteUserFolderApi, getFoldersByIdsApi, moveBoxBetweenFoldersApi, removeBoxFromFolderApi, updateFolderBoxesApi } from "core/api/userfolders"
 import { AppThunk } from "core/store/store"
 import { DashboardBox, UserFolder } from "core/types/interfaces"
-import { addBoxToDashboard, fetchDashboardBoxes, removeBoxFromDashboard, setDashboardBoxes } from "../userBoxes/userBoxesSlice"
+import { addBoxToDashboard, removeBoxFromDashboard } from "../userBoxes/userBoxesSlice"
 
 interface UserFoldersState {
     folders: UserFolder[]

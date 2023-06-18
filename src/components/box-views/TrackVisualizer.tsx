@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios'
 import { Album, Track } from '../../core/types/interfaces';
 import styles from "./TrackVisualizer.module.css";
 
@@ -19,17 +18,7 @@ function TrackVisualizer({data, album, page, boxId}: IProps) {
   }, [data]);
 
   const getLyrics = (query: string) => {
-    //console.log(artist, song)
     //const query = `https://api.lyrics.ovh/v1/${artist.replace(" ", "_")}/${song.replace(" ", "_")}`;
-    //const query = `https://api.lyrics.ovh/v1/Prince/Purple_Rain`;
-    axios.get(query)
-      .then(response => {
-        setTrackLyrics(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-        setTrackLyrics({lyrics: ""});
-      });
   }
 
   return (

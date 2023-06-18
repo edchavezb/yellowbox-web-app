@@ -2,69 +2,40 @@ import { fetchDashboardBoxes, fetchUserBoxes, reorderDashboardBoxesThunk } from 
 import { addBoxToFolderThunk, fetchDashboardFolders, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderFolderBoxesThunk } from "core/features/userFolders/userFoldersSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { SpotifyLoginData, YellowboxUser } from "core/types/interfaces";
+import { YellowboxUser } from "core/types/interfaces";
 import styles from "./Sidebar.module.css";
-import { Active, DndContext, DragOverlay, Over, PointerSensor, useDroppable, useSensor, useSensors, DndContextProps, Translate, Collision } from "@dnd-kit/core";
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import SidebarFolder from "./SidebarFolder/SidebarFolder";
-import { AppSortableData } from "./SidebarBox/SidebarBox";
 import SidebarBoxList from "./SidebarBoxList/SidebarBoxList";
+import { DndContextTypesafeProps, DragEndEvent, DragOverEvent, DragStartEvent } from "./sidebarTypes";
+import AccountMenu from "components/menus/popper/AccountMenu/AccountMenu";
+import PopperMenu from "components/menus/popper/PopperMenu";
 
 interface IProps {
   user: YellowboxUser
-  login: SpotifyLoginData
 }
 
-interface AppActive extends Omit<Active, "data"> {
-  data: React.MutableRefObject<AppSortableData | undefined>;
-}
-
-interface AppOver extends Omit<Over, "data"> {
-  data: React.MutableRefObject<AppSortableData | undefined>;
-}
-
-interface DragEvent {
-  activatorEvent: Event;
-  active: AppActive;
-  collisions: Collision[] | null;
-  delta: Translate;
-  over: AppOver | null;
-}
-
-export interface DragStartEvent extends Pick<DragEvent, "active"> { }
-export interface DragMoveEvent extends DragEvent { }
-export interface DragOverEvent extends DragMoveEvent { }
-export interface DragEndEvent extends DragEvent { }
-export interface DragCancelEvent extends DragEndEvent { }
-export interface DndContextTypesafeProps extends Omit<
-  DndContextProps,
-  "onDragStart" | "onDragMove" | "onDragOver" | "onDragEnd" | "onDragCancel"
-> {
-  onDragStart?(event: DragStartEvent): void;
-  onDragMove?(event: DragEvent): void;
-  onDragOver?(event: DragEvent): void;
-  onDragEnd?(event: DragEvent): void;
-  onDragCancel?(event: DragEvent): void;
-}
 export function AppDndContext(props: DndContextTypesafeProps) {
   return <DndContext {...props} />;
 }
 
-function Sidebar({ user, login }: IProps) {
+function Sidebar({ user }: IProps) {
   const dispatch = useAppDispatch();
   const userFolders = useAppSelector(state => state.userFoldersData.folders);
   const sortedFolders = [...userFolders].sort((folderA, folderB) => {
-    console.log('Are we sorting')
     if (folderA.name > folderB.name) return 1
     if (folderA.name < folderB.name) return -1
     else {
-      console.log('No sorting bitch')
       return 0
     }
   })
   const userDashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes)
-  const [activeDraggable, setActiveDraggable] = useState<null | {name: string, id: string}>(null);
+  const accountWidgetRef = useRef(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [activeDraggable, setActiveDraggable] = useState<null | { name: string, id: string }>(null);
   const [dragOverFolder, setDragOverFolder] = useState<null | string>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -80,11 +51,11 @@ function Sidebar({ user, login }: IProps) {
       dispatch(fetchDashboardBoxes(user.dashboardBoxes!))
       dispatch(fetchUserBoxes(user._id!))
     }
-  }, [user])
+  }, [user, dispatch])
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
-    setActiveDraggable({name: active.data.current?.name!, id: active.id as string});
+    setActiveDraggable({ name: active.data.current?.name!, id: active.id as string });
   }
 
   const handleDragOver = ({ active, over }: DragOverEvent) => {
@@ -92,7 +63,7 @@ function Sidebar({ user, login }: IProps) {
     const targetSortable = over?.data?.current?.sortable
     if (targetSortable && targetSortable.containerId !== activeSortable?.containerId) {
       setDragOverFolder(targetSortable.containerId as string)
-    } 
+    }
     else if (over?.id !== activeSortable?.containerId) {
       setDragOverFolder(over?.id as string)
     }
@@ -108,7 +79,7 @@ function Sidebar({ user, login }: IProps) {
           // Reorder
           if (targetSortable.containerId === 'boxList') {
             dispatch(reorderDashboardBoxesThunk(activeSortable.index, targetSortable.index))
-          } 
+          }
           else {
             dispatch(reorderFolderBoxesThunk(activeSortable?.containerId as string, activeSortable.index, targetSortable.index))
           }
@@ -152,9 +123,9 @@ function Sidebar({ user, login }: IProps) {
       {
         user._id &&
         <>
-          <div id={styles.user}>
+          <div id={styles.user} onClick={() => setIsMenuOpen(true)}>
             <img id={styles.userImage} src={user.image ? user.image : "/user.png"} alt="user" />
-            <span id={styles.userName}> {user.displayName} </span>
+            <span id={styles.userName} ref={accountWidgetRef}> {user.displayName} </span>
           </div>
           <div id={styles.servicesList}>
             <h4 className={styles.sectionTitle}> Your Services </h4>
@@ -178,6 +149,9 @@ function Sidebar({ user, login }: IProps) {
               </DragOverlay>
             </AppDndContext>
           </div>
+          <PopperMenu referenceRef={accountWidgetRef} placement={'right'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
+            <AccountMenu setIsOpen={setIsMenuOpen} />
+          </PopperMenu>
         </>
       }
     </div>

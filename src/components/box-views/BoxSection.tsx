@@ -26,15 +26,22 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
   const sectionIconSrc = `/icons/${type}.svg`;
 
   const isOwner = useMemo(() => !!userBoxes.find(box => box.boxId === currentBox?._id), [currentBox, userBoxes]);
-  const sortedData = useMemo(() => twoFactorSort<T>([...sectionItems as T[]], sectionSorting.primarySorting, sectionSorting.secondarySorting, sectionSorting.ascendingOrder), [currentBox]);
-  const groupingSections = useMemo(() => Array.from(new Set(sectionItems.map(e => getItemProperty(e, sectionSorting.primarySorting, false) as string))).sort(), [sectionItems]);
+  const sortedData = useMemo(
+    () => twoFactorSort<T>([...sectionItems as T[]], sectionSorting.primarySorting, sectionSorting.secondarySorting, sectionSorting.ascendingOrder), 
+    [sectionItems, sectionSorting]
+  );
+  const groupingSections = useMemo(
+    () => Array.from(new Set(sectionItems.map(e => getItemProperty(e, sectionSorting.primarySorting, false) as string))).sort(), 
+    [sectionItems, sectionSorting]
+  );
   const subSectionArray = useMemo(
     () => currentBox.subSections.filter(s => s.type === type).sort(
     (a: Subsection, b: Subsection) => {
       if (a.index! < b.index!) return -1
       else if (a.index! > b.index!) return 1
       return 0
-    }), [currentBox.subSections]
+    }), 
+    [currentBox.subSections, type]
   );
 
   const [height, setHeight] = useState<string | number>("auto");
