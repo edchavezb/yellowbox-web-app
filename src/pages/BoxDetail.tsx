@@ -29,7 +29,7 @@ function BoxDetail() {
     return () => {
       dispatch(setIsUserViewing(false))
     }
-  }, [boxId])
+  }, [boxId, dispatch])
 
   return (
     <>

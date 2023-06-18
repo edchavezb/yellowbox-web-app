@@ -23,7 +23,7 @@ function TopItemsList({ items, type }: IProps) {
             {
               items.slice(0, 5).map((item: Artist | Album | Track, index: number) => {
                 return (
-                  <div className={styles.rankNumber}>
+                  <div className={styles.rankNumber} key={index}>
                     {index + 1}
                   </div>
                 )
@@ -32,9 +32,9 @@ function TopItemsList({ items, type }: IProps) {
           </div>
           <div className={styles.itemColumn}>
             {
-              items.slice(0, 5).map((item: Artist | Album | Track, index: number) => {
+              items.slice(0, 5).map((item: Artist | Album | Track) => {
                 return (
-                  <TopListRow item={item} index={index} type={type} />
+                  <TopListRow item={item} type={type} key={item.id} />
                 )
               })
             }
@@ -45,7 +45,7 @@ function TopItemsList({ items, type }: IProps) {
             {
               items.slice(5, 10).map((item: Artist | Album | Track, index: number) => {
                 return (
-                  <div className={styles.rankNumber}>
+                  <div className={styles.rankNumber} key={index + 6}>
                     {index + 6}
                   </div>
                 )
@@ -54,9 +54,9 @@ function TopItemsList({ items, type }: IProps) {
           </div>
           <div className={styles.itemColumn}>
             {
-              items.slice(5, 10).map((item: Artist | Album | Track, index: number) => {
+              items.slice(5, 10).map((item: Artist | Album | Track) => {
                 return (
-                  <TopListRow item={item} index={index} type={type} />
+                  <TopListRow item={item} type={type} key={item.id}/>
                 )
               })
             }

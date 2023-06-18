@@ -37,7 +37,7 @@ const userBoxesSlice = createSlice({
         },
         deleteBox(state, action: PayloadAction<{targetId: string}>) {
             const targetIndex = state.userBoxes.findIndex(box => box.boxId === action.payload.targetId);
-            if (targetIndex != undefined) {
+            if (targetIndex !== undefined) {
                 state.userBoxes.splice(targetIndex, 1);
             }
         },
@@ -47,7 +47,7 @@ const userBoxesSlice = createSlice({
         },
         removeBoxFromDashboard(state, action: PayloadAction<{targetId: string}>) {
             const targetIndex = state.dashboardBoxes.findIndex(box => box.boxId === action.payload.targetId);
-            if (targetIndex != undefined) {
+            if (targetIndex !== undefined) {
                 state.dashboardBoxes.splice(targetIndex, 1);
             }
         }
@@ -75,7 +75,6 @@ export const fetchUserBoxes = (userId: string): AppThunk => async (dispatch) => 
 }
 
 export const fetchDashboardBoxes = (boxIds: string[]): AppThunk => async (dispatch) => {
-    const uniqueIds = new Set(boxIds)
     try {
         const dashboardBoxes = await getDashboardBoxesApi(boxIds);
         dispatch(setDashboardBoxes(dashboardBoxes!))

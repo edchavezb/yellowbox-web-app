@@ -2,20 +2,18 @@ import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState } from 'react';
-import { addAlbumToBoxApi, addArtistToBoxApi, addPlaylistToBoxApi, addTrackToBoxApi, updateUserBoxApi } from 'core/api/userboxes';
-import { Album, Artist, Playlist, Track, UserBox } from "core/types/interfaces";
+import { addAlbumToBoxApi, addArtistToBoxApi, addPlaylistToBoxApi, addTrackToBoxApi } from 'core/api/userboxes';
+import { Album, Artist, Playlist, Track } from "core/types/interfaces";
 import styles from "./AddToBoxMenu.module.css";
 import { isAlbum, isArtist, isPlaylist, isTrack } from 'core/helpers/typeguards';
 
 type MusicData = Artist | Album | Track | Playlist;
 
 interface IProps {
-	page: string
   itemData: MusicData
-  boxId: string 
 }
 
-function AddToBoxMenu({page, itemData, boxId}: IProps) {
+function AddToBoxMenu({itemData}: IProps) {
   const dispatch = useAppDispatch();
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const itemCopy = JSON.parse(JSON.stringify(itemData))

@@ -21,6 +21,83 @@ function ItemDetail() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
+    const handleDetailData = async (typeParam: string, idParam: string) => {
+      let itemQuery: string;
+      let contentsQuery: string;
+      switch (typeParam) {
+        case 'album':
+          itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
+          contentsQuery = `https://api.spotify.com/v1/albums/${idParam}/tracks`
+          break;
+        case 'artist':
+          itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
+          contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums?market=us`
+          break;
+        case 'track':
+          itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
+          contentsQuery = `https://api.spotify.com/v1/tracks/${idParam}`
+          break;
+        case 'playlist':
+          itemQuery = `https://api.spotify.com/v1/playlists/${idParam}`
+          contentsQuery = `https://api.spotify.com/v1/playlists/${idParam}/tracks`
+          break;
+        default:
+          itemQuery = ``
+          contentsQuery = ``
+          break;
+      }
+      try {
+        const tokenResponse = await getSpotifyGenericToken()!;
+        const { access_token: accessToken } = tokenResponse!;
+        if (accessToken) {
+          getItemData(typeParam, itemQuery, accessToken)
+          getContents(contentsQuery, accessToken)
+        }
+      }
+      catch (err) {
+        console.log(err)
+      }
+    }
+
+    const getItemData = async (type: string, query: string, token: string) => {
+      const response = await fetch(query, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      const data = await response.json();
+      setItemData(data)
+      if (type === "track") {
+        getItemAlbum(`https://api.spotify.com/v1/albums/${data.album.id}`, token)
+      }
+    }
+  
+    const getContents = async (query: string, token: string) => {
+      const response = await fetch(query, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      const data = await response.json();
+      setItemContents(data)
+    }
+  
+    const getItemAlbum = async (query: string, token: string) => {
+      const response = await fetch(query, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      const data = await response.json();
+      setItemAlbum(data);
+    }  
+
     handleDetailData(params.type, params.id)
   }, [params.type, params.id, history.location.pathname]);
 
@@ -30,83 +107,7 @@ function ItemDetail() {
     }
   }, [itemData]);
 
-  const handleDetailData = async (typeParam: string, idParam: string) => {
-    let itemQuery: string;
-    let contentsQuery: string;
-    switch (typeParam) {
-      case 'album':
-        itemQuery = `https://api.spotify.com/v1/albums/${idParam}`
-        contentsQuery = `https://api.spotify.com/v1/albums/${idParam}/tracks`
-        break;
-      case 'artist':
-        itemQuery = `https://api.spotify.com/v1/artists/${idParam}`
-        contentsQuery = `https://api.spotify.com/v1/artists/${idParam}/albums?market=us`
-        break;
-      case 'track':
-        itemQuery = `https://api.spotify.com/v1/tracks/${idParam}`
-        contentsQuery = `https://api.spotify.com/v1/tracks/${idParam}`
-        break;
-      case 'playlist':
-        itemQuery = `https://api.spotify.com/v1/playlists/${idParam}`
-        contentsQuery = `https://api.spotify.com/v1/playlists/${idParam}/tracks`
-        break;
-      default:
-        itemQuery = ``
-        contentsQuery = ``
-        break;
-    }
-    try {
-      const tokenResponse = await getSpotifyGenericToken()!;
-      const { access_token: accessToken } = tokenResponse!;
-      if (accessToken) {
-        getItemData(typeParam, itemQuery, accessToken)
-        getContents(contentsQuery, accessToken)
-      }
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
-
-  const getItemData = async (type: string, query: string, token: string) => {
-    const response = await fetch(query, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    const data = await response.json();
-    setItemData(data)
-    if (type === "track") {
-      getItemAlbum(`https://api.spotify.com/v1/albums/${data.album.id}`, token)
-    }
-  }
-
-  const getContents = async (query: string, token: string) => {
-    const response = await fetch(query, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    const data = await response.json();
-    setItemContents(data)
-  }
-
-  const getItemAlbum = async (query: string, token: string) => {
-    const response = await fetch(query, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    const data = await response.json();
-    setItemAlbum(data);
-  }
-
+  
   const getArtistLinks = (artists: Artist[]) => {
     const artistLinks = artists.slice(0, 3).map((artist, idx, arr) => {
       return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;

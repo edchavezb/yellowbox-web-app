@@ -6,7 +6,6 @@ import { AppThunk } from "core/store/store";
 import { useHistory } from "react-router-dom";
 import { Album, Artist, Playlist, Track } from "../../core/types/interfaces";
 import styles from "./DeletePrompt.module.css";
-import { useSelector } from "react-redux";
 import { useAppSelector } from "core/hooks/useAppSelector";
 
 type MusicData = Artist | Album | Track | Playlist;

@@ -5,7 +5,6 @@ import styles from "./TopListRow.module.css";
 interface IProps {
   item: Artist | Album | Track
   type: TopItemsSelectItems
-  index: number
 }
 
 enum TopItemsSelectItems {
@@ -14,7 +13,7 @@ enum TopItemsSelectItems {
   ARTISTS = 'ARTISTS'
 }
 
-function TopListRow({ item, type, index }: IProps) {
+function TopListRow({ item, type }: IProps) {
   const getItemImage = () => {
     let imageSrc;
     switch (type) {

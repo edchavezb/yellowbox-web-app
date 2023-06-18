@@ -1,5 +1,5 @@
 import { Placement, State } from "@popperjs/core";
-import { ReactElement, RefObject, useEffect, useRef } from "react";
+import { ReactElement, RefObject, useEffect, useLayoutEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { usePopper } from "react-popper";
 import componentStyles from "./PopperMenu.module.css";
@@ -21,7 +21,6 @@ function createWrapperAndAppendToBody() {
 
 const PopperMenu = ({ referenceRef, placement, isOpen, setIsOpen, children }: PopperMenuProps) => {
   const { menuPanel, hidden } = componentStyles;
-
   const popperRef = useRef<HTMLDivElement>(null);
   let containerEl = document.getElementById('popper');
   if (!containerEl) {
@@ -46,30 +45,28 @@ const PopperMenu = ({ referenceRef, placement, isOpen, setIsOpen, children }: Po
     }
   );
 
-  const updateTooltip = async (update: () => Promise<Partial<State>>) => {
-    return await update();
-  }
-
   useEffect(() => {
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (popperRef.current?.contains(event.target as Node)) {
+        return;
+      }
+      setIsOpen(false);
+    }
     // listen for clicks and close dropdown on body
     document.addEventListener("mousedown", handleDocumentClick);
     return () => {
       document.removeEventListener("mousedown", handleDocumentClick);
     };
-  }, []);
+  }, [setIsOpen]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const updateTooltip = async (update: () => Promise<Partial<State>>) => {
+      return await update();
+    }
     if (update){
       updateTooltip(update);
     }
-  }, [isOpen]);
-
-  function handleDocumentClick(event: MouseEvent) {
-    if (popperRef.current?.contains(event.target as Node)) {
-      return;
-    }
-    setIsOpen(false);
-  }
+  }, [isOpen, update]);
 
   return (
     <>

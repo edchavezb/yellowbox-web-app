@@ -40,7 +40,7 @@ function Modal() {
       modalBody = <AddToFolderMenu boxId={modalData.boxId} page={modalData.page!}/>
     break;
     case "Add To Box" :
-      modalBody = <AddToBoxMenu boxId={modalData.boxId} itemData={modalData.itemData!} page={modalData.page!}/>
+      modalBody = <AddToBoxMenu itemData={modalData.itemData!} />
     break;
     case "Add To Subsection" :
       modalBody = <AddToSubsectionMenu itemData={modalData.itemData!}/>

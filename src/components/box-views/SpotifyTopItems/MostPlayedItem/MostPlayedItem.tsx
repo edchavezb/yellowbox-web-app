@@ -1,5 +1,6 @@
 import { Album, Track, Artist } from 'core/types/interfaces';
 import styles from "./MostPlayedItem.module.css";
+import { Link } from 'react-router-dom';
 
 enum TopItemsSelectItems {
   ALBUMS = 'ALBUMS',
@@ -15,7 +16,7 @@ interface IProps {
 function MostPlayedItem({ item, type }: IProps) {
   const getItemImage = () => {
     let imageSrc;
-    switch(type){
+    switch (type) {
       case TopItemsSelectItems.ALBUMS:
         imageSrc = (item as Album).images[1].url
         break;
@@ -33,16 +34,22 @@ function MostPlayedItem({ item, type }: IProps) {
 
   return (
     <div className={styles.mostPlayedWrapper}>
-      <img src={getItemImage()} className={styles.mostPlayedImage} alt={item.name}/>
+      <Link to={`/detail/${item.type}/${(item as Artist).id}`}>
+        <img src={getItemImage()} className={styles.mostPlayedImage} alt={item.name} />
+      </Link>
       <div className={styles.mostPlayedData}>
         <div className={styles.sectionTitle}> MOST PLAYED {item.type.toUpperCase()} </div>
         <div className={styles.itemName}>
-          {item.name}
+          <Link to={`/detail/${item.type}/${(item as Artist).id}`}>
+            {item.name}
+          </Link>
         </div>
         {
           item.type !== 'artist' &&
           <div className={styles.itemArtist}>
-            {(item as Album | Track).artists[0].name}
+            <Link to={`/detail/artist/${(item as Album | Track).artists[0].id}`}>
+              {(item as Album | Track).artists[0].name}
+            </Link>
           </div>
         }
       </div>

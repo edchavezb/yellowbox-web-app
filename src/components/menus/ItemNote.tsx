@@ -51,7 +51,7 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
     setEditorNote(
       currentSubSection ? itemNotes.find(note => note.subSectionId === currentSubSection)?.noteText! : itemNotes.find(note => !note.subSectionId)?.noteText!
     )
-  }, [currentSubSection])
+  }, [currentSubSection, itemNotes])
 
   const isClickOutsideEditor = (e: MouseEvent) => {
     if (editorRef.current && !editorRef.current.contains(e.target as Node)) {
