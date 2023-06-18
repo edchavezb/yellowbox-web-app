@@ -7,7 +7,8 @@
 }
 
 #bodyWrapper {
-    height: 100%
+    height: 100%;
+    background-color: rgb(26, 26, 26);
 }
 
 #headerWrapper {

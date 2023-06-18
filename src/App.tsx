@@ -13,7 +13,7 @@ import { useAppSelector } from 'core/hooks/useAppSelector';
 import { refreshSpotifyToken } from 'core/api/spotify';
 import { getUserDataBySpotifyId } from 'core/api/users';
 import { setSpotifyLoginData } from 'core/features/spotifyService/spotifyLoginSlice';
-import { setAuthenticatedUser } from 'core/features/user/userSlice';
+import { setAuthenticatedUser, setIsUserLoggedIn } from 'core/features/user/userSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 
 const refreshToken = localStorage.getItem("ybx-spotify-refresh-token");
@@ -26,6 +26,9 @@ function App() {
   useEffect(() => {
     if (refreshToken && spotifyId) {
       getUserData(refreshToken, spotifyId);
+    } 
+    else {
+      dispatch(setIsUserLoggedIn(false))
     }
   }, []);
 
@@ -50,9 +53,15 @@ function App() {
           userId: spotifyId
         }
       }
-      const user = await getUserDataBySpotifyId(spotifyId)
       dispatch(setSpotifyLoginData(spotifyLogin))
-      dispatch(setAuthenticatedUser(user!))
+      const user = await getUserDataBySpotifyId(spotifyId)
+      if (user) {
+        dispatch(setAuthenticatedUser(user!))
+        dispatch(setIsUserLoggedIn(true))
+      } 
+      else {
+        dispatch(setIsUserLoggedIn(false))
+      }
     }
   }
 

@@ -4,6 +4,7 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import { spotifyLoginApi } from "core/api/spotify";
 
 function Home({ location }: RouteComponentProps) {
+  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const userData = useAppSelector(state => state.userData.authenticatedUser)
 
   const handleLogin = async () => {
@@ -13,7 +14,15 @@ function Home({ location }: RouteComponentProps) {
     }
   }
 
-  if (!userData._id) {
+  if (isLoggedIn) {
+    return (
+      <div className={styles.homeContainer}>
+        <h1> Welcome {userData.displayName.split(" ")[0]} </h1>
+        <h4> Use the search box to find your favorite music </h4>
+      </div>
+    );
+  } 
+  else if (isLoggedIn === false) {
     return (
       <div className={styles.homeContainer}>
         <h1> Please log in with one of your accounts </h1>
@@ -25,14 +34,11 @@ function Home({ location }: RouteComponentProps) {
         </button>
       </div>
     );
-  } else {
-    return (
-      <div className={styles.homeContainer}>
-        <h1> Welcome {userData.displayName.split(" ")[0]} </h1>
-        <h4> Use the search box to find your favorite music </h4>
-      </div>
-    );
-  }
+  } 
+
+  return (
+    <></>
+  )
 }
 
 export default withRouter(Home);

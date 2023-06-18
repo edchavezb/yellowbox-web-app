@@ -11,16 +11,12 @@ import styles from "./DetailView.module.css";
 
 interface IProps<T> {
   data: T[]
-  page: string
-  boxId: string
-  isOwner?: boolean
-  customSorting: boolean
   isDefaultSubSection?: boolean
   subId?: string
   isReorderingMode?: boolean
 }
 
-function DetailView<T extends Artist | Album | Track | Playlist>({ isOwner, data, page, boxId, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
+function DetailView<T extends Artist | Album | Track | Playlist>({ data, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
@@ -53,7 +49,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ isOwner, data
   return (
     <>
       {
-        isOwner && isReorderingMode ?
+        isReorderingMode ?
           <>
             <DndContext
               collisionDetection={closestCenter}

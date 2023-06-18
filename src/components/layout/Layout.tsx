@@ -10,6 +10,7 @@ interface IProps {
 }
 
 function Layout({ children }: IProps) {
+  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const user = useAppSelector(state => state.userData.authenticatedUser)
   const spotifyLogin = useAppSelector(state => state.spotifyLoginData.data)
 
@@ -19,18 +20,20 @@ function Layout({ children }: IProps) {
         <Header />
       </section>
       <section id={styles.bodyWrapper}>
-        <ResizablePane 
-          leftContent={
-            <section id={styles.sideBar}>
-              <Sidebar user={user} login={spotifyLogin} />
-            </section>
-          }
-          rightContent={
-            <section id={styles.mainView}>
-              {children}
-            </section>
-          }
-        />
+        {isLoggedIn !== null &&
+          <ResizablePane
+            leftContent={
+              <section id={styles.sideBar}>
+                <Sidebar user={user} login={spotifyLogin} />
+              </section>
+            }
+            rightContent={
+              <section id={styles.mainView}>
+                {children}
+              </section>
+            }
+          />
+        }
       </section>
     </div>
   );

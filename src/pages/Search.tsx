@@ -3,10 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import SearchResults from "./SearchResults"
 import { Album, Artist, Playlist, Track } from '../core/types/interfaces';
-import { useAppDispatch } from "core/hooks/useAppDispatch";
-import { useAppSelector } from "core/hooks/useAppSelector";
-import { setAccessToken } from "core/features/spotifyService/spotifyLoginSlice";
-import { refreshSpotifyToken } from "core/api/spotify";
+import { getSpotifyGenericToken } from "core/api/spotify";
 
 interface SearchResultsState {
   artists: Artist[]
@@ -16,40 +13,33 @@ interface SearchResultsState {
 }
 
 function Search() {
-  const params = useParams<{query: string}>()
-  const dispatch = useAppDispatch();
-  const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.data.auth)
+  const params = useParams<{ query: string }>()
   const [searchData, setSearchData] = useState<SearchResultsState>({
-    artists: [], albums: [], tracks: [], playlists:[]
+    artists: [], albums: [], tracks: [], playlists: []
   })
 
   useEffect(() => {
     handleSearch(params.query)
-  }, [params, spotifyAuthData.refreshToken]);
+  }, [params]);
 
   const handleSearch = async (query: string) => {
-    if (spotifyAuthData.refreshToken) {
-      try {
-        const refreshResponse = await refreshSpotifyToken(spotifyAuthData.refreshToken)
-        const { access_token: accessToken } = refreshResponse!;
-        processQuery(query, accessToken);
-        dispatch(setAccessToken({ accessToken }));
-      }
-      catch(err) {
-        console.log(err)
+    try {
+      const tokenResponse = await getSpotifyGenericToken()!;
+      const { access_token: accessToken } = tokenResponse!;
+      if (accessToken) {
+        const urlIdentifier = '%2Fopen.spotify.com%2F'
+        if (query.includes(urlIdentifier)) {
+          const identifierString = query.split(urlIdentifier)[1].split('%3F')[0]
+          const [itemType, itemId] = identifierString.split('%2F');
+          queryItemIdApi(itemType, itemId, accessToken);
+        }
+        else {
+          querySearchAPI(query, accessToken);
+        }
       }
     }
-  }
-
-  const processQuery = (query: string, token: string) => {
-    const urlIdentifier = '%2Fopen.spotify.com%2F'
-    if (query.includes(urlIdentifier)) {
-      const identifierString = query.split(urlIdentifier)[1].split('%3F')[0]
-      const [itemType, itemId] = identifierString.split('%2F');
-      queryItemIdApi(itemType, itemId, token);
-    }
-    else {
-      querySearchAPI(query, token);
+    catch (err) {
+      console.log(err)
     }
   }
 
@@ -63,8 +53,8 @@ function Search() {
     })
     const item = await response.json();
     setSearchData({
-      artists: item.type === 'artist' ? [item as Artist] : [], 
-      albums: item.type === 'album' ? [item as Album] : [], 
+      artists: item.type === 'artist' ? [item as Artist] : [],
+      albums: item.type === 'album' ? [item as Album] : [],
       tracks: item.type === 'track' ? [item as Track] : [],
       playlists: item.type === 'playlist' ? [item as Playlist] : []
     })
@@ -80,8 +70,8 @@ function Search() {
     })
     const { artists, albums, tracks, playlists } = await response.json();
     setSearchData({
-      artists: artists.items, 
-      albums: albums.items, 
+      artists: artists.items,
+      albums: albums.items,
       tracks: tracks.items,
       playlists: playlists.items
     })
@@ -90,10 +80,10 @@ function Search() {
   return (
     <div className={styles.searchPage}>
       <h1> Is this what you're looking for? </h1>
-      {searchData.artists.length > 0 && <SearchResults<Artist> type="Artists" data={searchData.artists.slice(0,12)}/>}
-      {searchData.albums.length > 0 && <SearchResults<Album> type="Albums" data={searchData.albums.slice(0,12)}/>}
-      {searchData.tracks.length > 0 && <SearchResults<Track> type="Tracks" data={searchData.tracks.slice(0,12)}/>}
-      {searchData.playlists.length > 0 && <SearchResults<Playlist> type="Playlists" data={searchData.playlists.slice(0,12)}/>}
+      {searchData.artists.length > 0 && <SearchResults<Artist> type="Artists" data={searchData.artists.slice(0, 12)} />}
+      {searchData.albums.length > 0 && <SearchResults<Album> type="Albums" data={searchData.albums.slice(0, 12)} />}
+      {searchData.tracks.length > 0 && <SearchResults<Track> type="Tracks" data={searchData.tracks.slice(0, 12)} />}
+      {searchData.playlists.length > 0 && <SearchResults<Playlist> type="Playlists" data={searchData.playlists.slice(0, 12)} />}
     </div>
   );
 }
