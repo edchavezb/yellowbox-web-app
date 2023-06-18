@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { addBoxToFolderApi, createUserFolderApi, deleteUserFolderApi, getFoldersByIdsApi, moveBoxBetweenFoldersApi, removeBoxFromFolderApi, updateFolderBoxesApi } from "core/api/userfolders"
 import { AppThunk } from "core/store/store"
 import { DashboardBox, UserFolder } from "core/types/interfaces"
-import { addBoxToDashboard, removeBoxFromDashboard } from "../userBoxes/userBoxesSlice"
+import { addBoxToDashboard, fetchDashboardBoxes, removeBoxFromDashboard } from "../userBoxes/userBoxesSlice"
+import { fetchFolderDetailThunk } from "../currentFolderDetail/currentFolderDetailSlice"
 
 interface UserFoldersState {
     folders: UserFolder[]
@@ -40,7 +41,7 @@ const userFoldersSlice = createSlice({
             const boxIndex = state.folders[targetIndex].boxes.findIndex(box => box.boxId === boxId)
             state.folders[targetIndex].boxes.splice(boxIndex, 1);
         },
-        updateFolderBoxes(state, action: PayloadAction<{targetId: string, updatedBoxes: DashboardBox[]}>) {
+        updateSidebarFolderBoxes(state, action: PayloadAction<{targetId: string, updatedBoxes: DashboardBox[]}>) {
             const targetIndex = state.folders.findIndex(folder => folder._id === action.payload.targetId);
             state.folders[targetIndex].boxes = action.payload.updatedBoxes;
         }
@@ -54,7 +55,7 @@ export const {
     deleteUserFolder,
     addBoxToFolder,
     removeBoxFromFolder,
-    updateFolderBoxes
+    updateSidebarFolderBoxes
 } = userFoldersSlice.actions;
 
 //Thunks for this slice
@@ -78,50 +79,75 @@ export const createUserFolderThunk = (folderObj: Omit<UserFolder, '_id'>): AppTh
 
 export const deleteUserFolderThunk = (folderId: string): AppThunk => async (dispatch) => {
     try {
-        await deleteUserFolderApi(folderId)
-        dispatch(deleteUserFolder({targetId: folderId}))
+        const response = await deleteUserFolderApi(folderId);
+        if (response?.updatedDashboardFolders) {
+            const {updatedDashboardFolders, updatedDashboardBoxes} = response;
+            dispatch(fetchDashboardFolders(updatedDashboardFolders));
+            dispatch(fetchDashboardBoxes(updatedDashboardBoxes));
+        }
     } catch (err) {
         console.log(err)
     }
 }
 
-export const addBoxToFolderThunk = (folderId: string, boxId: string, boxName: string): AppThunk => async (dispatch) => {
+export const addBoxToFolderThunk = (folderId: string, boxId: string, boxName: string): AppThunk => async (dispatch, getState) => {
     try {
+        const { folder: currentFolder, isUserViewing} = getState().currentFolderDetailData;
         dispatch(addBoxToFolder({targetId: folderId, box: {boxId, boxName}}))
         dispatch(removeBoxFromDashboard({targetId: boxId}))
         await addBoxToFolderApi(folderId, boxId, boxName)
+        if (currentFolder._id === folderId && isUserViewing) {
+            // Refresh folder if user viewing it
+            dispatch(fetchFolderDetailThunk(currentFolder._id));
+        }
     } catch (err) {
         console.log(err)
     }
 }
 
-export const removeBoxFromFolderThunk = (folderId: string, boxId: string, boxName: string): AppThunk => async (dispatch) => {
+export const removeBoxFromFolderThunk = (folderId: string, boxId: string, boxName: string): AppThunk => async (dispatch, getState) => {
     try {
+        const { folder: currentFolder, isUserViewing} = getState().currentFolderDetailData;
         dispatch(removeBoxFromFolder({targetId: folderId, boxId}))
         dispatch(addBoxToDashboard({boxId, boxName}))
         await removeBoxFromFolderApi(folderId, boxId)
+        if (currentFolder._id === folderId && isUserViewing) {
+            // Refresh folder if user viewing it
+            dispatch(fetchFolderDetailThunk(currentFolder._id));
+        }
     } catch (err) {
         console.log(err)
     }
 }
 
-export const moveBoxBetweenFoldersThunk = (sourceId: string, targetId: string, boxId: string, boxName: string): AppThunk => async (dispatch) => {
+export const moveBoxBetweenFoldersThunk = (sourceId: string, targetId: string, boxId: string, boxName: string): AppThunk => async (dispatch, getState) => {
     try {
+        const { folder: currentFolder, isUserViewing} = getState().currentFolderDetailData;
         dispatch(addBoxToFolder({targetId, box: {boxId, boxName}}))
         dispatch(removeBoxFromFolder({targetId: sourceId, boxId}))
+        console.log('Moving between folders')
         await moveBoxBetweenFoldersApi(sourceId, targetId, boxId, boxName)
+        if ((currentFolder._id === sourceId || currentFolder._id === targetId) && isUserViewing) {
+            console.log('Refresh')
+            dispatch(fetchFolderDetailThunk(currentFolder._id));
+        }
     } catch (err) {
         console.log(err)
     }
 }
 
-export const reorderFolderBoxesThunk = (folderId: string, sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
+export const reorderSidebarFolderBoxesThunk = (folderId: string, sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
     try {
+        const { folder: currentFolder, isUserViewing} = getState().currentFolderDetailData;
         const folderBoxesCopy = JSON.parse(JSON.stringify(getState().userFoldersData.folders.find(folder => folder._id === folderId)?.boxes)) as DashboardBox[];
         const reorderItem = folderBoxesCopy.splice(sourceIndex, 1)[0];
         folderBoxesCopy.splice(targetIndex, 0, reorderItem);
-        dispatch(updateFolderBoxes({targetId: folderId, updatedBoxes: folderBoxesCopy}));
+        dispatch(updateSidebarFolderBoxes({targetId: folderId, updatedBoxes: folderBoxesCopy}));
         await updateFolderBoxesApi(folderId, folderBoxesCopy)
+        if (currentFolder._id === folderId && isUserViewing) {
+            // Refresh folder if user viewing it
+            dispatch(fetchFolderDetailThunk(currentFolder._id));
+        }
     } catch (err) {
         console.log(err)
     }

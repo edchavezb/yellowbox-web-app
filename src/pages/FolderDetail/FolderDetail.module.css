@@ -1,0 +1,83 @@
+#mainPanel {
+    height: 100%;
+    overflow-y: scroll;
+    padding: 20px 30px;
+    box-sizing: border-box;
+}
+
+.folderHeader {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.folderSquare {
+    height: 70px;
+    width: 70px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: gray;
+}
+
+.folderIcon {
+    margin-top: -10px;
+    width: 50px;
+}
+
+.folderInfo>h2 {
+    margin: 0px;
+}
+
+.folderInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.folderName {
+    margin-top: 10px;
+    margin-bottom: 10px
+}
+
+.folderDesc {
+    visibility: visible;
+}
+
+.menuButtonWrapper {
+    height: 100%;
+}
+
+.menuButton {
+    margin-top: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.emptyMsgDiv {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.emptyMsg {
+    text-align: center;
+}
+
+.folderContents {
+    border-top: 1px solid gray;
+    padding-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}

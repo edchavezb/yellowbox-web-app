@@ -47,3 +47,10 @@
     width: 50%;
     fill: white;
 }
+
+@media (max-width: 576px) {
+    #modalPanel {
+        min-width: 100px;
+        width: 90%;
+    }
+}

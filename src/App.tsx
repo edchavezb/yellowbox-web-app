@@ -15,6 +15,7 @@ import { getUserDataBySpotifyId } from 'core/api/users';
 import { setSpotifyLoginData } from 'core/features/spotifyService/spotifyLoginSlice';
 import { setAuthenticatedUser, setIsUserLoggedIn } from 'core/features/user/userSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
+import FolderDetail from 'pages/FolderDetail/FolderDetail';
 
 const refreshToken = localStorage.getItem("ybx-spotify-refresh-token");
 const spotifyId = localStorage.getItem("ybx-spotify-user-id");
@@ -73,6 +74,7 @@ function App() {
         <Route path="/authsuccess" render={() => <AuthSuccess />} />
         <Route path="/search/:query" render={() => <Search />} />
         <Route path="/box/:id" render={() => <BoxDetail />} />
+        <Route path="/folder/:id" render={() => <FolderDetail />} />
         <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props} />} />
         <Route path="/myaccounts/spotify" render={() => <SpotifyUser />} />
       </Layout>

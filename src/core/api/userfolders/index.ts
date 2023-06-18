@@ -28,9 +28,18 @@ export const createUserFolderApi = async (data: Omit<UserFolder, '_id'>) => {
     }
 }
 
+export const updateUserFolderApi = async (folderId: string, updatedFolder: UserFolder) => {
+    try {
+        return await api.put<UserFolder, {updatedFolder: UserFolder}>(`folders/${folderId}`, updatedFolder)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
 export const deleteUserFolderApi = async (folderId: string) => {
     try {
-        return await api.delete<string>(`folders/${folderId}`)
+        return await api.delete<{updatedDashboardFolders: string[], updatedDashboardBoxes: string[]}>(`folders/${folderId}`)
     }
     catch(err) {
         console.log(err)

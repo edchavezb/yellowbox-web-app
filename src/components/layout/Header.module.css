@@ -113,3 +113,12 @@
 #plusIcon {
     width: 50%
 }
+
+@media (max-width: 576px) {
+    #loginButton {
+        font-size: .7em;
+    }
+    #searchBox, #newButton {
+        display: none;
+    }
+}

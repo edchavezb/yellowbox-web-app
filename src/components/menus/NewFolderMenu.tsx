@@ -5,6 +5,7 @@ import { UserFolder } from 'core/types/interfaces';
 import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import styles from "./NewFolderMenu.module.css";
+import { updateCurrentFolderDetailThunk } from 'core/features/currentFolderDetail/currentFolderDetailSlice';
 
 interface NewFolderMenuProps {
   editMode: boolean
@@ -12,9 +13,13 @@ interface NewFolderMenuProps {
 
 function NewFolderMenu({ editMode }: NewFolderMenuProps) {
   const dispatch = useAppDispatch();
+  const currentFolder = useAppSelector(state => state.currentFolderDetailData.folder)
   const user = useAppSelector(state => state.userData.authenticatedUser)
   const [folderDetails, setFolderDetails] = useState(
-    { folderName: "", folderDesc: "", public: true }
+    editMode ?
+      { folderName: currentFolder.name, folderDesc: currentFolder.description, isPublic: currentFolder.public }
+      :
+      { folderName: "", folderDesc: "", isPublic: true }
   )
 
   const newUserFolder = () => {
@@ -22,7 +27,7 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
       name: folderDetails.folderName,
       description: folderDetails.folderDesc,
       creator: user._id,
-      public: folderDetails.public,
+      public: folderDetails.isPublic,
       boxes: []
     }
     return blankFolder;
@@ -32,9 +37,20 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
     dispatch(createUserFolderThunk(newUserFolder()))
   }
 
+  const handleUpdateFolder = async (updatedFolder: UserFolder) => {
+    dispatch(updateCurrentFolderDetailThunk(currentFolder._id, updatedFolder))
+  }
+
   const handleSubmitBtnClick = async () => {
-    await handleSaveNewFolder()
-    dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))
+    if (editMode) {
+      const { folderName, folderDesc, isPublic } = folderDetails
+      const updatedBox = { ...currentFolder, name: folderName, description: folderDesc, public: isPublic }
+      await handleUpdateFolder(updatedBox)
+    }
+    else {
+      await handleSaveNewFolder()
+    }
+    dispatch(setModalState({ visible: false, type: "", boxId: "", folderId: "", page: "", itemData: undefined }))
   }
 
   return (
@@ -51,8 +67,8 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
           onChange={(e) => setFolderDetails(state => ({ ...state, folderDesc: e.target.value }))}
         />
         <div className={styles.formElement}>
-          <input type={'checkbox'} name="public-toggle" checked={folderDetails.public}
-            onChange={(e) => setFolderDetails(state => ({ ...state, public: e.target.checked }))} />
+          <input type={'checkbox'} name="public-toggle" checked={folderDetails.isPublic}
+            onChange={(e) => setFolderDetails(state => ({ ...state, isPublic: e.target.checked }))} />
           <label className={styles.formElement} htmlFor="public-toggle"> Make this folder public &#x24D8; </label>
         </div>
       </form>

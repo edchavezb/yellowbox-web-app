@@ -17,12 +17,13 @@ interface IProps {
 }
 
 function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, id, description, tracks, owner, uri } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
+    transition
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps["element"]) => {
