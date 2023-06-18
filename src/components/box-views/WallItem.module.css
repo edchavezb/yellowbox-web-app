@@ -1,0 +1,26 @@
+.itemCard {
+    height: 30px;
+    border-radius: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #282c34CC;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.itemCard:hover {
+    background-color: #383d47cc;
+}
+
+.itemCardReorder {
+    composes: itemCard;
+    border: 1px solid white;
+    user-select: none;
+}
+
+.name {
+    padding: 0px 12px;
+    color: #ffffff;
+    font-weight: 500;
+}
