@@ -5,8 +5,8 @@ import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useParams } from 'react-router-dom';
 import { fetchFolderDetailThunk, reorderFolderBoxesThunk, setIsUserViewing } from 'core/features/currentFolderDetail/currentFolderDetailSlice';
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
-import { FolderDetailBox } from './FolderDetailBox/FolderDetailBox';
 import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
+import BoxTile from 'components/common/BoxTile/BoxTile';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import FolderMenu from 'components/menus/popper/FolderMenu/FolderMenu';
 
@@ -77,7 +77,7 @@ function FolderDetail() {
               >
                 {currentFolder.boxes.map(box => {
                   return (
-                    <FolderDetailBox box={box} key={box.boxId} />
+                    <BoxTile box={box} key={box.boxId} />
                   )
                 })}
               </SortableContext>

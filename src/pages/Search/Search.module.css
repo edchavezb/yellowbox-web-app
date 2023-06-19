@@ -9,3 +9,40 @@
     display: flex;
     flex-wrap: wrap;
 }
+
+#searchBox {
+    display: none;
+}
+
+#inputWrapper {
+    flex-grow: 1;
+}
+
+#searchInput {
+    width: 100;
+    border: 0px
+}
+
+#searchInput:focus {
+    outline: none;
+}
+
+#searchIcon {
+    width: 15px
+}
+
+@media (max-width: 576px) {
+    #searchBox {
+        width: 90%;
+        height: 35px;
+        background-color: #ffffff;
+        border-radius: 500px;
+        display: flex;
+        align-items: center;
+        padding: 0px 15px
+    }
+
+    .searchPage {
+        padding: 10px 20px;
+    }
+}

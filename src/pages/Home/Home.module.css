@@ -29,3 +29,15 @@
 .spotifyIcon {
     width: 15px;
 }
+
+.folderList, .boxList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+@media (max-width: 576px) {
+    .homeContainer {
+        padding: 10px 20px;
+    }
+}

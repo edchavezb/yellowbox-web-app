@@ -1,6 +1,6 @@
 import styles from "./Search.module.css"
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import SearchResults from "./SearchResults/SearchResults"
 import { Album, Artist, Playlist, Track } from 'core/types/interfaces';
 import { getSpotifyGenericToken } from "core/api/spotify";
@@ -14,9 +14,12 @@ interface SearchResultsState {
 
 function Search() {
   const params = useParams<{ query: string }>()
+  const history = useHistory();
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchData, setSearchData] = useState<SearchResultsState>({
     artists: [], albums: [], tracks: [], playlists: []
   })
+  const searchTimeout = useRef<number | null>(null);
 
   useEffect(() => {
     const handleSearch = async (query: string) => {
@@ -42,6 +45,12 @@ function Search() {
 
     handleSearch(params.query)
   }, [params]);
+
+  useEffect(() => {
+    window.clearTimeout(searchTimeout.current!);
+    const encodedQuery = encodeURIComponent(searchQuery.trim());
+    searchTimeout.current = window.setTimeout(() => history.push(`/search/${encodedQuery}`), 500);
+  }, [searchQuery])
 
   const queryItemIdApi = async (type: string, id: string, token: string) => {
     const response = await fetch(`https://api.spotify.com/v1/${type}s/${id}`, {
@@ -79,7 +88,16 @@ function Search() {
 
   return (
     <div className={styles.searchPage}>
-      <h1> Is this what you're looking for? </h1>
+      <div id={styles.searchBox}>
+        <div id={styles.inputWrapper}>
+          <input id={styles.searchInput} type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+        </div>
+        <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
+      </div>
+      {
+        params.query &&
+        <h1> Is this what you're looking for? </h1>
+      }
       {searchData.artists.length > 0 && <SearchResults<Artist> type="Artists" data={searchData.artists.slice(0, 12)} />}
       {searchData.albums.length > 0 && <SearchResults<Album> type="Albums" data={searchData.albums.slice(0, 12)} />}
       {searchData.tracks.length > 0 && <SearchResults<Track> type="Tracks" data={searchData.tracks.slice(0, 12)} />}

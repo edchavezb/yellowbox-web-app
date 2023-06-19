@@ -35,3 +35,9 @@
 .popularReleases {
   padding-left: 12px;
 }
+
+@media (max-width: 576px) {
+  .itemDetailContainer {
+      padding: 10px 20px;
+  }
+}
