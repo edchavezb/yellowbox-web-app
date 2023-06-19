@@ -1,5 +1,5 @@
 import Sidebar from "./Sidebar/Sidebar"
-import Header from "./Header"
+import Header from "./Header/Header"
 import styles from "./Layout.module.css";
 import { ReactNode } from "react";
 import { useAppSelector } from "core/hooks/useAppSelector";

@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import './App.css';
 import Layout from "./components/layout/Layout";
-import Home from "./pages/Home"
+import Home from "./pages/Home/Home"
 import AuthSuccess from './pages/AuthSuccess';
-import Search from "./pages/Search"
-import BoxDetail from "./pages/BoxDetail"
-import Modal from "./components/layout/Modal"
-import ItemDetail from './pages/ItemDetail';
-import SpotifyUser from './pages/SpotifyUser';
+import Search from "./pages/Search/Search"
+import BoxDetail from "./pages/BoxDetail/BoxDetail"
+import Modal from "./components/layout/Modal/Modal"
+import ItemDetail from './pages/ItemDetail/ItemDetail';
+import SpotifyUser from './pages/SpotifyUser/SpotifyUser';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { refreshSpotifyToken } from 'core/api/spotify';
 import { getUserDataBySpotifyId } from 'core/api/users';
