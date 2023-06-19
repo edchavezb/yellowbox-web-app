@@ -134,8 +134,9 @@
     }
 
     #loginButton {
-        font-size: .7em;
-        padding: 0px 12px;
+        height: 30px;
+        font-size: .6em;
+        padding: 0px 10px;
     }
 
     #searchBox, #newButton {
