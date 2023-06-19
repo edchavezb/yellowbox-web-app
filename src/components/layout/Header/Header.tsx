@@ -6,13 +6,16 @@ import PopperMenu from "components/menus/popper/PopperMenu";
 import AddButtonMenu from "components/menus/popper/AddButtonMenu/AddButtonMenu";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { spotifyLoginApi } from "core/api/spotify";
+import HamburgerMenu from "components/menus/popper/HamburgerMenu/HamburgerMenu";
 
 function Header() {
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
   const history = useHistory();
-  const buttonRef = useRef(null);
+  const createButtonRef = useRef(null);
+  const hamburgerButtonRef = useRef(null);
   let searchTimeout: ReturnType<typeof setTimeout>;
 
   useEffect(() => {
@@ -56,20 +59,29 @@ function Header() {
           }
           {
             isLoggedIn &&
-            <div id={styles.newButton} ref={buttonRef} onClick={() => setIsMenuOpen(true)}>
+            <div id={styles.newButton} ref={createButtonRef} onClick={() => setIsCreateMenuOpen(true)}>
               <img id={styles.plusIcon} src="/icons/plus.svg" alt="new box"></img>
             </div>
           }
           {
+            isLoggedIn &&
+            <div id={styles.hamburgerButton} ref={hamburgerButtonRef} onClick={() => setIsHamburgerMenuOpen(true)}>
+              <img id={styles.hamburgerIcon} src="/icons/reorder.svg" alt="menu"></img>
+            </div>
+          }
+          {
             isLoggedIn === false &&
-            <div id={styles.loginButton} ref={buttonRef} onClick={handleLogin}>
+            <div id={styles.loginButton} onClick={handleLogin}>
               Log in / Sign up
             </div>
           }
         </div>
       </div>
-      <PopperMenu referenceRef={buttonRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-        <AddButtonMenu setIsOpen={setIsMenuOpen} />
+      <PopperMenu referenceRef={createButtonRef} placement={'right-start'} isOpen={isCreateMenuOpen} setIsOpen={setIsCreateMenuOpen}>
+        <AddButtonMenu setIsOpen={setIsCreateMenuOpen} />
+      </PopperMenu>
+      <PopperMenu referenceRef={hamburgerButtonRef} placement={'right-start'} isOpen={isHamburgerMenuOpen} setIsOpen={setIsHamburgerMenuOpen}>
+        <HamburgerMenu setIsOpen={setIsHamburgerMenuOpen} />
       </PopperMenu>
     </>
   );

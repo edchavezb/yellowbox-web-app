@@ -114,10 +114,30 @@
     width: 50%
 }
 
+#hamburgerButton {
+    display: none;
+}
+
+#hamburgerIcon {
+    visibility: visible;
+}
+
 @media (max-width: 576px) {
+    #hamburgerButton {
+        width: 30px;
+        height: 30px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(26, 26, 26)
+    }
+
     #loginButton {
         font-size: .7em;
+        padding: 0px 12px;
     }
+
     #searchBox, #newButton {
         display: none;
     }

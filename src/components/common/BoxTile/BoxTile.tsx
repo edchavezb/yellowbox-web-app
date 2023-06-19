@@ -1,10 +1,10 @@
 import { DashboardBox } from "core/types/interfaces"
 import { Link, useHistory } from "react-router-dom"
-import styles from "./FolderDetailBox.module.css";
+import styles from "./BoxTile.module.css";
 import { CSS } from '@dnd-kit/utilities';
 import { useAppSortable } from "components/layout/Sidebar/SidebarBox/SidebarBox";
 
-export const FolderDetailBox = ({ box }: { box: DashboardBox }) => {
+const BoxTile = ({ box }: { box: DashboardBox }) => {
   const history = useHistory();
   const {
     attributes,
@@ -45,3 +45,5 @@ export const FolderDetailBox = ({ box }: { box: DashboardBox }) => {
     </div>
   )
 }
+
+export default BoxTile;

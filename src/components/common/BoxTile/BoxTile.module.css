@@ -1,13 +1,13 @@
 .folderBoxWrapper {
-    width: 130px;
+    width: 12.5%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
 .boxSquare {
-    height: 130px;
-    width: 130px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -17,11 +17,11 @@
 }
 
 .boxSquare:hover {
-    background-color: rgb(88, 88, 88);;
+    background-color: rgb(88, 88, 88);
 }
 
 .boxIcon {
-    width: 70px;
+    width: 53%;
 }
 
 .boxName {
@@ -34,4 +34,20 @@
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     font-weight: bold;
+}
+
+@media (max-width: 576px) {
+    .folderBoxWrapper {
+        width: 100%;
+        flex-direction: row;
+    }
+    .boxSquare {
+        width: 14%;
+    }
+    .boxName {
+        margin-top: 0px;
+        margin-left: 5px;
+        display: flex;
+        align-items: center;
+    }
 }
