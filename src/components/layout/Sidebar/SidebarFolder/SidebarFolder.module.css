@@ -6,12 +6,12 @@
 
 .folderWrapperHighlighted {
     composes: folderWrapper;
-    border: 1px solid greenyellow;
+    border: 1px solid hsl(84, 100%, 59%, 0.95);;
 }
 
 .folderLink {
     text-decoration: none;
-    color: greenyellow;
+    color: hsl(84, 100%, 59%, 0.95);;
     display: flex;
     align-items: center;
     gap: 6px;

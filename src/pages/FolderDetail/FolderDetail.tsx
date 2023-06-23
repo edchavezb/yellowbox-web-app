@@ -56,7 +56,10 @@ function FolderDetail() {
             </div>
             <div className={styles.folderInfo}>
               <h2 className={styles.folderName}> {currentFolder?.name} </h2>
-              <div className={styles.folderDesc}> {currentFolder?.description} </div>
+              <div className={styles.folderDesc}>
+                {currentFolder?.description}
+              </div>
+              <div className={styles.creatorName}>{`${currentFolder.creatorName}`}</div>
             </div>
             <div className={styles.menuButtonWrapper}>
               <div className={styles.menuButton} onClick={() => setIsFolderMenuOpen(true)} ref={menuToggleRef}>

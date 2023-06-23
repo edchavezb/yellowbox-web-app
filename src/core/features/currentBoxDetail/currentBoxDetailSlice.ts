@@ -4,7 +4,7 @@ import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
 import { updateBoxName } from "../userBoxes/userBoxesSlice"
-import { updateFolderBoxesApi, updateFolderBoxNameApi } from "core/api/userfolders"
+import { updateFolderBoxNameApi } from "core/api/userfolders"
 import { updateUserFolder } from "../userFolders/userFoldersSlice"
 
 interface CurrentBoxDetailState {

@@ -3,7 +3,7 @@ import api from '../index'
 
 export const getFolderByIdApi = async (folderId: string) => {
     try {
-        return await api.get<UserFolder>('folders/', {folderId})
+        return await api.get<{folderData: UserFolder, creatorName: string}>('folders/', {folderId})
     }
     catch(err) {
         console.log(err)
