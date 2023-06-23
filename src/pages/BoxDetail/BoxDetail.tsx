@@ -12,6 +12,8 @@ function BoxDetail() {
   const { id: boxId } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
+  const isOwner = !!userBoxes.find(box => box.boxId === boxId);
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const isBoxEmpty = useMemo(
     () => currentBox?.albums?.length === 0 && currentBox?.artists?.length === 0 && currentBox?.tracks?.length === 0 && currentBox?.playlists?.length === 0,
@@ -43,7 +45,7 @@ function BoxDetail() {
             setVisibility={setVisibility}
           />
           <h2 id={styles.boxName}> {currentBox?.name} </h2>
-          <div id={styles.boxDesc}> {currentBox?.description} </div>
+          <div id={styles.boxDesc}> {!isOwner && `Box by ${currentBox.creatorName} - `}{currentBox?.description} </div>
           {!!currentBox?.artists?.length &&
             <BoxSection<Artist>
               type="artists"

@@ -19,10 +19,6 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
   const isOwner = !!userBoxes.find(box => box.boxId === boxId);
   const { menuItemsList, menuItem } = styles;
 
-  const handleCloneBox = () => {
-    //TODO: Implement clone box
-  }
-
   const handleOpenModal = (modalType: ModalType) => {
     dispatch(setModalState({
       visible: true, type: modalType, page: "", boxId, itemData: undefined
@@ -62,7 +58,7 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
         isLoggedIn &&
         <div
           className={menuItem}
-          onClick={() => handleCloneBox()}>
+          onClick={() => handleOpenModal("Clone Box")}>
           Clone this box
         </div>
       }

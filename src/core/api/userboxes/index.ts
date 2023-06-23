@@ -3,7 +3,7 @@ import api from '../index'
 
 export const getBoxByIdApi = async (boxId: string) => {
     try {
-        return await api.get<UserBox>('boxes/', {boxId})
+        return await api.get<{boxData: UserBox, creatorName: string}>('boxes/', {boxId})
     }
     catch(err) {
         console.log(err)

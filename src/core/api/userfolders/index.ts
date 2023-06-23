@@ -57,6 +57,15 @@ export const updateFolderBoxesApi = async (folderId: string, updatedItems: Dashb
     }
 }
 
+export const updateFolderBoxNameApi = async (folderId: string, boxId: string, newName: string) => {
+    try {
+        return await api.put<{name: string}, {updatedFolder: UserFolder}>(`folders/${folderId}/boxes/${boxId}`, {name: newName})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
 export const addBoxToFolderApi = async (folderId: string, boxId: string, boxName: string) => {
     try {
         return await api.post<{boxId: string, boxName: string}, {updatedFolder: UserFolder, updatedDashboardBoxes: string[]}>(`folders/${folderId}/boxes`, {boxId, boxName})

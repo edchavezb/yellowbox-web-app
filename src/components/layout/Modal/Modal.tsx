@@ -19,10 +19,13 @@ function Modal() {
 
   switch(modalData.type){
     case "New Box" :
-      modalBody = <NewBoxMenu editMode={false}/>
+      modalBody = <NewBoxMenu action={modalData.type}/>
     break;
     case "Edit Box" :
-      modalBody = <NewBoxMenu editMode={true} />
+      modalBody = <NewBoxMenu action={modalData.type} />
+    break;
+    case "Clone Box" :
+      modalBody = <NewBoxMenu action={modalData.type} />
     break;
     case "Delete Box" :
       modalBody = <DeletePrompt boxId={modalData.boxId as string} itemData={modalData.itemData!} deleteType={"Box"} />

@@ -4,6 +4,7 @@ import { Album, Artist, Playlist, Track } from "core/types/interfaces"
 export type ModalType = 
     "New Box" 
     | "Edit Box"
+    | "Clone Box"
     | "Delete Box"
     | "Edit Folder"
     | "Delete Folder"
