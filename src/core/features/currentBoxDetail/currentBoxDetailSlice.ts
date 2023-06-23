@@ -4,9 +4,11 @@ import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
 import { updateBoxName } from "../userBoxes/userBoxesSlice"
+import { updateFolderBoxesApi, updateFolderBoxNameApi } from "core/api/userfolders"
+import { updateUserFolder } from "../userFolders/userFoldersSlice"
 
 interface CurrentBoxDetailState {
-    box: UserBox
+    box: UserBox & {creatorName?: string}
     isUserViewing: boolean
 }
 
@@ -19,7 +21,7 @@ const currentBoxDetailSlice = createSlice({
     name: 'currentBoxDetail',
     initialState,
     reducers: {
-        setCurrentBoxDetail(state, action: PayloadAction<UserBox>) {
+        setCurrentBoxDetail(state, action: PayloadAction<UserBox & {creatorName?: string}>) {
             state.box = action.payload
         },
         updateCurrentBoxDetail(state, action: PayloadAction<UserBox>) {
@@ -76,18 +78,30 @@ export const {
 export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch) => {
     try {
         const currentBoxDetail = await getBoxByIdApi(boxId);
-        dispatch(setCurrentBoxDetail(currentBoxDetail!))
-        dispatch(setIsUserViewing(true))
+        if (currentBoxDetail) {
+            const {boxData, creatorName} = currentBoxDetail;
+            dispatch(setCurrentBoxDetail({...boxData, creatorName}))
+            dispatch(setIsUserViewing(true))
+        }
     } catch (err) {
         dispatch(setCurrentBoxDetail({} as UserBox))
     }
 }
 
-export const updateCurrentBoxDetailThunk = (boxId: string, updatedBox: UserBox): AppThunk => async (dispatch) => {
+export const updateCurrentBoxDetailThunk = (boxId: string, updatedBox: UserBox): AppThunk => async (dispatch, getState) => {
     try {
+        const containingFolder = getState().userFoldersData.folders.find(folder => folder.boxes.some(box => box.boxId === boxId));
         const boxDetail = await updateUserBoxApi(boxId, updatedBox);
         dispatch(updateCurrentBoxDetail(boxDetail!))
-        dispatch(updateBoxName({targetId: boxId, newName: updatedBox.name}))
+        if (containingFolder){
+            const apiResponse = await updateFolderBoxNameApi(containingFolder._id, boxId, updatedBox.name);
+            if (apiResponse?.updatedFolder) {
+                dispatch(updateUserFolder({targetId: containingFolder._id, updatedFolder: apiResponse.updatedFolder}))
+            }
+        }
+        else (
+            dispatch(updateBoxName({targetId: boxId, newName: updatedBox.name}))
+        )
     } catch (err) {
         console.log(err)
     }

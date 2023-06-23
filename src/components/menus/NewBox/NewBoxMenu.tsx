@@ -9,16 +9,20 @@ import { useAppSelector } from 'core/hooks/useAppSelector';
 import { updateCurrentBoxDetailThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 
 interface NewBoxMenuProps {
-  editMode: boolean
+  action: 'New Box' | 'Edit Box' | 'Clone Box'
 }
 
-function NewBoxMenu({ editMode }: NewBoxMenuProps) {
+function NewBoxMenu({ action }: NewBoxMenuProps) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const user = useAppSelector(state => state.userData.authenticatedUser)
   const [boxDetails, setBoxDetails] = useState(
-    editMode ?
-      { boxName: currentBox.name, boxDesc: currentBox.description, public: currentBox.public }
+    action !== "New Box" ?
+      { 
+        boxName: `${currentBox.name}${action === "Clone Box" ? " - Copy" : ""}`, 
+        boxDesc: `${currentBox.description}${action === "Clone Box" ? " - Copy" : ""}`, 
+        public: currentBox.public
+      }
       :
       { boxName: "", boxDesc: "", public: true }
   )
@@ -79,8 +83,37 @@ function NewBoxMenu({ editMode }: NewBoxMenuProps) {
     return blankBox;
   }
 
+  const getClonedBoxData = () => {
+    const {_id , ...currentBoxNoId} = currentBox;
+    const clonedBox: Omit<UserBox, '_id'> = {
+      ...currentBoxNoId,
+      name: boxDetails.boxName,
+      description: boxDetails.boxDesc,
+      creator: user._id,
+      public: boxDetails.public,
+      notes: []
+    }
+    return clonedBox;
+  }
+
+  const getButtonText = () => {
+    if (action === "New Box") {
+      return "Create"
+    }
+    else if (action === "Edit Box") {
+      return "Save changes"
+    }
+    else if (action === "Clone Box") {
+      return "Clone to your library"
+    }
+  }
+
   const handleSaveNewBox = async () => {
     dispatch(createUserBoxThunk(newUserBox()))
+  }
+
+  const handleCloneBox = async () => {
+    dispatch(createUserBoxThunk(getClonedBoxData()))
   }
 
   const handleUpdateBox = async (updatedBox: UserBox) => {
@@ -88,13 +121,16 @@ function NewBoxMenu({ editMode }: NewBoxMenuProps) {
   }
 
   const handleSubmitBtnClick = async () => {
-    if (editMode) {
+    if (action === "Edit Box") {
       const {boxName, boxDesc} = boxDetails
       const updatedBox = {...currentBox, name: boxName, description: boxDesc, public: boxDetails.public}
-      await handleUpdateBox(updatedBox)
+      handleUpdateBox(updatedBox)
+    }
+    else if (action === "Clone Box") {
+      handleCloneBox()
     }
     else {
-      await handleSaveNewBox()
+      handleSaveNewBox()
     }
     dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))
   }
@@ -120,7 +156,7 @@ function NewBoxMenu({ editMode }: NewBoxMenuProps) {
       </form>
       <div id={styles.modalFooter}>
         <button disabled={!boxDetails.boxName} onClick={handleSubmitBtnClick}>
-          {editMode ? 'Save Changes' : 'Create'}
+          {getButtonText()}
         </button>
       </div>
     </div>
