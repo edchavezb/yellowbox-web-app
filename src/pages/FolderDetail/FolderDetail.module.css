@@ -12,8 +12,8 @@
 }
 
 .folderSquare {
-    height: 70px;
-    width: 70px;
+    height: 75px;
+    width: 75px;
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -26,10 +26,6 @@
     width: 50px;
 }
 
-.folderInfo>h2 {
-    margin: 0px;
-}
-
 .folderInfo {
     display: flex;
     flex-direction: column;
@@ -38,12 +34,13 @@
 }
 
 .folderName {
-    margin-top: 10px;
-    margin-bottom: 10px
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .folderDesc {
-    visibility: visible;
+    font-size: 14px;
+    margin-bottom: 2px;
 }
 
 .menuButtonWrapper {
@@ -80,4 +77,9 @@
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
+}
+
+.creatorName {
+    color: hsl(84, 100%, 59%, 0.95);
+    font-size: 12px;
 }

@@ -6,13 +6,34 @@
     box-sizing: border-box;
 }
 
+.boxHeader {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.boxSquare {
+    height: 75px;
+    width: 75px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: gray;
+}
+
+.boxIcon {
+    width: 50px;
+}
+
 #boxName {
-    margin-top: 10px;
-    margin-bottom: 10px
+    margin-top: 0px;
+    margin-bottom: 0px
 }
 
 #boxDesc {
-    margin-bottom: 25px
+    font-size: 14px;
+    margin-bottom: 2px;
 }
 
 #emptyMsgDiv {
@@ -25,6 +46,11 @@
 
 #emptyMsg {
     text-align: center;
+}
+
+.creatorName {
+    color: hsl(84, 100%, 59%, 0.9);
+    font-size: 12px;
 }
 
 @media (max-width: 576px) {

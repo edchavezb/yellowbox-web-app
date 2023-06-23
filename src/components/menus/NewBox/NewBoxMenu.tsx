@@ -20,7 +20,7 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
     action !== "New Box" ?
       { 
         boxName: `${currentBox.name}${action === "Clone Box" ? " - Copy" : ""}`, 
-        boxDesc: `${currentBox.description}${action === "Clone Box" ? " - Copy" : ""}`, 
+        boxDesc: currentBox.description, 
         public: currentBox.public
       }
       :

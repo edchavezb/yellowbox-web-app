@@ -5,8 +5,8 @@ import { DashboardBox, UserFolder } from "core/types/interfaces";
 import { updateSidebarFolderBoxes, updateUserFolder } from "../userFolders/userFoldersSlice";
 
 interface CurrentFolderDetailState {
-  folder: UserFolder;
-  isUserViewing: boolean;
+  folder: UserFolder & { creatorName?: string }
+  isUserViewing: boolean
 }
 
 const initialState: CurrentFolderDetailState = {
@@ -18,7 +18,7 @@ const currentFolderDetailSlice = createSlice({
   name: 'currentFolderDetail',
   initialState,
   reducers: {
-    setCurrentFolderDetail(state, action: PayloadAction<UserFolder>) {
+    setCurrentFolderDetail(state, action: PayloadAction<UserFolder & { creatorName?: string }>) {
       state.folder = action.payload;
     },
     updateCurrentFolderDetail(state, action: PayloadAction<UserFolder>) {
@@ -47,8 +47,11 @@ export const {
 export const fetchFolderDetailThunk = (folderId: string): AppThunk => async (dispatch) => {
   try {
     const currentFolderDetail = await getFolderByIdApi(folderId);
-    dispatch(setCurrentFolderDetail(currentFolderDetail!));
-    dispatch(setIsUserViewing(true));
+    if (currentFolderDetail) {
+      const { folderData, creatorName } = currentFolderDetail;
+      dispatch(setCurrentFolderDetail({ ...folderData, creatorName }))
+      dispatch(setIsUserViewing(true))
+    }
   } catch (err) {
     dispatch(setCurrentFolderDetail({} as UserFolder));
   }
@@ -56,11 +59,11 @@ export const fetchFolderDetailThunk = (folderId: string): AppThunk => async (dis
 
 export const updateCurrentFolderDetailThunk = (folderId: string, updatedFolder: UserFolder): AppThunk => async (dispatch) => {
   try {
-      const folderDetail = await updateUserFolderApi(folderId, updatedFolder);
-      dispatch(updateCurrentFolderDetail(folderDetail!.updatedFolder))
-      dispatch(updateUserFolder({targetId: folderId, updatedFolder: folderDetail!.updatedFolder}))
+    const folderDetail = await updateUserFolderApi(folderId, updatedFolder);
+    dispatch(updateCurrentFolderDetail(folderDetail!.updatedFolder))
+    dispatch(updateUserFolder({ targetId: folderId, updatedFolder: folderDetail!.updatedFolder }))
   } catch (err) {
-      console.log(err)
+    console.log(err)
   }
 }
 
@@ -72,7 +75,7 @@ export const reorderFolderBoxesThunk = (folderId: string, sourceIndex: number, t
     dispatch(updateFolderBoxes({ updatedBoxes: folderBoxesCopy }));
     const response = await updateFolderBoxesApi(folderId, folderBoxesCopy)
     if (response?.updatedFolder) {
-      dispatch(updateSidebarFolderBoxes({targetId: folderId, updatedBoxes: response.updatedFolder.boxes}))
+      dispatch(updateSidebarFolderBoxes({ targetId: folderId, updatedBoxes: response.updatedFolder.boxes }))
     }
   } catch (err) {
     console.log(err)
