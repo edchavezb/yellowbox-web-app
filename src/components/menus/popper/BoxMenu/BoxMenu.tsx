@@ -39,6 +39,22 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
   return (
     <div className={menuItemsList}>
       {
+        boxDetailViewing &&
+        <div
+          className={menuItem}
+          onClick={() => handleOpenModal("Sorting Options")}>
+          Sorting options
+        </div>
+      }
+      {
+        (boxDetailViewing && isOwner) &&
+        <div
+          className={menuItem}
+          onClick={() => handleOpenModal("Box Subsections")}>
+          Manage sections
+        </div>
+      }
+      {
         (boxDetailViewing && isOwner) &&
         <div
           className={menuItem}
