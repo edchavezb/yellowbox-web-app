@@ -9,6 +9,13 @@ function Home({ location }: RouteComponentProps) {
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const userData = useAppSelector(state => state.userData.authenticatedUser);
   const userFolders = useAppSelector(state => state.userFoldersData.folders);
+  const sortedFolders = [...userFolders].sort((folderA, folderB) => {
+    if (folderA.name > folderB.name) return 1
+    if (folderA.name < folderB.name) return -1
+    else {
+      return 0
+    }
+  })
   const dashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes);
 
   const handleLogin = async () => {
@@ -25,7 +32,7 @@ function Home({ location }: RouteComponentProps) {
         <h1> Your folders </h1>
         <div className={styles.folderList}>
           {
-            userFolders.map(folder => {
+            sortedFolders.map(folder => {
               return(
                <FolderTile folder={folder} />
               )

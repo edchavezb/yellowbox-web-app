@@ -1,4 +1,4 @@
-import { Active, Over, Collision, Translate, DndContextProps, DndContext } from "@dnd-kit/core";
+import { Active, Over, Collision, Translate, DndContextProps } from "@dnd-kit/core";
 import { AppSortableData } from "./SidebarBox/SidebarBox";
 
 interface AppActive extends Omit<Active, "data"> {
