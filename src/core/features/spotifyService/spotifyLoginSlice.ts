@@ -9,7 +9,8 @@ const initialState: SpotifyLoginState = {
   data: {
     auth: {
       accessToken: null,
-      refreshToken: null
+      refreshToken: null,
+      genericToken: null
     },
     userData: {
       displayName: '',
@@ -28,12 +29,16 @@ const spotifyLoginSlice = createSlice({
     setAccessToken(state, action: PayloadAction<{accessToken: string}>) {
       state.data.auth.accessToken = action.payload.accessToken;
     },
+    setGenericToken(state, action: PayloadAction<{genericToken: string}>) {
+      state.data.auth.genericToken = action.payload.genericToken;
+    },
   }
 })
 
 export const {
   setSpotifyLoginData,
-  setAccessToken
+  setAccessToken,
+  setGenericToken
 } = spotifyLoginSlice.actions;
 
 export default spotifyLoginSlice.reducer;

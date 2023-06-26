@@ -14,6 +14,7 @@ export interface SpotifyUserAuth {
   code?: string | null
   refreshToken: string | null
   accessToken?: string | null
+  genericToken?: string | null
 }
 
 export interface YellowboxUser {

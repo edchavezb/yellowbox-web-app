@@ -19,6 +19,7 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isDefault
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
+  const [imageErrorToken, setImageErrorToken] = useState('')
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;

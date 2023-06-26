@@ -1,5 +1,5 @@
 import { Artist, Album, Track, Playlist } from "core/types/interfaces";
-import { getItemProperty } from "./getItemProperty";
+import { getItemProperty } from "core/helpers/itemDataHandlers";
 
 export const twoFactorSort = <T extends Artist | Album | Track | Playlist>(array: T[], sortFactorOne: string, sortFactorTwo: string, ascending: boolean) => {
     if (sortFactorOne === "custom") return array

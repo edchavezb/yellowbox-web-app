@@ -1,6 +1,6 @@
 import { ReactElement, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Artist, Album, Track, Playlist, ItemImage } from "core/types/interfaces";
+import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 import * as checkType from "core/helpers/typeguards";
 import styles from "./DetailRow.module.css";
 import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
@@ -10,33 +10,35 @@ import { setModalState } from "core/features/modal/modalSlice";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
+import { extractCrucialData, getElementImage } from "core/helpers/itemDataHandlers";
+import { updateBoxAlbumApi, updateBoxArtistApi, updateBoxTrackApi, updateBoxPlaylistApi } from "core/api/userboxes";
 
 interface IProps<T> {
   element: T
   index: number
-  page?: string
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
 function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index, reorderingMode, subId }: IProps<T>) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
   const dispatch = useAppDispatch();
+  const detailRowRef = useRef(null);
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
   const { name, type, uri, id } = element;
+  const spotifyToken = useAppSelector(state => state.spotifyLoginData.data.auth.genericToken);
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const isOwner = userBoxes.some(box => box.boxId === currentBox._id);
   const itemNote = currentBox.notes.find(note => note.itemId === id && note.subSectionId === subId) || currentBox.notes.find(note => note.itemId === id && !note.subSectionId)
-  const detailRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [elementImage, setElementImage] = useState(getElementImage(element));
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
   }
 
   //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)
-  let elementImages!: ItemImage[];
   let authorName!: ReactElement | JSX.Element[] | string;
   let metadata!: JSX.Element | string;
 
@@ -48,9 +50,8 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   }
 
   if (checkType.isAlbum(element)) {
-    const { images, artists, album_type, release_date, total_tracks } = element;
+    const { artists, album_type, release_date, total_tracks } = element;
     authorName = getArtistLinks(artists)
-    elementImages = images
 
     metadata =
       <div className={styles.metaDataContainer}>
@@ -67,9 +68,8 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   }
 
   else if (checkType.isArtist(element)) {
-    const { images, genres } = element as Artist
+    const { genres } = element as Artist
     authorName = ""
-    elementImages = images as ItemImage[]
 
     metadata = genres ?
       <div className={styles.metaDataContainer}>
@@ -88,7 +88,6 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   else if (checkType.isTrack(element)) {
     const { artists, album, duration_ms } = element
     authorName = getArtistLinks(artists)
-    elementImages = album!.images;
 
     metadata =
       <div className={styles.metaDataContainer}>
@@ -102,9 +101,8 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   }
 
   else if (checkType.isPlaylist(element)) {
-    const { images, owner, description, tracks } = element;
+    const { owner, description, tracks } = element;
     authorName = <a href={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></a>;
-    elementImages = images
 
     metadata =
       <div className={styles.metaDataContainer}>
@@ -117,7 +115,32 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
       </div>
   }
 
-  const itemCoverArt = elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
+  function updateItemInBox(updatedElement: T) {
+    if (checkType.isAlbum(updatedElement)) {
+      updateBoxAlbumApi(currentBox._id, updatedElement._id!, updatedElement)
+    }
+    else if (checkType.isArtist(updatedElement)) {
+      updateBoxArtistApi(currentBox._id, updatedElement._id!, updatedElement)
+    }
+    else if (checkType.isTrack(updatedElement)) {
+      updateBoxTrackApi(currentBox._id, updatedElement._id!, updatedElement)
+    }
+    else if (checkType.isPlaylist(updatedElement)) {
+      updateBoxPlaylistApi(currentBox._id, updatedElement._id!, updatedElement)
+    }
+  }
+
+  const queryItemIdApi = async (type: string, id: string, token: string) => {
+    const response = await fetch(`https://api.spotify.com/v1/${type}s/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const item = await response.json();
+    return item;
+  }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps<T>["element"]) => {
     e.dataTransfer.setData("data", JSON.stringify(element))
@@ -128,8 +151,17 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
     setElementDragging(false)
   }
 
-  return (
-    reorderingMode ?
+  const handleImageError = async () => {
+    const itemResponse = await queryItemIdApi(element.type, element.id, spotifyToken!);
+    const itemImage = getElementImage(itemResponse);
+    setElementImage(itemImage);
+    const itemData = extractCrucialData(itemResponse);
+    itemData._id = element._id
+    updateItemInBox(itemData as T);
+  }
+
+  if (reorderingMode) {
+    return (
       <div
         className={styles.itemRow}
         ref={setNodeRef}
@@ -148,7 +180,13 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
                 {type === "track" ? <span> Play </span> : <span> Open </span>}
               </div>
             </a>
-            <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+            <img
+              draggable="false"
+              className={styles.itemImage}
+              alt={name}
+              src={elementImage}
+              onError={handleImageError}
+            />
           </div>
         </div>
         <div className={styles.dataCol}>
@@ -175,7 +213,11 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           </div>
         </div>
       </div>
-      :
+    )
+  }
+  
+  else {
+    return (
       <>
         <div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
           <div className={styles.itemPosition}>{index + 1}</div>
@@ -187,7 +229,14 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
                   {type === "track" ? <span> Play </span> : <span> Open </span>}
                 </div>
               </a>
-              <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+              <img
+                draggable="false"
+                className={styles.itemImage}
+                alt={name}
+                src={elementImage}
+                onError={handleImageError}
+              />
+              
             </Link>
           </div>
           <div className={styles.dataCol}>
@@ -223,7 +272,8 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
-  )
+    )
+  }
 }
 
 export default DetailRow;

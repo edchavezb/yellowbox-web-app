@@ -1,56 +1,86 @@
 import { ReactElement, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Artist, Album, Track, Playlist, ItemImage } from "core/types/interfaces";
+import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 import * as checkType from "core/helpers/typeguards";
 import styles from "./GridItem.module.css";
 import PopperMenu from "components/menus/popper/PopperMenu";
 import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
+import { useAppSelector } from "core/hooks/useAppSelector";
+import { extractCrucialData, getElementImage } from "core/helpers/itemDataHandlers";
+import { updateBoxAlbumApi, updateBoxArtistApi, updateBoxPlaylistApi, updateBoxTrackApi } from "core/api/userboxes";
 
 interface IProps<T> {
   element: T
   setElementDragging: (dragging: boolean) => void
-  reorderingMode?: boolean,
+  reorderingMode?: boolean
   subId?: string
 }
 
-function GridItem<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, reorderingMode, subId }: IProps<T>) {
+function GridItem<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, reorderingMode, subId}: IProps<T>) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
   const gridItemRef = useRef(null);
+  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+  const spotifyToken = useAppSelector(state => state.spotifyLoginData.data.auth.genericToken);
   const { name, type, uri, id } = element;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [elementImage, setElementImage] = useState(getElementImage(element));
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
   }
 
-  //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)
-  let elementImages: ItemImage[] | undefined;
-  let authorName!: ReactElement | string;
+  const authorNameLink = getElementAuthorLink(element);
 
-  if (checkType.isAlbum(element)) {
-    const { images, artists } = element;
-    authorName = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
-    elementImages = images
-  }
-  else if (checkType.isArtist(element)) {
-    const { images } = element as Artist;
-    authorName = ""
-    elementImages = images
-  }
-  else if (checkType.isTrack(element)) {
-    const { artists, album } = element;
-    authorName = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
-    elementImages = album!.images;
-  }
-  else if (checkType.isPlaylist(element)) {
-    const { images, owner } = element;
-    authorName = <a href={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></a>;
-    elementImages = images
+  function getElementAuthorLink(item: T) {
+    let authorLink: ReactElement | string = '';
+  
+    if (checkType.isAlbum(item)) {
+      const { artists } = item;
+      authorLink = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
+    }
+    else if (checkType.isArtist(item)) {
+      authorLink = ""
+    }
+    else if (checkType.isTrack(item)) {
+      const { artists } = item;
+      authorLink = <Link to={`/detail/artist/${artists[0].id}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
+    }
+    else if (checkType.isPlaylist(item)) {
+      const { owner } = item;
+      authorLink = <a href={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></a>;
+    }
+  
+    return authorLink;
   }
 
-  const itemCoverArt = elementImages && elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
+  function updateItemInBox(updatedElement: T) {
+    if (checkType.isAlbum(updatedElement)) {
+      updateBoxAlbumApi(currentBox._id, updatedElement._id!, updatedElement)
+    }
+    else if (checkType.isArtist(updatedElement)) {
+      updateBoxArtistApi(currentBox._id, updatedElement._id!, updatedElement)
+    }
+    else if (checkType.isTrack(updatedElement)) {
+      updateBoxTrackApi(currentBox._id, updatedElement._id!, updatedElement)
+    }
+    else if (checkType.isPlaylist(updatedElement)) {
+      updateBoxPlaylistApi(currentBox._id, updatedElement._id!, updatedElement)
+    }
+  }
+
+  const queryItemIdApi = async (type: string, id: string, token: string) => {
+    const response = await fetch(`https://api.spotify.com/v1/${type}s/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const item = await response.json();
+    return item;
+  }
 
   const handleDrag = (event: React.DragEvent<HTMLDivElement>, element: IProps<T>["element"]) => {
     event.dataTransfer.setData("data", JSON.stringify(element))
@@ -61,8 +91,17 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, setEle
     setElementDragging(false)
   }
 
-  return (
-    reorderingMode ?
+  const handleImageError = async () => {
+    const itemResponse = await queryItemIdApi(element.type, element.id, spotifyToken!);
+    const itemImage = getElementImage(itemResponse);
+    setElementImage(itemImage);
+    const itemData = extractCrucialData(itemResponse);
+    itemData._id = element._id
+    updateItemInBox(itemData as T);
+  }
+
+  if (reorderingMode) {
+    return (
       <div
         className={styles.itemCard}
         ref={setNodeRef}
@@ -77,12 +116,22 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, setEle
               {type === "track" ? <span> Play </span> : <span> Open </span>}
             </div>
           </a>
-          <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+          <img
+            draggable="false"
+            className={styles.itemImage}
+            alt={name}
+            src={elementImage}
+            onError={handleImageError}
+          />
         </div>
         <Link to={`/detail/${type}/${id}`}> <div className={styles.name}> {name} </div> </Link>
-        {authorName}
+        {authorNameLink}
       </div>
-      :
+    )
+  }
+
+  else {
+    return (
       <>
         <div
           draggable
@@ -101,17 +150,24 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, setEle
               <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
             </div>
             <Link to={`/detail/${type}/${id}`}>
-              <img draggable="false" className={styles.itemImage} alt={name} src={itemCoverArt}></img>
+              <img
+                draggable="false"
+                className={styles.itemImage}
+                alt={name}
+                src={elementImage}
+                onError={handleImageError}
+              />
             </Link>
           </div>
           <Link to={`/detail/${type}/${id}`}> <div className={styles.name}> {name} </div> </Link>
-          {authorName}
-        </div>
+          {authorNameLink}
+        </div >
         <PopperMenu referenceRef={gridItemRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={type} subId={subId}/>
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} />
         </PopperMenu>
       </>
-  )
+    )
+  }
 }
 
 export default GridItem;

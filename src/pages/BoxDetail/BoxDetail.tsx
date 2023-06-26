@@ -8,12 +8,15 @@ import { fetchBoxDetailThunk, setIsUserViewing } from 'core/features/currentBoxD
 import { useParams } from 'react-router-dom';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import BoxMenu from 'components/menus/popper/BoxMenu/BoxMenu';
+import { getSpotifyGenericToken } from 'core/api/spotify';
+import { setGenericToken } from 'core/features/spotifyService/spotifyLoginSlice';
 
 function BoxDetail() {
   const { id: boxId } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const menuToggleRef = useRef(null);
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
+  const spotifyToken = useAppSelector(state => state.spotifyLoginData.data.auth.genericToken);
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const isBoxEmpty = useMemo(
     () => currentBox?.albums?.length === 0 && currentBox?.artists?.length === 0 && currentBox?.tracks?.length === 0 && currentBox?.playlists?.length === 0,
@@ -29,6 +32,20 @@ function BoxDetail() {
       dispatch(setIsUserViewing(false))
     }
   }, [boxId, dispatch])
+
+  useEffect(() => {
+    if (!spotifyToken) {
+      setSpotifyToken();
+    }
+  }, [spotifyToken])
+
+  const setSpotifyToken = async () => {
+    const tokenResponse = await getSpotifyGenericToken()!;
+    const { access_token: accessToken } = tokenResponse!;
+    if (accessToken) {
+      dispatch(setGenericToken({genericToken: accessToken}));
+    }
+  }
 
   return (
     <>
@@ -77,7 +94,7 @@ function BoxDetail() {
           {isBoxEmpty && <div id={styles.emptyMsgDiv}><h3 id={styles.emptyMsg}> You have not added any items to this box yet. <br /> Start by searching some music you like! </h3></div>}
         </div>
       }
-       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isBoxMenuOpen} setIsOpen={setIsBoxMenuOpen}>
+      <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isBoxMenuOpen} setIsOpen={setIsBoxMenuOpen}>
         <BoxMenu setIsOpen={setIsBoxMenuOpen} />
       </PopperMenu>
     </>
