@@ -28,7 +28,7 @@
     font-weight: 600;
     margin-top: 15px;
     overflow: hidden;
-    
+
     /*
     white-space: -moz-pre-wrap !important; 
     white-space: -pre-wrap;   
@@ -86,4 +86,20 @@
 
 .colLeftAlgn {
     text-align: left;
+}
+
+@media (max-width: 576px) {
+
+    .visualizerContainer {
+        flex-wrap: wrap;
+    }
+
+    .trackLyrics {
+        width: 100%;
+    }
+
+    .related {
+        margin-top: 15px;
+        width: 100%;
+    }
 }
