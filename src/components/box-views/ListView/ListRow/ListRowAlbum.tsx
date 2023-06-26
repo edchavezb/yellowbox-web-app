@@ -43,8 +43,8 @@ function ListRowAlbum({ element, setElementDragging, index, reorderingMode, subI
     setElementDragging(false)
   }
 
-  return (
-    reorderingMode ?
+  if (reorderingMode) {
+    return (
       <div
         className={styles.itemRow}
         ref={setNodeRef}
@@ -58,16 +58,16 @@ function ListRowAlbum({ element, setElementDragging, index, reorderingMode, subI
         <div className={styles.colLeftAlgn}>
           <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
         </div>
-        <div className={styles.colLeftAlgn}>
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
           {getArtistLinks()}
         </div>
-        <div className={styles.colCentered}>
+        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
           {`${album_type.charAt(0).toUpperCase()}${album_type.slice(1)}`}
         </div>
         <div className={styles.colCentered}>
           {release_date.split("-")[0]}
         </div>
-        <div className={styles.colCentered}>
+        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
           <a href={`${uri}:play`}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
@@ -76,23 +76,27 @@ function ListRowAlbum({ element, setElementDragging, index, reorderingMode, subI
           </a>
         </div>
       </div>
-      :
+    )
+  }
+
+  else {
+    return (
       <>
         <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
           <div className={styles.colLeftAlgn}>{index + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
           </div>
-          <div className={styles.colLeftAlgn}>
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
             {getArtistLinks()}
           </div>
-          <div className={styles.colCentered}>
+          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
             {`${album_type.charAt(0).toUpperCase()}${album_type.slice(1)}`}
           </div>
           <div className={styles.colCentered}>
             {release_date.split("-")[0]}
           </div>
-          <div className={styles.colCentered}>
+          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
             <a href={`${uri}:play`}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
@@ -105,10 +109,11 @@ function ListRowAlbum({ element, setElementDragging, index, reorderingMode, subI
           </div>
         </div>
         <PopperMenu referenceRef={albumRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId}/>
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
-  )
+    )
+  }
 }
 
 export default ListRowAlbum;

@@ -35,8 +35,8 @@ function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, s
     setElementDragging(false)
   }
 
-  return (
-    reorderingMode ?
+  if (reorderingMode) {
+    return (
       <div
         ref={setNodeRef}
         className={styles.itemRow}
@@ -50,16 +50,16 @@ function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, s
         <div className={styles.colLeftAlgn}>
           <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
         </div>
-        <div className={styles.colLeftAlgn}>
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
           {description}
         </div>
-        <div className={styles.colLeftAlgn}>
+        <div className={styles.colCentered}>
           {tracks.total}
         </div>
-        <div className={styles.colLeftAlgn}>
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
           <Link to={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></Link>
         </div>
-        <div className={styles.colCentered}>
+        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
           <a href={`${uri}:play`}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
@@ -68,23 +68,27 @@ function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, s
           </a>
         </div>
       </div>
-      :
+    )
+  }
+
+  else {
+    return (
       <>
         <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
           <div className={styles.colLeftAlgn}>{index + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
           </div>
-          <div className={styles.colLeftAlgn}>
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
             {description}
           </div>
-          <div className={styles.colLeftAlgn}>
+          <div className={styles.colCentered}>
             {tracks.total}
           </div>
-          <div className={styles.colLeftAlgn}>
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
             <Link to={owner.uri}><div className={styles.ownerName}> {owner.display_name} </div></Link>
           </div>
-          <div className={styles.colCentered}>
+          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
             <a href={`${uri}:play`}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
@@ -97,10 +101,11 @@ function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, s
           </div>
         </div>
         <PopperMenu referenceRef={playlistRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId}/>
+          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
-  )
+    )
+  }
 }
 
 export default ListRowPlaylist;
