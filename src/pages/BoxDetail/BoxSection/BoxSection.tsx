@@ -3,7 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import SubSection from "./SubSection/SubSection"
 import styles from "./BoxSection.module.css";
 import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from 'core/types/interfaces';
-import { getItemProperty } from "core/helpers/getItemProperty";
+import { getItemProperty } from "core/helpers/itemDataHandlers";
 import { twoFactorSort } from 'core/helpers/twoFactorSort';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { updateBoxSorting, updateBoxSortingThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
