@@ -20,27 +20,35 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
   const dispatch = useAppDispatch();
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes);
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
-  const sectionItems = currentBox[type as keyof Pick<UserBox, 'albums' | 'artists' | 'tracks' | 'playlists'> ] as T[];
+  const sectionItems = currentBox[type as keyof Pick<UserBox, 'albums' | 'artists' | 'tracks' | 'playlists'>] as T[];
   const boxSorting = currentBox.sectionSorting;
   const sectionSorting = boxSorting[type as keyof SectionSorting];
   const sectionIconSrc = `/icons/${type}.svg`;
 
   const isOwner = useMemo(() => !!userBoxes.find(box => box.boxId === currentBox?._id), [currentBox, userBoxes]);
   const sortedData = useMemo(
-    () => twoFactorSort<T>([...sectionItems as T[]], sectionSorting.primarySorting, sectionSorting.secondarySorting, sectionSorting.ascendingOrder), 
+    () => twoFactorSort<T>([...sectionItems as T[]], sectionSorting.primarySorting, sectionSorting.secondarySorting, sectionSorting.ascendingOrder),
     [sectionItems, sectionSorting]
   );
   const groupingSections = useMemo(
-    () => Array.from(new Set(sectionItems.map(e => getItemProperty(e, sectionSorting.primarySorting, false) as string))).sort(), 
+    () => Array.from(new Set(sectionItems.map(e => getItemProperty(e, sectionSorting.primarySorting, false) as string))).sort((a, b) => {
+      if (a > b) {
+        return sectionSorting.ascendingOrder ? 1 : -1;
+      }
+      else if (a < b) {
+        return sectionSorting.ascendingOrder ? -1 : 1;
+      }
+      return 0;
+    }),
     [sectionItems, sectionSorting]
   );
   const subSectionArray = useMemo(
     () => currentBox.subSections.filter(s => s.type === type).sort(
-    (a: Subsection, b: Subsection) => {
-      if (a.index! < b.index!) return -1
-      else if (a.index! > b.index!) return 1
-      return 0
-    }), 
+      (a: Subsection, b: Subsection) => {
+        if (a.index! < b.index!) return -1
+        else if (a.index! > b.index!) return 1
+        return 0
+      }),
     [currentBox.subSections, type]
   );
 
@@ -96,15 +104,24 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
             <div className={styles.toggleButton} onClick={handleCycleViewMode}>
               {`View as: ${sectionSorting.view?.slice(0, 1).toUpperCase()}${sectionSorting.view?.slice(1)}`}
             </div>
-            <div className={styles.toggleButton} onClick={handleToggleSubsections}>
-              {`Show subsections: ${sectionSorting.displaySubSections ? 'On' : 'Off'}`}
-            </div>
+            {
+              sectionSorting.primarySorting === 'custom' &&
+              <div className={styles.toggleButton} onClick={handleToggleSubsections}>
+                {`Show subsections: ${sectionSorting.displaySubSections ? 'On' : 'Off'}`}
+              </div>
+            }
+            {
+              sectionSorting.primarySorting !== 'custom' &&
+              <div className={styles.toggleButton}>
+                {`Show grouping: ${sectionSorting.displayGrouping ? 'On' : 'Off'}`}
+              </div>
+            }
             <div className={styles.toggleButton} onClick={handleOpenSortingMenu}>
               {
                 sectionSorting.primarySorting === 'name' && type !== 'artists' ?
-                `Sort by: Title`
-                : 
-                `Sort by: ${sectionSorting.primarySorting?.slice(0, 1).toUpperCase()}${sectionSorting.primarySorting?.slice(1)}`
+                  `Sort by: Title`
+                  :
+                  `Sort by: ${sectionSorting.primarySorting?.slice(0, 1).toUpperCase()}${sectionSorting.primarySorting.replace('_', ' ')?.slice(1)}`
               }
             </div>
             {
@@ -119,7 +136,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
         {sectionSorting.displaySubSections || sectionSorting.displayGrouping ?
           <div className={styles.sectionWithSubs}>
             {
-              sectionSorting.displaySubSections && 
+              sectionSorting.displaySubSections &&
               <div className={styles.defaultSubSection}>
                 <SubSection
                   itemsMatch={(sortedData as T[]).filter(e => !e.subSectionCount)}

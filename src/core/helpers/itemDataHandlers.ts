@@ -28,6 +28,9 @@ export const getItemProperty = (item: MusicData, propertyName: string, upperCase
       case "track_number":
         propertyValue = checkType.isTrack(item) ? item.track_number : ""
         break;
+      case "popularity":
+        propertyValue = !checkType.isAlbum(item) && !checkType.isPlaylist(item)? item.popularity! : "";
+        break;
       default:
         propertyValue = ""
     }

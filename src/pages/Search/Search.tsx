@@ -28,7 +28,7 @@ function Search() {
         const { access_token: accessToken } = tokenResponse!;
         if (accessToken) {
           const urlIdentifier = '%2Fopen.spotify.com%2F'
-          if (query.includes(urlIdentifier)) {
+          if (query?.includes(urlIdentifier)) {
             const identifierString = query.split(urlIdentifier)[1].split('%3F')[0]
             const [itemType, itemId] = identifierString.split('%2F');
             queryItemIdApi(itemType, itemId, accessToken);
@@ -47,9 +47,11 @@ function Search() {
   }, [params]);
 
   useEffect(() => {
-    window.clearTimeout(searchTimeout.current!);
-    const encodedQuery = encodeURIComponent(searchQuery.trim());
-    searchTimeout.current = window.setTimeout(() => history.push(`/search/${encodedQuery}`), 500);
+    if (searchQuery) {
+      window.clearTimeout(searchTimeout.current!);
+      const encodedQuery = encodeURIComponent(searchQuery.trim());
+      searchTimeout.current = window.setTimeout(() => history.push(`/search/${encodedQuery}`), 500);
+    }
   }, [searchQuery])
 
   const queryItemIdApi = async (type: string, id: string, token: string) => {
