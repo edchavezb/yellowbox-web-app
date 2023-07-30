@@ -1,6 +1,15 @@
 import { DashboardBox, UserFolder, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
+export const getAuthenticatedUserData = async () => {
+    try {
+        return await api.get<YellowboxUser>('users/me', {})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
 export const getUserDataBySpotifyId = async (spotifyId: string) => {
     try {
         return await api.get<YellowboxUser>('users', {spotifyId})
@@ -40,6 +49,15 @@ export const getUserFoldersApi = async (userId: string) => {
 export const updateUserDashboardBoxesApi = async (userId: string, updatedBoxIdList: string[]) => {
     try {
         return await api.put<{updatedBoxIdList: string[]}, string[]>(`users/${userId}/dashboardBoxes`, {updatedBoxIdList})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const linkUserToSpotifyAcount = async (userId: string, spotifyData: {refreshToken: string, id: string}) => {
+    try {
+        return await api.post<{spotifyData: {refreshToken: string, id: string}}, YellowboxUser>(`users/${userId}/spotify`, {spotifyData})
     }
     catch(err) {
         console.log(err)

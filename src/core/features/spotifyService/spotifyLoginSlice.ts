@@ -2,21 +2,20 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SpotifyLoginData } from "core/types/interfaces"
 
 interface SpotifyLoginState {
-  data: SpotifyLoginData
+  userData: SpotifyLoginData
+  genericToken: string
 }
 
 const initialState: SpotifyLoginState = {
-  data: {
+  userData: {
     auth: {
       accessToken: null,
-      refreshToken: null,
-      genericToken: null
+      refreshToken: null
     },
-    userData: {
-      displayName: '',
-      userId: '',
-    }
-  }
+    displayName: '',
+    userId: '',
+  },
+  genericToken: ''
 };
 
 const spotifyLoginSlice = createSlice({
@@ -24,13 +23,13 @@ const spotifyLoginSlice = createSlice({
   initialState,
   reducers: {
     setSpotifyLoginData(state, action: PayloadAction<SpotifyLoginData>) {
-      state.data = action.payload
+      state.userData = action.payload
     },
     setAccessToken(state, action: PayloadAction<{accessToken: string}>) {
-      state.data.auth.accessToken = action.payload.accessToken;
+      state.userData.auth.accessToken = action.payload.accessToken;
     },
     setGenericToken(state, action: PayloadAction<{genericToken: string}>) {
-      state.data.auth.genericToken = action.payload.genericToken;
+      state.genericToken = action.payload.genericToken;
     },
   }
 })

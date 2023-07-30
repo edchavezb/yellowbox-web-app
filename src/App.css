@@ -12,6 +12,26 @@ a {
   pointer-events: none;
 }
 
+.loading {
+  background-color: rgb(26, 26, 26);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#logoContainer {
+  width: 100px;
+  height: 100px;
+}
+
+#ideogram {
+  width: 100%;
+  height: 100%;
+  border-radius: .8em;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

@@ -1,8 +1,6 @@
-import { useAppDispatch } from "core/hooks/useAppDispatch";
 import styles from "./AccountMenu.module.css";
-import { setAuthenticatedUser, setIsUserLoggedIn } from "core/features/user/userSlice";
-import { setSpotifyLoginData } from "core/features/spotifyService/spotifyLoginSlice";
-import { SpotifyLoginData, YellowboxUser } from "core/types/interfaces";
+import { signOut } from "firebase/auth";
+import { firebaseAuth } from "core/services/firebase";
 import { useHistory } from "react-router-dom";
 
 interface BoxMenuProps {
@@ -11,15 +9,17 @@ interface BoxMenuProps {
 
 const AccountMenu = ({ setIsOpen }: BoxMenuProps) => {
   const history = useHistory();
-  const dispatch = useAppDispatch();
   const { menuItemsList, menuItem } = styles;
 
-  const handleLogOut = () => {
-    dispatch(setAuthenticatedUser({} as YellowboxUser))
-    dispatch(setSpotifyLoginData({} as SpotifyLoginData))
-    dispatch(setIsUserLoggedIn(false))
-    setIsOpen(false);
-    history.push('/')
+  const handleLogOut = async () => {
+    try {
+      setIsOpen(false);
+      await signOut(firebaseAuth);
+      history.push('/');
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
 
   return (

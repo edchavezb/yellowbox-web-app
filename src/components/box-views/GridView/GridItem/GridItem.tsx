@@ -22,7 +22,8 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, setEle
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
   const gridItemRef = useRef(null);
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
-  const spotifyToken = useAppSelector(state => state.spotifyLoginData.data.auth.genericToken);
+  const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
+  const spotifyToken = spotifyLoginData?.genericToken;
   const { name, type, uri, id } = element;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [elementImage, setElementImage] = useState(getElementImage(element));

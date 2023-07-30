@@ -7,8 +7,11 @@ import AddButtonMenu from "components/menus/popper/AddButtonMenu/AddButtonMenu";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { spotifyLoginApi } from "core/api/spotify";
 import HamburgerMenu from "components/menus/popper/HamburgerMenu/HamburgerMenu";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
+import { setModalState } from "core/features/modal/modalSlice";
 
 function Header() {
+  const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
@@ -29,6 +32,12 @@ function Header() {
   }
 
   const handleLogin = async () => {
+    dispatch(setModalState({
+      visible: true, type: "Log In", page: ""
+    }))
+  }
+
+  const handleSpotifyLogin = async () => {
     const response = await spotifyLoginApi();
     if (response) {
       window.location.replace(response.url)

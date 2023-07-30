@@ -16,7 +16,8 @@ function BoxDetail() {
   const dispatch = useAppDispatch();
   const menuToggleRef = useRef(null);
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
-  const spotifyToken = useAppSelector(state => state.spotifyLoginData.data.auth.genericToken);
+  const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
+  const spotifyToken = spotifyLoginData?.genericToken;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const isBoxEmpty = useMemo(
     () => currentBox?.albums?.length === 0 && currentBox?.artists?.length === 0 && currentBox?.tracks?.length === 0 && currentBox?.playlists?.length === 0,
