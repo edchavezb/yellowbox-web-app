@@ -26,7 +26,8 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   const detailRowRef = useRef(null);
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
   const { name, type, uri, id } = element;
-  const spotifyToken = useAppSelector(state => state.spotifyLoginData.data.auth.genericToken);
+  const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
+  const spotifyToken = spotifyLoginData?.genericToken;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const isOwner = userBoxes.some(box => box.boxId === currentBox._id);

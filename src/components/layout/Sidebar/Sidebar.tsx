@@ -12,6 +12,7 @@ import SidebarBoxList from "./SidebarBoxList/SidebarBoxList";
 import { DndContextTypesafeProps, DragEndEvent, DragOverEvent, DragStartEvent } from "./sidebarTypes";
 import AccountMenu from "components/menus/popper/AccountMenu/AccountMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
+import ServicesMenu from "components/menus/popper/ServicesMenu/ServicesMenu";
 
 interface IProps {
   user: YellowboxUser
@@ -33,7 +34,9 @@ function Sidebar({ user }: IProps) {
   })
   const userDashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes)
   const accountWidgetRef = useRef(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const servicesButtonRef = useRef(null);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const [isServicesMenuOpen, setIsServicesMenuOpen] = useState(false);
 
   const [activeDraggable, setActiveDraggable] = useState<null | { name: string, id: string }>(null);
   const [dragOverFolder, setDragOverFolder] = useState<null | string>(null);
@@ -123,15 +126,21 @@ function Sidebar({ user }: IProps) {
       {
         user._id &&
         <>
-          <div id={styles.user} onClick={() => setIsMenuOpen(true)}>
+          <div id={styles.user} onClick={() => setIsAccountMenuOpen(true)}>
             <img id={styles.userImage} src={user.image ? user.image : "/user.png"} alt="user" />
             <span id={styles.userName} ref={accountWidgetRef}> {user.displayName} </span>
           </div>
           <div id={styles.servicesList}>
             <h4 className={styles.sectionTitle}> Your Services </h4>
-            <Link className={styles.serviceLink} to={`/myaccounts/spotify`}>
-              <div className={styles.serviceButton}><img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img><span> Spotify </span></div>
-            </Link>
+            {
+              user.services?.spotify &&
+              <Link className={styles.serviceLink} to={`/myaccounts/spotify`}>
+                <div className={styles.serviceButton}><img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img><span> Spotify </span></div>
+              </Link>
+            }
+            <div className={styles.linkServiceWrapper}>
+              <span className={styles.linkServiceBtn} ref={servicesButtonRef} onClick={() => setIsServicesMenuOpen(true)}>+ Link a new service</span>
+            </div>
           </div>
           <div id={styles.boxList}>
             <h4 className={styles.sectionTitle}> Your Boxes </h4>
@@ -149,8 +158,11 @@ function Sidebar({ user }: IProps) {
               </DragOverlay>
             </AppDndContext>
           </div>
-          <PopperMenu referenceRef={accountWidgetRef} placement={'right'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-            <AccountMenu setIsOpen={setIsMenuOpen} />
+          <PopperMenu referenceRef={accountWidgetRef} placement={'right'} isOpen={isAccountMenuOpen} setIsOpen={setIsAccountMenuOpen}>
+            <AccountMenu setIsOpen={setIsAccountMenuOpen} />
+          </PopperMenu>
+          <PopperMenu referenceRef={servicesButtonRef} placement={'right'} isOpen={isServicesMenuOpen} setIsOpen={setIsServicesMenuOpen}>
+            <ServicesMenu setIsOpen={setIsServicesMenuOpen} />
           </PopperMenu>
         </>
       }

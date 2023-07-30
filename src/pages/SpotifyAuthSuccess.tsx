@@ -1,17 +1,19 @@
 import { useEffect } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import querystring from 'querystring'
-import { createUser, getUserDataBySpotifyId } from 'core/api/users';
-import { YellowboxUser } from 'core/types/interfaces';
+import { linkUserToSpotifyAcount } from 'core/api/users';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
-import { setAuthenticatedUser, setIsUserLoggedIn } from 'core/features/user/userSlice';
 import { setSpotifyLoginData } from 'core/features/spotifyService/spotifyLoginSlice';
 import { getSpotifyUserToken } from 'core/api/spotify';
+import { useAppSelector } from 'core/hooks/useAppSelector';
+import { setAuthenticatedUser } from 'core/features/user/userSlice';
+import { SpotifyLoginData } from 'core/types/interfaces';
 
-function AuthSuccess() {
+function SpotifyAuthSuccess() {
   let location = useLocation();
   let history = useHistory();
   const dispatch = useAppDispatch();
+  const userId = useAppSelector(state => state.userData.authenticatedUser._id);
 
   useEffect(() => {
     const getSpotifyLoginData = async (code: string, state: string) => {
@@ -27,33 +29,20 @@ function AuthSuccess() {
           'Authorization': `Bearer ${token}`
         }
       })
-      const {display_name, email, id, images} = await response.json()
-      const spotifyLogin = {
+      const { id, display_name } = await response.json()
+      const spotifyLogin: SpotifyLoginData = {
         auth: {
           refreshToken: refresh,
           accessToken: token
         },
-        userData: {
-          userId: id
-        }
-      }
-      let user = await getUserDataBySpotifyId(spotifyLogin.userData.userId)
-      if(!user){
-        const userObj: Omit<YellowboxUser, '_id'> = {
-          displayName: display_name,
-          image: images[0].url,
-          email: email,
-          services: {
-            spotify: id
-          }
-        }
-        user = await createUser(userObj)
+        displayName: display_name,
+        userId: id
       }
       dispatch(setSpotifyLoginData(spotifyLogin))
-      dispatch(setIsUserLoggedIn(true))
-      dispatch(setAuthenticatedUser(user!))
-      localStorage.setItem("ybx-spotify-refresh-token", refresh)
-      localStorage.setItem("ybx-spotify-user-id", id)
+      const updatedUser = await linkUserToSpotifyAcount(userId, {refreshToken: refresh, id});
+      if (updatedUser) {        
+        dispatch(setAuthenticatedUser(updatedUser));
+      }
       history.push('/')
     }
 
@@ -69,4 +58,4 @@ function AuthSuccess() {
   )
 }
 
-export default AuthSuccess;
+export default SpotifyAuthSuccess;

@@ -63,3 +63,19 @@
     margin-right: 5px;
     margin-top: 2px;
 }
+
+.linkServiceWrapper {
+    margin-top: 15px;
+}
+
+.linkServiceBtn {
+    padding: 5px 8px;
+    font-size: .8em;
+    background-color: grey;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.linkServiceBtn:hover {
+    background-color: rgb(165, 165, 165);
+}

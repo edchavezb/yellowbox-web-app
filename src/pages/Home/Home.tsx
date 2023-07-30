@@ -55,13 +55,7 @@ function Home({ location }: RouteComponentProps) {
   else if (isLoggedIn === false) {
     return (
       <div className={styles.homeContainer}>
-        <h1> Please log in with one of your accounts </h1>
-        <button className={styles.roundedButton} onClick={handleLogin}>
-          <div className={styles.buttonContents}>
-            <img className={styles.spotifyIcon} src='/icons/spotify_icon_white.png' alt='spotify' />
-            <span>Log in with Spotify</span>
-          </div>
-        </button>
+        <h1> Welcome to Yellowbox, please log in or create an account </h1>
       </div>
     );
   }
