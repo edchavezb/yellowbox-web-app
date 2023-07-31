@@ -9,15 +9,11 @@ import Modal from "./components/layout/Modal/Modal"
 import ItemDetail from './pages/ItemDetail/ItemDetail';
 import SpotifyUser from './pages/SpotifyUser/SpotifyUser';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { getAuthenticatedUserData } from 'core/api/users';
-import { setAuthenticatedUser, setIsUserLoggedIn } from 'core/features/user/userSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import FolderDetail from 'pages/FolderDetail/FolderDetail';
 import { firebaseAuth } from 'core/services/firebase';
-import { getSpotifyLoginData } from 'core/helpers/getSpotifyLoginData';
-import { setSpotifyLoginData } from 'core/features/spotifyService/spotifyLoginSlice';
 import SpotifyAuthSuccess from './pages/SpotifyAuthSuccess';
-import { SpotifyLoginData, YellowboxUser } from 'core/types/interfaces';
+import { loginService } from 'core/services/loginService';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -26,27 +22,7 @@ function App() {
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(async (authUser) => {
-      if (authUser) {
-        const appUser = await getAuthenticatedUserData();
-        if (appUser) {
-          dispatch(setAuthenticatedUser(appUser!))
-          dispatch(setIsUserLoggedIn(true))
-
-          if (appUser.services?.spotify) {
-            const { refreshToken, id: spotifyId } = appUser.services.spotify;
-            const spotifyLogin = await getSpotifyLoginData(refreshToken, spotifyId);
-            if (spotifyLogin) {
-              dispatch(setSpotifyLoginData(spotifyLogin))
-            }
-          }
-        }
-      }
-      else {
-        dispatch(setIsUserLoggedIn(false));
-        dispatch(setAuthenticatedUser({} as YellowboxUser));
-        dispatch(setSpotifyLoginData({} as SpotifyLoginData));
-      }
-      setIsLoading(false);
+      loginService(firebaseAuth, authUser, dispatch, setIsLoading);
     });
   }, [dispatch]);
 

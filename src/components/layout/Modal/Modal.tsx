@@ -12,6 +12,7 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
 import LogInMenu from "components/menus/LogIn/LogInMenu";
+import SignUpMenu from "components/menus/SignUp/SignUpMenu";
 
 function Modal() {
   const dispatch = useAppDispatch();
@@ -21,6 +22,9 @@ function Modal() {
   switch(modalData.type){
     case "Log In" :
       modalBody = <LogInMenu />
+    break;
+    case "Sign Up" :
+      modalBody = <SignUpMenu />
     break;
     case "New Box" :
       modalBody = <NewBoxMenu action={modalData.type}/>
