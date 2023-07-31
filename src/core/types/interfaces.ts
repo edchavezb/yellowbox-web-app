@@ -14,17 +14,40 @@ export interface SpotifyUserAuth {
 
 export interface YellowboxUser {
   _id: string
+  firebaseId: string
+  username: string
   displayName: string
   image: string
-  email: string
+  billing: UserBilling
+  account: UserAccountData
   services: {
     [key: string]: {
-      refreshToken: string,
+      refreshToken: string
       id: string
     }
   }
   dashboardFolders?: string[]
   dashboardBoxes?: string[]
+}
+
+export interface UserBilling {
+  stripeData?: {
+    customerId: string
+    subscription: {
+      subscriptionId: string
+      status: string
+      priceId: string
+      productId: string
+    }
+  }
+}
+
+export interface UserAccountData {
+  accountTier: string
+  signUpDate: string
+  emailVerified: boolean
+  email: string
+  showTutorial: boolean
 }
 
 export interface UserBox {

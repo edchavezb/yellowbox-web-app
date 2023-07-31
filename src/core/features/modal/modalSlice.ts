@@ -3,6 +3,7 @@ import { Album, Artist, Playlist, Track } from "core/types/interfaces"
 
 export type ModalType = 
     "Log In"
+    | "Sign Up"
     | "New Box" 
     | "Edit Box"
     | "Clone Box"
