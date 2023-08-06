@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, updateBoxAlbumsApi, updateBoxArtistsApi, updateBoxPlaylistsApi, updateBoxSortingApi, updateBoxTracksApi, updateItemNoteApi, updateSubsectionNameApi, updateSubsectionsApi, updateUserBoxApi } from "core/api/userboxes"
+import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, reorderBoxAlbumApi, reorderBoxArtistApi, reorderBoxPlaylistApi, reorderBoxTrackApi, updateBoxAlbumsApi, updateBoxArtistsApi, updateBoxPlaylistsApi, updateBoxSortingApi, updateBoxTracksApi, updateItemNoteApi, updateSubsectionNameApi, updateSubsectionsApi, updateUserBoxApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
@@ -308,13 +308,11 @@ export const removeItemFromSubsectionThunk = (boxId: string, type: BoxSections, 
     }
 }
 
-export const reorderBoxItemsThunk = (boxId: string, draggedId: string, targetId: string, itemType: string ): AppThunk => async (dispatch, getState) => {
+export const reorderBoxItemsThunk = (boxId: string, itemId: string, sourceIndex: number, destinationIndex: number, itemType: string ): AppThunk => async (dispatch, getState) => {
     const reorderItems = <T extends {_id?: string}[]>(items: T) => {
-        const draggedItem = items.find(item => item._id === draggedId)
-        const draggedIndex = items.findIndex(item => item._id === draggedId);
-        const targetIndex = items.findIndex(item => item._id === targetId);
-        items.splice(draggedIndex, 1);
-        items.splice(targetIndex, 0, draggedItem!)
+        const reorderItem = items.find(item => item._id === itemId)
+        items.splice(sourceIndex, 1);
+        items.splice(destinationIndex, 0, reorderItem!)
         return items;
     }
     try {
@@ -323,25 +321,25 @@ export const reorderBoxItemsThunk = (boxId: string, draggedId: string, targetId:
                 const artistsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.artists));
                 const updatedArtists = reorderItems<Artist[]>(artistsCopy)
                 dispatch(updateBoxArtists({updatedArtists}))
-                await updateBoxArtistsApi(boxId, updatedArtists)
+                await reorderBoxArtistApi(boxId, sourceIndex, destinationIndex)
             break;
             case 'album':
                 const albumsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.albums));
                 const updatedAlbums = reorderItems<Album[]>(albumsCopy)
                 dispatch(updateBoxAlbums({updatedAlbums}))
-                await updateBoxAlbumsApi(boxId, updatedAlbums)
+                await reorderBoxAlbumApi(boxId, sourceIndex, destinationIndex)
             break;
             case 'track':
                 const tracksCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.tracks));
                 const updatedTracks = reorderItems<Track[]>(tracksCopy)
                 dispatch(updateBoxTracks({updatedTracks}))
-                await updateBoxTracksApi(boxId, updatedTracks)
+                await reorderBoxTrackApi(boxId, sourceIndex, destinationIndex)
             break;
             case 'playlist':
                 const playlistsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.playlists));
                 const updatedPlaylists = reorderItems<Playlist[]>(playlistsCopy)
                 dispatch(updateBoxPlaylists({updatedPlaylists}))
-                await updateBoxPlaylistsApi(boxId, updatedPlaylists)
+                await reorderBoxPlaylistApi(boxId, sourceIndex, destinationIndex)
             break;
             default:
             break;

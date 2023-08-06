@@ -24,7 +24,6 @@ function SubSection<T extends Artist | Album | Track | Playlist>({
   isDefault,
   isReorderingMode
 }: IProps<T>) {
-
   const displayView = (data: T[], isDefault: boolean) => {
     let sectionView: JSX.Element;
     switch (viewType) {

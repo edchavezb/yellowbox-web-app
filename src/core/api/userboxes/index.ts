@@ -355,3 +355,36 @@ export const removeSubsectionApi = async (boxId: string, subsectionId: string, t
     console.log(err)
   }
 }
+
+export const reorderBoxArtistApi = async (boxId: string, sourceIndex: number, destinationIndex: number) => {
+  try {
+    return await api.put<{ sourceIndex: number, destinationIndex: number }, UserBox>(`boxes/${boxId}/artists/reorder`, { sourceIndex, destinationIndex })
+  }
+  catch (err) {
+    console.log(err)
+  }
+}
+
+export const reorderBoxAlbumApi = async (boxId: string, sourceIndex: number, destinationIndex: number) => {
+  try {
+    return await api.put<{ sourceIndex: number, destinationIndex: number }, UserBox>(`boxes/${boxId}/albums/reorder`, { sourceIndex, destinationIndex });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const reorderBoxTrackApi = async (boxId: string, sourceIndex: number, destinationIndex: number) => {
+  try {
+    return await api.put<{ sourceIndex: number, destinationIndex: number }, UserBox>(`boxes/${boxId}/tracks/reorder`, { sourceIndex, destinationIndex });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const reorderBoxPlaylistApi = async (boxId: string, sourceIndex: number, destinationIndex: number) => {
+  try {
+    return await api.put<{ sourceIndex: number, destinationIndex: number }, UserBox>(`boxes/${boxId}/playlists/reorder`, { sourceIndex, destinationIndex });
+  } catch (err) {
+    console.log(err);
+  }
+};

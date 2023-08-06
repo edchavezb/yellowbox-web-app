@@ -125,8 +125,9 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
       dispatch(
         reorderBoxItemsThunk(
           currentBox._id,
-          active.id as string,
-          over?.id as string,
+          active?.id as string,
+          active?.data?.current?.index as number,
+          over?.data?.current?.index as number,
           itemType
         )
       );

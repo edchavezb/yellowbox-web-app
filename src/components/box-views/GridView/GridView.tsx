@@ -28,8 +28,9 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isDefault
       dispatch(
         reorderBoxItemsThunk(
           currentBox._id,
-          active.id as string,
-          over?.id as string,
+          active?.id as string,
+          active?.data?.current?.index as number,
+          over?.data?.current?.index as number,
           itemType
         )
       );
@@ -59,11 +60,12 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isDefault
                   items={data.map(item => item._id!)}
                   strategy={rectSortingStrategy}
                 >
-                  {data.map((e) => {
+                  {data.map((e, index) => {
                     return (
                       <GridItem<T>
                         key={e.id}
                         element={e}
+                        itemIndex={index}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
                       />
@@ -75,11 +77,12 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isDefault
           </>
           :
           <div className={styles.itemContainer}>
-            {data.map((e) => {
+            {data.map((e, index) => {
               return (
                 <GridItem<T>
                   key={e.id}
                   element={e}
+                  itemIndex={index}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode}
                 />

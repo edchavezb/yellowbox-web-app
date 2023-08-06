@@ -27,8 +27,9 @@ function WallView({ data, isDefaultSubSection, subId, isReorderingMode }: IProps
       dispatch(
         reorderBoxItemsThunk(
           currentBox._id,
-          active.id as string,
-          over?.id as string,
+          active?.id as string,
+          active?.data?.current?.index as number,
+          over?.data?.current?.index as number,
           itemType
         )
       );
@@ -58,11 +59,12 @@ function WallView({ data, isDefaultSubSection, subId, isReorderingMode }: IProps
                   items={data.map(item => item._id!)}
                   strategy={rectSortingStrategy}
                 >
-                  {data.map((e) => {
+                  {data.map((e, index) => {
                     return (
                       <WallItem
                         key={e.id}
                         element={e}
+                        itemIndex={index}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
                       />
@@ -74,11 +76,12 @@ function WallView({ data, isDefaultSubSection, subId, isReorderingMode }: IProps
           </>
           :
           <div className={styles.itemContainer}>
-            {data.map((e) => {
+            {data.map((e, index) => {
               return (
                 <WallItem
                   key={e.id}
                   element={e}
+                  itemIndex={index}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode}
                 />
