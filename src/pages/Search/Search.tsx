@@ -1,9 +1,11 @@
 import styles from "./Search.module.css"
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import SearchResults from "./SearchResults/SearchResults"
 import { Album, Artist, Playlist, Track } from 'core/types/interfaces';
 import { getSpotifyGenericToken } from "core/api/spotify";
+import useDebounce from "core/hooks/useDebounce";
+import { URL_IDENTIFIER } from "core/constants/constants";
 
 interface SearchResultsState {
   artists: Artist[]
@@ -15,11 +17,18 @@ interface SearchResultsState {
 function Search() {
   const params = useParams<{ query: string }>()
   const history = useHistory();
-  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const searchQuery = e.target.value;
+      if (searchQuery) {
+        const encodedQuery = encodeURIComponent(searchQuery.trim());
+        history.push(`/search/${encodedQuery}`);
+      }
+    }, 500
+  );
   const [searchData, setSearchData] = useState<SearchResultsState>({
     artists: [], albums: [], tracks: [], playlists: []
   })
-  const searchTimeout = useRef<number | null>(null);
 
   useEffect(() => {
     const handleSearch = async (query: string) => {
@@ -27,9 +36,8 @@ function Search() {
         const tokenResponse = await getSpotifyGenericToken()!;
         const { access_token: accessToken } = tokenResponse!;
         if (accessToken) {
-          const urlIdentifier = '%2Fopen.spotify.com%2F'
-          if (query?.includes(urlIdentifier)) {
-            const identifierString = query.split(urlIdentifier)[1].split('%3F')[0]
+          if (query?.includes(URL_IDENTIFIER)) {
+            const identifierString = query.split(URL_IDENTIFIER)[1].split('%3F')[0]
             const [itemType, itemId] = identifierString.split('%2F');
             queryItemIdApi(itemType, itemId, accessToken);
           }
@@ -43,16 +51,10 @@ function Search() {
       }
     }
 
-    handleSearch(params.query)
-  }, [params]);
-
-  useEffect(() => {
-    if (searchQuery) {
-      window.clearTimeout(searchTimeout.current!);
-      const encodedQuery = encodeURIComponent(searchQuery.trim());
-      searchTimeout.current = window.setTimeout(() => history.push(`/search/${encodedQuery}`), 500);
+    if (params?.query){
+      handleSearch(params.query);
     }
-  }, [searchQuery])
+  }, [params]);
 
   const queryItemIdApi = async (type: string, id: string, token: string) => {
     const response = await fetch(`https://api.spotify.com/v1/${type}s/${id}`, {
@@ -92,7 +94,7 @@ function Search() {
     <div className={styles.searchPage}>
       <div id={styles.searchBox}>
         <div id={styles.inputWrapper}>
-          <input id={styles.searchInput} type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+          <input id={styles.searchInput} type="text" defaultValue={params.query || ""} placeholder={"Artist, Track, Album or paste Spotify URL"} onChange={debouncedSearch} />
         </div>
         <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
       </div>

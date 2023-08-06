@@ -1,47 +1,37 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useHistory } from "react-router-dom";
 import styles from "./Header.module.css";
 import PopperMenu from "components/menus/popper/PopperMenu";
 import AddButtonMenu from "components/menus/popper/AddButtonMenu/AddButtonMenu";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { spotifyLoginApi } from "core/api/spotify";
 import HamburgerMenu from "components/menus/popper/HamburgerMenu/HamburgerMenu";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
+import useDebounce from "core/hooks/useDebounce";
 
 function Header() {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
   const history = useHistory();
   const createButtonRef = useRef(null);
   const hamburgerButtonRef = useRef(null);
-  let searchTimeout: ReturnType<typeof setTimeout>;
-
-  useEffect(() => {
-    if (searchQuery) history.push(`/search/${searchQuery}`)
-  }, [searchQuery, history])
-
-  const debounceSearch = (input: string) => {
-    clearTimeout(searchTimeout);
-    const encodedQuery = encodeURIComponent(input.trim());
-    searchTimeout = setTimeout(() => setSearchQuery(encodedQuery), 500);
-  }
+  const debouncedSearch = useDebounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const searchQuery = e.target.value;
+      if (searchQuery) {
+        const encodedQuery = encodeURIComponent(searchQuery.trim());
+        history.push(`/search/${encodedQuery}`);
+      }
+    }, 500
+  );
 
   const handleLogin = async () => {
     dispatch(setModalState({
       visible: true, type: "Log In", page: ""
     }))
-  }
-
-  const handleSpotifyLogin = async () => {
-    const response = await spotifyLoginApi();
-    if (response) {
-      window.location.replace(response.url)
-    }
   }
 
   return (
@@ -60,8 +50,8 @@ function Header() {
             isLoggedIn &&
             <div id={styles.searchBox}>
               <div id={styles.inputWrapper}>
-                <input id={styles.searchInput} type="text" onChange={(e) => debounceSearch(e.target.value)}
-                  onFocus={() => { if (searchQuery) history.push(`/search/${searchQuery}`) }} />
+                <input id={styles.searchInput} type="text" onChange={debouncedSearch}
+                  onFocus={(e: React.FocusEvent<HTMLInputElement>) => { if (e.target.value) history.push(`/search/${e.target.value}`) }} />
               </div>
               <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
             </div>
