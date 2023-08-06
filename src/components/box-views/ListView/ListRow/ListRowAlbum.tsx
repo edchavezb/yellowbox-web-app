@@ -17,7 +17,7 @@ interface IProps {
 }
 
 function ListRowAlbum({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index} })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, artists, album_type, release_date, id, uri } = element;
@@ -109,7 +109,7 @@ function ListRowAlbum({ element, setElementDragging, index, reorderingMode, subI
           </div>
         </div>
         <PopperMenu referenceRef={albumRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
     )

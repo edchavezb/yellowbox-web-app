@@ -24,7 +24,7 @@ interface IProps<T> {
 function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index, reorderingMode, subId }: IProps<T>) {
   const dispatch = useAppDispatch();
   const detailRowRef = useRef(null);
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index}})
   const { name, type, uri, id } = element;
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
@@ -270,7 +270,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           </div>
         </div>
         <PopperMenu referenceRef={detailRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
     )

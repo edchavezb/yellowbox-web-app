@@ -13,13 +13,14 @@ import { updateBoxAlbumApi, updateBoxArtistApi, updateBoxPlaylistApi, updateBoxT
 
 interface IProps<T> {
   element: T
+  itemIndex: number,
   setElementDragging: (dragging: boolean) => void
   reorderingMode?: boolean
   subId?: string
 }
 
-function GridItem<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, reorderingMode, subId}: IProps<T>) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
+function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIndex, setElementDragging, reorderingMode, subId}: IProps<T>) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: itemIndex} })
   const gridItemRef = useRef(null);
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
@@ -164,7 +165,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, setEle
           {authorNameLink}
         </div >
         <PopperMenu referenceRef={gridItemRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} />
         </PopperMenu>
       </>
     )

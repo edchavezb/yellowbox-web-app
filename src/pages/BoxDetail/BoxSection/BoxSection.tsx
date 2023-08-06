@@ -178,7 +178,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
                     subName={group}
                     key={group}
                     viewType={sectionSorting.view}
-                    sectionType={""}
+                    sectionType={type}
                     isDefault={false}
                     isReorderingMode={isReorderingMode}
                   />

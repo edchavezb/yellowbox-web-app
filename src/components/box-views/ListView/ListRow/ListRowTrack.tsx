@@ -16,7 +16,7 @@ interface IProps {
 }
 
 function ListRowTrack({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index} })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
@@ -123,7 +123,7 @@ function ListRowTrack({ element, setElementDragging, index, reorderingMode, subI
           </div>
         </div >
         <PopperMenu referenceRef={trackRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
     )
