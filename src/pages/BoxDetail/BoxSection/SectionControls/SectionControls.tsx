@@ -66,7 +66,7 @@ const SectionControls = ({ type, isReorderingMode, setIsReorderingMode }: Sectio
       }
       {
         sectionSorting.primarySorting !== 'custom' &&
-        <div className={styles.toggleButton}>
+        <div className={styles.toggleButton} onClick={handleOpenSortingMenu}>
           {`Show grouping: ${sectionSorting.displayGrouping ? 'On' : 'Off'}`}
         </div>
       }

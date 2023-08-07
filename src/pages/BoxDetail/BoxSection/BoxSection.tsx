@@ -88,7 +88,10 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
             {
               sectionSorting.displaySubSections &&
               subSectionArray.map(subsection => {
-                const { name, _id, items } = subsection
+                let { name, _id, items } = subsection
+                if (sectionSorting.primarySorting !== "custom"){
+                  items = twoFactorSort(items, sectionSorting.primarySorting, sectionSorting.secondarySorting, sectionSorting.ascendingOrder)
+                }
                 return (
                   !!items.length &&
                   <SubSection
