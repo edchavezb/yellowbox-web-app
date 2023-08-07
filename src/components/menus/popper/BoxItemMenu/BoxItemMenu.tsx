@@ -1,7 +1,7 @@
 import { ModalType, setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { Artist, Album, Track, Playlist } from "core/types/interfaces";
+import { Artist, Album, Track, Playlist, SectionSorting } from "core/types/interfaces";
 import styles from "./BoxItemMenu.module.css";
 import { Link } from "react-router-dom";
 import { reorderBoxItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
@@ -110,7 +110,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         </div>
       }
       {
-        (boxDetailViewing && isOwner) &&
+        (boxDetailViewing && isOwner && box.sectionSorting[`${itemData.type}s` as keyof SectionSorting].primarySorting === "custom") &&
         <div
           className={menuItem}
           onClick={() => handleMoveToTop()}>
@@ -118,7 +118,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         </div>
       }
       {
-        (boxDetailViewing && isOwner) &&
+        (boxDetailViewing && isOwner && box.sectionSorting[`${itemData.type}s` as keyof SectionSorting].primarySorting === "custom") &&
         <div
           className={menuItem}
           onClick={() => handleMoveToBottom()}>
