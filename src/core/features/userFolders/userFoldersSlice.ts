@@ -125,10 +125,8 @@ export const moveBoxBetweenFoldersThunk = (sourceId: string, targetId: string, b
         const { folder: currentFolder, isUserViewing} = getState().currentFolderDetailData;
         dispatch(addBoxToFolder({targetId, box: {boxId, boxName}}))
         dispatch(removeBoxFromFolder({targetId: sourceId, boxId}))
-        console.log('Moving between folders')
         await moveBoxBetweenFoldersApi(sourceId, targetId, boxId, boxName)
         if ((currentFolder._id === sourceId || currentFolder._id === targetId) && isUserViewing) {
-            console.log('Refresh')
             dispatch(fetchFolderDetailThunk(currentFolder._id));
         }
     } catch (err) {

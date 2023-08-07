@@ -14,7 +14,6 @@ interface ViewComponentProps<T> {
 }
 
 function ViewComponent<T extends Artist | Album | Track | Playlist>({data, viewType, listType, isSubsection, subId, isReorderingMode}: ViewComponentProps<T>) {
-    console.log(data)
     let sectionView: JSX.Element;
     switch (viewType) {
       case "grid":

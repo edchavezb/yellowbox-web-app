@@ -70,6 +70,7 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isSubsect
                         itemIndex={dbIndex || index}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
+                        subId={subId}
                       />
                     )
                   })}
@@ -88,6 +89,7 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isSubsect
                   itemIndex={dbIndex || index}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode}
+                  subId={subId}
                 />
               )
             })}
