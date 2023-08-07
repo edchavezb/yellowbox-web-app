@@ -90,7 +90,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
               subSectionArray.map(subsection => {
                 let { name, _id, items } = subsection
                 if (sectionSorting.primarySorting !== "custom"){
-                  items = twoFactorSort(items, sectionSorting.primarySorting, sectionSorting.secondarySorting, sectionSorting.ascendingOrder)
+                  items = twoFactorSort([...items as T[]], sectionSorting.primarySorting, sectionSorting.secondarySorting, sectionSorting.ascendingOrder)
                 }
                 return (
                   !!items.length &&

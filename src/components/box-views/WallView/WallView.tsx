@@ -69,6 +69,7 @@ function WallView({ data, isSubsection, subId, isReorderingMode }: IProps) {
                         itemIndex={dbIndex || index}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
+                        subId={subId}
                       />
                     )
                   })}
@@ -87,6 +88,7 @@ function WallView({ data, isSubsection, subId, isReorderingMode }: IProps) {
                   itemIndex={dbIndex || index}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode}
+                  subId={subId}
                 />
               )
             })}

@@ -4,7 +4,7 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import { Artist, Album, Track, Playlist, SectionSorting } from "core/types/interfaces";
 import styles from "./BoxItemMenu.module.css";
 import { Link } from "react-router-dom";
-import { reorderBoxItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { reorderBoxItemsThunk, reorderSubsectionItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 
 interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
@@ -20,6 +20,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const { isUserViewing: boxDetailViewing, box } = useAppSelector(state => state.currentBoxDetailData)
   const { _id: boxId, notes } = box || {};
+  const subSection = box.subSections.find(sub => sub._id === subId);
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const isOwner = userBoxes.some(box => box.boxId === boxId);
   const { menuItemsList, menuItem } = styles;
@@ -40,30 +41,41 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
   }
 
   const handleMoveToTop = () => {
-    dispatch(reorderBoxItemsThunk(boxId, itemData._id!, itemIndex!, 0, itemData.type));
+    if (subSection) {
+      dispatch(reorderSubsectionItemsThunk(boxId, itemData._id!, subId!, itemIndex!, 0));
+    } 
+    else {
+      dispatch(reorderBoxItemsThunk(boxId, itemData._id!, itemIndex!, 0, itemData.type));
+    }
     setIsOpen(false);
   }
 
   const handleMoveToBottom = () => {
     let lastItemIndex;
-    switch(itemData.type){
-      case 'artist':
-        lastItemIndex = box.artists.length - 1;
-      break;
-      case 'album':
-        lastItemIndex = box.albums.length - 1;
-      break;
-      case 'track':
-        lastItemIndex = box.tracks.length - 1;
-      break;
-      case 'playlist':
-        lastItemIndex = box.playlists.length - 1;
-      break;
-      default:
-        lastItemIndex = 0;
-      break;
-  }
-    dispatch(reorderBoxItemsThunk(boxId, itemData._id!, itemIndex!, lastItemIndex, itemData.type))
+    if (subSection) {
+      lastItemIndex = subSection.items.length - 1;
+      dispatch(reorderSubsectionItemsThunk(boxId, itemData._id!, subId!, itemIndex!, lastItemIndex));
+    }
+    else {
+      switch (itemData.type) {
+        case 'artist':
+          lastItemIndex = box.artists.length - 1;
+          break;
+        case 'album':
+          lastItemIndex = box.albums.length - 1;
+          break;
+        case 'track':
+          lastItemIndex = box.tracks.length - 1;
+          break;
+        case 'playlist':
+          lastItemIndex = box.playlists.length - 1;
+          break;
+        default:
+          lastItemIndex = 0;
+          break;
+      }
+      dispatch(reorderBoxItemsThunk(boxId, itemData._id!, itemIndex!, lastItemIndex, itemData.type));
+    }
     setIsOpen(false);
   }
 
@@ -110,7 +122,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         </div>
       }
       {
-        (boxDetailViewing && isOwner && box.sectionSorting[`${itemData.type}s` as keyof SectionSorting].primarySorting === "custom") &&
+        (boxDetailViewing && isOwner && box.sectionSorting[`${itemData.type}s` as keyof SectionSorting]?.primarySorting === "custom") &&
         <div
           className={menuItem}
           onClick={() => handleMoveToTop()}>
@@ -118,7 +130,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         </div>
       }
       {
-        (boxDetailViewing && isOwner && box.sectionSorting[`${itemData.type}s` as keyof SectionSorting].primarySorting === "custom") &&
+        (boxDetailViewing && isOwner && box.sectionSorting[`${itemData.type}s` as keyof SectionSorting]?.primarySorting === "custom") &&
         <div
           className={menuItem}
           onClick={() => handleMoveToBottom()}>
