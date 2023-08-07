@@ -11,12 +11,12 @@ import styles from "./DetailView.module.css";
 
 interface IProps<T> {
   data: T[]
-  isDefaultSubSection?: boolean
+  isSubsection?: boolean
   subId?: string
   isReorderingMode?: boolean
 }
 
-function DetailView<T extends Artist | Album | Track | Playlist>({ data, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
+function DetailView<T extends Artist | Album | Track | Playlist>({ data, isSubsection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
@@ -24,7 +24,18 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isDefau
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
     const itemType = data[0].type;
-    if (isDefaultSubSection) {
+    if (isSubsection) {
+      dispatch(
+        reorderSubsectionItemsThunk(
+          currentBox._id,
+          active.id as string,
+          subId!,
+          active?.data?.current?.index as number,
+          over?.data?.current?.index as number,
+        )
+      );
+    }
+    else {
       dispatch(
         reorderBoxItemsThunk(
           currentBox._id,
@@ -32,16 +43,6 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isDefau
           active?.data?.current?.index as number,
           over?.data?.current?.index as number,
           itemType
-        )
-      );
-    }
-    else {
-      dispatch(
-        reorderSubsectionItemsThunk(
-          currentBox._id,
-          active.id as string,
-          over?.id as string,
-          subId!
         )
       );
     }
@@ -60,12 +61,14 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isDefau
                   items={data.map(item => item._id!)}
                   strategy={verticalListSortingStrategy}
                 >
-                  {data.map((e) => {
+                  {data.map((e, index) => {
+                    const { dbIndex, ...element } = e; //dbIndex is a sorting-only property, we don't want to propagate it elsewhere
                     return (
                       <DetailRow
                         key={e.id}
-                        index={data.indexOf(e)}
-                        element={e}
+                        dbIndex={dbIndex}
+                        index={index}
+                        element={element as T}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
                         subId={subId}
@@ -78,12 +81,14 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isDefau
           </>
           :
           <div className={styles.itemContainer}>
-            {data.map((e) => {
+            {data.map((e, index) => {
+              const {dbIndex, ...element} = e;
               return (
                 <DetailRow
                   key={e.id}
-                  index={data.indexOf(e)}
-                  element={e}
+                  dbIndex={dbIndex}
+                  index={index}
+                  element={element as T}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode ? isReorderingMode : false}
                   subId={subId}

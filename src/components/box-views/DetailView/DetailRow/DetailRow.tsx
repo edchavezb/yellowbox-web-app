@@ -15,16 +15,17 @@ import { updateBoxAlbumApi, updateBoxArtistApi, updateBoxTrackApi, updateBoxPlay
 
 interface IProps<T> {
   element: T
+  dbIndex?: number
   index: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, index, reorderingMode, subId }: IProps<T>) {
+function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps<T>) {
   const dispatch = useAppDispatch();
   const detailRowRef = useRef(null);
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index}})
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index}})
   const { name, type, uri, id } = element;
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;

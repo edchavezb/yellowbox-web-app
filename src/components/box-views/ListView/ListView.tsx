@@ -13,12 +13,12 @@ import { reorderBoxItemsThunk, reorderSubsectionItemsThunk } from 'core/features
 interface IProps<T> {
   data: T[]
   sectionType: string
-  isDefaultSubSection?: boolean
+  isSubsection?: boolean
   subId?: string
   isReorderingMode?: boolean
 }
 
-function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionType, isDefaultSubSection, subId, isReorderingMode }: IProps<T>) {
+function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionType, isSubsection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
@@ -67,15 +67,17 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
     return listHeader;
   }
 
-  const getListItemComponent = (e: T) => {
+  const getListItemComponent = (e: T, index: number) => {
+    const { dbIndex, ...element } = e; //dbIndex is a sorting-only property, we don't want to propagate it elsewhere
     let itemComponent;
     switch (sectionType) {
       case "tracks":
         itemComponent =
           <ListRowTrack
             key={e.id}
-            index={data.indexOf(e)}
-            element={e as Track}
+            dbIndex={dbIndex}
+            index={index}
+            element={element as T as Track}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -85,8 +87,9 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
         itemComponent =
           <ListRowAlbum
             key={e.id}
-            index={data.indexOf(e)}
-            element={e as Album}
+            dbIndex={dbIndex}
+            index={index}
+            element={element as T as Album}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -96,8 +99,9 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
         itemComponent =
           <ListRowPlaylist
             key={e.id}
-            index={data.indexOf(e)}
-            element={e as Playlist}
+            dbIndex={dbIndex}
+            index={index}
+            element={element as T as Playlist}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -107,8 +111,9 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
         itemComponent =
           <ListRowTrack
             key={e.id}
-            index={data.indexOf(e)}
-            element={e as Track}
+            dbIndex={dbIndex}
+            index={index}
+            element={element as T as Track}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -121,7 +126,18 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
     const itemType = data[0].type;
-    if (isDefaultSubSection) {
+    if (isSubsection) {
+      dispatch(
+        reorderSubsectionItemsThunk(
+          currentBox._id,
+          active.id as string,
+          subId!,
+          active?.data?.current?.index as number,
+          over?.data?.current?.index as number,
+        )
+      );
+    }
+    else {
       dispatch(
         reorderBoxItemsThunk(
           currentBox._id,
@@ -129,16 +145,6 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
           active?.data?.current?.index as number,
           over?.data?.current?.index as number,
           itemType
-        )
-      );
-    }
-    else {
-      dispatch(
-        reorderSubsectionItemsThunk(
-          currentBox._id,
-          active.id as string,
-          over?.id as string,
-          subId!
         )
       );
     }
@@ -158,8 +164,8 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
                   items={data.map(item => item._id!)}
                   strategy={verticalListSortingStrategy}
                 >
-                  {data.map((element) => {
-                    return getListItemComponent(element)
+                  {data.map((element, index) => {
+                    return getListItemComponent(element, index)
                   })}
                 </SortableContext>
               </div>
@@ -168,8 +174,8 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
           :
           <div className={styles.itemContainer}>
             {getListHeader()}
-            {data.map((element) => {
-              return getListItemComponent(element)
+            {data.map((element, index) => {
+              return getListItemComponent(element, index)
             })}
           </div>
       }
