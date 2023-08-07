@@ -10,14 +10,15 @@ import styles from "./ListRowPlaylist.module.css";
 
 interface IProps {
   element: Playlist
+  dbIndex?: number
   index: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index} })
+function ListRowPlaylist({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, id, description, tracks, owner, uri } = element;

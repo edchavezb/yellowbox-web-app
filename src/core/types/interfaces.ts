@@ -141,6 +141,7 @@ export interface Album {
   type: string
   uri: string
   subSectionCount?: number
+  dbIndex?: number
 }
 
 export interface Artist {
@@ -156,6 +157,7 @@ export interface Artist {
   type: string
   uri: string
   subSectionCount?: number
+  dbIndex?: number
 }
 
 export interface Track {
@@ -175,6 +177,7 @@ export interface Track {
   type: string
   uri: string
   subSectionCount?: number
+  dbIndex?: number
 }
 
 export interface Playlist {
@@ -199,6 +202,7 @@ export interface Playlist {
   type: string
   uri: string
   subSectionCount?: number
+  dbIndex?: number
 }
 
 export interface SpotifyUser {

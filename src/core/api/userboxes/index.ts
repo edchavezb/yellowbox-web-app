@@ -388,3 +388,14 @@ export const reorderBoxPlaylistApi = async (boxId: string, sourceIndex: number, 
     console.log(err);
   }
 };
+
+export const reorderSubsectionItemsApi = async (boxId: string, subSectionId: string, sourceIndex: number, destinationIndex: number) => {
+  try {
+    return await api.put<{ sourceIndex: number, destinationIndex: number }, { updatedSubsections: Subsection[] }>(
+      `boxes/${boxId}/subsections/${subSectionId}/reorder`,
+      { sourceIndex, destinationIndex }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};

@@ -10,14 +10,15 @@ import styles from "./ListRowAlbum.module.css";
 
 interface IProps {
   element: Album
+  dbIndex?: number
   index: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowAlbum({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index} })
+function ListRowAlbum({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, artists, album_type, release_date, id, uri } = element;

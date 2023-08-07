@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, reorderBoxAlbumApi, reorderBoxArtistApi, reorderBoxPlaylistApi, reorderBoxTrackApi, updateBoxAlbumsApi, updateBoxArtistsApi, updateBoxPlaylistsApi, updateBoxSortingApi, updateBoxTracksApi, updateItemNoteApi, updateSubsectionNameApi, updateSubsectionsApi, updateUserBoxApi } from "core/api/userboxes"
+import { addAlbumToSubsectionApi, addArtistToSubsectionApi, addNoteToBoxApi, addPlaylistToSubsectionApi, addSubsectionToBoxApi, addTrackToSubsectionApi, getBoxByIdApi, removeAlbumFromSubsectionApi, removeArtistFromSubsectionApi, removeBoxAlbumApi, removeBoxArtistApi, removeBoxPlaylistApi, removeBoxTrackApi, removePlaylistFromSubsectionApi, removeSubsectionApi, removeTrackFromSubsectionApi, reorderBoxAlbumApi, reorderBoxArtistApi, reorderBoxPlaylistApi, reorderBoxTrackApi, reorderSubsectionItemsApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi, updateSubsectionsApi, updateUserBoxApi } from "core/api/userboxes"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
@@ -57,6 +57,11 @@ const currentBoxDetailSlice = createSlice({
         },
         updateBoxSubsections(state, action: PayloadAction<Subsection[]>) {
             state.box.subSections = action.payload;
+        },
+        updateBoxSubsectionById(state, action: PayloadAction<{subId: string, updatedSub: Subsection}>) {
+            const {subId, updatedSub} = action.payload;
+            const targetIndex = state.box.subSections.findIndex(sub => sub._id === subId);
+            state.box.subSections[targetIndex] = updatedSub;
         }
     }
 })
@@ -71,7 +76,8 @@ export const {
     updateBoxTracks,
     updateBoxPlaylists,
     updateBoxNotes,
-    updateBoxSubsections
+    updateBoxSubsections,
+    updateBoxSubsectionById
 } = currentBoxDetailSlice.actions;
 
 //Thunks for this slice
@@ -349,21 +355,19 @@ export const reorderBoxItemsThunk = (boxId: string, itemId: string, sourceIndex:
     }
 }
 
-export const reorderSubsectionItemsThunk = (boxId: string, draggedId: string, targetId: string, subId: string): AppThunk => async (dispatch, getState) => {
+export const reorderSubsectionItemsThunk = (boxId: string, itemId: string,  subId: string, sourceIndex: number, destinationIndex: number): AppThunk => async (dispatch, getState) => {
     try {
         const subsections = getState().currentBoxDetailData.box.subSections;
         const targetSub = subsections.find(sub => sub._id === subId);
-        const otherSubs = subsections.filter(sub => sub._id !== subId);
-        const itemsCopy: {_id: string}[] = JSON.parse(JSON.stringify(targetSub?.items));
-        const draggedItem = itemsCopy.find(item => item._id === draggedId)
-        const draggedIndex = itemsCopy.findIndex(item => item._id === draggedId);
-        const targetIndex = itemsCopy.findIndex(item => item._id === targetId);
-        itemsCopy.splice(draggedIndex, 1);
-        itemsCopy.splice(targetIndex, 0, draggedItem!)
-        const updatedSub = {...targetSub, items: itemsCopy};
-        const subsectionsPayload = [...otherSubs, updatedSub] as Subsection[]
-        dispatch(updateBoxSubsections(subsectionsPayload))
-        await updateSubsectionsApi(boxId, subsectionsPayload)
+        if (targetSub){
+            const itemsCopy: ItemData[] = JSON.parse(JSON.stringify(targetSub?.items));
+            const draggedItem = itemsCopy.find(item => item._id === itemId)
+            itemsCopy.splice(sourceIndex, 1);
+            itemsCopy.splice(destinationIndex, 0, draggedItem!)
+            const updatedSub = {...targetSub, items: itemsCopy};
+            dispatch(updateBoxSubsectionById({subId, updatedSub}))
+            await reorderSubsectionItemsApi(boxId, subId, sourceIndex, destinationIndex);
+        }
     } catch (err) {
         console.log(err)
     }

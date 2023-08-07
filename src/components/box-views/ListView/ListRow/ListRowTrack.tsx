@@ -9,14 +9,15 @@ import styles from "./ListRowTrack.module.css";
 
 interface IProps {
   element: Track
+  dbIndex?: number
   index: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowTrack({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index} })
+function ListRowTrack({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
