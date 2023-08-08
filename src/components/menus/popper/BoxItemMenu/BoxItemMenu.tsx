@@ -20,7 +20,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const { isUserViewing: boxDetailViewing, box } = useAppSelector(state => state.currentBoxDetailData)
   const { _id: boxId, notes } = box || {};
-  const subSection = box.subSections.find(sub => sub._id === subId);
+  const subSection = box?.subSections?.find(sub => sub._id === subId);
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const isOwner = userBoxes.some(box => box.boxId === boxId);
   const { menuItemsList, menuItem } = styles;
