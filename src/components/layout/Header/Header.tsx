@@ -21,12 +21,21 @@ function Header() {
   const debouncedSearch = useDebounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const searchQuery = e.target.value;
-      if (searchQuery) {
-        const encodedQuery = encodeURIComponent(searchQuery.trim());
-        history.push(`/search/${encodedQuery}`);
-      }
+      handleNavigate(searchQuery);
     }, 500
   );
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    const searchQuery = e.target.value;
+    handleNavigate(searchQuery);
+  }
+  
+  const handleNavigate = (searchQuery: string) => {
+    if (searchQuery) {
+      const encodedQuery = encodeURIComponent(searchQuery.trim());
+      history.push(`/search/${encodedQuery}`);
+    }
+  }
 
   const handleLogin = async () => {
     dispatch(setModalState({
@@ -50,8 +59,12 @@ function Header() {
             isLoggedIn &&
             <div id={styles.searchBox}>
               <div id={styles.inputWrapper}>
-                <input id={styles.searchInput} type="text" onChange={debouncedSearch}
-                  onFocus={(e: React.FocusEvent<HTMLInputElement>) => { if (e.target.value) history.push(`/search/${e.target.value}`) }} />
+                <input
+                  id={styles.searchInput}
+                  type="text"
+                  onChange={debouncedSearch}
+                  onFocus={handleFocus}
+                />
               </div>
               <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
             </div>
