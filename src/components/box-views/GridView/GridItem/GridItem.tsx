@@ -112,7 +112,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
         {...attributes}
       >
         <div className={styles.imageContainerReorder} ref={gridItemRef}>
-          <a href={`${uri}:play`}>
+          <a href={uri}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
               {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -142,7 +142,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
           className={styles.itemCard}
         >
           <div className={styles.imageContainer} ref={gridItemRef}>
-            <a href={`${uri}:play`}>
+            <a href={uri}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
                 {type === "track" ? <span> Play </span> : <span> Open </span>}

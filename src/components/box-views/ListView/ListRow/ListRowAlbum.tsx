@@ -69,7 +69,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, reorderingM
           {release_date.split("-")[0]}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-          <a href={`${uri}:play`}>
+          <a href={uri}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
               {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -98,7 +98,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, reorderingM
             {release_date.split("-")[0]}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-            <a href={`${uri}:play`}>
+            <a href={uri}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 {type === "track" ? <span> Play </span> : <span> Open </span>}

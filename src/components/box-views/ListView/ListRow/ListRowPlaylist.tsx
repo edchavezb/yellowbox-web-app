@@ -61,7 +61,7 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, reorderi
           <Link to={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></Link>
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-          <a href={`${uri}:play`}>
+          <a href={uri}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
               {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -90,7 +90,7 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, reorderi
             <Link to={owner.uri}><div className={styles.ownerName}> {owner.display_name} </div></Link>
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-            <a href={`${uri}:play`}>
+            <a href={uri}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 {type === "track" ? <span> Play </span> : <span> Open </span>}

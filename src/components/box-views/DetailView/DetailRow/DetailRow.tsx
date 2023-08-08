@@ -176,7 +176,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         </div>
         <div className={styles.imageContainer}>
           <div className={styles.itemLink}>
-            <a href={`${uri}:play`}>
+            <a href={uri}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -225,7 +225,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           <div className={styles.itemPosition}>{index + 1}</div>
           <div className={styles.imageContainer}>
             <Link to={`/detail/${type}/${id}`} className={styles.itemLink} draggable="false">
-              <a href={`${uri}:play`}>
+              <a href={uri}>
                 <div className={styles.instantPlay}>
                   <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                   {type === "track" ? <span> Play </span> : <span> Open </span>}

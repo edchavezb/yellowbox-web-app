@@ -71,7 +71,7 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, reorderingM
           {explicit ? "Explicit" : "Clean"}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-          <a href={`${uri}:play`}>
+          <a href={uri}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
               {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -112,7 +112,7 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, reorderingM
             {explicit ? "Explicit" : "Clean"}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-            <a href={`${uri}:play`}>
+            <a href={uri}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 {type === "track" ? <span> Play </span> : <span> Open </span>}
