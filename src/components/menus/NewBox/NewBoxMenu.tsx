@@ -1,4 +1,4 @@
-import { createUserBoxThunk } from 'core/features/userBoxes/userBoxesSlice';
+import { cloneUserBoxThunk, createUserBoxThunk } from 'core/features/userBoxes/userBoxesSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useState } from 'react';
 import { UserBox } from 'core/types/interfaces';
@@ -83,19 +83,6 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
     return blankBox;
   }
 
-  const getClonedBoxData = () => {
-    const {_id , ...currentBoxNoId} = currentBox;
-    const clonedBox: Omit<UserBox, '_id'> = {
-      ...currentBoxNoId,
-      name: boxDetails.boxName,
-      description: boxDetails.boxDesc,
-      creator: user._id,
-      public: boxDetails.public,
-      notes: []
-    }
-    return clonedBox;
-  }
-
   const getButtonText = () => {
     if (action === "New Box") {
       return "Create"
@@ -113,7 +100,8 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
   }
 
   const handleCloneBox = async () => {
-    dispatch(createUserBoxThunk(getClonedBoxData()))
+    const {boxName, boxDesc, boxPublic} = boxDetails;
+    dispatch(cloneUserBoxThunk(currentBox._id, boxName, boxDesc, boxPublic, user._id))
   }
 
   const handleUpdateBox = async (updatedBox: UserBox) => {

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { createUserBoxApi, deleteUserBoxApi, getDashboardBoxesApi } from "core/api/userboxes"
+import { cloneBoxApi, createUserBoxApi, deleteUserBoxApi, getDashboardBoxesApi } from "core/api/userboxes"
 import { getUserBoxesApi, updateUserDashboardBoxesApi } from "core/api/users"
 import { AppThunk } from "core/store/store"
 import { DashboardBox, UserBox, UserFolder } from "core/types/interfaces"
@@ -100,6 +100,15 @@ export const reorderDashboardBoxesThunk = (sourceIndex: number, targetIndex: num
 export const createUserBoxThunk = (boxObj: Omit<UserBox, '_id'>): AppThunk => async (dispatch) => {
     try {
         const newBox = await createUserBoxApi(boxObj)
+        dispatch(createBox(newBox!))
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const cloneUserBoxThunk = (boxId: string, name: string, description: string, isPublic: boolean, creator: string): AppThunk => async (dispatch) => {
+    try {
+        const newBox = await cloneBoxApi(boxId, name, description, isPublic, creator)
         dispatch(createBox(newBox!))
     } catch (err) {
         console.log(err)
