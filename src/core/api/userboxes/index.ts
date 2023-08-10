@@ -66,9 +66,9 @@ export const cloneBoxApi = async (boxId: string, name: string, description: stri
   }
 }
 
-export const updateBoxInfoApi = async (boxId: string, name: string, description: string, publicBool: boolean) => {
+export const updateBoxInfoApi = async (boxId: string, name: string, description: string, isPublic: boolean) => {
   try {
-    return await api.put<{name: string, description: string, publicBool: boolean}, UserBox>(`boxes/${boxId}/boxInfo`, {name, description, publicBool})
+    return await api.put<{name: string, description: string, isPublic: boolean}, UserBox>(`boxes/${boxId}/boxInfo`, {name, description, isPublic})
   }
   catch (err) {
     console.log(err)

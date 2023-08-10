@@ -98,10 +98,10 @@ export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch)
   }
 }
 
-export const updateCurrentBoxDetailThunk = (boxId: string, name: string, description: string, publicBool: boolean): AppThunk => async (dispatch, getState) => {
+export const updateCurrentBoxDetailThunk = (boxId: string, name: string, description: string, isPublic: boolean): AppThunk => async (dispatch, getState) => {
   try {
     const containingFolder = getState().userFoldersData.folders.find(folder => folder.boxes.some(box => box.boxId === boxId));
-    const updatedBox = await updateBoxInfoApi(boxId, name, description, publicBool);
+    const updatedBox = await updateBoxInfoApi(boxId, name, description, isPublic);
     if (updatedBox) {
       dispatch(updateCurrentBoxDetail(updatedBox!))
       if (containingFolder) {
