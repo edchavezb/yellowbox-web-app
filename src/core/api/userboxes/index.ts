@@ -57,6 +57,15 @@ export const updateBoxSortingApi = async (boxId: string, updatedSorting: Section
   }
 }
 
+export const cloneBoxApi = async (boxId: string, name: string, description: string, isPublic: boolean, creator: string) => {
+  try {
+    return await api.post<{name: string, description: string, isPublic: boolean, creator: string}, DashboardBox>(`boxes/${boxId}/clone`, {name, description, isPublic, creator})
+  }
+  catch (err) {
+    console.log(err)
+  }
+}
+
 export const updateBoxInfoApi = async (boxId: string, name: string, description: string, publicBool: boolean) => {
   try {
     return await api.put<{name: string, description: string, publicBool: boolean}, UserBox>(`boxes/${boxId}/boxInfo`, {name, description, publicBool})
