@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
-import BoxUtilities from './BoxUtilities/BoxUtilities';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import BoxSection from './BoxSection/BoxSection';
 import styles from "./BoxDetail.module.css";
 import { Album, Artist, Playlist, Track, Visibility } from 'core/types/interfaces';
@@ -7,21 +6,25 @@ import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { fetchBoxDetailThunk, setIsUserViewing } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { useParams } from 'react-router-dom';
+import PopperMenu from 'components/menus/popper/PopperMenu';
+import BoxMenu from 'components/menus/popper/BoxMenu/BoxMenu';
+import { getSpotifyGenericTokenApi } from 'core/api/spotify';
+import { setGenericToken } from 'core/features/spotifyService/spotifyLoginSlice';
 
 function BoxDetail() {
   const { id: boxId } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
+  const menuToggleRef = useRef(null);
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
+  const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
+  const spotifyToken = spotifyLoginData?.genericToken;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const isBoxEmpty = useMemo(
     () => currentBox?.albums?.length === 0 && currentBox?.artists?.length === 0 && currentBox?.tracks?.length === 0 && currentBox?.playlists?.length === 0,
     [currentBox]
   );
-  const singleTypeBox = useMemo(
-    () => [currentBox?.albums, currentBox?.artists, currentBox?.tracks, currentBox?.playlists].filter((section) => section?.length > 0).length === 1,
-    [currentBox]
-  );
   const [visibility, setVisibility] = useState<Visibility>({ playlists: true, albums: true, artists: true, tracks: true })
+  const [isBoxMenuOpen, setIsBoxMenuOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchBoxDetailThunk(boxId))
@@ -31,17 +34,25 @@ function BoxDetail() {
     }
   }, [boxId, dispatch])
 
+  useEffect(() => {
+    if (!spotifyToken) {
+      setSpotifyToken();
+    }
+  }, [spotifyToken])
+
+  const setSpotifyToken = async () => {
+    const tokenResponse = await getSpotifyGenericTokenApi()!;
+    const { access_token: accessToken } = tokenResponse!;
+    if (accessToken) {
+      dispatch(setGenericToken({genericToken: accessToken}));
+    }
+  }
+
   return (
     <>
       {
         (isLoggedIn !== null && currentBox._id === boxId) &&
         <div id={styles.mainPanel}>
-          <BoxUtilities
-            box={currentBox}
-            singleTypeBox={singleTypeBox}
-            visibility={visibility}
-            setVisibility={setVisibility}
-          />
           <div className={styles.boxHeader}>
             <div className={styles.boxSquare}>
               <img className={styles.boxIcon} src="/icons/box.svg" alt="box" />
@@ -51,7 +62,14 @@ function BoxDetail() {
               <div id={styles.boxDesc}>
                 {`${currentBox?.description}`}
               </div>
-              <div className={styles.creatorName}>{`${currentBox.creatorName}`}</div>
+              <div className={styles.creator}>
+                Box by <span className={styles.creatorName}>{currentBox.creatorName}</span>
+              </div>
+            </div>
+            <div className={styles.menuButtonWrapper}>
+              <div className={styles.menuButton} onClick={() => setIsBoxMenuOpen(true)} ref={menuToggleRef}>
+                <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
+              </div>
             </div>
           </div>
           {!!currentBox?.artists?.length &&
@@ -77,6 +95,9 @@ function BoxDetail() {
           {isBoxEmpty && <div id={styles.emptyMsgDiv}><h3 id={styles.emptyMsg}> You have not added any items to this box yet. <br /> Start by searching some music you like! </h3></div>}
         </div>
       }
+      <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isBoxMenuOpen} setIsOpen={setIsBoxMenuOpen}>
+        <BoxMenu setIsOpen={setIsBoxMenuOpen} />
+      </PopperMenu>
     </>
   )
 }

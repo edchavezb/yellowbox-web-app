@@ -2,10 +2,14 @@ import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState } from 'react';
-import { addAlbumToBoxApi, addArtistToBoxApi, addPlaylistToBoxApi, addTrackToBoxApi } from 'core/api/userboxes';
 import { Album, Artist, Playlist, Track } from "core/types/interfaces";
 import styles from "./AddToBoxMenu.module.css";
 import { isAlbum, isArtist, isPlaylist, isTrack } from 'core/helpers/typeguards';
+import { extractCrucialData } from 'core/helpers/itemDataHandlers';
+import { addAlbumToBoxApi } from 'core/api/userboxes/albums';
+import { addArtistToBoxApi } from 'core/api/userboxes/artists';
+import { addPlaylistToBoxApi } from 'core/api/userboxes/playlists';
+import { addTrackToBoxApi } from 'core/api/userboxes/tracks';
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -42,36 +46,6 @@ function AddToBoxMenu({itemData}: IProps) {
       }
     }
     dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))
-  }
-
-  const extractCrucialData = (data: MusicData) => {
-    let extractedData: MusicData;
-    switch(data.type){
-      case "artist" : {
-        const {external_urls, genres, id, images, name, popularity, type, uri} = data as Artist
-        extractedData = {external_urls, genres, id, images, name, popularity, type, uri, subSectionCount: 0}
-      break;
-      }
-      case "album" : {
-        const {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri} = data as Album
-        extractedData = {album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri, subSectionCount: 0}
-      break;
-      }
-      case "track" : {
-        const {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri} = data as Track
-        extractedData = {album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSectionCount: 0}
-      break;
-      }
-      case "playlist" : {
-        const {description, external_urls, id, images, name, owner, tracks, type, uri} = data as Playlist
-        const {items, ...tracksData} = tracks
-        extractedData = {description, external_urls, id, images, name, owner, tracks: tracksData, type, uri, subSectionCount: 0}
-      break;
-      }
-      default :
-        extractedData = data
-    }
-    return extractedData
   }
 
   return (

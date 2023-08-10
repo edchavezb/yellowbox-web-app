@@ -66,3 +66,14 @@
     justify-content: center;
     cursor: grab;
 }
+
+@media (max-width: 576px) {
+    .itemRow {
+        grid-template-columns: [index] 30px [title] 1fr [time] 60px [options] 20px;
+        column-gap: 5px;
+    }
+
+    .mobileHidden {
+        display: none;
+    }
+}

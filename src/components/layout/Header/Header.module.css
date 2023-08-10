@@ -102,8 +102,8 @@
     cursor: pointer;
 }
 
-#newButton:hover, #loginButton:hover {
-    background-color: #696969;
+#newButton:hover {
+    background-color: grey;
 }
 
 #loginButton:hover {

@@ -5,7 +5,7 @@ import GridView from "components/box-views/GridView/GridView";
 import ListView from "components/box-views/ListView/ListView";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import SpotifyTopItems from "./SpotifyTopItems/SpotifyTopItems";
-import { refreshSpotifyToken } from "core/api/spotify";
+import { refreshSpotifyTokenApi } from "core/api/spotify";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setAccessToken } from "core/features/spotifyService/spotifyLoginSlice";
 
@@ -19,7 +19,7 @@ interface SpotifyUserData {
 function SpotifyUser() {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
-  const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.data.auth)
+  const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.userData.auth)
   const [userData, setUserData] = useState<SpotifyUserData>({} as SpotifyUserData);
   const [recentlyPlayed, setRecentlyPlayed] = useState<Track[]>([]);
   const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
@@ -48,7 +48,7 @@ function SpotifyUser() {
       }
     })
     const data = await response.json();
-    setRecentlyPlayed(data.items.map((item: { track: Track }) => item.track).slice(0, 10))
+    setRecentlyPlayed(data?.items?.map((item: { track: Track }) => item.track).slice(0, 10) || [])
   }, [])
 
   const getUserPlaylists = useCallback(async (token: string) => {
@@ -59,14 +59,14 @@ function SpotifyUser() {
       }
     })
     const data = await response.json();
-    setUserPlaylists(data.items)
+    setUserPlaylists(data?.items || [])
   }, [])
 
   useEffect(() => {
     const getSpotifyData = async () => {
-      if (spotifyAuthData.refreshToken) {
+      if (spotifyAuthData?.refreshToken) {
         try {
-          const refreshResponse = await refreshSpotifyToken(spotifyAuthData.refreshToken)
+          const refreshResponse = await refreshSpotifyTokenApi(spotifyAuthData.refreshToken)
           const { access_token: accessToken } = refreshResponse!;
           dispatch(setAccessToken({ accessToken }));
           getUserData(accessToken)
@@ -79,7 +79,7 @@ function SpotifyUser() {
       }
     }
     getSpotifyData();
-  }, [spotifyAuthData.refreshToken, getUserData, getRecentlyPlayed, getUserPlaylists, dispatch])
+  }, [spotifyAuthData?.refreshToken, getUserData, getRecentlyPlayed, getUserPlaylists, dispatch])
 
   if (isLoggedIn) {
     return (
@@ -90,7 +90,7 @@ function SpotifyUser() {
         }
         <SpotifyTopItems />
         {
-          !!recentlyPlayed.length &&
+          !!recentlyPlayed?.length &&
           <div className={styles.recentlyPlayedSection}>
             <h3> Recently played tracks </h3>
             <ListView<Track> data={recentlyPlayed} sectionType={'tracklist'} />

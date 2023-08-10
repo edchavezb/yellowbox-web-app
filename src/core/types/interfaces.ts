@@ -2,12 +2,8 @@ import { BoxSections } from "./types"
 
 export interface SpotifyLoginData {
   auth: SpotifyUserAuth
-  userData?: SpotifyUserData
-}
-
-export interface SpotifyUserData {
   displayName?: string
-  userId: string
+  userId?: string
 }
 
 export interface SpotifyUserAuth {
@@ -18,14 +14,40 @@ export interface SpotifyUserAuth {
 
 export interface YellowboxUser {
   _id: string
+  firebaseId: string
+  username: string
   displayName: string
   image: string
-  email: string
+  billing: UserBilling
+  account: UserAccountData
   services: {
-    [key: string]: string
+    [key: string]: {
+      refreshToken: string
+      id: string
+    }
   }
   dashboardFolders?: string[]
   dashboardBoxes?: string[]
+}
+
+export interface UserBilling {
+  stripeData?: {
+    customerId: string
+    subscription: {
+      subscriptionId: string
+      status: string
+      priceId: string
+      productId: string
+    }
+  }
+}
+
+export interface UserAccountData {
+  accountTier: string
+  signUpDate: string
+  emailVerified: boolean
+  email: string
+  showTutorial: boolean
 }
 
 export interface UserBox {
@@ -119,6 +141,7 @@ export interface Album {
   type: string
   uri: string
   subSectionCount?: number
+  dbIndex?: number
 }
 
 export interface Artist {
@@ -134,6 +157,7 @@ export interface Artist {
   type: string
   uri: string
   subSectionCount?: number
+  dbIndex?: number
 }
 
 export interface Track {
@@ -153,6 +177,7 @@ export interface Track {
   type: string
   uri: string
   subSectionCount?: number
+  dbIndex?: number
 }
 
 export interface Playlist {
@@ -177,6 +202,7 @@ export interface Playlist {
   type: string
   uri: string
   subSectionCount?: number
+  dbIndex?: number
 }
 
 export interface SpotifyUser {

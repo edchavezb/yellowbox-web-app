@@ -8,13 +8,14 @@ import { CSS } from '@dnd-kit/utilities';
 
 interface IProps {
   element: Artist
+  itemIndex: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode?: boolean,
   subId?: string
 }
 
-function WallItem({ element, setElementDragging, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id! })
+function WallItem({ element, itemIndex, setElementDragging, reorderingMode, subId }: IProps) {
+  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element._id!, data: {index: itemIndex} })
   const wallItemRef = useRef(null);
   const { name, type } = element;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,7 +56,7 @@ function WallItem({ element, setElementDragging, reorderingMode, subId }: IProps
           <div className={styles.name} ref={wallItemRef}> {name} </div>
         </div>
         <PopperMenu referenceRef={wallItemRef} placement={'right'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} viewMode="wall" />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} viewMode="wall" />
         </PopperMenu>
       </>
   )

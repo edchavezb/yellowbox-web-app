@@ -2,7 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Album, Artist, Playlist, Track } from "core/types/interfaces"
 
 export type ModalType = 
-    "New Box" 
+    "Log In"
+    | "Sign Up"
+    | "New Box" 
     | "Edit Box"
     | "Clone Box"
     | "Delete Box"

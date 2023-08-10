@@ -66,10 +66,11 @@ function SortingMenu() {
                       if (section !== "artists") ((e.target as Element).closest("div")!.nextElementSibling!.querySelector(".sec-sorting")! as HTMLSelectElement).selectedIndex = 0
                     }}>
                     <option value="custom"> Custom </option>
-                    {section === "artists" ? <option value="name"> Name </option> : ""}
-                    {section !== "artists" ? <option value="name"> Title </option> : ""}
-                    {section !== "artists" ? <option value="release_year"> Release Year </option> : ""}
-                    {section !== "artists" ? <option value="artist"> Artist </option> : ""}
+                    {section === "artists" || section === "playlists" ? <option value="name"> Name </option> : ""}
+                    {section === "albums" || section === "tracks" ? <option value="name"> Title </option> : ""}
+                    {section !== "artists" && section !== "playlists" ? <option value="release_year"> Release Year </option> : ""}
+                    {section !== "artists" && section !== "playlists" ? <option value="artist"> Artist </option> : ""}
+                    {section !== "albums" && section !== "playlists" ? <option value="popularity"> Popularity </option> : ""}
                     {section === "tracks" ? <option value="album"> Album </option> : ""}
                     {section === "tracks" ? <option value="duration"> Duration </option> : ""}
                     {section === "tracks" ? <option value="track_number"> Track Number </option> : ""}
@@ -90,12 +91,12 @@ function SortingMenu() {
                     }}
                   >
                     <option value="none" disabled hidden> Select... </option>
-                    {section === "artists" ? <option value="name" hidden={sorting[section as keyof SectionSorting].primarySorting === "name"}> Name </option> : ""}
-                    {section !== "artists" ? <option value="name" hidden={sorting[section as keyof SectionSorting].primarySorting === "name"}> Title </option> : ""}
-                    {section !== "artists" ? <option value="release_year" hidden={sorting[section as keyof SectionSorting].primarySorting === "release_year"}> Release Year </option> : ""}
-                    {section !== "artists" ? <option value="release_date" hidden={sorting[section as keyof SectionSorting].primarySorting === "release_date"}> Release Date </option> : ""}
-                    {section !== "artists" ? <option value="artist" hidden={sorting[section as keyof SectionSorting].primarySorting === "artist"}> Artist </option> : ""}
-                    {section !== "albums" ? <option value="popularity" hidden={sorting[section as keyof SectionSorting].primarySorting === "popularity"}> Popularity </option> : ""}
+                    {section === "artists" || section === "playlists" ? <option value="name" hidden={sorting[section as keyof SectionSorting].primarySorting === "name"}> Name </option> : ""}
+                    {section === "albums" || section === "tracks" ? <option value="name" hidden={sorting[section as keyof SectionSorting].primarySorting === "name"}> Title </option> : ""}
+                    {section !== "artists" && section !== "playlists" ? <option value="release_year" hidden={sorting[section as keyof SectionSorting].primarySorting === "release_year"}> Release Year </option> : ""}
+                    {section !== "artists" && section !== "playlists" ? <option value="release_date" hidden={sorting[section as keyof SectionSorting].primarySorting === "release_date"}> Release Date </option> : ""}
+                    {section !== "artists" && section !== "playlists" ? <option value="artist" hidden={sorting[section as keyof SectionSorting].primarySorting === "artist"}> Artist </option> : ""}
+                    {section !== "albums" && section !== "playlists" ? <option value="popularity" hidden={sorting[section as keyof SectionSorting].primarySorting === "popularity"}> Popularity </option> : ""}
                     {section === "tracks" ? <option value="album" hidden={sorting[section as keyof SectionSorting].primarySorting === "album"}> Album </option> : ""}
                     {section === "tracks" ? <option value="duration" hidden={sorting[section as keyof SectionSorting].primarySorting === "duration"}> Duration </option> : ""}
                     {section === "tracks" ? <option value="track_number" hidden={sorting[section as keyof SectionSorting].primarySorting === "track_number"}> Track Number </option> : ""}

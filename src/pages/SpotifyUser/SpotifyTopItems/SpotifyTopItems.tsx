@@ -31,7 +31,7 @@ const TopItemsInitialState: TopItemsState = {
 }
 
 function SpotifyTopItems() {
-  const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.data.auth)
+  const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.userData.auth)
   const [selectedTop, setSelectedTop] = useState(TopItemsSelectItems.ARTISTS)
   const [selectedTimeRange, setSelectedTimeRange] = useState(TimeRanges.SHORT)
   const [topItems, setTopItems] = useState(TopItemsInitialState);

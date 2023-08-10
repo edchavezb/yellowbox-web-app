@@ -10,14 +10,15 @@ import styles from "./ListRowPlaylist.module.css";
 
 interface IProps {
   element: Playlist
+  dbIndex?: number
   index: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
+function ListRowPlaylist({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, id, description, tracks, owner, uri } = element;
@@ -35,8 +36,8 @@ function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, s
     setElementDragging(false)
   }
 
-  return (
-    reorderingMode ?
+  if (reorderingMode) {
+    return (
       <div
         ref={setNodeRef}
         className={styles.itemRow}
@@ -50,17 +51,17 @@ function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, s
         <div className={styles.colLeftAlgn}>
           <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
         </div>
-        <div className={styles.colLeftAlgn}>
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
           {description}
         </div>
-        <div className={styles.colLeftAlgn}>
+        <div className={styles.colCentered}>
           {tracks.total}
         </div>
-        <div className={styles.colLeftAlgn}>
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
           <Link to={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></Link>
         </div>
-        <div className={styles.colCentered}>
-          <a href={`${uri}:play`}>
+        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+          <a href={uri}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
               {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -68,24 +69,28 @@ function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, s
           </a>
         </div>
       </div>
-      :
+    )
+  }
+
+  else {
+    return (
       <>
         <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
           <div className={styles.colLeftAlgn}>{index + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
           </div>
-          <div className={styles.colLeftAlgn}>
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
             {description}
           </div>
-          <div className={styles.colLeftAlgn}>
+          <div className={styles.colCentered}>
             {tracks.total}
           </div>
-          <div className={styles.colLeftAlgn}>
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
             <Link to={owner.uri}><div className={styles.ownerName}> {owner.display_name} </div></Link>
           </div>
-          <div className={styles.colCentered}>
-            <a href={`${uri}:play`}>
+          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+            <a href={uri}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -97,10 +102,11 @@ function ListRowPlaylist({ element, setElementDragging, index, reorderingMode, s
           </div>
         </div>
         <PopperMenu referenceRef={playlistRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId}/>
+          <BoxItemMenu itemData={element} itemIndex={dbIndex || index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
-  )
+    )
+  }
 }
 
 export default ListRowPlaylist;

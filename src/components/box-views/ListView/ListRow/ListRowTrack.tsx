@@ -9,14 +9,15 @@ import styles from "./ListRowTrack.module.css";
 
 interface IProps {
   element: Track
+  dbIndex?: number
   index: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowTrack({ element, setElementDragging, index, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id! })
+function ListRowTrack({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
@@ -42,8 +43,8 @@ function ListRowTrack({ element, setElementDragging, index, reorderingMode, subI
     setElementDragging(false)
   }
 
-  return (
-    reorderingMode ?
+  if (reorderingMode) {
+    return (
       <div
         className={styles.itemRow}
         ref={setNodeRef}
@@ -57,20 +58,20 @@ function ListRowTrack({ element, setElementDragging, index, reorderingMode, subI
         <div className={styles.colLeftAlgn}>
           <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
         </div>
-        <div className={styles.colLeftAlgn}>
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
           {getArtistLinks()}
         </div>
-        <div className={styles.colLeftAlgn}>
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
           <Link to={`/detail/album/${album!.id}`}><span className={styles.albumName}> {album!.name} </span></Link>
         </div>
         <div className={styles.colCentered}>
           {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
         </div>
-        <div className={styles.colCentered}>
+        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
           {explicit ? "Explicit" : "Clean"}
         </div>
-        <div className={styles.colCentered}>
-          <a href={`${uri}:play`}>
+        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+          <a href={uri}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
               {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -78,7 +79,11 @@ function ListRowTrack({ element, setElementDragging, index, reorderingMode, subI
           </a>
         </div>
       </div>
-      :
+    )
+  }
+
+  else {
+    return (
       <>
         <div draggable
           onDragStart={(e) => handleDrag(e, element)}
@@ -89,10 +94,10 @@ function ListRowTrack({ element, setElementDragging, index, reorderingMode, subI
           <div className={styles.colLeftAlgn}>
             <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
           </div>
-          <div className={styles.colLeftAlgn}>
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
             {getArtistLinks()}
           </div>
-          <div className={styles.colLeftAlgn}>
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
             {
               album ?
                 <Link to={`/detail/album/${album!.id}`}><span className={styles.albumName}> {album!.name} </span></Link>
@@ -103,11 +108,11 @@ function ListRowTrack({ element, setElementDragging, index, reorderingMode, subI
           <div className={styles.colCentered}>
             {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
           </div>
-          <div className={styles.colCentered}>
+          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
             {explicit ? "Explicit" : "Clean"}
           </div>
-          <div className={styles.colCentered}>
-            <a href={`${uri}:play`}>
+          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+            <a href={uri}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -117,12 +122,13 @@ function ListRowTrack({ element, setElementDragging, index, reorderingMode, subI
           <div className={styles.itemMenu} ref={trackRowRef} onClick={() => setIsMenuOpen(true)}>
             <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
           </div>
-        </div>
+        </div >
         <PopperMenu referenceRef={trackRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId}/>
+          <BoxItemMenu itemData={element} itemIndex={dbIndex || index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
-  )
+    )
+  }
 }
 
 export default ListRowTrack;
