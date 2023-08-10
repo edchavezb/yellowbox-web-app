@@ -1,5 +1,5 @@
 
-.boxListWrapper {
+.boxList {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
@@ -7,7 +7,7 @@
 }
 
 .boxListHighlighted {
-    composes: boxListWrapper;
+    composes: boxList;
     background-color: rgb(26, 26, 26);
 }
 

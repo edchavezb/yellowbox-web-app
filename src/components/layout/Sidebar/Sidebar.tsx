@@ -122,7 +122,7 @@ function Sidebar({ user }: IProps) {
   }
 
   return (
-    <div id={styles.mainPanel}>
+    <div className={`${styles.mainPanel} ${styles.customScrollbar}`}>
       {
         user._id &&
         <>
@@ -142,7 +142,7 @@ function Sidebar({ user }: IProps) {
               <span className={styles.linkServiceBtn} ref={servicesButtonRef} onClick={() => setIsServicesMenuOpen(true)}>+ Link a new service</span>
             </div>
           </div>
-          <div id={styles.boxList}>
+          <div className={styles.folderBoxListWrapper}>
             <h4 className={styles.sectionTitle}> Your Boxes </h4>
             <AppDndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd} sensors={sensors}>
               <div className={styles.folderList}>
