@@ -16,7 +16,7 @@ function LogInMenu() {
       userEmail,
       userPassword
     )
-    dispatch(setModalState({visible: false, type:"", boxId:"", folderId: "", page: "", itemData: undefined}))
+    dispatch(setModalState({ visible: false, type: "", boxId: "", folderId: "", page: "", itemData: undefined }))
   }
 
   const handleOpenSignUpMenu = () => {
@@ -39,13 +39,15 @@ function LogInMenu() {
           onChange={(e) => setUserPassword(e.target.value)}
         />
       </form>
-      <div id={styles.modalFooter}>
+      <div id={styles.actionButtonRow}>
         <button disabled={!userEmail || !userPassword} onClick={handleSubmitBtnClick}>
           Log in
         </button>
       </div>
-      <div>
-        Don't have an account? <span style={{color: "dodgerblue", cursor: "pointer"}} onClick={handleOpenSignUpMenu}> Sign up </span>
+      <div id={styles.modalFooter}>
+        <div>
+          Don't have an account? <span style={{ color: "dodgerblue", cursor: "pointer" }} onClick={handleOpenSignUpMenu}> Sign up </span>
+        </div>
       </div>
     </div>
   )

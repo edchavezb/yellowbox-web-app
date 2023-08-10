@@ -15,7 +15,7 @@ const SidebarBoxList = ({ boxes, isDraggingOver }: DashboardFolderProps) => {
   });
 
   return (
-    <div className={isDraggingOver ? styles.boxListHighlighted : styles.boxListWrapper} ref={setNodeRef}>
+    <div className={isDraggingOver ? styles.boxListHighlighted : styles.boxList} ref={setNodeRef}>
       <div className={styles.list}>
         <SortableContext
           items={boxes.map(item => item.boxId!)}

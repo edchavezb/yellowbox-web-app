@@ -1,10 +1,12 @@
-#mainPanel {
+.mainPanel {
     color: #ffffff;
     padding: 20px 10px;
     height: 100%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #user {
@@ -44,7 +46,7 @@
     margin-bottom: 6px;
 }
 
-#boxList {
+.folderBoxListWrapper {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -69,13 +71,41 @@
 }
 
 .linkServiceBtn {
+    width: 100%;
+    max-width: max-content;
     padding: 5px 8px;
     font-size: .8em;
     background-color: grey;
     border-radius: 3px;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .linkServiceBtn:hover {
     background-color: rgb(165, 165, 165);
+}
+
+.customScrollbar
+{
+  scrollbar-color: #555555 #0f0f0f;
+}
+
+.customScrollbar::-webkit-scrollbar
+{
+  width: 8px;
+  background-color: #0f0f0f;
+}
+
+.customScrollbar::-webkit-scrollbar-track
+{
+  border-radius: 10px;
+  background-color: #0f0f0f;
+}
+
+.customScrollbar::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  background-color: #555555;
 }
