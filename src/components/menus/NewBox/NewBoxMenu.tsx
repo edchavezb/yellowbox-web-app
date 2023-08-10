@@ -2,7 +2,6 @@ import { createUserBoxThunk } from 'core/features/userBoxes/userBoxesSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useState } from 'react';
 import { UserBox } from 'core/types/interfaces';
-
 import styles from "./NewBoxMenu.module.css";
 import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
@@ -21,10 +20,10 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
       { 
         boxName: `${currentBox.name}${action === "Clone Box" ? " - Copy" : ""}`, 
         boxDesc: currentBox.description, 
-        public: currentBox.public
+        boxPublic: currentBox.public
       }
       :
-      { boxName: "", boxDesc: "", public: true }
+      { boxName: "", boxDesc: "", boxPublic: true }
   )
 
   const newUserBox = () => {
@@ -32,7 +31,7 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
       name: boxDetails.boxName,
       description: boxDetails.boxDesc,
       creator: user._id,
-      public: boxDetails.public,
+      public: boxDetails.boxPublic,
       artists: [],
       albums: [],
       tracks: [],
@@ -90,7 +89,7 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
       name: boxDetails.boxName,
       description: boxDetails.boxDesc,
       creator: user._id,
-      public: boxDetails.public,
+      public: boxDetails.boxPublic,
       notes: []
     }
     return clonedBox;
@@ -116,15 +115,14 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
     dispatch(createUserBoxThunk(getClonedBoxData()))
   }
 
-  const handleUpdateBox = async (updatedBox: UserBox) => {
-    dispatch(updateCurrentBoxDetailThunk(currentBox._id, updatedBox))
+  const handleUpdateBox = async () => {
+    const {boxName, boxDesc, boxPublic} = boxDetails;
+    dispatch(updateCurrentBoxDetailThunk(currentBox._id, boxName, boxDesc, boxPublic))
   }
 
   const handleSubmitBtnClick = async () => {
     if (action === "Edit Box") {
-      const {boxName, boxDesc} = boxDetails
-      const updatedBox = {...currentBox, name: boxName, description: boxDesc, public: boxDetails.public}
-      handleUpdateBox(updatedBox)
+      handleUpdateBox()
     }
     else if (action === "Clone Box") {
       handleCloneBox()
@@ -149,8 +147,8 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
           onChange={(e) => setBoxDetails(state => ({ ...state, boxDesc: e.target.value }))}
         />
         <div className={styles.formElement}>
-          <input type={'checkbox'} name="public-toggle" checked={boxDetails.public}
-            onChange={(e) => setBoxDetails(state => ({ ...state, public: e.target.checked }))} />
+          <input type={'checkbox'} name="public-toggle" checked={boxDetails.boxPublic}
+            onChange={(e) => setBoxDetails(state => ({ ...state, boxPublic: e.target.checked }))} />
           <label className={styles.formElement} htmlFor="public-toggle"> Make this box public &#x24D8; </label>
         </div>
       </form>

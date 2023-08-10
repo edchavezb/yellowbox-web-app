@@ -2,11 +2,14 @@ import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState } from 'react';
-import { addAlbumToBoxApi, addArtistToBoxApi, addPlaylistToBoxApi, addTrackToBoxApi } from 'core/api/userboxes';
 import { Album, Artist, Playlist, Track } from "core/types/interfaces";
 import styles from "./AddToBoxMenu.module.css";
 import { isAlbum, isArtist, isPlaylist, isTrack } from 'core/helpers/typeguards';
 import { extractCrucialData } from 'core/helpers/itemDataHandlers';
+import { addAlbumToBoxApi } from 'core/api/userboxes/albums';
+import { addArtistToBoxApi } from 'core/api/userboxes/artists';
+import { addPlaylistToBoxApi } from 'core/api/userboxes/playlists';
+import { addTrackToBoxApi } from 'core/api/userboxes/tracks';
 
 type MusicData = Artist | Album | Track | Playlist;
 

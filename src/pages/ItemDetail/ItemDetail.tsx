@@ -7,7 +7,7 @@ import styles from "./ItemDetail.module.css"
 import { Album, Artist, Playlist, Track } from 'core/types/interfaces';
 import * as checkType from 'core/helpers/typeguards';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { getSpotifyGenericToken } from 'core/api/spotify';
+import { getSpotifyGenericTokenApi } from 'core/api/spotify';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import BoxItemMenu from 'components/menus/popper/BoxItemMenu/BoxItemMenu';
 
@@ -51,7 +51,7 @@ function ItemDetail() {
           break;
       }
       try {
-        const tokenResponse = await getSpotifyGenericToken()!;
+        const tokenResponse = await getSpotifyGenericTokenApi()!;
         const { access_token: accessToken } = tokenResponse!;
         if (accessToken) {
           getItemData(typeParam, itemQuery, accessToken)

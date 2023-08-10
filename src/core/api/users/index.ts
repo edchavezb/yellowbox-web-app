@@ -1,7 +1,7 @@
 import { DashboardBox, UserFolder, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
-export const getAuthenticatedUserData = async () => {
+export const getAuthenticatedUserDataApi = async () => {
     try {
         return await api.get<{appUser: YellowboxUser | undefined}>('users/me', {})
     }
@@ -10,7 +10,7 @@ export const getAuthenticatedUserData = async () => {
     }
 }
 
-export const getUserDataBySpotifyId = async (spotifyId: string) => {
+export const getUserDataBySpotifyIdApi = async (spotifyId: string) => {
     try {
         return await api.get<YellowboxUser>('users', {spotifyId})
     }
@@ -19,7 +19,7 @@ export const getUserDataBySpotifyId = async (spotifyId: string) => {
     }
 }
 
-export const dbUsernameCheck = async (username: string) => {
+export const dbUsernameCheckApi = async (username: string) => {
     try {
         return await api.get<{usernameExists: boolean}>(`users/check/${username}`, {})
     }
@@ -28,7 +28,7 @@ export const dbUsernameCheck = async (username: string) => {
     }
 }
 
-export const createUser = async (userData: Omit<YellowboxUser, '_id'>) => {
+export const createUserApi = async (userData: Omit<YellowboxUser, '_id'>) => {
     try {
         return await api.post<Omit<YellowboxUser, '_id'>, YellowboxUser>('users', userData)
     }
@@ -64,7 +64,7 @@ export const updateUserDashboardBoxesApi = async (userId: string, updatedBoxIdLi
     }
 }
 
-export const linkUserToSpotifyAcount = async (userId: string, spotifyData: {refreshToken: string, id: string}) => {
+export const linkUserToSpotifyAcountApi = async (userId: string, spotifyData: {refreshToken: string, id: string}) => {
     try {
         return await api.post<{spotifyData: {refreshToken: string, id: string}}, YellowboxUser>(`users/${userId}/spotify`, {spotifyData})
     }
@@ -73,7 +73,7 @@ export const linkUserToSpotifyAcount = async (userId: string, spotifyData: {refr
     }
 }
 
-export const verifyUserEmailAddress = async (userId: string) => {
+export const verifyUserEmailAddressApi = async (userId: string) => {
     try {
         return await api.put<{}, YellowboxUser>(`users/${userId}/verifyEmail`, {})
     }

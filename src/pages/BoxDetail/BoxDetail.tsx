@@ -8,7 +8,7 @@ import { fetchBoxDetailThunk, setIsUserViewing } from 'core/features/currentBoxD
 import { useParams } from 'react-router-dom';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import BoxMenu from 'components/menus/popper/BoxMenu/BoxMenu';
-import { getSpotifyGenericToken } from 'core/api/spotify';
+import { getSpotifyGenericTokenApi } from 'core/api/spotify';
 import { setGenericToken } from 'core/features/spotifyService/spotifyLoginSlice';
 
 function BoxDetail() {
@@ -41,7 +41,7 @@ function BoxDetail() {
   }, [spotifyToken])
 
   const setSpotifyToken = async () => {
-    const tokenResponse = await getSpotifyGenericToken()!;
+    const tokenResponse = await getSpotifyGenericTokenApi()!;
     const { access_token: accessToken } = tokenResponse!;
     if (accessToken) {
       dispatch(setGenericToken({genericToken: accessToken}));

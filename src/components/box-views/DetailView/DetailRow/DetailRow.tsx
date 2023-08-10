@@ -11,7 +11,10 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import { extractCrucialData, getElementImage } from "core/helpers/itemDataHandlers";
-import { updateBoxAlbumApi, updateBoxArtistApi, updateBoxTrackApi, updateBoxPlaylistApi } from "core/api/userboxes";
+import { updateBoxAlbumApi } from "core/api/userboxes/albums";
+import { updateBoxArtistApi } from "core/api/userboxes/artists";
+import { updateBoxPlaylistApi } from "core/api/userboxes/playlists";
+import { updateBoxTrackApi } from "core/api/userboxes/tracks";
 
 interface IProps<T> {
   element: T

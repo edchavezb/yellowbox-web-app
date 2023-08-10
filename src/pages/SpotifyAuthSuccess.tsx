@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import querystring from 'querystring'
-import { linkUserToSpotifyAcount } from 'core/api/users';
+import { linkUserToSpotifyAcountApi } from 'core/api/users';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { setSpotifyLoginData } from 'core/features/spotifyService/spotifyLoginSlice';
-import { getSpotifyUserToken } from 'core/api/spotify';
+import { getSpotifyUserTokenApi } from 'core/api/spotify';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { setAuthenticatedUser } from 'core/features/user/userSlice';
 import { SpotifyLoginData } from 'core/types/interfaces';
@@ -17,7 +17,7 @@ function SpotifyAuthSuccess() {
 
   useEffect(() => {
     const getSpotifyLoginData = async (code: string, state: string) => {
-      const response = await getSpotifyUserToken(code, state);
+      const response = await getSpotifyUserTokenApi(code, state);
       const { access_token, refresh_token } = response!;
       getUserData(access_token, refresh_token)
     }
@@ -39,7 +39,7 @@ function SpotifyAuthSuccess() {
         userId: id
       }
       dispatch(setSpotifyLoginData(spotifyLogin))
-      const updatedUser = await linkUserToSpotifyAcount(userId, {refreshToken: refresh, id});
+      const updatedUser = await linkUserToSpotifyAcountApi(userId, {refreshToken: refresh, id});
       if (updatedUser) {        
         dispatch(setAuthenticatedUser(updatedUser));
       }

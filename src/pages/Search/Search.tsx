@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import SearchResults from "./SearchResults/SearchResults"
 import { Album, Artist, Playlist, Track } from 'core/types/interfaces';
-import { getSpotifyGenericToken } from "core/api/spotify";
+import { getSpotifyGenericTokenApi } from "core/api/spotify";
 import useDebounce from "core/hooks/useDebounce";
 import { URL_IDENTIFIER } from "core/constants/constants";
 
@@ -33,7 +33,7 @@ function Search() {
   useEffect(() => {
     const handleSearch = async (query: string) => {
       try {
-        const tokenResponse = await getSpotifyGenericToken()!;
+        const tokenResponse = await getSpotifyGenericTokenApi()!;
         const { access_token: accessToken } = tokenResponse!;
         if (accessToken) {
           if (query?.includes(URL_IDENTIFIER)) {

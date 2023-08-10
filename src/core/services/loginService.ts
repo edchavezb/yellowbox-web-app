@@ -1,5 +1,5 @@
 import { Auth, User, signOut } from "@firebase/auth";
-import { getAuthenticatedUserData, verifyUserEmailAddress } from "core/api/users";
+import { getAuthenticatedUserDataApi, verifyUserEmailAddressApi } from "core/api/users";
 import { setSpotifyLoginData } from "core/features/spotifyService/spotifyLoginSlice";
 import { setAuthenticatedUser, setIsUserLoggedIn } from "core/features/user/userSlice";
 import { getSpotifyLoginData } from "core/helpers/getSpotifyLoginData";
@@ -9,7 +9,7 @@ import { SpotifyLoginData, YellowboxUser } from "core/types/interfaces";
 export const loginService = async (auth: Auth, authUser: User | null, dispatch: AppDispatch, setIsLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
   if (authUser) {
     try {
-      const autenticateUserResponse = await getAuthenticatedUserData();
+      const autenticateUserResponse = await getAuthenticatedUserDataApi();
       const { appUser } = autenticateUserResponse!;
       if (appUser) {
         dispatch(setAuthenticatedUser(appUser!))
@@ -24,7 +24,7 @@ export const loginService = async (auth: Auth, authUser: User | null, dispatch: 
         }
 
         if (appUser.account.emailVerified !== authUser.emailVerified) {
-          const verifiedUser = await verifyUserEmailAddress(appUser._id);
+          const verifiedUser = await verifyUserEmailAddressApi(appUser._id);
           if (verifiedUser) {
             dispatch(setAuthenticatedUser(verifiedUser));
           }

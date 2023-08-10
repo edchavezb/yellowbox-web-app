@@ -5,7 +5,7 @@ import GridView from "components/box-views/GridView/GridView";
 import ListView from "components/box-views/ListView/ListView";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import SpotifyTopItems from "./SpotifyTopItems/SpotifyTopItems";
-import { refreshSpotifyToken } from "core/api/spotify";
+import { refreshSpotifyTokenApi } from "core/api/spotify";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setAccessToken } from "core/features/spotifyService/spotifyLoginSlice";
 
@@ -66,7 +66,7 @@ function SpotifyUser() {
     const getSpotifyData = async () => {
       if (spotifyAuthData?.refreshToken) {
         try {
-          const refreshResponse = await refreshSpotifyToken(spotifyAuthData.refreshToken)
+          const refreshResponse = await refreshSpotifyTokenApi(spotifyAuthData.refreshToken)
           const { access_token: accessToken } = refreshResponse!;
           dispatch(setAccessToken({ accessToken }));
           getUserData(accessToken)

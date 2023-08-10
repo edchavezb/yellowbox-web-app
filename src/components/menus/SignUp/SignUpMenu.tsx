@@ -3,7 +3,7 @@ import styles from "./SignUpMenu.module.css";
 import { firebaseAuth } from 'core/services/firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import useDebounce from 'core/hooks/useDebounce';
-import { createUser, dbUsernameCheck } from 'core/api/users';
+import { createUserApi, dbUsernameCheckApi } from 'core/api/users';
 import { YellowboxUser } from 'core/types/interfaces';
 
 function SignUpMenu() {
@@ -15,7 +15,7 @@ function SignUpMenu() {
   const [userSuccessMessage, setUserSuccessMessage] = useState('');
   const debouncedUsernameCheck = useDebounce(
     async (username: string) => {
-      const response = await dbUsernameCheck(username);
+      const response = await dbUsernameCheckApi(username);
       if (response?.usernameExists !== undefined) {
         setIsUserNameValid(!response.usernameExists);
       }
@@ -45,7 +45,7 @@ function SignUpMenu() {
       billing: {},
       services: {}
     }
-    const savedUser = await createUser(newAppUser); 
+    const savedUser = await createUserApi(newAppUser); 
     if (savedUser) {
       setUsername('');
       setUserEmail('');

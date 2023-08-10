@@ -2,12 +2,15 @@ import { Album, Artist, DashboardBox, Playlist, Track } from "core/types/interfa
 import styles from "./SidebarBox.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useHistory } from "react-router-dom";
-import { addArtistToBoxApi, addAlbumToBoxApi, addTrackToBoxApi, addPlaylistToBoxApi } from "core/api/userboxes";
 import { isArtist, isAlbum, isTrack, isPlaylist } from "core/helpers/typeguards";
 import { CSS } from '@dnd-kit/utilities';
 import { SortableData, UseSortableArguments, useSortable } from "@dnd-kit/sortable";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { extractCrucialData } from "core/helpers/itemDataHandlers";
+import { addAlbumToBoxApi } from "core/api/userboxes/albums";
+import { addArtistToBoxApi } from "core/api/userboxes/artists";
+import { addPlaylistToBoxApi } from "core/api/userboxes/playlists";
+import { addTrackToBoxApi } from "core/api/userboxes/tracks";
 
 type MusicData = Artist | Album | Track | Playlist;
 interface SidebarBoxProps {
