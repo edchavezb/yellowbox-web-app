@@ -222,9 +222,9 @@
 
     .itemRow {
         height: 85px;
-        padding: 0px 4px;
+        padding: 0px 8px;
         column-gap: 5px;
-        grid-template-columns: 70px 2fr 30px;
+        grid-template-columns: 70px 2fr 20px;
     }
 
     .itemPosition {
