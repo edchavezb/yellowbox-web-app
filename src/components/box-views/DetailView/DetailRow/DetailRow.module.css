@@ -106,7 +106,7 @@
 
 .itemName {
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 18px;
     padding: 0px 5px;
     overflow: hidden;
     word-wrap: break-word;
@@ -117,23 +117,18 @@
     flex-shrink: 0;
 }
 
-.itemNameItalic {
-    composes: itemName;
-    font-style: italic;
-}
-
 .artist {
-    padding: 0px 5px;
+    padding: 5px 5px 0px 5px;
     overflow: hidden;
-    word-wrap: break-word;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     text-overflow: ellipsis;
     flex-shrink: 0;
 }
 
 .artistName {
-    display: inline;
+    font-size: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
 .metaDataContainer {
@@ -226,31 +221,66 @@
 @media (max-width: 576px) {
 
     .itemRow {
-        height: 100px;
-        padding: 0px 0px;
+        height: 85px;
+        padding: 0px 4px;
         column-gap: 5px;
-        grid-template-columns: 30px 85px 2fr 30px;
+        grid-template-columns: 70px 2fr 30px;
+    }
+
+    .itemPosition {
+        display: none;
     }
 
     .itemLink {
         position: relative;
         width: 100%;
-        height: 85%;
+        height: 70px;
         overflow: hidden;
     }
 
     .dataCol {
         padding: 0px 0px;
-        padding-left: 5px;
+        padding-left: 3px;
     }
 
     .metaDataContainer {
        max-height: 50px;
-       margin-top: 5px;
+       margin-top: 3px;
        overflow: hidden;
     }
 
     .notesCol {
         display: none;
+    }
+
+    .itemName {
+        font-size: 16px;
+        -webkit-line-clamp: 1;
+    }
+
+    .artist {
+        padding: 2px 5px 0px 5px;
+    }
+
+    .artistName {
+        font-size: 14px;
+    }
+
+    .positionMobile {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: #282c34CC;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        z-index: 100;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 10px;
+        line-height: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }

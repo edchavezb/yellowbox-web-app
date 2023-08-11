@@ -28,7 +28,7 @@ interface IProps<T> {
 function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps<T>) {
   const dispatch = useAppDispatch();
   const detailRowRef = useRef(null);
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index}})
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
   const { name, type, uri, id } = element;
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
@@ -43,7 +43,6 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
     transition
   }
 
-  //Telling compiler not to expect null or undefined since value is assiged for all cases (! operator)
   let authorName!: ReactElement | JSX.Element[] | string;
   let metadata!: JSX.Element | string;
 
@@ -192,10 +191,13 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
               src={elementImage}
               onError={handleImageError}
             />
+            <div className={styles.positionMobile}>
+              {index + 1}
+            </div>
           </div>
         </div>
         <div className={styles.dataCol}>
-          <div className={type === "track" || type === "album" ? styles.itemNameItalic : styles.itemName}>
+          <div className={styles.itemName}>
             <Link to={`/detail/${type}/${id}`}> {name} </Link>
           </div>
           {type !== "artist" ?
@@ -220,7 +222,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
       </div>
     )
   }
-  
+
   else {
     return (
       <>
@@ -241,11 +243,13 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
                 src={elementImage}
                 onError={handleImageError}
               />
-              
+              <div className={styles.positionMobile}>
+                {index + 1}
+              </div>
             </Link>
           </div>
           <div className={styles.dataCol}>
-            <div className={type === "track" || type === "album" ? styles.itemNameItalic : styles.itemName}>
+            <div className={styles.itemName}>
               <Link to={`/detail/${type}/${id}`}> {name} </Link>
             </div>
             {type !== "artist" ?
