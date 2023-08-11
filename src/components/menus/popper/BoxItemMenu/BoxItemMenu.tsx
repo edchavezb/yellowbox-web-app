@@ -43,7 +43,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
   const handleMoveToTop = () => {
     if (subSection) {
       dispatch(reorderSubsectionItemsThunk(boxId, itemData._id!, subId!, itemIndex!, 0));
-    } 
+    }
     else {
       dispatch(reorderBoxItemsThunk(boxId, itemData._id!, itemIndex!, 0, itemData.type));
     }
@@ -150,6 +150,11 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         onClick={() => handleCopyURL()}>
         Copy Spotify URL
       </div>
+      <a href={itemData.uri}>
+        <div className={menuItem}>
+          Open on Spotify
+        </div>
+      </a>
     </div>
   );
 };

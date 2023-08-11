@@ -1,18 +1,18 @@
 import styles from "./Modal.module.css";
-import NewBoxMenu from "components/menus/NewBox/NewBoxMenu";
-import DeletePrompt from "components/menus/DeletePrompt/DeletePrompt";
-import AddToBoxMenu from "components/menus/AddToBox/AddToBoxMenu";
-import SortingMenu from "components/menus/BoxSorting/SortingMenu";
-import SubsectionsMenu from "components/menus/BoxSubsections/SubsectionsMenu";
-import AddToSubsectionMenu from "components/menus/AddToSubsection/AddToSubsectionMenu";
-import NewFolderMenu from "components/menus/NewFolder/NewFolderMenu";
-import AddToFolderMenu from "components/menus/AddToFolder/AddToFolderMenu";
-import ItemNote from "components/menus/ItemNote/ItemNote";
+import NewBoxMenu from "components/menus/modal/NewBox/NewBoxMenu";
+import DeletePrompt from "components/menus/modal/DeletePrompt/DeletePrompt";
+import AddToBoxMenu from "components/menus/modal/AddToBox/AddToBoxMenu";
+import SortingMenu from "components/menus/modal/BoxSorting/SortingMenu";
+import SubsectionsMenu from "components/menus/modal/BoxSubsections/SubsectionsMenu";
+import AddToSubsectionMenu from "components/menus/modal/AddToSubsection/AddToSubsectionMenu";
+import NewFolderMenu from "components/menus/modal/NewFolder/NewFolderMenu";
+import AddToFolderMenu from "components/menus/modal/AddToFolder/AddToFolderMenu";
+import ItemNote from "components/menus/modal/ItemNote/ItemNote";
+import LogInMenu from "components/menus/modal/LogIn/LogInMenu";
+import SignUpMenu from "components/menus/modal/SignUp/SignUpMenu";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
-import LogInMenu from "components/menus/LogIn/LogInMenu";
-import SignUpMenu from "components/menus/SignUp/SignUpMenu";
 
 function Modal() {
   const dispatch = useAppDispatch();
