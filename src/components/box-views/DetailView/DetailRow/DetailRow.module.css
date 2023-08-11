@@ -6,6 +6,7 @@
     grid-template-columns: 30px 150px 2fr 1.8fr 30px;
     align-items: center;
     overflow: hidden;
+    border-radius: 5px;
 }
 
 .itemRow:hover {
@@ -221,10 +222,18 @@
 @media (max-width: 576px) {
 
     .itemRow {
-        height: 84px;
+        height: 82px;
         padding: 0px 0px;
         column-gap: 4px;
-        grid-template-columns: 80px 1fr 28px;
+        grid-template-columns: 78px 1fr 24px;
+    }
+
+    .itemRow:hover {
+        background-color: inherit;
+    }
+
+    .imageContainer:hover .instantPlay {
+        visibility: hidden;
     }
 
     .itemPosition {
@@ -232,7 +241,7 @@
     }
 
     .itemLink {
-        margin-left: 6px;
+        margin-left: 4px;
         position: relative;
         width: 74px;
         height: 74px;
