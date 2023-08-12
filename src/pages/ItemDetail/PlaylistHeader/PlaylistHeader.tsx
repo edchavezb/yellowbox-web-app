@@ -18,8 +18,9 @@ const PlaylistHeader = ({itemData}: PlaylistHeaderProps) => {
       .reduce(
         (prev, curr) => { return prev + curr }
       );
-    const minutes = Math.floor(milliSecs / 60000);
-    return `${minutes} min`
+    const hours = Math.floor(milliSecs / 3600000);
+    const minutes = Math.floor((milliSecs % 3600000) / 60000);
+    return `${hours} hours, ${minutes} min`
   }
 
   return (

@@ -47,16 +47,18 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
     }
   }, [isEditorEnabled])
 
-  useEffect(() => {
-    setEditorNote(
-      currentSubSection ? itemNotes.find(note => note.subSectionId === currentSubSection)?.noteText! : itemNotes.find(note => !note.subSectionId)?.noteText!
-    )
-  }, [currentSubSection, itemNotes])
-
   const isClickOutsideEditor = (e: MouseEvent) => {
     if (editorRef.current && !editorRef.current.contains(e.target as Node)) {
       setIsEditorEnabled(false);
     }
+  }
+
+  const subSectionChangeHandler = (subId: string) => {
+    const newEditorNote = subId ?
+      itemNotes.find(note => note.subSectionId === subId)?.noteText!
+      : itemNotes.find(note => !note.subSectionId)?.noteText!
+    setEditorNote(newEditorNote);
+    setCurrentSubSection(subId);
   }
 
   const saveNoteHandler = () => {
@@ -95,7 +97,6 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
   }
 
   const itemCoverArt = elementImages && elementImages.length ? elementImages[0].url : "https://via.placeholder.com/150"
-  const isNameItalic = (item: MusicData) => item.type === 'album' || item.type === 'track'
 
   return (
     <div id={styles.modalBody}>
@@ -104,7 +105,7 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
           <img draggable="false" className={styles.itemImage} alt={itemData.name} src={itemCoverArt}></img>
         </div>
         <div id={styles.noteColumn}>
-          <div className={isNameItalic(itemData) ? styles.nameItalic : styles.name}>
+          <div className={styles.name}>
             {name}
           </div>
           <div className={styles.author}>
@@ -116,7 +117,10 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
               subSectionsWithItemNote.map(subSection => {
                 const { name, _id: subSectionId } = currentBox.subSections.find(sub => sub._id === subSection)!
                 return (
-                  <div className={currentSubSection === subSectionId ? styles.subSectionPillSelected : styles.subSectionPill} onClick={() => setCurrentSubSection(subSectionId!)}>
+                  <div 
+                    className={currentSubSection === subSectionId ? styles.subSectionPillSelected : styles.subSectionPill} 
+                    onClick={() => subSectionChangeHandler(subSectionId!)}
+                  >
                     {name}
                   </div>
                 )
@@ -125,7 +129,7 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
             {
               (!!subSectionsWithoutItemNote.length && isOwner) &&
               <div className={styles.addButton} onClick={() => setIsMenuOpen(true)} ref={menuButtonRef}>
-                <img id={styles.plusIcon} src="/icons/plus_white.svg" alt="new box"></img>
+                <img id={styles.plusIcon} src="/icons/plus_white.svg" alt="new note"></img>
               </div>
             }
           </div>
