@@ -33,7 +33,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
             <div className={`${styles.headerLeftAlgn}`}> Title </div>
             <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Artist </div>
             <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Album </div>
-            <div className={`${styles.headerCentered}`}> Duration </div>
+            <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Duration </div>
             <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Lyrics </div>
             <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Spotify </div>
           </div>;

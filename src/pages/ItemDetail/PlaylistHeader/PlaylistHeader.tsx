@@ -41,14 +41,14 @@ const PlaylistHeader = ({itemData}: PlaylistHeaderProps) => {
           </div>
           <div className={styles.detailsRow}>
             <div className={styles.metaDataPill}>
-              {`Info`}
-            </div>
-            <div className={styles.metaDataPill}>
-            {` ${itemData.tracks.total} tracks`}
-            </div>
-            <div className={styles.metaDataPill}>
               {` ${getPlaylistRuntime(itemData.tracks!.items!.map(item => item.track))}`}
             </div>
+            <a href={itemData.uri}>
+              <div className={styles.metaDataPill}>
+                <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
+                <span> Open </span>
+              </div>
+            </a>
             <div className={styles.menuButtonMobile} onClick={() => setIsItemMenuOpen(true)} ref={menuToggleRef}>
               <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
             </div>

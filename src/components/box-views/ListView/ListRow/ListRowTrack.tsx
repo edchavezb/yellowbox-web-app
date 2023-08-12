@@ -105,7 +105,7 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, reorderingM
                 <span className={styles.albumName}> Not found </span>
             }
           </div>
-          <div className={styles.colCentered}>
+          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
             {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>

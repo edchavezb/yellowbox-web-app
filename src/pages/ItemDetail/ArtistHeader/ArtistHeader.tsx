@@ -39,6 +39,23 @@ const ArtistHeader = ({ itemData }: ArtistHeaderProps) => {
                 )
               })}
           </div>
+          <div className={styles.detailsRow}>
+            <div className={styles.metaDataPill}>
+              <span> Popularity </span>
+              <div className={styles.progressBarRail}> 
+                <div className={styles.progressBar} style={{width: `${itemData.popularity}%`}}/>
+              </div>
+            </div>
+            <a href={itemData.uri}>
+              <div className={styles.metaDataPill}>
+                <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
+                <span> Open </span>
+              </div>
+            </a>
+            <div className={styles.menuButtonMobile} onClick={() => setIsItemMenuOpen(true)} ref={menuToggleRef}>
+              <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
+            </div>
+          </div>
         </div>
       </div>
       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>

@@ -54,11 +54,14 @@ const AlbumHeader = ({itemData}: AlbumHeaderProps) => {
               {`${itemData.release_date.split("-")[0]}`}
             </div>
             <div className={styles.metaDataPill}>
-              {` ${itemData.total_tracks} tracks`}
-            </div>
-            <div className={styles.metaDataPill}>
               {` ${getAlbumRuntime(itemData.tracks!.items)}`}
             </div>
+            <a href={itemData.uri}>
+              <div className={styles.metaDataPill}>
+                <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
+                <span> Open </span>
+              </div>
+            </a>
             <div className={styles.menuButtonMobile} onClick={() => setIsItemMenuOpen(true)} ref={menuToggleRef}>
               <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
             </div>

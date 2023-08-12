@@ -70,7 +70,7 @@
 }
 
 .menuButton {
-    margin-top: 5px;
+    margin-top: 8px;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -91,7 +91,7 @@
     }
 
     .boxInfo {
-        margin-left: 10px;
+        margin-left: 6px;
     }
 
     .menuButtonWrapper {

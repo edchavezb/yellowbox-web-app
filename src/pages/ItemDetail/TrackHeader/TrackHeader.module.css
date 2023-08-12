@@ -98,6 +98,11 @@
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+
+  .spotifyIcon {
+    width: 10px;
+    margin-right: 2px;
+  }  
   
   @media (max-width: 576px) {
   

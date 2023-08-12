@@ -47,12 +47,12 @@ const TrackHeader = ({ itemData }: TrackHeaderProps) => {
             <div className={styles.metaDataPill}>
               {` ${Math.floor(itemData.duration_ms / 60000)}`.padStart(2, "0") + ":" + `${Math.floor(itemData.duration_ms % 60000 / 1000)}`.padStart(2, "0")}
             </div>
-            {
-              itemData.explicit &&
+            <a href={itemData.uri}>
               <div className={styles.metaDataPill}>
-                {'EXPLICIT'}
+                <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
+                <span> Play </span>
               </div>
-            }
+            </a>
             <div className={styles.menuButtonMobile} onClick={() => setIsItemMenuOpen(true)} ref={menuToggleRef}>
               <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
             </div>
