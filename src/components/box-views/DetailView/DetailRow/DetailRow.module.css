@@ -277,9 +277,11 @@
     }
 
     .positionMobile {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
+        min-width: 12px;
+        width: max-content;
+        height: 18px;
+        padding: 0px 3px;
+        border-radius: 9999px;
         background-color: #282c34CC;
         position: absolute;
         top: 2px;

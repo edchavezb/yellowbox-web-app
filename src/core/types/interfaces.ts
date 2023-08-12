@@ -221,7 +221,7 @@ export interface PlaylistItem {
   added_by: SpotifyUser
   is_local: boolean
   primary_color: string
-  track: any // TODO: Hey bro you need to do something here
+  track: Track // TODO: Hey bro you need to do something here
 }
 
 export interface ItemImage {

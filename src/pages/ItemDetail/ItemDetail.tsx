@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import GridView from 'components/box-views/GridView/GridView';
 import ListView from 'components/box-views/ListView/ListView';
 import TrackVisualizer from './TrackDetail/TrackVisualizer/TrackVisualizer'
@@ -10,6 +10,10 @@ import { useAppSelector } from 'core/hooks/useAppSelector';
 import { getSpotifyGenericTokenApi } from 'core/api/spotify';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import BoxItemMenu from 'components/menus/popper/BoxItemMenu/BoxItemMenu';
+import ArtistHeader from './ArtistHeader/ArtistHeader';
+import AlbumHeader from './AlbumHeader/AlbumHeader';
+import TrackHeader from './TrackHeader/TrackHeader';
+import PlaylistHeader from './PlaylistHeader/PlaylistHeader';
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -111,27 +115,11 @@ function ItemDetail() {
     }
   }, [itemData]);
 
-
-  const getArtistLinks = (artists: Artist[]) => {
-    const artistLinks = artists.slice(0, 3).map((artist, idx, arr) => {
-      return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
-    })
-
-    return artistLinks;
-  }
-
   const removeDuplicatesByProperty = <T extends Artist | Album | Track | Playlist>(arrayObj: T[], propertyName: string) => {
     const newArr = arrayObj.filter((element, index) => {
       return index === arrayObj.map(e => e[propertyName as keyof T]).indexOf(element[propertyName as keyof T]);
     })
     return newArr;
-  }
-
-  const getAlbumRunningTime = (tracks: Track[]) => {
-    const milliSecs = tracks.map(track => track.duration_ms).reduce((prev, curr) => { return prev + curr });
-    const minutes = Math.floor(milliSecs / 60000);
-    const seconds = Math.floor((milliSecs % 60000) / 1000);
-    return `${minutes} min, ${seconds} sec`
   }
 
   const attachAlbumDataToTracks = (parentItem: Album) => {
@@ -178,89 +166,39 @@ function ItemDetail() {
     return listComponent;
   }
 
-  if (!isLoading) {
+  if (isLoading) {
     return (
-      <>
-        <div className={styles.itemDetailContainer}>
-          <div className={styles.itemDataViewer}>
-            <img
-              className={styles.itemImage}
-              src={
-                (
-                  itemData.type === "track"
-                    ? (itemData as Track).album!.images[0]?.url
-                    : (itemData as Album | Artist | Playlist).images![0]?.url
-                )
-                || "https://via.placeholder.com/150"
-              }
-              alt={itemData.name}
-            >
-            </img>
-            <div className={styles.metadataContainer}>
-              <div className={styles.itemTitle}> {itemData.name} </div>
-              {checkType.isArtist(itemData) &&
-                <div className={styles.itemDetails}>
-                  {itemData.genres &&
-                    itemData.genres.slice(0, 3).map((genre, idx, arr) => {
-                      return (
-                        <span key={genre}>
-                          {genre.split(" ").map((word, i, a) => {
-                            return `${word.charAt(0).toUpperCase()}${word.slice(1)}${a[i + 1] ? " " : ""}`
-                          })}{arr[idx + 1] ? ", " : ""}
-                        </span>
-                      )
-                    })}
-                </div>
-              }
-              {checkType.isAlbum(itemData) &&
-                <div className={styles.itemDetails}>
-                  {`${itemData.album_type.charAt(0).toUpperCase()}${itemData.album_type.slice(1)}`}
-                  {` by `}{getArtistLinks(itemData.artists)} |
-                  {` ${itemData.release_date.split("-")[0]}`} |
-                  {` ${itemData.total_tracks} tracks`} |
-                  {` ${getAlbumRunningTime(itemData.tracks!.items)}`}
-                </div>
-              }
-              {checkType.isTrack(itemData) &&
-                <div className={styles.itemDetails}>
-                  {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
-                  {` by `}{getArtistLinks(itemData.artists)} |
-                  {` ${itemData.album!.release_date.split("-")[0]}`} |
-                  {` ${Math.floor(itemData.duration_ms / 60000)}`.padStart(2, "0") + ":" + `${Math.floor(itemData.duration_ms % 60000 / 1000)}`.padStart(2, "0")}
-                </div>
-              }
-              {checkType.isPlaylist(itemData) &&
-                <div className={styles.itemDetails}>
-                  {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
-                  {` by `}<a href={itemData.owner.uri}><span> {itemData.owner.display_name} </span></a> |
-                  {` ${itemData.tracks.total} tracks`} |
-                  {` ${itemData.description}`}
-                </div>
-              }
-            </div>
-            <div className={styles.menuButtonWrapper}>
-              <div className={styles.menuButton} onClick={() => setIsItemMenuOpen(true)} ref={menuToggleRef}>
-                <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
-              </div>
-            </div>
-          </div>
-          <hr />
-          {
-            checkType.isArtist(itemData) &&
-            <h3 className={styles.popularReleases}>Popular releases</h3>
-          }
-          {getListComponent()}
-        </div>
-        <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>
-          <BoxItemMenu itemData={itemData} itemType={itemData.type} setIsOpen={setIsItemMenuOpen} />
-        </PopperMenu>
-      </>
-    );
+      <></>
+    )
   }
 
   return (
-    <></>
-  )
+    <>
+      <div className={styles.itemDetailContainer}>
+        {checkType.isArtist(itemData) &&
+          <ArtistHeader itemData={itemData} />
+        }
+        {checkType.isAlbum(itemData) &&
+          <AlbumHeader itemData={itemData} />
+        }
+        {checkType.isTrack(itemData) &&
+          <TrackHeader itemData={itemData} />
+        }
+        {checkType.isPlaylist(itemData) &&
+          <PlaylistHeader itemData={itemData} />
+        }
+        <div className={styles.separator} />
+        {
+          checkType.isArtist(itemData) &&
+          <h3 className={styles.popularReleases}>Popular releases</h3>
+        }
+        {getListComponent()}
+      </div>
+      <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>
+        <BoxItemMenu itemData={itemData} itemType={itemData.type} setIsOpen={setIsItemMenuOpen} />
+      </PopperMenu>
+    </>
+  );
 }
 
 export default ItemDetail;

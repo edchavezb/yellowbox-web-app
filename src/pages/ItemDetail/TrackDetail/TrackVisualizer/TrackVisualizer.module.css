@@ -28,17 +28,12 @@
     font-weight: 600;
     margin-top: 15px;
     overflow: hidden;
-
-    /*
     white-space: -moz-pre-wrap !important; 
     white-space: -pre-wrap;   
     white-space: -o-pre-wrap; 
     white-space: pre-wrap;    
-    word-wrap: break-word;      
     white-space: -webkit-pre-wrap; 
-    word-break: break-all;
     white-space: normal;
-    */
 }
 
 .related {
@@ -64,6 +59,7 @@
     margin-top: 10px;
     display: flex;
     flex-wrap: nowrap;
+    gap: 8px;
 }
 
 .tracklistCol {

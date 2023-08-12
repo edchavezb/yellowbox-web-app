@@ -14,6 +14,7 @@
 
 .itemImage {
 	width: 100px;
+  max-height: 100px;
 }
 
 .metadataContainer {
@@ -35,7 +36,7 @@
   text-overflow: ellipsis;
 }
 
-.itemDetails {
+.itemDetails, .itemArtist {
   font-size: .8em;
   overflow: hidden;
   word-wrap: break-word;
@@ -65,8 +66,58 @@
   cursor: pointer;
 }
 
+.menuButtonMobile {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #282c34CC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.detailsRow {
+  margin-top: 3px;
+  margin-left: -5px;
+  display: flex;
+  font-size: .8em;
+  overflow: hidden;
+  gap: 5px;
+}
+
+.metaDataPill {
+  height: 20px;
+  max-width: 100%;
+  font-size: 12px;
+  border-radius: 500px;
+  padding: 0px 8px;
+  background-color: #282c34CC;
+  line-height: 20px;
+  vertical-align: bottom;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.separator {
+  width: 100%;
+  border-bottom: 1px solid gray;
+}
+
 @media (max-width: 576px) {
-  .itemDetailContainer {
-      padding: 10px 20px;
+
+  .itemTitle {
+    font-size: 18px;
   }
+
+  .itemDetailContainer {
+    padding: 10px 20px;
+  }
+
+  .menuButtonWrapper {
+    display: none;
+  }
+
+  
 }
