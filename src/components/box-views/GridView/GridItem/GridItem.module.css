@@ -1,6 +1,7 @@
 .itemCard {
     width: 14%;
     margin: 1.33%;
+    overflow-anchor: none;
 }
 
 .imageContainer {

@@ -5,6 +5,7 @@
     column-gap: 10px;
     grid-template-columns: [index] 30px [title] 1fr [artist] 1fr [album] 1fr [time] 60px [explicit] 100px [spotify] 60px [options] 20px;
     align-items: center;
+    overflow-anchor: none;
 }
 
 .itemRow:hover {

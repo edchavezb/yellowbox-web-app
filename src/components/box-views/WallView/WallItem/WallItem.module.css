@@ -7,6 +7,7 @@
     background-color: #282c34CC;
     box-sizing: border-box;
     cursor: pointer;
+    overflow-anchor: none;
 }
 
 .itemCard:hover {
