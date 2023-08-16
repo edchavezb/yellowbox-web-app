@@ -91,7 +91,7 @@ const SidebarBox = ({ box }: SidebarBoxProps) => {
   const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    (event.target as Element).className = styles.boxLink
+    (event.target as Element).className = styles.boxName
   }
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -102,7 +102,7 @@ const SidebarBox = ({ box }: SidebarBoxProps) => {
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    (event.target as Element).className = styles.boxLink
+    (event.target as Element).className = styles.boxName
     const data = JSON.parse(event.dataTransfer.getData("data"))
     const crucialData = extractCrucialData(data)
     addToBox(crucialData, event.currentTarget.id, userCreatedBoxes)
