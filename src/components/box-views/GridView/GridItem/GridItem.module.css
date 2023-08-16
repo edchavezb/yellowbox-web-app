@@ -9,6 +9,7 @@
     width: 100%;
     padding-top: 100%;
     overflow: hidden;
+    border-radius: 1.5%;
 }
 
 .imageContainerReorder {
