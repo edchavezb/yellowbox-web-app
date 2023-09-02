@@ -9,14 +9,20 @@ function LogInMenu() {
   const dispatch = useAppDispatch();
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  const [isLoginError, setIsLoginError] = useState(false);
 
   const handleSubmitBtnClick = async () => {
-    signInWithEmailAndPassword(
-      firebaseAuth,
-      userEmail,
-      userPassword
-    )
-    dispatch(setModalState({ visible: false, type: "", boxId: "", folderId: "", page: "", itemData: undefined }))
+    try {
+      await signInWithEmailAndPassword(
+        firebaseAuth,
+        userEmail,
+        userPassword
+      )
+      dispatch(setModalState({ visible: false, type: "", boxId: "", folderId: "", page: "", itemData: undefined }))
+    } 
+    catch {
+      setIsLoginError(true);
+    }
   }
 
   const handleOpenSignUpMenu = () => {
@@ -44,6 +50,12 @@ function LogInMenu() {
           Log in
         </button>
       </div>
+      {
+        isLoginError && 
+        <div style={{color: "red", marginBottom: "10px"}}>
+          The username or password you entered are incorrect.
+        </div>
+      }
       <div id={styles.modalFooter}>
         <div>
           Don't have an account? <span style={{ color: "dodgerblue", cursor: "pointer" }} onClick={handleOpenSignUpMenu}> Sign up </span>

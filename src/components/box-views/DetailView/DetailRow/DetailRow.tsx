@@ -15,6 +15,7 @@ import { updateBoxAlbumApi } from "core/api/userboxes/albums";
 import { updateBoxArtistApi } from "core/api/userboxes/artists";
 import { updateBoxPlaylistApi } from "core/api/userboxes/playlists";
 import { updateBoxTrackApi } from "core/api/userboxes/tracks";
+import useWindowDimensions from "core/hooks/useWindowDimensions";
 
 interface IProps<T> {
   element: T
@@ -26,22 +27,25 @@ interface IProps<T> {
 }
 
 function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps<T>) {
+  const { name, type, uri, id } = element;
   const dispatch = useAppDispatch();
   const detailRowRef = useRef(null);
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
-  const { name, type, uri, id } = element;
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
-  const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
-  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
+  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes);
   const isOwner = userBoxes.some(box => box.boxId === currentBox._id);
-  const itemNote = currentBox.notes.find(note => note.itemId === id && note.subSectionId === subId) || currentBox.notes.find(note => note.itemId === id && !note.subSectionId)
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [elementImage, setElementImage] = useState(getElementImage(element));
+  const itemNote = currentBox.notes.find(note => note.itemId === id && note.subSectionId === subId) || currentBox.notes.find(note => note.itemId === id && !note.subSectionId);
+
+  const { width } = useWindowDimensions();
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
   }
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [elementImage, setElementImage] = useState(getElementImage(element));
 
   let authorName!: ReactElement | JSX.Element[] | string;
   let metadata!: JSX.Element | string;
@@ -110,9 +114,12 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
 
     metadata =
       <div className={styles.metaDataContainer}>
-        <div className={styles.metaDataPill}>
-          {`${description}`}
-        </div>
+        {
+          width > 1024 &&
+          <div className={styles.metaDataPill}>
+            {`${description}`}
+          </div>
+        }
         <div className={styles.metaDataPill}>
           {`${tracks.total} tracks`}
         </div>
