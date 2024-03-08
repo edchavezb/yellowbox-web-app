@@ -1,0 +1,26 @@
+.tab {
+  display: inline-block;
+  padding: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.tab.active {
+  background-color: rgb(15, 15, 15);
+  font-weight: 600;
+}
+
+.container {
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabSwitcher {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: sticky;
+}
