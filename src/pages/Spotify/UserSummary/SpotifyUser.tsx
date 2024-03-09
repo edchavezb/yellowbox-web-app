@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import GridView from "components/box-views/GridView/GridView";
 import ListView from "components/box-views/ListView/ListView";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import SpotifyTopItems from "./SpotifyTopItems/SpotifyTopItems";
+import SpotifyTopItems from "./TopItems/SpotifyTopItems";
 import { refreshSpotifyTokenApi } from "core/api/spotify";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setAccessToken } from "core/features/spotifyService/spotifyLoginSlice";

@@ -1,0 +1,32 @@
+.switcherWrapper {
+    height: 40px;
+    background-color: rgb(15, 15, 15);
+    display: flex;
+    border-radius: 5px;
+}
+
+.pageNumberPanel {
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pageNumber {
+    line-height: 14px;
+    font-size: 14px;
+}
+
+.switcherButton {
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.switcherButtonDisabled {
+    composes: switcherButton;
+    opacity: .5;
+    cursor: initial;
+}

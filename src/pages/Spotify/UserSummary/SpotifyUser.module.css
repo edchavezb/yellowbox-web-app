@@ -1,7 +1,7 @@
 .spotifyWrapper {
     height: 100%;
     overflow-x: hidden;
-    padding: 20px 30px;
+    padding: 0px 30px 20px 30px;
     box-sizing: border-box;
 }
 

@@ -7,13 +7,13 @@ import Search from "./pages/Search/Search"
 import BoxDetail from "./pages/BoxDetail/BoxDetail"
 import Modal from "./components/layout/Modal/Modal"
 import ItemDetail from './pages/ItemDetail/ItemDetail';
-import SpotifyUser from './pages/SpotifyUser/SpotifyUser';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import FolderDetail from 'pages/FolderDetail/FolderDetail';
 import { firebaseAuth } from 'core/services/firebase';
-import SpotifyAuthSuccess from './pages/SpotifyAuthSuccess';
+import SpotifyAuthSuccess from './pages/Spotify/AuthSuccess/SpotifyAuthSuccess';
 import { loginService } from 'core/services/loginService';
+import SpotifyDashboard from 'pages/Spotify/SpotifyDashboard';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -54,7 +54,7 @@ function App() {
         <Route path="/box/:id" render={() => <BoxDetail />} />
         <Route path="/folder/:id" render={() => <FolderDetail />} />
         <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props} />} />
-        <Route path="/myaccounts/spotify" render={() => <SpotifyUser />} />
+        <Route path="/myaccounts/spotify" render={() => <SpotifyDashboard />} />
       </Layout>
     </Router>
   );

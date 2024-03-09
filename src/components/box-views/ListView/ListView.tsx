@@ -12,13 +12,14 @@ import { reorderBoxItemsThunk, reorderSubsectionItemsThunk } from 'core/features
 
 interface IProps<T> {
   data: T[]
+  offset?: number
   sectionType: string
   isSubsection?: boolean
   subId?: string
   isReorderingMode?: boolean
 }
 
-function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionType, isSubsection, subId, isReorderingMode }: IProps<T>) {
+function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, sectionType, isSubsection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
@@ -77,6 +78,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
             key={e.id}
             dbIndex={dbIndex}
             index={index}
+            offset={offset}
             element={element as T as Track}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
@@ -89,6 +91,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
             key={e.id}
             dbIndex={dbIndex}
             index={index}
+            offset={offset}
             element={element as T as Album}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
@@ -101,6 +104,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
             key={e.id}
             dbIndex={dbIndex}
             index={index}
+            offset={offset}
             element={element as T as Playlist}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
@@ -113,6 +117,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, sectionTy
             key={e.id}
             dbIndex={dbIndex}
             index={index}
+            offset={offset}
             element={element as T as Track}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
