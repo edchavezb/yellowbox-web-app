@@ -18,7 +18,7 @@ interface IProps {
   subId?: string
 }
 
-function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset, reorderingMode, subId }: IProps) {
+function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -85,7 +85,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset, reo
     return (
       <>
         <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
-          <div className={styles.colLeftAlgn}>{index + (+offset!) + 1}</div>
+          <div className={styles.colLeftAlgn}>{index + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
           </div>
