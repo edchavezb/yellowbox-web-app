@@ -12,12 +12,13 @@ interface IProps {
   element: Album
   dbIndex?: number
   index: number
+  offset?: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowAlbum({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps) {
+function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset, reorderingMode, subId }: IProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -84,7 +85,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, reorderingM
     return (
       <>
         <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
-          <div className={styles.colLeftAlgn}>{index + 1}</div>
+          <div className={styles.colLeftAlgn}>{index + (+offset!) + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
           </div>
