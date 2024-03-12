@@ -1,107 +1,127 @@
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 import styles from "./SignUpMenu.module.css";
 import { firebaseAuth } from 'core/services/firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import useDebounce from 'core/hooks/useDebounce';
 import { createUserApi, dbUsernameCheckApi } from 'core/api/users';
 import { YellowboxUser } from 'core/types/interfaces';
+import useDebouncePromise from 'core/hooks/useDebouncePromise';
+import { cacheYupTest } from 'core/helpers/cacheYupTest';
 
 function SignUpMenu() {
-  const [username, setUsername] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
-  const [isUserNameValid, setIsUserNameValid] = useState(true);
-  const [userSuccessMessage, setUserSuccessMessage] = useState('');
-  const debouncedUsernameCheck = useDebounce(
+  const [creationSuccessMessage, setCreationSuccessMessage] = useState('');
+  const [creationError, setCreationError] = useState('');
+
+  const schema = yup.object({
+    username: yup.string()
+      .required('Username is a required field')
+      .test(
+        'username-check',
+        'Username already exists',
+        cacheYupTest(async (value) => {
+          const valid = await debouncedUsernameCheck(value as string);
+          return valid as boolean;
+        })),
+    email: yup.string()
+      .required('Email is a required field')
+      .email('Please enter a valid email format'),
+    password: yup.string()
+      .required('Password is a required field')
+      .min(8, 'Password must be at least 8 characters')
+      .max(16, 'Password must be at most 16 characters')
+      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character')
+  }).required();
+
+  type FormData = yup.InferType<typeof schema>;
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+    mode: 'onBlur',
+    resolver: yupResolver(schema)
+  });
+
+  const debouncedUsernameCheck = useDebouncePromise(
     async (username: string) => {
-      const response = await dbUsernameCheckApi(username);
+      const response = await dbUsernameCheckApi(username.toLowerCase().trim());
       if (response?.usernameExists !== undefined) {
-        setIsUserNameValid(!response.usernameExists);
+        const isValid = !response?.usernameExists;
+        return isValid;
       }
     },
     1000
-  )
+  );
 
-  const handleSubmitBtnClick = async () => {
-    const newFirebaseUser = await createUserWithEmailAndPassword(
-      firebaseAuth,
-      userEmail,
-      userPassword
-    );
-    await sendEmailVerification(newFirebaseUser.user)
-    const newAppUser: Omit<YellowboxUser, "_id"> = {
-      firebaseId: newFirebaseUser.user.uid,
-      username,
-      displayName,
-      image: "",
-      account: {
-        accountTier: "free",
-        signUpDate: (new Date()).toISOString(),
-        emailVerified: false,
-        email: userEmail,
-        showTutorial: true
-      },
-      billing: {},
-      services: {}
+  const handleSubmitForm = async (data: FormData) => {
+    const { username, email, password } = data;
+    try {
+      const newFirebaseUser = await createUserWithEmailAndPassword(
+        firebaseAuth,
+        email.trim(),
+        password.trim()
+      );
+      await sendEmailVerification(newFirebaseUser.user)
+      const newAppUser: Omit<YellowboxUser, "_id"> = {
+        firebaseId: newFirebaseUser.user.uid,
+        username: username.toLowerCase().trim(),
+        image: "",
+        account: {
+          accountTier: "free",
+          signUpDate: (new Date()).toISOString(),
+          emailVerified: false,
+          email,
+          showTutorial: true
+        },
+        billing: {},
+        services: {}
+      }
+      const savedUser = await createUserApi(newAppUser);
+      if (savedUser) {
+        reset();
+        setCreationError('');
+        setCreationSuccessMessage(`Congrats ${savedUser?.username}, your account has been created. Please log in to access the app.`);
+      }
     }
-    const savedUser = await createUserApi(newAppUser); 
-    if (savedUser) {
-      setUsername('');
-      setUserEmail('');
-      setUserPassword('');
-      setDisplayName('');
-      setIsUserNameValid(true);
-      setUserSuccessMessage(`Congrats ${savedUser?.username}, your account has been created. Please log in to access the app.`)
-    }
-  }
-
-  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value;
-    setUsername(input);
-    if (input){
-      debouncedUsernameCheck(input);
+    catch (err) {
+      setCreationError((err as Error).message)
     }
   }
 
   return (
     <div id={styles.modalBody}>
-      <form id={styles.newBoxForm}>
-        <label className={styles.formElement} htmlFor="username"> Username </label>
-        <input className={styles.formElement} type="text" name="username" id={styles.boxName}
-          value={username}
-          onChange={handleUsernameChange}
-        />
-        {
-          !isUserNameValid &&
-          <div style={{ color: 'red' }}>
-            This username already exists
-          </div>
-        }
-        <label className={styles.formElement} htmlFor="displayName"> Display Name </label>
-        <input className={styles.formElement} type="text" name="displayName" id={styles.boxName}
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
-        <label className={styles.formElement} htmlFor="email"> Email address </label>
-        <input className={styles.formElement} type="text" name="email" id={styles.boxName}
-          value={userEmail}
-          onChange={(e) => setUserEmail(e.target.value)}
-        />
-        <label className={styles.formElement} htmlFor="password"> Password </label>
-        <input className={styles.formElement} type="password" name="password" id={styles.boxName}
-          value={userPassword}
-          onChange={(e) => setUserPassword(e.target.value)}
-        />
+      <form id={styles.newBoxForm} onSubmit={handleSubmit(handleSubmitForm)}>
+        <div className={styles.formGroup}>
+          <label className={styles.formElement} htmlFor="username"> Username </label>
+          <input className={styles.formElement} type="text" id={styles.boxName}
+            {...register("username")}
+          />
+          <div className={styles.errorMsg}>{errors.username?.message}</div>
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.formElement} htmlFor="email"> Email address </label>
+          <input className={styles.formElement} type="text" id={styles.boxName}
+            {...register("email")}
+          />
+          <div className={styles.errorMsg}>{errors.email?.message}</div>
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.formElement} htmlFor="password"> Password </label>
+          <input className={styles.formElement} type="password" id={styles.boxName}
+            {...register("password")}
+          />
+          <div className={styles.errorMsg}>{errors.password?.message}</div>
+        </div>
+        <div>
+          {creationError || creationSuccessMessage}
+        </div>
+        <div id={styles.modalFooter}>
+          <button type={'submit'}>
+            Create account
+          </button>
+        </div>
       </form>
-      <div>
-        {userSuccessMessage}
-      </div>
-      <div id={styles.modalFooter}>
-        <button disabled={!userEmail || !userPassword || !displayName || !username || !isUserNameValid} onClick={handleSubmitBtnClick}>
-          Create account
-        </button>
-      </div>
     </div>
   )
 }

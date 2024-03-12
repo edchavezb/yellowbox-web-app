@@ -16,7 +16,8 @@ export interface YellowboxUser {
   _id: string
   firebaseId: string
   username: string
-  displayName: string
+  firstName?: string
+  lastName?: string
   image: string
   billing: UserBilling
   account: UserAccountData

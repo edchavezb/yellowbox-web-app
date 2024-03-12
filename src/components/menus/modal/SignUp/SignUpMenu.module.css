@@ -5,6 +5,12 @@
 #newBoxForm {
     display: flex;
     flex-direction: column;
+    gap: 6px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
 }
 
 .formElement {
@@ -21,4 +27,9 @@
 
 #boxDesc {
     resize: none;
+}
+
+.errorMsg {
+    font-size: .8rem;
+    color: #FFD119
 }

@@ -28,7 +28,7 @@ function Home({ location }: RouteComponentProps) {
   if (isLoggedIn) {
     return (
       <div className={styles.homeContainer}>
-        <h1> Welcome {userData.displayName.split(" ")[0]} </h1>
+        <h1> Welcome {userData.username} </h1>
         <h1> Your folders </h1>
         <div className={styles.folderList}>
           {
