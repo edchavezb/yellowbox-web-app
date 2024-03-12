@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import querystring from 'querystring'
-import { linkUserToSpotifyAcountApi } from 'core/api/users';
+import { linkUserToSpotifyAccountApi } from 'core/api/users';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { setSpotifyLoginData } from 'core/features/spotifyService/spotifyLoginSlice';
 import { getSpotifyUserTokenApi } from 'core/api/spotify';
@@ -39,7 +39,7 @@ function SpotifyAuthSuccess() {
         userId: id
       }
       dispatch(setSpotifyLoginData(spotifyLogin))
-      const updatedUser = await linkUserToSpotifyAcountApi(userId, {refreshToken: refresh, id});
+      const updatedUser = await linkUserToSpotifyAccountApi(userId, {refreshToken: refresh, id});
       if (updatedUser) {        
         dispatch(setAuthenticatedUser(updatedUser));
       }

@@ -64,7 +64,7 @@ export const updateUserDashboardBoxesApi = async (userId: string, updatedBoxIdLi
     }
 }
 
-export const linkUserToSpotifyAcountApi = async (userId: string, spotifyData: {refreshToken: string, id: string}) => {
+export const linkUserToSpotifyAccountApi = async (userId: string, spotifyData: {refreshToken: string, id: string}) => {
     try {
         return await api.post<{spotifyData: {refreshToken: string, id: string}}, YellowboxUser>(`users/${userId}/spotify`, {spotifyData})
     }
