@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 20px;
     padding: 10px 0px;
+    max-width: 350px;
 }
 
 .mostPlayedImage {

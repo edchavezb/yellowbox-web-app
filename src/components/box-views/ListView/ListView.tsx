@@ -32,7 +32,6 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
           <div className={styles.trackListHeader}>
             <div className={`${styles.headerLeftAlgn}`}> # </div>
             <div className={`${styles.headerLeftAlgn}`}> Title </div>
-            <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Artist </div>
             <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Album </div>
             <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Duration </div>
             <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Lyrics </div>
@@ -44,9 +43,8 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
           <div className={styles.albumListHeader}>
             <div className={`${styles.headerLeftAlgn}`}> # </div>
             <div className={`${styles.headerLeftAlgn}`}> Title </div>
-            <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Artist </div>
-            <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Type </div>
             <div className={`${styles.headerCentered}`}> Year </div>
+            <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Type </div>
             <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Spotify </div>
           </div>;
         break;
@@ -55,7 +53,6 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
           <div className={styles.playlistListHeader}>
             <div className={`${styles.headerLeftAlgn}`}> # </div>
             <div className={`${styles.headerLeftAlgn}`}> Name </div>
-            <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Description </div>
             <div className={`${styles.headerCentered}`}> Tracks </div>
             <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Creator </div>
             <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Spotify </div>

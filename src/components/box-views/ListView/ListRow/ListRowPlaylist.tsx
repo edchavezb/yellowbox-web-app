@@ -19,7 +19,7 @@ interface IProps {
 }
 
 function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, id, description, tracks, owner, uri } = element;
@@ -50,16 +50,27 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset =
           <img className={styles.reorderIcon} src="/icons/reorder.svg" alt="reorder"></img>
         </div>
         <div className={styles.colLeftAlgn}>
-          <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
+          <div className={styles.nameArtistCol}>
+            <div className={styles.imgWrapper}>
+              <img src={element.images[0].url} alt={element.name} className={styles.itemImage}></img>
+            </div>
+            <div className={styles.flexColumn}>
+              <div className={styles.name}>
+                <Link to={`/detail/${type}/${id}`}>
+                  <span className={styles.nameText}>{name}</span>
+                </Link>
+              </div>
+              <div className={styles.smallText}>
+                {description}
+              </div>
+            </div>
+          </div>
         </div>
-        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
-          {description}
-        </div>
-        <div className={styles.colCentered}>
+        <div className={`${styles.colCentered} ${styles.smallText}`}>
           {tracks.total}
         </div>
-        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
-          <Link to={owner.uri}><div className={styles.artistName}> {owner.display_name} </div></Link>
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden} ${styles.smallText}`}>
+          <Link to={owner.uri}><div className={styles.ownerName}> {owner.display_name} </div></Link>
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
           <a href={uri}>
@@ -79,15 +90,26 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset =
         <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
           <div className={styles.colLeftAlgn}>{index + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
-            <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> {name} </Link></div>
+            <div className={styles.nameArtistCol}>
+              <div className={styles.imgWrapper}>
+                <img src={element.images[0].url} alt={element.name} className={styles.itemImage}></img>
+              </div>
+              <div className={styles.flexColumn}>
+                <div className={styles.name}>
+                  <Link to={`/detail/${type}/${id}`}>
+                    <span className={styles.nameText}>{name}</span>
+                  </Link>
+                </div>
+                <div className={styles.smallText}>
+                  {description}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
-            {description}
-          </div>
-          <div className={styles.colCentered}>
+          <div className={`${styles.colCentered} ${styles.smallText}`}>
             {tracks.total}
           </div>
-          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden} ${styles.smallText}`}>
             <Link to={owner.uri}><div className={styles.ownerName}> {owner.display_name} </div></Link>
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>

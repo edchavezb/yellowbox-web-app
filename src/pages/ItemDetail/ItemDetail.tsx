@@ -14,6 +14,7 @@ import ArtistHeader from './ArtistHeader/ArtistHeader';
 import AlbumHeader from './AlbumHeader/AlbumHeader';
 import TrackHeader from './TrackHeader/TrackHeader';
 import PlaylistHeader from './PlaylistHeader/PlaylistHeader';
+import TrackList from 'components/box-views/TrackList/TrackList';
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -143,7 +144,7 @@ function ItemDetail() {
     switch (params.type) {
       case "album":
         listComponent =
-          <ListView sectionType={'tracks'} data={attachAlbumDataToTracks(itemData as Album)} />
+          <TrackList sectionType={'tracks'} data={(itemData as Album).tracks!.items} />
         break;
       case "playlist":
         listComponent =
