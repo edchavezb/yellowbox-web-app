@@ -1,15 +1,44 @@
 .itemRow {
-    height: 45px;
+    height: 60px;
     padding: 0px 10px;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [title] 1fr [artist] 1fr [album] 1fr [time] 60px [explicit] 100px [spotify] 60px [options] 20px;
+    grid-template-columns: [index] 30px [title] 1.2fr [album] .8fr [time] 60px [explicit] 100px [spotify] 60px [options] 20px;
     align-items: center;
     overflow-anchor: none;
 }
 
 .itemRow:hover {
     background-color: rgb(48, 48, 48);
+}
+
+.nameArtistCol {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.imgWrapper {
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    border-radius: 3%;
+    flex-shrink: 0;
+}
+
+.itemImage {
+    width: 100%;
+}
+
+.flexColumn {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.smallText {
+    font-size: 14px;
+    color: #b6b6b6;
 }
 
 .instantPlay {
@@ -51,10 +80,12 @@
     text-overflow: ellipsis;
 }
 
-.name, .artistName, .albumName {
+.name,
+.artistName,
+.albumName {
     overflow: hidden;
     word-wrap: break-word;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
 }

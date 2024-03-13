@@ -18,7 +18,8 @@ interface IProps {
 }
 
 function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
+  console.log(element)
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
@@ -57,18 +58,29 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
           <img className={styles.reorderIcon} src="/icons/reorder.svg" alt="reorder"></img>
         </div>
         <div className={styles.colLeftAlgn}>
-          <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
+          <div className={styles.nameArtistCol}>
+            <div className={styles.imgWrapper}>
+              <img src={element.album!.images[2].url} alt={element.name} className={styles.itemImage}></img>
+            </div>
+            <div className={styles.flexColumn}>
+              <div className={styles.name}>
+                <Link to={`/detail/${type}/${id}`}>
+                  <span className={styles.nameText}>{name}</span>
+                </Link>
+              </div>
+              <div className={styles.smallText}>
+                {getArtistLinks()}
+              </div>
+            </div>
+          </div>
         </div>
-        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
-          {getArtistLinks()}
-        </div>
-        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden} ${styles.smallText}`}>
           <Link to={`/detail/album/${album!.id}`}><span className={styles.albumName}> {album!.name} </span></Link>
         </div>
-        <div className={styles.colCentered}>
+        <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
           {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
         </div>
-        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+        <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
           {explicit ? "Explicit" : "Clean"}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
@@ -93,12 +105,23 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
         >
           <div className={styles.colLeftAlgn}>{index + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
-            <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
+            <div className={styles.nameArtistCol}>
+              <div className={styles.imgWrapper}>
+                <img src={element.album!.images[2].url} alt={element.name} className={styles.itemImage}></img>
+              </div>
+              <div className={styles.flexColumn}>
+                <div className={styles.name}>
+                  <Link to={`/detail/${type}/${id}`}>
+                    <span className={styles.nameText}>{name}</span>
+                  </Link>
+                </div>
+                <div className={styles.smallText}>
+                  {getArtistLinks()}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
-            {getArtistLinks()}
-          </div>
-          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden} ${styles.smallText}`}>
             {
               album ?
                 <Link to={`/detail/album/${album!.id}`}><span className={styles.albumName}> {album!.name} </span></Link>
@@ -106,10 +129,10 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
                 <span className={styles.albumName}> Not found </span>
             }
           </div>
-          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+          <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
             {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
           </div>
-          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+          <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
             {explicit ? "Explicit" : "Clean"}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>

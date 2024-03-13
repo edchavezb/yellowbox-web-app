@@ -1,0 +1,34 @@
+.itemContainer {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.trackListHeader {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 0px 10px;
+    color: #b6b6b6;
+    display: grid;
+    column-gap: 10px;
+    grid-template-columns: [index] 30px [title] 1.1fr [artist] .9fr [time] 60px [explicit] 100px [spotify] 60px [options] 20px;
+}
+
+.headerCentered {
+    text-align: center;
+}
+
+.headerLeftAlgn {
+    text-align: left;
+}
+
+@media (max-width: 576px) {
+    .trackListHeader {
+        grid-template-columns: [index] 30px [title] 1fr [time] 60px [options] 20px;
+        column-gap: 5px;
+    }
+
+    .mobileHidden {
+        display: none;
+    }
+}

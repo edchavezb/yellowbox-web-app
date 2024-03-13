@@ -4,12 +4,11 @@ import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Album } from "core/types/interfaces";
-
-import styles from "./ListRowAlbum.module.css";
+import { Track } from "../../../../core/types/interfaces";
+import styles from "./TrackListRow.module.css";
 
 interface IProps {
-  element: Album
+  element: Track
   dbIndex?: number
   index: number
   offset?: number
@@ -18,18 +17,18 @@ interface IProps {
   subId?: string
 }
 
-function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
-  const albumRowRef = useRef(null);
+function TrackListRow({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
+  const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { name, type, artists, album_type, release_date, id, uri } = element;
+  const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
   }
 
   const getArtistLinks = () => {
-    const artistArray = artists.slice(0, 3).map((artist, idx, arr) => {
+    const artistArray = artists?.slice(0, 3).map((artist, idx, arr) => {
       return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
     })
 
@@ -58,27 +57,16 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
           <img className={styles.reorderIcon} src="/icons/reorder.svg" alt="reorder"></img>
         </div>
         <div className={styles.colLeftAlgn}>
-          <div className={styles.nameArtistCol}>
-            <div className={styles.imgWrapper}>
-              <img src={element.images[2].url} alt={element.name} className={styles.itemImage}></img>
-            </div>
-            <div className={styles.flexColumn}>
-              <div className={styles.name}>
-                <Link to={`/detail/${type}/${id}`}>
-                  <span className={styles.nameText}>{name}</span>
-                </Link>
-              </div>
-              <div className={styles.smallText}>
-                {getArtistLinks()}
-              </div>
-            </div>
-          </div>
+          <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
         </div>
-        <div className={`${styles.colCentered} ${styles.smallText}`}>
-          {release_date.split("-")[0]}
+        <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
+          {getArtistLinks()}
         </div>
-        <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
-          {`${album_type.charAt(0).toUpperCase()}${album_type.slice(1)}`}
+        <div className={styles.colCentered}>
+          {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
+        </div>
+        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+          {explicit ? "Explicit" : "Clean"}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
           <a href={uri}>
@@ -95,30 +83,23 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
   else {
     return (
       <>
-        <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
+        <div draggable
+          onDragStart={(e) => handleDrag(e, element)}
+          onDragEnd={() => handleDragEnd()}
+          className={styles.itemRow}
+        >
           <div className={styles.colLeftAlgn}>{index + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
-            <div className={styles.nameArtistCol}>
-              <div className={styles.imgWrapper}>
-                <img src={element.images[2].url} alt={element.name} className={styles.itemImage}></img>
-              </div>
-              <div className={styles.flexColumn}>
-                <div className={styles.name}>
-                  <Link to={`/detail/${type}/${id}`}>
-                    <span className={styles.nameText}>{name}</span>
-                  </Link>
-                </div>
-                <div className={styles.smallText}>
-                  {getArtistLinks()}
-                </div>
-              </div>
-            </div>
+            <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
           </div>
-          <div className={`${styles.colCentered} ${styles.smallText}`}>
-            {release_date.split("-")[0]}
+          <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
+            {getArtistLinks()}
           </div>
-          <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
-            {`${album_type.charAt(0).toUpperCase()}${album_type.slice(1)}`}
+          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+            {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
+          </div>
+          <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+            {explicit ? "Explicit" : "Clean"}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
             <a href={uri}>
@@ -128,11 +109,11 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
               </div>
             </a>
           </div>
-          <div className={styles.itemMenu} ref={albumRowRef} onClick={() => setIsMenuOpen(true)}>
+          <div className={styles.itemMenu} ref={trackRowRef} onClick={() => setIsMenuOpen(true)}>
             <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
           </div>
-        </div>
-        <PopperMenu referenceRef={albumRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
+        </div >
+        <PopperMenu referenceRef={trackRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
           <BoxItemMenu itemData={element} itemIndex={dbIndex || index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
@@ -140,4 +121,4 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
   }
 }
 
-export default ListRowAlbum;
+export default TrackListRow;

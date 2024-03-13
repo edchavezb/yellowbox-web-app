@@ -1,44 +1,15 @@
 .itemRow {
-    height: 60px;
+    height: 45px;
     padding: 0px 10px;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [title] 1fr [type] 80px [year] 80px [spotify] 60px [options] 20px;
+    grid-template-columns: [index] 30px [title] 1.1fr [artist] .9fr [time] 60px [explicit] 100px [spotify] 60px [options] 20px;
     align-items: center;
     overflow-anchor: none;
 }
 
 .itemRow:hover {
     background-color: rgb(48, 48, 48);
-}
-
-.nameArtistCol {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.imgWrapper {
-    width: 42px;
-    height: 42px;
-    overflow: hidden;
-    border-radius: 3%;
-    flex-shrink: 0;
-}
-
-.itemImage {
-    width: 100%;
-}
-
-.flexColumn {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.smallText {
-    font-size: 14px;
-    color: #b6b6b6;
 }
 
 .instantPlay {
@@ -74,14 +45,16 @@
 }
 
 .colLeftAlgn {
+    overflow: hidden;
     text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-.name, .artistName {
+.name, .artistName, .albumName {
     overflow: hidden;
     word-wrap: break-word;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
 }
@@ -97,16 +70,12 @@
 
 @media (max-width: 576px) {
     .itemRow {
-        grid-template-columns: [index] 30px [title] 1fr [year] 80px [options] 20px;
+        grid-template-columns: [index] 30px [title] 1fr [options] 20px;
         column-gap: 5px;
+        padding: 0px 10px;
     }
 
     .mobileHidden {
         display: none;
-    }
-
-    .releaseYear {
-        font-size: 14px;
-        color: #b6b6b6;
     }
 }

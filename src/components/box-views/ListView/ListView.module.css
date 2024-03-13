@@ -11,7 +11,7 @@
     color: #b6b6b6;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [title] 1fr [artist] 1fr [album] 1fr [time] 60px [explicit] 100px [spotify] 60px [options] 20px;
+    grid-template-columns: [index] 30px [title] 1.2fr [album] .8fr [time] 60px [explicit] 100px [spotify] 60px [options] 20px;
 }
 
 .albumListHeader {
@@ -21,7 +21,7 @@
     color: #b6b6b6;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [title] 1fr [artist] 1fr [type] 80px [year] 80px [spotify] 60px [options] 20px;
+    grid-template-columns: [index] 30px [title] 1fr [year] 80px [type] 80px [spotify] 60px [options] 20px;
 }
 
 .playlistListHeader {
@@ -31,7 +31,7 @@
     color: #b6b6b6;
     display: grid;
     column-gap: 10px;
-    grid-template-columns: [index] 30px [title] 1fr [description] 2fr [tracks] 60px [owner] 100px [spotify] 60px [options] 20px;
+    grid-template-columns: [index] 30px [title] 1fr [tracks] 60px [owner] 100px [spotify] 60px [options] 20px;
 }
 
 .headerCentered {
