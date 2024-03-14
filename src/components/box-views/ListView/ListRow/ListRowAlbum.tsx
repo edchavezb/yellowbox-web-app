@@ -27,7 +27,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [elementImage, setElementImage] = useState(getElementImage(element));
+  const [elementImage, setElementImage] = useState(getElementImage(element, "small"));
   const { name, type, artists, album_type, release_date, id, uri } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
@@ -56,7 +56,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.id, spotifyToken!);
-    const itemImage = getElementImage(itemResponse);
+    const itemImage = getElementImage(itemResponse, "small");
     setElementImage(itemImage);
     const itemData = extractCrucialData(itemResponse);
     itemData._id = element._id

@@ -27,7 +27,7 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset =
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [elementImage, setElementImage] = useState(getElementImage(element));
+  const [elementImage, setElementImage] = useState(getElementImage(element, "small"));
   const { name, type, id, description, tracks, owner, uri } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
@@ -48,7 +48,7 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset =
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.id, spotifyToken!);
-    const itemImage = getElementImage(itemResponse);
+    const itemImage = getElementImage(itemResponse, "small");
     setElementImage(itemImage);
     const itemData = extractCrucialData(itemResponse);
     itemData._id = element._id

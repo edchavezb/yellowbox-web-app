@@ -67,33 +67,51 @@ export const extractCrucialData = (item: MusicData) => {
   return extractedData
 }
 
-export const getElementImage = (item: MusicData) => {
+export const getElementImage = (item: MusicData, size: string = "big") => {
   let itemImages: ItemImage[] | undefined;
+  let sizeIndex = 0;
+
+  const getSizeIndex = (size: string) => {
+    switch(size){
+      case "big":
+        return 0;
+      case "medium":
+        return 1;
+      case "small":
+        return 2;
+      default:
+        return 0;
+    }
+  }
 
   if (checkType.isAlbum(item)) {
     const { images } = item;
     if (images){
       itemImages = images;
+      sizeIndex = getSizeIndex(size);
     }
   }
   else if (checkType.isArtist(item)) {
     const { images } = item as Artist;
     if (images){
       itemImages = images;
+      sizeIndex = getSizeIndex(size);
     }
   }
   else if (checkType.isTrack(item)) {
     const { album } = item;
     if (album){
       itemImages = album.images;
+      sizeIndex = getSizeIndex(size);
     }
   }
   else if (checkType.isPlaylist(item)) {
     const { images } = item;
     if (images){
       itemImages = images;
+      sizeIndex = 0
     }
   }
 
-  return itemImages && itemImages.length ? itemImages[0].url : "https://via.placeholder.com/150"
+  return itemImages && itemImages.length ? itemImages[sizeIndex]?.url : "https://via.placeholder.com/150"
 }
