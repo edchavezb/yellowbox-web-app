@@ -35,7 +35,9 @@
     margin: 15px 0px 10px 0px
 }
 
-#boxList, #servicesList, #user {
+#boxList,
+#servicesList,
+#user {
     padding: 0px 10px;
 }
 
@@ -88,25 +90,25 @@
     background-color: rgb(165, 165, 165);
 }
 
-.customScrollbar
-{
-  scrollbar-color: #555555 #0f0f0f;
+.customScrollbar::-webkit-scrollbar {
+    width: 8px;
+    background-color: #0f0f0f;
 }
 
-.customScrollbar::-webkit-scrollbar
-{
-  width: 8px;
-  background-color: #0f0f0f;
+.customScrollbar::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #0f0f0f;
 }
 
-.customScrollbar::-webkit-scrollbar-track
-{
-  border-radius: 10px;
-  background-color: #0f0f0f;
+.customScrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #555555;
 }
 
-.customScrollbar::-webkit-scrollbar-thumb
-{
-  border-radius: 10px;
-  background-color: #555555;
+/* Standardized Properties */
+@supports not selector(::-webkit-scrollbar) {
+    .customScrollbar {
+        scrollbar-color: #555555 #0f0f0f;
+        scrollbar-width: thin;
+    }
 }
