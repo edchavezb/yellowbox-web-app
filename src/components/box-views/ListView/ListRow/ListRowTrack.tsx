@@ -6,6 +6,9 @@ import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Track } from "../../../../core/types/interfaces";
 import styles from "./ListRowTrack.module.css";
+import { extractCrucialData, getElementImage } from "core/helpers/itemDataHandlers";
+import { useAppSelector } from "core/hooks/useAppSelector";
+import { updateBoxTrackApi } from "core/api/userboxes/tracks";
 
 interface IProps {
   element: Track
@@ -18,10 +21,13 @@ interface IProps {
 }
 
 function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
-  console.log(element)
+  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+  const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
+  const spotifyToken = spotifyLoginData?.genericToken;
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [elementImage, setElementImage] = useState(getElementImage(element));
   const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
@@ -34,6 +40,27 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
     })
 
     return artistArray;
+  }
+
+  const queryItemIdApi = async (type: string, id: string, token: string) => {
+    const response = await fetch(`https://api.spotify.com/v1/${type}s/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const item = await response.json();
+    return item;
+  }
+
+  const handleImageError = async () => {
+    const itemResponse = await queryItemIdApi(element.type, element.id, spotifyToken!);
+    const itemImage = getElementImage(itemResponse);
+    setElementImage(itemImage);
+    const itemData = extractCrucialData(itemResponse);
+    itemData._id = element._id
+    updateBoxTrackApi(currentBox._id, itemData._id!, itemData as Track)
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps["element"]) => {
@@ -60,7 +87,13 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
         <div className={styles.colLeftAlgn}>
           <div className={styles.nameArtistCol}>
             <div className={styles.imgWrapper}>
-              <img src={element.album!.images[2].url} alt={element.name} className={styles.itemImage}></img>
+              <img
+                draggable="false"
+                className={styles.itemImage}
+                alt={name}
+                src={elementImage}
+                onError={handleImageError}
+              />
             </div>
             <div className={styles.flexColumn}>
               <div className={styles.name}>
@@ -107,7 +140,13 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
           <div className={styles.colLeftAlgn}>
             <div className={styles.nameArtistCol}>
               <div className={styles.imgWrapper}>
-                <img src={element.album!.images[2].url} alt={element.name} className={styles.itemImage}></img>
+                <img
+                  draggable="false"
+                  className={styles.itemImage}
+                  alt={name}
+                  src={elementImage}
+                  onError={handleImageError}
+                />
               </div>
               <div className={styles.flexColumn}>
                 <div className={styles.name}>

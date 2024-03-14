@@ -72,19 +72,27 @@ export const getElementImage = (item: MusicData) => {
 
   if (checkType.isAlbum(item)) {
     const { images } = item;
-    itemImages = images
+    if (images){
+      itemImages = images;
+    }
   }
   else if (checkType.isArtist(item)) {
     const { images } = item as Artist;
-    itemImages = images
+    if (images){
+      itemImages = images;
+    }
   }
   else if (checkType.isTrack(item)) {
     const { album } = item;
-    itemImages = album!.images;
+    if (album){
+      itemImages = album.images;
+    }
   }
   else if (checkType.isPlaylist(item)) {
     const { images } = item;
-    itemImages = images
+    if (images){
+      itemImages = images;
+    }
   }
 
   return itemImages && itemImages.length ? itemImages[0].url : "https://via.placeholder.com/150"
