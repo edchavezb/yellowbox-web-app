@@ -74,13 +74,18 @@
 }
 
 .colLeftAlgn {
+    overflow: hidden;
     text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-.name, .artistName {
+.name,
+.artistName,
+.albumName,
+.smallText {
     overflow: hidden;
     word-wrap: break-word;
-    display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
@@ -99,14 +104,10 @@
     .itemRow {
         grid-template-columns: [index] 30px [title] 1fr [year] 80px [options] 20px;
         column-gap: 5px;
+        padding: 0px 10px;
     }
 
     .mobileHidden {
         display: none;
-    }
-
-    .releaseYear {
-        font-size: 14px;
-        color: #b6b6b6;
     }
 }

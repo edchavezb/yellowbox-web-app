@@ -80,7 +80,9 @@
     text-overflow: ellipsis;
 }
 
-.name, .ownerName {
+.name, 
+.ownerName,
+.smallText {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

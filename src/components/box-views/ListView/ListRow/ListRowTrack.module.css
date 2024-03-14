@@ -82,7 +82,8 @@
 
 .name,
 .artistName,
-.albumName {
+.albumName,
+.smallText {
     overflow: hidden;
     word-wrap: break-word;
     -webkit-line-clamp: 1;

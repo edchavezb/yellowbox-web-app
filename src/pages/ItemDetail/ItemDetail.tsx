@@ -123,8 +123,8 @@ function ItemDetail() {
     return newArr;
   }
 
-  const attachAlbumDataToTracks = (parentItem: Album) => {
-    return parentItem.tracks!.items.map(e => ({
+  const attachAlbumDataToTracks = (parentItem: Album): Track[] => {
+    return parentItem.tracks!.items.map(track => ({
       'album': {
         "album_type": parentItem.album_type,
         "artists": parentItem.artists,
@@ -134,8 +134,9 @@ function ItemDetail() {
         "name": parentItem.name,
         "release_date": parentItem.release_date,
         "type": parentItem.type,
-        "uri": parentItem.uri
-      }, ...e
+        "uri": parentItem.uri,
+        "total_tracks": parentItem.total_tracks
+      }, ...track
     }))
   }
 
@@ -144,7 +145,7 @@ function ItemDetail() {
     switch (params.type) {
       case "album":
         listComponent =
-          <TrackList sectionType={'tracks'} data={(itemData as Album).tracks!.items} />
+          <TrackList sectionType={'tracks'} data={attachAlbumDataToTracks(itemData as Album)} />
         break;
       case "playlist":
         listComponent =
