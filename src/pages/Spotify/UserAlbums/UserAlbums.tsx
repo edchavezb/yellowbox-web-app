@@ -35,14 +35,14 @@ const UserAlbums = () => {
   }, [page])
 
   const handleDecrementPage = () => {
-    if (hasPrevious){
+    if (hasPrevious && !isFetching){
       setIsFetching(true);
       setPage(page - 1)
     }
   }
 
   const handleIncrementPage = () => {
-    if (hasNext){
+    if (hasNext && !isFetching){
       setIsFetching(true);
       setPage(page + 1)
     }
