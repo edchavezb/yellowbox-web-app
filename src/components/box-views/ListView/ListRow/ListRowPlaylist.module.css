@@ -80,9 +80,15 @@
     text-overflow: ellipsis;
 }
 
-.name, 
-.ownerName,
-.smallText {
+.colRightAlgn {
+    text-align: right;
+}
+
+.indexCol {
+   padding-right: 12px;
+}
+
+.lineClamp {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -99,8 +105,9 @@
 
 @media (max-width: 576px) {
     .itemRow {
-        grid-template-columns: [index] 30px [title] 1fr [tracks] 60px [options] 20px;
+        grid-template-columns: [index] 30px [title] 1fr [options] 30px;
         column-gap: 5px;
+        padding: 0px;
     }
 
     .mobileHidden {

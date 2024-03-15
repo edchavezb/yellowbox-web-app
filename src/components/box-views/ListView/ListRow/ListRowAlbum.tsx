@@ -87,13 +87,15 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
         <div className={styles.colLeftAlgn}>
           <div className={styles.nameArtistCol}>
             <div className={styles.imgWrapper}>
-              <img
-                draggable="false"
-                className={styles.itemImage}
-                alt={name}
-                src={elementImage}
-                onError={handleImageError}
-              />
+              <Link to={`/detail/${type}/${id}`}>
+                <img
+                  draggable="false"
+                  className={styles.itemImage}
+                  alt={name}
+                  src={elementImage}
+                  onError={handleImageError}
+                />
+              </Link>
             </div>
             <div className={styles.flexColumn}>
               <div className={styles.name}>
@@ -107,7 +109,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
             </div>
           </div>
         </div>
-        <div className={`${styles.colCentered} ${styles.smallText}`}>
+        <div className={`${styles.colCentered} ${styles.smallText} ${styles.mobileHidden}`}>
           {release_date.split("-")[0]}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
@@ -129,31 +131,33 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
     return (
       <>
         <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
-          <div className={styles.colLeftAlgn}>{index + offset + 1}</div>
+          <div className={`${styles.colRightAlgn} ${styles.smallText} ${styles.indexCol}`}>{index + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.nameArtistCol}>
               <div className={styles.imgWrapper}>
-                <img
-                  draggable="false"
-                  className={styles.itemImage}
-                  alt={name}
-                  src={elementImage}
-                  onError={handleImageError}
-                />
+                <Link to={`/detail/${type}/${id}`}>
+                  <img
+                    draggable="false"
+                    className={styles.itemImage}
+                    alt={name}
+                    src={elementImage}
+                    onError={handleImageError}
+                  />
+                </Link>
               </div>
               <div className={styles.flexColumn}>
-                <div className={styles.name}>
+                <div className={`${styles.name} ${styles.lineClamp}`}>
                   <Link to={`/detail/${type}/${id}`}>
                     <span className={styles.nameText}>{name}</span>
                   </Link>
                 </div>
-                <div className={styles.smallText}>
+                <div className={`${styles.smallText} ${styles.lineClamp}`}>
                   {getArtistLinks()}
                 </div>
               </div>
             </div>
           </div>
-          <div className={`${styles.colCentered} ${styles.smallText}`}>
+          <div className={`${styles.colCentered} ${styles.smallText} ${styles.mobileHidden}`}>
             {release_date.split("-")[0]}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>

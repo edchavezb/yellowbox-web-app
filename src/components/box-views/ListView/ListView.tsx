@@ -30,7 +30,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       case "tracks": // Tracklist is used for both album details, playlists, and tracks in boxes
         listHeader =
           <div className={styles.trackListHeader}>
-            <div className={`${styles.headerLeftAlgn}`}> # </div>
+            <div className={`${styles.headerCentered}`}> # </div>
             <div className={`${styles.headerLeftAlgn}`}> Title </div>
             <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Album </div>
             <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Duration </div>
@@ -41,9 +41,9 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       case "albums": // Presents a list of albums
         listHeader =
           <div className={styles.albumListHeader}>
-            <div className={`${styles.headerLeftAlgn}`}> # </div>
+            <div className={`${styles.headerCentered}`}> # </div>
             <div className={`${styles.headerLeftAlgn}`}> Title </div>
-            <div className={`${styles.headerCentered}`}> Year </div>
+            <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Year </div>
             <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Type </div>
             <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Spotify </div>
           </div>;
@@ -51,9 +51,9 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       case "playlists": // List of playlists
         listHeader =
           <div className={styles.playlistListHeader}>
-            <div className={`${styles.headerLeftAlgn}`}> # </div>
+            <div className={`${styles.headerCentered}`}> # </div>
             <div className={`${styles.headerLeftAlgn}`}> Name </div>
-            <div className={`${styles.headerCentered}`}> Tracks </div>
+            <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Tracks </div>
             <div className={`${styles.headerLeftAlgn} ${styles.mobileHidden}`}> Creator </div>
             <div className={`${styles.headerCentered} ${styles.mobileHidden}`}> Spotify </div>
           </div>;

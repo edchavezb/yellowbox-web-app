@@ -46,16 +46,19 @@
     .trackListHeader {
         grid-template-columns: [index] 30px [title] 1fr [time] 60px [options] 20px;
         column-gap: 5px;
+        padding: 0px;
     }
     
     .albumListHeader {
         grid-template-columns: [index] 30px [title] 1fr [year] 80px [options] 20px;
         column-gap: 5px;
+        padding: 0px;
     }
     
     .playlistListHeader {
-        grid-template-columns: [index] 30px [title] 1fr [tracks] 60px [options] 20px;
+        grid-template-columns: [index] 30px [title] 1fr [options] 20px;
         column-gap: 5px;
+        padding: 0px;
     }
 
     .mobileHidden {
