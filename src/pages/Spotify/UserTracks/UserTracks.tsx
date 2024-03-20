@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import styles from "./UserTracks.module.css"
 import ListView from "components/box-views/ListView/ListView";
 import PageSwitcher from "components/common/Pagination/PageSwitcher";
+import { Text } from '@chakra-ui/react'
 
 const UserTracks = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ const UserTracks = () => {
       }
     })
     const data = await response.json();
-    const {previous, next} = data;
+    const { previous, next } = data;
     const tracks = data.items.map((item: any) => item.track);
     setHasPrevious(!!previous);
     setHasNext(!!next);
@@ -35,14 +36,14 @@ const UserTracks = () => {
   }, [page])
 
   const handleDecrementPage = () => {
-    if (hasPrevious && !isFetching){
+    if (hasPrevious && !isFetching) {
       setIsFetching(true);
       setPage(page - 1)
     }
   }
 
   const handleIncrementPage = () => {
-    if (hasNext && !isFetching){
+    if (hasNext && !isFetching) {
       setIsFetching(true);
       setPage(page + 1)
     }
@@ -70,7 +71,9 @@ const UserTracks = () => {
       <div className={styles.spotifyWrapper}>
         <div>
           <div className={styles.titlePageRow}>
-            <h3> Your saved tracks </h3>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "10px" }}>
+              Your saved tracks
+            </Text>
             <PageSwitcher pageNumber={page} decrementHandler={handleDecrementPage} incrementHandler={handleIncrementPage} hasPrevious={isFetching ? false : hasPrevious} hasNext={isFetching ? false : hasNext} />
           </div>
           <ListView<Album> data={savedTracks} offset={(page - 1) * 50} sectionType={'tracks'} />

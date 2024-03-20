@@ -10,6 +10,7 @@ import PopperMenu from 'components/menus/popper/PopperMenu';
 import BoxMenu from 'components/menus/popper/BoxMenu/BoxMenu';
 import { getSpotifyGenericTokenApi } from 'core/api/spotify';
 import { setGenericToken } from 'core/features/spotifyService/spotifyLoginSlice';
+import { Text } from '@chakra-ui/react'
 
 function BoxDetail() {
   const { id: boxId } = useParams<{ id: string }>();
@@ -44,7 +45,7 @@ function BoxDetail() {
     const tokenResponse = await getSpotifyGenericTokenApi()!;
     const { access_token: accessToken } = tokenResponse!;
     if (accessToken) {
-      dispatch(setGenericToken({genericToken: accessToken}));
+      dispatch(setGenericToken({ genericToken: accessToken }));
     }
   }
 
@@ -58,7 +59,7 @@ function BoxDetail() {
               <img className={styles.boxIcon} src="/icons/box.svg" alt="box" />
             </div>
             <div className={styles.boxInfo}>
-              <h2 id={styles.boxName}> {currentBox?.name} </h2>
+              <Text fontSize={"2xl"} fontWeight={"700"}> {currentBox?.name} </Text>
               <div id={styles.boxDesc}>
                 {`${currentBox?.description}`}
               </div>
@@ -92,7 +93,12 @@ function BoxDetail() {
               type="playlists"
               visible={visibility.playlists} />
           }
-          {isBoxEmpty && <div id={styles.emptyMsgDiv}><h3 id={styles.emptyMsg}> You have not added any items to this box yet. <br /> Start by searching some music you like! </h3></div>}
+          {isBoxEmpty &&
+            <div id={styles.emptyMsgDiv}>
+              <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "20px", textAlign: "center" }}>
+                You have not added any items to this box yet. <br /> Start by searching some music you like!
+              </Text>
+            </div>}
         </div>
       }
       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isBoxMenuOpen} setIsOpen={setIsBoxMenuOpen}>

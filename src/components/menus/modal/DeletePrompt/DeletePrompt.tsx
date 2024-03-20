@@ -9,6 +9,7 @@ import styles from "./DeletePrompt.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { deleteUserFolderThunk } from "core/features/userFolders/userFoldersSlice";
 import AppButton from "components/styled/AppButton/AppButton";
+import { Text } from '@chakra-ui/react'
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -78,7 +79,7 @@ function DeletePrompt({ itemData, boxId, folderId, deleteType }: IProps) {
   return (
     <div id={styles.modalBody}>
       <div id={styles.confirmation}>
-        <h3> {promptMessage} </h3>
+        <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "20px" }}> {promptMessage} </Text>
       </div>
       <div id={styles.modalFooter}>
         <AppButton

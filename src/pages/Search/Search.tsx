@@ -6,6 +6,7 @@ import { Album, Artist, Playlist, Track } from 'core/types/interfaces';
 import { getSpotifyGenericTokenApi } from "core/api/spotify";
 import useDebounce from "core/hooks/useDebounce";
 import { URL_IDENTIFIER } from "core/constants/constants";
+import { Text } from '@chakra-ui/react'
 
 interface SearchResultsState {
   artists: Artist[]
@@ -100,7 +101,7 @@ function Search() {
       </div>
       {
         params.query &&
-        <h1> Is this what you're looking for? </h1>
+        <Text fontSize={"xl"} fontWeight={"700"} sx={{marginTop: '20px', marginBottom: "20px"}}> Is this what you're looking for? </Text>
       }
       {searchData.artists.length > 0 && <SearchResults<Artist> type="Artists" data={searchData.artists.slice(0, 12)} />}
       {searchData.albums.length > 0 && <SearchResults<Album> type="Albums" data={searchData.albums.slice(0, 12)} />}

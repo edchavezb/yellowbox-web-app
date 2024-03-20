@@ -15,6 +15,7 @@ import AlbumHeader from './AlbumHeader/AlbumHeader';
 import TrackHeader from './TrackHeader/TrackHeader';
 import PlaylistHeader from './PlaylistHeader/PlaylistHeader';
 import TrackList from 'components/box-views/TrackList/TrackList';
+import { Text } from '@chakra-ui/react'
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -192,7 +193,9 @@ function ItemDetail() {
         <div className={styles.separator} />
         {
           checkType.isArtist(itemData) &&
-          <h3 className={styles.popularReleases}>Popular releases</h3>
+          <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "10px"}}>
+            Popular releases
+          </Text>
         }
         {getListComponent()}
       </div>
