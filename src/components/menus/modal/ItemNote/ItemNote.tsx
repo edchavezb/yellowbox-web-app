@@ -8,6 +8,7 @@ import styles from "./ItemNote.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import PopperMenu from "components/menus/popper/PopperMenu";
 import AddNoteContextMenu from "components/menus/popper/AddNoteContextMenu/AddNoteContextMenu";
+import AppButton from "components/styled/AppButton/AppButton";
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -117,8 +118,8 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
               subSectionsWithItemNote.map(subSection => {
                 const { name, _id: subSectionId } = currentBox.subSections.find(sub => sub._id === subSection)!
                 return (
-                  <div 
-                    className={currentSubSection === subSectionId ? styles.subSectionPillSelected : styles.subSectionPill} 
+                  <div
+                    className={currentSubSection === subSectionId ? styles.subSectionPillSelected : styles.subSectionPill}
                     onClick={() => subSectionChangeHandler(subSectionId!)}
                   >
                     {name}
@@ -167,8 +168,14 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
       {
         isOwner &&
         <div id={styles.modalFooter}>
-          <button onClick={saveNoteHandler} disabled={itemNotes.find(note => note.subSectionId === currentSubSection)?.noteText === editorNote || !editorNote}> Save changes </button>
-          <button onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}> Cancel </button>
+          <AppButton
+            onClick={saveNoteHandler} disabled={itemNotes.find(note => note.subSectionId === currentSubSection)?.noteText === editorNote || !editorNote}
+            text={"Save changes"}
+          />
+          <AppButton
+            onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}
+            text={"Cancel"}
+          />
         </div>
       }
       <PopperMenu referenceRef={menuButtonRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>

@@ -8,6 +8,7 @@ import styles from "./NewFolderMenu.module.css";
 import { updateCurrentFolderDetailThunk } from 'core/features/currentFolderDetail/currentFolderDetailSlice';
 import FormInput from 'components/styled/FormInput/FormInput';
 import FormTextarea from 'components/styled/FormTextarea/FormTextarea';
+import AppButton from 'components/styled/AppButton/AppButton';
 
 interface NewFolderMenuProps {
   editMode: boolean
@@ -75,9 +76,7 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
         </div>
       </form>
       <div id={styles.modalFooter}>
-        <button disabled={!folderDetails.folderName} onClick={handleSubmitBtnClick}>
-          {editMode ? 'Save Changes' : 'Create'}
-        </button>
+        <AppButton text={editMode ? 'Save Changes' : 'Create'} disabled={!folderDetails.folderName} onClick={handleSubmitBtnClick} />
       </div>
     </div>
   )

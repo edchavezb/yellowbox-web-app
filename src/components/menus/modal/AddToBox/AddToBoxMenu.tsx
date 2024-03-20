@@ -10,6 +10,7 @@ import { addAlbumToBoxApi } from 'core/api/userboxes/albums';
 import { addArtistToBoxApi } from 'core/api/userboxes/artists';
 import { addPlaylistToBoxApi } from 'core/api/userboxes/playlists';
 import { addTrackToBoxApi } from 'core/api/userboxes/tracks';
+import AppButton from 'components/styled/AppButton/AppButton';
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -59,7 +60,7 @@ function AddToBoxMenu({itemData}: IProps) {
           </select>
       </div>
       <div id={styles.modalFooter}>
-        <button onClick={() => handleAddItem()}> Add item </button>
+        <AppButton onClick={() => handleAddItem()} text={"Add item"} />
       </div>
     </div>
   )

@@ -56,7 +56,9 @@
     border-radius: 500px;
     display: flex;
     align-items: center;
-    padding: 0px 15px
+    padding: 0px 15px;
+    box-sizing: content-box;
+    caret-color: #000000;
 }
 
 #inputWrapper {

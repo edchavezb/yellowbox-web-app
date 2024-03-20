@@ -1,3 +1,7 @@
+#modalBody {
+    padding: 20px 30px 20px 30px;
+}
+
 #newBoxForm {
     display: flex;
     flex-direction: column;
@@ -8,7 +12,6 @@
 }
 
 #modalFooter {
-    height: 50px;
     display: flex;
     justify-content: flex-end;
     align-items: center;

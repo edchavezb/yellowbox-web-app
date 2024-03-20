@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { SectionSorting, Sorting, UserBox } from 'core/types/interfaces';
 
 import styles from "./SortingMenu.module.css";
+import AppButton from 'components/styled/AppButton/AppButton';
 
 type BoxSections = Pick<UserBox, "albums" | "artists" | "tracks" | "playlists">
 
@@ -128,9 +129,9 @@ function SortingMenu() {
                     <input type="checkbox" name="grouping" checked={sorting[section as keyof SectionSorting].displayGrouping}
                       onChange={e => {
                         const sectionCopy: Sorting = JSON.parse(JSON.stringify(sorting[section as keyof SectionSorting]))
-                        const updatedSection = e.target.checked && sectionCopy.displaySubSections ? 
-                        { ...sectionCopy, displayGrouping: e.target.checked, displaySubSections: false }
-                        : { ...sectionCopy, displayGrouping: e.target.checked }
+                        const updatedSection = e.target.checked && sectionCopy.displaySubSections ?
+                          { ...sectionCopy, displayGrouping: e.target.checked, displaySubSections: false }
+                          : { ...sectionCopy, displayGrouping: e.target.checked }
                         setSorting(state => ({ ...state, [section as keyof SectionSorting]: updatedSection }))
                       }}
                     />
@@ -141,7 +142,7 @@ function SortingMenu() {
                   <input type="checkbox" name="sub-section" checked={sorting[section as keyof SectionSorting].displaySubSections}
                     onChange={e => {
                       const sectionCopy: Sorting = JSON.parse(JSON.stringify(sorting[section as keyof SectionSorting]))
-                      const updatedSection = e.target.checked && sectionCopy.displayGrouping ? 
+                      const updatedSection = e.target.checked && sectionCopy.displayGrouping ?
                         { ...sectionCopy, displaySubSections: e.target.checked, displayGrouping: false }
                         : { ...sectionCopy, displaySubSections: e.target.checked }
                       setSorting(state => ({ ...state, [section as keyof SectionSorting]: updatedSection }))
@@ -155,7 +156,10 @@ function SortingMenu() {
         })}
       </form>
       <div id={styles.modalFooter}>
-        <button onClick={() => handleUpdateSorting()}> Save settings </button>
+        <AppButton
+          onClick={() => handleUpdateSorting()}
+          text={"Save settings"}
+        />
       </div>
     </div>
   )

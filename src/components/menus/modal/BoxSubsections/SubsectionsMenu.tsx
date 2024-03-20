@@ -8,6 +8,7 @@ import { BoxSections } from 'core/types/types';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Subsection } from 'core/types/interfaces';
+import AppButton from 'components/styled/AppButton/AppButton';
 
 function SubsectionsMenu() {
   const dispatch = useAppDispatch();
@@ -153,7 +154,10 @@ function SubsectionsMenu() {
         </div>
 
         <div className={styles.modalFooter}>
-          <button onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}> Done </button>
+          <AppButton
+            onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}
+            text={"Done"}
+          />
         </div>
       </div>
     </DndContext>

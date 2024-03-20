@@ -4,6 +4,7 @@ import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState } from 'react';
 import { addBoxToFolderThunk } from 'core/features/userFolders/userFoldersSlice';
 import styles from "./AddToFolderMenu.module.css";
+import AppButton from 'components/styled/AppButton/AppButton';
 
 interface IProps {
   page: string
@@ -37,7 +38,7 @@ function AddToFolderMenu({ page, boxId}: IProps) {
         </select>
       </div>
       <div id={styles.modalFooter}>
-        <button onClick={() => handleAddItem()}> Add item </button>
+        <AppButton onClick={() => handleAddItem()} text={"Add item"} />
       </div>
     </div>
   )

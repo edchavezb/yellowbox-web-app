@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { setModalState } from 'core/features/modal/modalSlice';
 import FormInput from 'components/styled/FormInput/FormInput';
+import AppButton from 'components/styled/AppButton/AppButton';
 
 function LogInMenu() {
   const dispatch = useAppDispatch();
@@ -48,9 +49,7 @@ function LogInMenu() {
         />
       </form>
       <div id={styles.actionButtonRow}>
-        <button disabled={!userEmail || !userPassword} onClick={handleSubmitBtnClick}>
-          Log in
-        </button>
+        <AppButton variant={"brandPrimary"} text={"Log in"} onClick={handleSubmitBtnClick} />
       </div>
       {
         isLoginError &&

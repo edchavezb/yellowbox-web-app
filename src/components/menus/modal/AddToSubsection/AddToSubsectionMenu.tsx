@@ -4,6 +4,7 @@ import { useAppSelector } from 'core/hooks/useAppSelector';
 import styles from "./AddToSubsectionMenu.module.css";
 import { addItemToSubsectionThunk, removeItemFromSubsectionThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { BoxSections, ItemData } from 'core/types/types';
+import AppButton from 'components/styled/AppButton/AppButton';
 
 interface IProps {
   itemData: ItemData
@@ -61,7 +62,10 @@ function AddToSubsectionMenu({ itemData }: IProps) {
         }
       </div>
       <div id={styles.modalFooter}>
-        <button onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}> Done </button>
+        <AppButton
+          onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}
+          text={"Done"}
+        />
       </div>
     </div>
   )
