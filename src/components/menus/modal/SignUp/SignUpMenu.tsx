@@ -10,6 +10,7 @@ import { YellowboxUser } from 'core/types/interfaces';
 import useDebouncePromise from 'core/hooks/useDebouncePromise';
 import { cacheYupTest } from 'core/helpers/cacheYupTest';
 import { FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react';
+import SubmitButton from 'components/styled/SubmitButton/SubmitButton';
 
 function SignUpMenu() {
   const [creationSuccessMessage, setCreationSuccessMessage] = useState('');
@@ -46,7 +47,6 @@ function SignUpMenu() {
 
   const debouncedUsernameCheck = useDebouncePromise(
     async (username: string) => {
-      console.log("Username check");
       const response = await dbUsernameCheckApi(username.toLowerCase().trim());
       if (response?.usernameExists !== undefined) {
         const isValid = !response?.usernameExists;
@@ -57,7 +57,6 @@ function SignUpMenu() {
   );
 
   const handleSubmitForm = async (data: FormData) => {
-    console.log("Submit form")
     const { username, email, password } = data;
     try {
       const newFirebaseUser = await createUserWithEmailAndPassword(
@@ -88,7 +87,6 @@ function SignUpMenu() {
       }
     }
     catch (err) {
-      console.log("Error creating account")
       setCreationError((err as Error).message)
     }
   }
@@ -121,9 +119,7 @@ function SignUpMenu() {
           {creationError || creationSuccessMessage}
         </div>
         <div id={styles.modalFooter}>
-          <button type={'submit'}>
-            Create account
-          </button>
+          <SubmitButton text={"Create account"} />
         </div>
       </form>
     </div>

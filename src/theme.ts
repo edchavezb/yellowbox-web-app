@@ -1,5 +1,5 @@
 // 1. import `extendTheme` function
-import { ChakraTheme, DeepPartial, extendTheme, type ThemeConfig } from '@chakra-ui/react'
+import { ChakraTheme, DeepPartial, defineStyle, defineStyleConfig, extendTheme, type ThemeConfig } from '@chakra-ui/react'
 
 // 2. Add your color mode config
 const config: ThemeConfig = {
@@ -7,19 +7,37 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 }
 
-const customTheme: DeepPartial<ChakraTheme> = {
-  shadows: { outline: "none"},
-  colors: {
-    brand: {
-      500: "#515661",
-      600: "#343840",
-      700: "#0050e6",
-      800: "#0B45B3",
-      900: "#343840",
+const brandPrimary = defineStyle({
+  background: '#2C313D',
+  color: 'white',
+  _active: {
+    background: 'gray.600',
+  },
+  _hover: {
+    background: 'gray.600',
+  },
+  _dark: {
+    background: '#2C313D',
+    color: 'white',
+    _active: {
+      background: 'gray.500',
     },
+    _hover: {
+      background: 'gray.500',
+    }
+  }
+})
+
+export const buttonTheme = defineStyleConfig({
+  variants: { brandPrimary },
+})
+
+const customTheme: DeepPartial<ChakraTheme> = {
+  colors: {
     brandgray: {
       400: "#808080",
       600: "#515661",
+      700: "#2C313D",
       800: "#1a1a1a",
       900: "#0f0f0f"
     },
@@ -29,6 +47,7 @@ const customTheme: DeepPartial<ChakraTheme> = {
     }
   },
   components: {
+    Button: buttonTheme,
     Input: {
       defaultProps: {
         errorBorderColor: '#FFB30F'

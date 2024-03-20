@@ -8,6 +8,7 @@ import { useAppSelector } from 'core/hooks/useAppSelector';
 import { updateCurrentBoxDetailThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import FormInput from 'components/styled/FormInput/FormInput';
 import FormTextarea from 'components/styled/FormTextarea/FormTextarea';
+import AppButton from 'components/styled/AppButton/AppButton';
 
 interface NewBoxMenuProps {
   action: 'New Box' | 'Edit Box' | 'Clone Box'
@@ -94,6 +95,7 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
     else if (action === "Clone Box") {
       return "Clone to your library"
     }
+    return "Button"
   }
 
   const handleSaveNewBox = async () => {
@@ -143,9 +145,7 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
         </div>
       </form>
       <div id={styles.modalFooter}>
-        <button disabled={!boxDetails.boxName} onClick={handleSubmitBtnClick}>
-          {getButtonText()}
-        </button>
+        <AppButton text={getButtonText()} disabled={!boxDetails.boxName} onClick={handleSubmitBtnClick} />
       </div>
     </div>
   )
