@@ -6,6 +6,8 @@ import styles from "./NewBoxMenu.module.css";
 import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { updateCurrentBoxDetailThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
+import { Input, Textarea } from '@chakra-ui/react'
+import FormInput from 'components/styled/FormInput/FormInput';
 
 interface NewBoxMenuProps {
   action: 'New Box' | 'Edit Box' | 'Clone Box'
@@ -124,11 +126,7 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
   return (
     <div id={styles.modalBody}>
       <form id={styles.newBoxForm}>
-        <label className={styles.formElement} htmlFor="box-name"> Name </label>
-        <input className={styles.formElement} type="text" name="box-name" id={styles.boxName}
-          value={boxDetails.boxName}
-          onChange={(e) => setBoxDetails(state => ({ ...state, boxName: e.target.value }))}
-        />
+        <FormInput label={"Name"} value={boxDetails.boxName} onChange={(e) => setBoxDetails(state => ({ ...state, boxName: e.target.value }))}/>
         <label className={styles.formElement} htmlFor="box-description"> Description </label>
         <textarea className={styles.formElement} name="box-description" id={styles.boxDesc} rows={3}
           value={boxDetails.boxDesc}
