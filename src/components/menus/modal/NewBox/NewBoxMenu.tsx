@@ -6,8 +6,8 @@ import styles from "./NewBoxMenu.module.css";
 import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { updateCurrentBoxDetailThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
-import { Input, Textarea } from '@chakra-ui/react'
 import FormInput from 'components/styled/FormInput/FormInput';
+import FormTextarea from 'components/styled/FormTextarea/FormTextarea';
 
 interface NewBoxMenuProps {
   action: 'New Box' | 'Edit Box' | 'Clone Box'
@@ -19,9 +19,9 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
   const user = useAppSelector(state => state.userData.authenticatedUser)
   const [boxDetails, setBoxDetails] = useState(
     action !== "New Box" ?
-      { 
-        boxName: `${currentBox.name}${action === "Clone Box" ? " - Copy" : ""}`, 
-        boxDesc: currentBox.description, 
+      {
+        boxName: `${currentBox.name}${action === "Clone Box" ? " - Copy" : ""}`,
+        boxDesc: currentBox.description,
         boxPublic: currentBox.public
       }
       :
@@ -101,12 +101,12 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
   }
 
   const handleCloneBox = async () => {
-    const {boxName, boxDesc, boxPublic} = boxDetails;
+    const { boxName, boxDesc, boxPublic } = boxDetails;
     dispatch(cloneUserBoxThunk(currentBox._id, boxName, boxDesc, boxPublic, user._id))
   }
 
   const handleUpdateBox = async () => {
-    const {boxName, boxDesc, boxPublic} = boxDetails;
+    const { boxName, boxDesc, boxPublic } = boxDetails;
     dispatch(updateCurrentBoxDetailThunk(currentBox._id, boxName, boxDesc, boxPublic))
   }
 
@@ -126,9 +126,13 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
   return (
     <div id={styles.modalBody}>
       <form id={styles.newBoxForm}>
-        <FormInput label={"Name"} value={boxDetails.boxName} onChange={(e) => setBoxDetails(state => ({ ...state, boxName: e.target.value }))}/>
-        <label className={styles.formElement} htmlFor="box-description"> Description </label>
-        <textarea className={styles.formElement} name="box-description" id={styles.boxDesc} rows={3}
+        <FormInput
+          label={"Name"}
+          value={boxDetails.boxName}
+          onChange={(e) => setBoxDetails(state => ({ ...state, boxName: e.target.value }))}
+        />
+        <FormTextarea
+          label={"Description"}
           value={boxDetails.boxDesc}
           onChange={(e) => setBoxDetails(state => ({ ...state, boxDesc: e.target.value }))}
         />

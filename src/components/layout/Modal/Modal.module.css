@@ -12,19 +12,27 @@
 }
 
 #modalPanel {
-    min-width: 400px;
+    min-width: 450px;
+    max-height: 80vh;
+    overflow: hidden;
     background-color: rgb(26, 26, 26);;
     color: #ffffff;
     border-radius: 5px;
 }
 
 #modalHeader {
+    position: sticky;
     height: 40px;
     display: flex;
-    border-bottom: 1px solid gray;
-    padding: 20px 15px;
+    padding: 15px 25px;
     background-color: rgb(15, 15, 15);
     border-radius: 5px 5px 0px 0px;
+    box-sizing: content-box;
+}
+
+#modalBody {
+    max-height: calc(80vh - 70px); 
+    overflow-y: auto;
 }
 
 #modalTitle {
