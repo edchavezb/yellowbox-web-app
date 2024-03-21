@@ -5,13 +5,15 @@ import { useState } from 'react';
 import { addBoxToFolderThunk } from 'core/features/userFolders/userFoldersSlice';
 import styles from "./AddToFolderMenu.module.css";
 import AppButton from 'components/styled/AppButton/AppButton';
+import { FormControl, FormLabel } from '@chakra-ui/react';
+import AppSelect from 'components/styled/AppSelect/AppSelect';
 
 interface IProps {
   page: string
   boxId: string
 }
 
-function AddToFolderMenu({ page, boxId}: IProps) {
+function AddToFolderMenu({ page, boxId }: IProps) {
   const dispatch = useAppDispatch();
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
@@ -30,12 +32,19 @@ function AddToFolderMenu({ page, boxId}: IProps) {
   return (
     <div id={styles.modalBody}>
       <div id={styles.confirmation}>
-        <label htmlFor="add-type"> Add this item to </label>
-        <select name="folder-select" defaultValue={userFolders[0]._id} onChange={(e) => setTargetFolder(e.target.value)}>
-          {userFolders.map(folder => {
-            return (<option key={folder._id} value={folder._id}> {folder.name} </option>)
-          })}
-        </select>
+        <FormControl display={"inline-flex"} gap={"8px"} maxWidth={"fit-content"} alignItems={"center"} marginBottom={"10px"}>
+          <FormLabel margin={"0px"}>Select a folder to add this box to: </FormLabel>
+          <AppSelect
+            value={targetFolder}
+            onChange={(e) => setTargetFolder(e.target.value)}
+          >
+            <>
+              {userFolders.map(folder => {
+                return (<option key={folder._id} value={folder._id}> {folder.name} </option>)
+              })}
+            </>
+          </AppSelect>
+        </FormControl>
       </div>
       <div id={styles.modalFooter}>
         <AppButton onClick={() => handleAddItem()} text={"Add item"} />

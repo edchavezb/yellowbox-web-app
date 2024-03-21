@@ -5,6 +5,8 @@ import { Artist } from 'core/types/interfaces';
 import TopItemsList from './TopItemsList/TopItemsList';
 import MostPlayedItem from './MostPlayedItem/MostPlayedItem';
 import { useAppSelector } from 'core/hooks/useAppSelector';
+import { FormControl, FormLabel } from '@chakra-ui/react';
+import AppSelect from 'components/styled/AppSelect/AppSelect';
 
 enum TopItemsSelectItems {
   ALBUMS = 'ALBUMS',
@@ -113,20 +115,30 @@ function SpotifyTopItems() {
       <div className={styles.sectionHeader}>
         <div className={styles.sectionTitle}>
           <span> Top </span>
-          <select value={selectedTop} onChange={(e) => setSelectedTop(e.target.value as TopItemsSelectItems)}>
-            <option value={TopItemsSelectItems.ARTISTS}> artists </option>
-            <option value={TopItemsSelectItems.ALBUMS}> albums </option>
-            <option value={TopItemsSelectItems.TRACKS}> tracks </option>
-          </select>
+          <AppSelect
+            value={selectedTop}
+            onChange={(e) => setSelectedTop(e.target.value as TopItemsSelectItems)}
+          >
+            <>
+              <option value={TopItemsSelectItems.ARTISTS}> artists </option>
+              <option value={TopItemsSelectItems.ALBUMS}> albums </option>
+              <option value={TopItemsSelectItems.TRACKS}> tracks </option>
+            </>
+          </AppSelect>
           <span> in your library </span>
         </div>
         <div className={styles.timeRangeSelect}>
           <span> Time Range </span>
-          <select value={selectedTimeRange} onChange={(e) => setSelectedTimeRange(e.target.value as TimeRanges)}>
-            <option value={TimeRanges.SHORT}> Last 4 weeks </option>
-            <option value={TimeRanges.MEDIUM}> Last 6 months </option>
-            <option value={TimeRanges.LONG}> All time </option>
-          </select>
+          <AppSelect
+            value={selectedTimeRange}
+            onChange={(e) => setSelectedTimeRange(e.target.value as TimeRanges)}
+          >
+            <>
+              <option value={TimeRanges.SHORT}> Last 4 weeks </option>
+              <option value={TimeRanges.MEDIUM}> Last 6 months </option>
+              <option value={TimeRanges.LONG}> All time </option>
+            </>
+          </AppSelect>
         </div>
       </div>
       {
