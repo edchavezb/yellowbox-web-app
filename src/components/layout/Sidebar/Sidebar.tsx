@@ -141,9 +141,6 @@ function Sidebar({ user }: IProps) {
                 <div className={styles.serviceButton}><img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img><span> Spotify </span></div>
               </Link>
             }
-            <div className={styles.linkServiceWrapper}>
-              <span className={styles.linkServiceBtn} ref={servicesButtonRef} onClick={() => setIsServicesMenuOpen(true)}>+ Link a new service</span>
-            </div>
           </div>
           <div className={styles.folderBoxListWrapper}>
             <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "5px" }}>

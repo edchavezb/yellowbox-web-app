@@ -35,8 +35,9 @@ export const buttonTheme = defineStyleConfig({
 const customTheme: DeepPartial<ChakraTheme> = {
   colors: {
     brandgray: {
-      400: "#808080",
-      600: "#515661",
+      400: "#808080",  //Pure gray
+      500: "#515661",
+      600: "#34363A",
       700: "#2C313D",
       800: "#1a1a1a",
       900: "#0f0f0f"
@@ -44,6 +45,10 @@ const customTheme: DeepPartial<ChakraTheme> = {
     brandyellow: {
       500: "#FFD119",
       600: "#FFB30F"
+    },
+    brandblue: {
+      500: "#1961E6",
+      600: "#1E90FF",  //Dodgerblue
     }
   },
   components: {
@@ -55,7 +60,7 @@ const customTheme: DeepPartial<ChakraTheme> = {
       baseStyle: {
         field: {
           _autofill: {
-            border: "1px solid transparent",
+            border: "1px solid #515661",
             textFillColor: "#c6c6c6",
             boxShadow: "0 0 0px 1000px #232323 inset",
             transition: "background-color 5000s ease-in-out 0s",

@@ -14,7 +14,7 @@ const FormInput = ({ type = "text", label, placeholder, helperText, onChange, va
   return (
     <FormControl>
       <FormLabel>{label}</FormLabel>
-      <Input type={type} value={value} onChange={onChange} placeholder={placeholder} borderColor={"brandgray.600"} />
+      <Input type={type} value={value} onChange={onChange} placeholder={placeholder} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} />
       <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
   )

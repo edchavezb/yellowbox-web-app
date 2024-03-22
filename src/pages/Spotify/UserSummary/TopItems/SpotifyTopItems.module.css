@@ -7,8 +7,9 @@
 .sectionTitle {
     display: flex;
     gap: 10px;
-    font-size: 1.17em;
-    font-weight: bold;
+    font-size: 1em;
+    font-weight: 600;
+    align-items: center;
 }
 
 .timeRangeSelect {

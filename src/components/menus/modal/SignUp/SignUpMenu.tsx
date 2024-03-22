@@ -96,21 +96,21 @@ function SignUpMenu() {
       <form id={styles.newBoxForm} onSubmit={handleSubmit(handleSubmitForm)}>
         <FormControl isInvalid={!!errors.username} sx={{ marginTop: "5px" }}>
           <FormLabel>{"Username"}</FormLabel>
-          <Input borderColor={"brandgray.600"} {...register("username")} />
+          <Input borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("username")} />
           <FormErrorMessage>
             {errors.username?.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={!!errors.email} sx={{ marginTop: "5px" }}>
           <FormLabel>{"Email address"}</FormLabel>
-          <Input placeholder={"john@gmail.com"} borderColor={"brandgray.600"} {...register("email")} />
+          <Input placeholder={"john@gmail.com"} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
           <FormErrorMessage>
             {errors.email?.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={!!errors.password} sx={{ marginTop: "5px" }}>
           <FormLabel>{"Password"}</FormLabel>
-          <Input type={"password"} borderColor={"brandgray.600"} {...register("password")} />
+          <Input type={"password"} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("password")} />
           <FormErrorMessage>
             {errors.password?.message}
           </FormErrorMessage>

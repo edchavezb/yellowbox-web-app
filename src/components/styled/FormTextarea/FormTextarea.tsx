@@ -14,7 +14,7 @@ const FormTextarea = ({ label, placeholder, helperText, onChange, value, rows = 
   return (
     <FormControl>
       <FormLabel>{label}</FormLabel>
-      <Textarea value={value} onChange={onChange} placeholder={placeholder} borderColor={"brandgray.600"} rows={rows}/>
+      <Textarea value={value} onChange={onChange} placeholder={placeholder} borderColor={"brandgray.600"} focusBorderColor={"brandblue.600"} rows={rows}/>
       <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
   )

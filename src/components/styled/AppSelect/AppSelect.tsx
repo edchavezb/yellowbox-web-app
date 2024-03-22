@@ -11,7 +11,7 @@ interface AppButtonProps {
 const AppSelect = ({ value, onChange, disabled = false, children }: AppButtonProps) => {
 
   return (
-    <Select value={value} onChange={onChange} isDisabled={disabled} variant={"filled"} size={"sm"} width={"fit-content"} maxWidth={"300px"}>
+    <Select value={value} onChange={onChange} isDisabled={disabled} variant={"filled"} size={"sm"} width={"fit-content"} maxWidth={"300px"} focusBorderColor={"brandblue.600"}>
         {children}
     </Select>
   )
