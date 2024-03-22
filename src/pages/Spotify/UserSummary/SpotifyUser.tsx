@@ -8,6 +8,7 @@ import SpotifyTopItems from "./TopItems/SpotifyTopItems";
 import { refreshSpotifyTokenApi } from "core/api/spotify";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setAccessToken } from "core/features/spotifyService/spotifyLoginSlice";
+import { Text } from '@chakra-ui/react'
 
 interface SpotifyUserData {
   display_name: string
@@ -86,20 +87,20 @@ function SpotifyUser() {
       <div className={styles.spotifyWrapper}>
         {
           userData.display_name &&
-          <h1> {userData?.display_name?.split(" ")[0]}'s Spotify dashboard </h1>
+          <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "20px" }}> {userData?.display_name?.split(" ")[0]}'s Spotify dashboard </Text>
         }
         <SpotifyTopItems />
         {
           !!recentlyPlayed?.length &&
           <div className={styles.recentlyPlayedSection}>
-            <h3> Recently played tracks </h3>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '20px', marginBottom: "10px" }}> Recently played tracks </Text>
             <ListView<Track> data={recentlyPlayed} sectionType={'tracklist'} />
           </div>
         }
         {
           !!userPlaylists.length &&
           <div className={styles.userPlaylistsSection}>
-            <h3> Your playlists </h3>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '20px', marginBottom: "10px" }}> Your playlists </Text>
             <GridView<Playlist> data={userPlaylists} />
           </div>
         }

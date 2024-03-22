@@ -7,6 +7,7 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import { Album } from "core/types/interfaces";
 import { useCallback, useEffect, useState } from "react";
 import styles from "./UserAlbums.module.css"
+import { Text } from '@chakra-ui/react'
 
 const UserAlbums = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ const UserAlbums = () => {
       }
     })
     const data = await response.json();
-    const {previous, next} = data;
+    const { previous, next } = data;
     const albums = data.items.map((item: any) => item.album);
     setHasPrevious(!!previous);
     setHasNext(!!next);
@@ -35,14 +36,14 @@ const UserAlbums = () => {
   }, [page])
 
   const handleDecrementPage = () => {
-    if (hasPrevious && !isFetching){
+    if (hasPrevious && !isFetching) {
       setIsFetching(true);
       setPage(page - 1)
     }
   }
 
   const handleIncrementPage = () => {
-    if (hasNext && !isFetching){
+    if (hasNext && !isFetching) {
       setIsFetching(true);
       setPage(page + 1)
     }
@@ -70,8 +71,10 @@ const UserAlbums = () => {
       <div className={styles.spotifyWrapper}>
         <div className={styles.userAlbums}>
           <div className={styles.titlePageRow}>
-            <h3> Your saved albums </h3>
-            <PageSwitcher pageNumber={page} decrementHandler={handleDecrementPage} incrementHandler={handleIncrementPage} hasPrevious={isFetching? false : hasPrevious} hasNext={isFetching? false : hasNext} />
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "10px" }}>
+              Your saved albums
+            </Text>
+            <PageSwitcher pageNumber={page} decrementHandler={handleDecrementPage} incrementHandler={handleIncrementPage} hasPrevious={isFetching ? false : hasPrevious} hasNext={isFetching ? false : hasNext} />
           </div>
           <GridView<Album> data={savedAlbums} />
         </div>

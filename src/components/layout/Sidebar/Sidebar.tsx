@@ -13,6 +13,7 @@ import { DndContextTypesafeProps, DragEndEvent, DragOverEvent, DragStartEvent } 
 import AccountMenu from "components/menus/popper/AccountMenu/AccountMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
 import ServicesMenu from "components/menus/popper/ServicesMenu/ServicesMenu";
+import { Text } from '@chakra-ui/react'
 
 interface IProps {
   user: YellowboxUser
@@ -131,19 +132,20 @@ function Sidebar({ user }: IProps) {
             <span id={styles.userName} ref={accountWidgetRef}> {user.username} </span>
           </div>
           <div id={styles.servicesList}>
-            <h4 className={styles.sectionTitle}> Your Services </h4>
+            <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "5px" }}>
+              Your services
+            </Text>
             {
               user.services?.spotify &&
               <Link className={styles.serviceLink} to={`/myaccounts/spotify`}>
                 <div className={styles.serviceButton}><img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img><span> Spotify </span></div>
               </Link>
             }
-            <div className={styles.linkServiceWrapper}>
-              <span className={styles.linkServiceBtn} ref={servicesButtonRef} onClick={() => setIsServicesMenuOpen(true)}>+ Link a new service</span>
-            </div>
           </div>
           <div className={styles.folderBoxListWrapper}>
-            <h4 className={styles.sectionTitle}> Your Boxes </h4>
+            <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "5px" }}>
+              Your boxes
+            </Text>
             <AppDndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd} sensors={sensors}>
               <div className={styles.folderList}>
                 {!!sortedFolders.length && sortedFolders.map(folder => {

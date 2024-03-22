@@ -1,5 +1,5 @@
 #modalBody {
-    padding: 20px 30px 0px 30px;
+    padding: 20px 30px 20px 30px;
 }
 
 #newBoxForm {
@@ -12,8 +12,6 @@
 }
 
 #modalFooter {
-    height: 50px;
-    padding-bottom: 10px;
     display: flex;
     justify-content: flex-end;
     align-items: center;

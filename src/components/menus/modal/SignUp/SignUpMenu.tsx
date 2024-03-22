@@ -9,6 +9,8 @@ import { createUserApi, dbUsernameCheckApi } from 'core/api/users';
 import { YellowboxUser } from 'core/types/interfaces';
 import useDebouncePromise from 'core/hooks/useDebouncePromise';
 import { cacheYupTest } from 'core/helpers/cacheYupTest';
+import { FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react';
+import SubmitButton from 'components/styled/SubmitButton/SubmitButton';
 
 function SignUpMenu() {
   const [creationSuccessMessage, setCreationSuccessMessage] = useState('');
@@ -92,34 +94,32 @@ function SignUpMenu() {
   return (
     <div id={styles.modalBody}>
       <form id={styles.newBoxForm} onSubmit={handleSubmit(handleSubmitForm)}>
-        <div className={styles.formGroup}>
-          <label className={styles.formElement} htmlFor="username"> Username </label>
-          <input className={styles.formElement} type="text" id={styles.boxName}
-            {...register("username")}
-          />
-          <div className={styles.errorMsg}>{errors.username?.message}</div>
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formElement} htmlFor="email"> Email address </label>
-          <input className={styles.formElement} type="text" id={styles.boxName}
-            {...register("email")}
-          />
-          <div className={styles.errorMsg}>{errors.email?.message}</div>
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formElement} htmlFor="password"> Password </label>
-          <input className={styles.formElement} type="password" id={styles.boxName}
-            {...register("password")}
-          />
-          <div className={styles.errorMsg}>{errors.password?.message}</div>
-        </div>
+        <FormControl isInvalid={!!errors.username} sx={{ marginTop: "5px" }}>
+          <FormLabel>{"Username"}</FormLabel>
+          <Input borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("username")} />
+          <FormErrorMessage>
+            {errors.username?.message}
+          </FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.email} sx={{ marginTop: "5px" }}>
+          <FormLabel>{"Email address"}</FormLabel>
+          <Input placeholder={"john@gmail.com"} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
+          <FormErrorMessage>
+            {errors.email?.message}
+          </FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.password} sx={{ marginTop: "5px" }}>
+          <FormLabel>{"Password"}</FormLabel>
+          <Input type={"password"} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("password")} />
+          <FormErrorMessage>
+            {errors.password?.message}
+          </FormErrorMessage>
+        </FormControl>
         <div>
           {creationError || creationSuccessMessage}
         </div>
         <div id={styles.modalFooter}>
-          <button type={'submit'}>
-            Create account
-          </button>
+          <SubmitButton text={"Create account"} />
         </div>
       </form>
     </div>

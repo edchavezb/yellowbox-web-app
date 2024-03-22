@@ -4,6 +4,7 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import { spotifyLoginApi } from "core/api/spotify";
 import FolderTile from "components/common/FolderTile/FolderTile";
 import BoxTile from "components/common/BoxTile/BoxTile";
+import { Text } from '@chakra-ui/react'
 
 function Home({ location }: RouteComponentProps) {
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
@@ -28,8 +29,8 @@ function Home({ location }: RouteComponentProps) {
   if (isLoggedIn) {
     return (
       <div className={styles.homeContainer}>
-        <h1> Welcome {userData.username} </h1>
-        <h1> Your folders </h1>
+        <Text fontSize={"xl"} fontWeight={"700"}> Welcome {userData.username} </Text>
+        <Text fontSize={"lg"} fontWeight={"700"} sx={{marginTop: "20px", marginBottom: "10px"}}> Your folders </Text>
         <div className={styles.folderList}>
           {
             sortedFolders.map(folder => {
@@ -39,7 +40,7 @@ function Home({ location }: RouteComponentProps) {
             })
           }
         </div>
-        <h1> Your boxes </h1>
+        <Text fontSize={"lg"} fontWeight={"700"} sx={{marginTop: "20px", marginBottom: "10px"}}> Your boxes </Text>
         <div className={styles.boxList}>
           {
             dashboardBoxes.map(box => {
@@ -55,7 +56,7 @@ function Home({ location }: RouteComponentProps) {
   else if (isLoggedIn === false) {
     return (
       <div className={styles.homeContainer}>
-        <h1> Welcome to Yellowbox, please log in or create an account </h1>
+        <Text fontSize={"xl"} fontWeight={"700"}> Welcome to Yellowbox, please log in or create an account </Text>
       </div>
     );
   }

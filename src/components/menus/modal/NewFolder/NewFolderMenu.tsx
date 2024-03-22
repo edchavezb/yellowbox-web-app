@@ -6,6 +6,9 @@ import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import styles from "./NewFolderMenu.module.css";
 import { updateCurrentFolderDetailThunk } from 'core/features/currentFolderDetail/currentFolderDetailSlice';
+import FormInput from 'components/styled/FormInput/FormInput';
+import FormTextarea from 'components/styled/FormTextarea/FormTextarea';
+import AppButton from 'components/styled/AppButton/AppButton';
 
 interface NewFolderMenuProps {
   editMode: boolean
@@ -56,13 +59,13 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
   return (
     <div id={styles.modalBody}>
       <form id={styles.newFolderForm}>
-        <label className={styles.formElement} htmlFor="folder-name"> Name </label>
-        <input className={styles.formElement} type="text" name="folder-name" id={styles.folderName}
+        <FormInput
+          label={"Name"}
           value={folderDetails.folderName}
           onChange={(e) => setFolderDetails(state => ({ ...state, folderName: e.target.value }))}
         />
-        <label className={styles.formElement} htmlFor="folder-description"> Description </label>
-        <textarea className={styles.formElement} name="folder-description" id={styles.folderDesc} rows={3}
+        <FormTextarea
+          label={"Description"}
           value={folderDetails.folderDesc}
           onChange={(e) => setFolderDetails(state => ({ ...state, folderDesc: e.target.value }))}
         />
@@ -73,9 +76,7 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
         </div>
       </form>
       <div id={styles.modalFooter}>
-        <button disabled={!folderDetails.folderName} onClick={handleSubmitBtnClick}>
-          {editMode ? 'Save Changes' : 'Create'}
-        </button>
+        <AppButton text={editMode ? 'Save Changes' : 'Create'} disabled={!folderDetails.folderName} onClick={handleSubmitBtnClick} />
       </div>
     </div>
   )

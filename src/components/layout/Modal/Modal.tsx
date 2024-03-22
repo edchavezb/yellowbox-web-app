@@ -19,78 +19,80 @@ function Modal() {
   const modalData = useAppSelector(state => state.modalData.modalState)
   let modalBody: JSX.Element | string = "";
 
-  switch(modalData.type){
-    case "Log In" :
+  switch (modalData.type) {
+    case "Log In":
       modalBody = <LogInMenu />
-    break;
-    case "Sign Up" :
+      break;
+    case "Sign Up":
       modalBody = <SignUpMenu />
-    break;
-    case "New Box" :
-      modalBody = <NewBoxMenu action={modalData.type}/>
-    break;
-    case "Edit Box" :
+      break;
+    case "New Box":
       modalBody = <NewBoxMenu action={modalData.type} />
-    break;
-    case "Clone Box" :
+      break;
+    case "Edit Box":
       modalBody = <NewBoxMenu action={modalData.type} />
-    break;
-    case "Delete Box" :
+      break;
+    case "Clone Box":
+      modalBody = <NewBoxMenu action={modalData.type} />
+      break;
+    case "Delete Box":
       modalBody = <DeletePrompt boxId={modalData.boxId as string} itemData={modalData.itemData!} deleteType={"Box"} />
-    break;
-    case "New Folder" :
-      modalBody = <NewFolderMenu editMode={false}/>
-    break;
-    case "Edit Folder" :
-      modalBody = <NewFolderMenu editMode={true}/>
-    break;
-    case "Delete Folder" :
+      break;
+    case "New Folder":
+      modalBody = <NewFolderMenu editMode={false} />
+      break;
+    case "Edit Folder":
+      modalBody = <NewFolderMenu editMode={true} />
+      break;
+    case "Delete Folder":
       modalBody = <DeletePrompt folderId={modalData.folderId as string} itemData={modalData.itemData!} deleteType={"Folder"} />
-    break;
-    case "Sorting Options" :
-      modalBody = <SortingMenu/>
-    break;
-    case "Delete Item" :
+      break;
+    case "Sorting Options":
+      modalBody = <SortingMenu />
+      break;
+    case "Delete Item":
       modalBody = <DeletePrompt boxId={modalData.boxId as string} itemData={modalData.itemData!} deleteType={"Item"} />
-    break;
-    case "Add To Folder" :
-      modalBody = <AddToFolderMenu boxId={modalData.boxId as string} page={modalData.page!}/>
-    break;
-    case "Add To Box" :
+      break;
+    case "Add To Folder":
+      modalBody = <AddToFolderMenu boxId={modalData.boxId as string} page={modalData.page!} />
+      break;
+    case "Add To Box":
       modalBody = <AddToBoxMenu itemData={modalData.itemData!} />
-    break;
-    case "Add To Subsection" :
-      modalBody = <AddToSubsectionMenu itemData={modalData.itemData!}/>
-    break;
-    case "Item Note" :
+      break;
+    case "Add To Subsection":
+      modalBody = <AddToSubsectionMenu itemData={modalData.itemData!} />
+      break;
+    case "Item Note":
       modalBody = <ItemNote boxId={modalData.boxId as string} itemData={modalData.itemData!} subId={modalData.subId} />
-    break;
-    case "Box Subsections" :
+      break;
+    case "Box Subsections":
       modalBody = <SubsectionsMenu />
-    break;
+      break;
     default:
       modalBody = ""
   }
 
 
-  if(modalData.visible){
+  if (modalData.visible) {
     return (
-      <div id={styles.modalDiv}> 
+      <div id={styles.modalDiv}>
         <div id={styles.modalPanel}>
           <div id={styles.modalHeader}>
             <div id={styles.modalTitle}> {modalData.type} </div>
-            <div id={styles.closeModal} onClick={() => dispatch(setModalState({visible: false, type:"", boxId:"", page: "", itemData: undefined}))}>
-              <img id={styles.closeIcon} alt="Close modal" src="/icons/close.svg"/>
+            <div id={styles.closeModal} onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}>
+              <img id={styles.closeIcon} alt="Close modal" src="/icons/close.svg" />
             </div>
           </div>
-          {modalBody}
+          <div id={styles.modalBody}>
+            {modalBody}
+          </div>
         </div>
       </div>
     );
   } else {
     return null
   }
-  
+
 }
 
 export default Modal;

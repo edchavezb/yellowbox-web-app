@@ -4,6 +4,8 @@ import { firebaseAuth } from 'core/services/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { setModalState } from 'core/features/modal/modalSlice';
+import FormInput from 'components/styled/FormInput/FormInput';
+import AppButton from 'components/styled/AppButton/AppButton';
 
 function LogInMenu() {
   const dispatch = useAppDispatch();
@@ -19,7 +21,7 @@ function LogInMenu() {
         userPassword
       )
       dispatch(setModalState({ visible: false, type: "", boxId: "", folderId: "", page: "", itemData: undefined }))
-    } 
+    }
     catch {
       setIsLoginError(true);
     }
@@ -34,25 +36,24 @@ function LogInMenu() {
   return (
     <div id={styles.modalBody}>
       <form id={styles.newBoxForm}>
-        <label className={styles.formElement} htmlFor="email"> Email address </label>
-        <input className={styles.formElement} type="text" name="email" id={styles.boxName}
+        <FormInput
+          label={"Email address"}
           value={userEmail}
           onChange={(e) => setUserEmail(e.target.value)}
         />
-        <label className={styles.formElement} htmlFor="password"> Password </label>
-        <input className={styles.formElement} type="password" name="password" id={styles.boxName}
+        <FormInput
+          label={"Password"}
+          type={"password"}
           value={userPassword}
           onChange={(e) => setUserPassword(e.target.value)}
         />
       </form>
       <div id={styles.actionButtonRow}>
-        <button disabled={!userEmail || !userPassword} onClick={handleSubmitBtnClick}>
-          Log in
-        </button>
+        <AppButton variant={"brandPrimary"} text={"Log in"} onClick={handleSubmitBtnClick} />
       </div>
       {
-        isLoginError && 
-        <div style={{color: "red", marginBottom: "10px"}}>
+        isLoginError &&
+        <div style={{ color: "red", marginBottom: "10px" }}>
           The username or password you entered are incorrect.
         </div>
       }

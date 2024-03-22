@@ -1,6 +1,7 @@
 import GridView from "components/box-views/GridView/GridView"
 import styles from "./SearchResults.module.css";
 import { Album, Artist, Playlist, Track } from 'core/types/interfaces';
+import { Text } from '@chakra-ui/react'
 
 interface IProps<T> {
 	data: T[]
@@ -11,7 +12,7 @@ function SearchResults<T extends Artist | Album | Track | Playlist>({data, type}
 
   return (
     <div className={styles.resultsSection}>
-      <h3> {`${type}`} </h3>
+      <Text fontSize={"md"} fontWeight={"700"} sx={{marginTop: '20px', marginBottom: "10px"}}> {`${type}`} </Text>
       <GridView<T> data={data} />
     </div>
   )

@@ -16,10 +16,14 @@
 
 .headerCentered {
     text-align: center;
+    overflow: visible;
+    white-space: nowrap;
 }
 
 .headerLeftAlgn {
     text-align: left;
+    overflow: visible;
+    white-space: nowrap;
 }
 
 @media (max-width: 576px) {

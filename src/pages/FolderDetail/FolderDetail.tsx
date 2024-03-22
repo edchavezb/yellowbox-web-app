@@ -9,6 +9,7 @@ import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useS
 import BoxTile from 'components/common/BoxTile/BoxTile';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import FolderMenu from 'components/menus/popper/FolderMenu/FolderMenu';
+import { Text } from '@chakra-ui/react'
 
 function FolderDetail() {
   const { id: folderId } = useParams<{ id: string }>();
@@ -55,7 +56,7 @@ function FolderDetail() {
               <img className={styles.folderIcon} src="/icons/folder.svg" alt="folder" />
             </div>
             <div className={styles.folderInfo}>
-              <h2 className={styles.folderName}> {currentFolder?.name} </h2>
+              <Text fontSize={"2xl"} fontWeight={"700"}> {currentFolder?.name} </Text>
               <div className={styles.folderDesc}>
                 {currentFolder?.description}
               </div>
@@ -88,7 +89,12 @@ function FolderDetail() {
               </SortableContext>
             </DndContext>
           </div>
-          {isFolderEmpty && <div className={styles.emptyMsgDiv}><h3 id={styles.emptyMsg}> You have not added any boxes to this folder yet. </h3></div>}
+          {isFolderEmpty &&
+            <div className={styles.emptyMsgDiv}>
+              <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "20px", textAlign: "center" }}>
+                You have not added any boxes to this folder yet.
+              </Text>
+            </div>}
           <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isFolderMenuOpen} setIsOpen={setIsFolderMenuOpen}>
             <FolderMenu setIsOpen={setIsFolderMenuOpen} />
           </PopperMenu>
