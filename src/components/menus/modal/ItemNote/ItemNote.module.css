@@ -4,7 +4,8 @@
 
 #modalFooter {
     height: 50px;
-    padding-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
