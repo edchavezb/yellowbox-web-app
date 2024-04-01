@@ -220,6 +220,10 @@
     text-overflow: ellipsis;
 }
 
+.positionMobile {
+    display: none;
+}
+
 @media (max-width: 576px) {
 
     .itemRow {
