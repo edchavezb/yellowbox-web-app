@@ -35,7 +35,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes);
   const isOwner = userBoxes.some(box => box.boxId === currentBox._id);
-  const itemNote = currentBox.notes.find(note => note.itemId === id && note.subSectionId === subId) || currentBox.notes.find(note => note.itemId === id && !note.subSectionId);
+  const itemNote = subId ? currentBox.notes.find(note => note.itemId === id && note.subSectionId === subId) : currentBox.notes.find(note => note.itemId === id && !note.subSectionId);
 
   const { width } = useWindowDimensions();
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
