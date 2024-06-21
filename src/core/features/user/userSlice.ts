@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { YellowboxUser } from "core/types/interfaces"
+import { UserServices, YellowboxUser } from "core/types/interfaces"
 
 interface UserState {
     authenticatedUser: YellowboxUser
@@ -21,12 +21,24 @@ const userSlice = createSlice({
         setIsUserLoggedIn(state, action: PayloadAction<boolean>) {
             state.isUserLoggedIn = action.payload
         },
+        updateUserServices(state, action: PayloadAction<UserServices>){
+            state.authenticatedUser.services = action.payload
+        },
+        updateUserBasicInfo(state, action: PayloadAction<{firstName: string, lastName: string, username: string, email: string}>){
+            const {username, firstName, lastName, email} = action.payload;
+            state.authenticatedUser.username = username;
+            state.authenticatedUser.firstName = firstName;
+            state.authenticatedUser.lastName = lastName;
+            state.authenticatedUser.account.email = email;
+        }
     }
 })
 
 export const { 
     setAuthenticatedUser,
-    setIsUserLoggedIn
+    setIsUserLoggedIn,
+    updateUserServices,
+    updateUserBasicInfo
 } = userSlice.actions;
 
 export default userSlice.reducer;

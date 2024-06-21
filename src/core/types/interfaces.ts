@@ -12,6 +12,14 @@ export interface SpotifyUserAuth {
   accessToken?: string | null
 }
 
+export interface SpotifyAccountInfo {
+  displayName?: string
+  userId?: string
+  email?: string
+  images?: {}[]
+  uri?: string
+}
+
 export interface YellowboxUser {
   _id: string
   firebaseId: string
@@ -21,14 +29,16 @@ export interface YellowboxUser {
   image: string
   billing: UserBilling
   account: UserAccountData
-  services: {
-    [key: string]: {
-      refreshToken: string
-      id: string
-    }
-  }
+  services: UserServices
   dashboardFolders?: string[]
   dashboardBoxes?: string[]
+}
+
+export interface UserServices {
+  [key: string]: {
+    refreshToken: string
+    id: string
+  }
 }
 
 export interface UserBilling {

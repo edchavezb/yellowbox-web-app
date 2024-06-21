@@ -1,4 +1,4 @@
-import { DashboardBox, UserFolder, YellowboxUser } from '../../types/interfaces'
+import { DashboardBox, UserFolder, UserServices, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
 export const getAuthenticatedUserDataApi = async () => {
@@ -21,7 +21,16 @@ export const getUserDataBySpotifyIdApi = async (spotifyId: string) => {
 
 export const dbUsernameCheckApi = async (username: string) => {
     try {
-        return await api.get<{usernameExists: boolean}>(`users/check/${username}`, {})
+        return await api.get<{usernameExists: boolean}>(`users/checkUsername/${username}`, {})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const dbEmailCheckApi = async (email: string) => {
+    try {
+        return await api.get<{emailExists: boolean}>(`users/checkEmail/${email}`, {})
     }
     catch(err) {
         console.log(err)
@@ -31,6 +40,15 @@ export const dbUsernameCheckApi = async (username: string) => {
 export const createUserApi = async (userData: Omit<YellowboxUser, '_id'>) => {
     try {
         return await api.post<Omit<YellowboxUser, '_id'>, YellowboxUser>('users', userData)
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const updateUserApi = async (userId: string, userData: Omit<YellowboxUser, '_id'>) => {
+    try {
+        return await api.put<Omit<YellowboxUser, '_id'>, YellowboxUser>(`users/${userId}/`, userData)
     }
     catch(err) {
         console.log(err)
@@ -67,6 +85,15 @@ export const updateUserDashboardBoxesApi = async (userId: string, updatedBoxIdLi
 export const linkUserToSpotifyAccountApi = async (userId: string, spotifyData: {refreshToken: string, id: string}) => {
     try {
         return await api.post<{spotifyData: {refreshToken: string, id: string}}, YellowboxUser>(`users/${userId}/spotify`, {spotifyData})
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+export const unlinkUserSpotifyAccountApi = async (userId: string) => {
+    try {
+        return await api.post<{}, UserServices>(`users/${userId}/spotify/unlink`, {})
     }
     catch(err) {
         console.log(err)

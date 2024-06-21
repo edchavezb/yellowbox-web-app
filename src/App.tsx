@@ -14,6 +14,7 @@ import { firebaseAuth } from 'core/services/firebase';
 import SpotifyAuthSuccess from './pages/Spotify/AuthSuccess/SpotifyAuthSuccess';
 import { loginService } from 'core/services/loginService';
 import SpotifyDashboard from 'pages/Spotify/SpotifyDashboard';
+import Account from 'pages/Account/Account';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -49,12 +50,13 @@ function App() {
       <Modal />
       <Layout>
         <Route exact path="/" render={(props) => <Home {...props} />} />
-        <Route path="/authsuccess" render={() => <SpotifyAuthSuccess />} />
+        <Route path="/account" render={() => <Account />} />
         <Route path="/search/:query?" render={() => <Search />} />
         <Route path="/box/:id" render={() => <BoxDetail />} />
         <Route path="/folder/:id" render={() => <FolderDetail />} />
         <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props} />} />
-        <Route path="/myaccounts/spotify" render={() => <SpotifyDashboard />} />
+        <Route path="/linked-services/spotify" render={() => <SpotifyDashboard />} />
+        <Route path="/authsuccess" render={() => <SpotifyAuthSuccess />} />
       </Layout>
     </Router>
   );

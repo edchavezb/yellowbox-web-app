@@ -127,21 +127,26 @@ function Sidebar({ user }: IProps) {
       {
         user._id &&
         <>
-          <div id={styles.user} onClick={() => setIsAccountMenuOpen(true)}>
-            <img id={styles.userImage} src={user.image ? user.image : "/user.png"} alt="user" />
-            <span id={styles.userName} ref={accountWidgetRef}> {user.username} </span>
-          </div>
-          <div id={styles.servicesList}>
-            <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "5px" }}>
-              Your services
-            </Text>
-            {
-              user.services?.spotify &&
-              <Link className={styles.serviceLink} to={`/myaccounts/spotify`}>
-                <div className={styles.serviceButton}><img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img><span> Spotify </span></div>
-              </Link>
-            }
-          </div>
+          <Link className={styles.serviceLink} to={`/account`}>
+            <div id={styles.user}>
+              <img id={styles.userImage} src={user.image ? user.image : "/user.png"} alt="user" />
+              <span id={styles.userName} ref={accountWidgetRef}> {user.username} </span>
+            </div>
+          </Link>
+          {
+            !!Object.values(user.services).filter(val => !!val).length &&
+            <div id={styles.servicesList}>
+              <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "5px" }}>
+                Linked services
+              </Text>
+              {
+                user.services?.spotify &&
+                <Link className={styles.serviceLink} to={`/linked-services/spotify`}>
+                  <div className={styles.serviceButton}><img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img><span> Spotify </span></div>
+                </Link>
+              }
+            </div>
+          }
           <div className={styles.folderBoxListWrapper}>
             <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "5px" }}>
               Your boxes
@@ -160,12 +165,6 @@ function Sidebar({ user }: IProps) {
               </DragOverlay>
             </AppDndContext>
           </div>
-          <PopperMenu referenceRef={accountWidgetRef} placement={'right'} isOpen={isAccountMenuOpen} setIsOpen={setIsAccountMenuOpen}>
-            <AccountMenu setIsOpen={setIsAccountMenuOpen} />
-          </PopperMenu>
-          <PopperMenu referenceRef={servicesButtonRef} placement={'right'} isOpen={isServicesMenuOpen} setIsOpen={setIsServicesMenuOpen}>
-            <ServicesMenu setIsOpen={setIsServicesMenuOpen} />
-          </PopperMenu>
         </>
       }
     </div>

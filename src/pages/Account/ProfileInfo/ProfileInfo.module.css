@@ -1,0 +1,10 @@
+.userWrapper {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.userImage {
+    width: 50px;
+    border-radius: 50%;
+}

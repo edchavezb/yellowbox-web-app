@@ -1,0 +1,38 @@
+.container {
+  min-height: 100%;
+  position: relative;
+  display: flex;
+  padding: 50px 0px;
+  justify-content: center;
+}
+
+.accountPanel {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  border-radius: 10px;
+}
+
+.tabSwitcher {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  flex-shrink: 0;
+  row-gap: 16px;
+}
+
+.tab {
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.tab.active {
+  font-weight: 700;
+}
+
+.content {
+  width: 100%;
+  padding: 30px;
+}
