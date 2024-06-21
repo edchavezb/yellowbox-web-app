@@ -1,0 +1,29 @@
+.userWrapper {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.serviceIconSmall {
+    width: 45px;
+    border-radius: 50%;
+}
+
+.serviceIconLarge {
+    width: 55px;
+    border-radius: 50%;
+}
+
+.serviceCard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: 30px 25px;
+    border-radius: 10px;
+}
+
+.smallText {
+    font-size: 14px;
+    color: #b6b6b6;
+}

@@ -136,7 +136,7 @@ function SpotifyTopItems() {
             <>
               <option value={TimeRanges.SHORT}> Last 4 weeks </option>
               <option value={TimeRanges.MEDIUM}> Last 6 months </option>
-              <option value={TimeRanges.LONG}> All time </option>
+              <option value={TimeRanges.LONG}> Last year </option>
             </>
           </AppSelect>
         </div>
