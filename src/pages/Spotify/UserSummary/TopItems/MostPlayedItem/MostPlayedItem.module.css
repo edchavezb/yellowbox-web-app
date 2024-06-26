@@ -30,3 +30,9 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+@media (max-width: 576px) {
+    .mostPlayedImage {
+        width: 100%
+    }
+}

@@ -38,3 +38,34 @@
     font-weight: bold;
     direction: rtl;
 }
+
+.mobileVisible {
+    display: none;
+}
+
+@media (max-width: 576px) {
+
+    .mobileVisible {
+        display: flex;
+    }
+
+    .mobileHidden {
+        display: none;
+    }
+
+    .itemGroup {
+        width: 100%
+    }
+
+    .itemList{
+        flex-wrap: wrap;
+    }
+
+    .itemColumn {
+        max-height: none;
+    }
+
+    .topListTitle {
+        margin-left: 8px;
+    }
+}

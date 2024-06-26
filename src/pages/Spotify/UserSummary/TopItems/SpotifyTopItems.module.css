@@ -38,3 +38,26 @@
     max-height: 360px;
     box-sizing: content-box;
 }
+
+@media (max-width: 576px) {
+    .sectionHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .topItemsColumnsWrapper {
+       flex-direction: column;
+       gap: 30px;
+    }
+
+    .mostPlayedColumn, .topItemsColumn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .topItemsColumn {
+        max-height: none;
+        padding: 20px 10px;
+    }
+}

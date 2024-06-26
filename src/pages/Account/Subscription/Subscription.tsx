@@ -12,14 +12,15 @@ const Subscription = () => {
 
   return (
     <Box className={styles.container}>
-      <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
-        <div className={styles.userWrapper}>
+      <Text className={styles.mobileTitle} fontWeight={700} marginBottom={'20px'}> Subscription </Text>
+      <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'} flexWrap={'wrap'}>
+        <Box className={styles.userWrapper}>
           <img className={styles.ybxIconSmall} src='/ideogram.png' alt='yellowbox'></img>
           <Box>
             <Text className={styles.smallText} fontSize={'sm'} fontWeight={'300'}> CURRENT SUBSCRIPTION </Text>
             <Text className={styles.userName} fontSize={'md'} fontWeight={'700'}> Your account is on the {user?.account.accountTier} plan </Text>
           </Box>
-        </div>
+        </Box>
         <AppButton disabled text={user?.account.accountTier === 'free' ? 'Upgrade to Pro' : 'Manage Subscription'} onClick={handleUpgradeAccount} />
       </Box>
     </Box>

@@ -95,7 +95,7 @@ function Search() {
     <div className={styles.searchPage}>
       <div id={styles.searchBox}>
         <div id={styles.inputWrapper}>
-          <input id={styles.searchInput} type="text" defaultValue={params.query || ""} placeholder={"Artist, Track, Album or paste Spotify URL"} onChange={debouncedSearch} />
+          <input id={styles.searchInput} type="text" defaultValue={params.query || ""} placeholder={"Artist, Track, Album or Spotify URL"} onChange={debouncedSearch} />
         </div>
         <img id={styles.searchIcon} src="/icons/search.svg" alt="search"></img>
       </div>

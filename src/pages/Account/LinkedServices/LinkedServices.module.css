@@ -27,3 +27,17 @@
     font-size: 14px;
     color: #b6b6b6;
 }
+
+.mobileTitle {
+    display: none;
+}
+
+@media (max-width: 576px) {
+    .mobileTitle {
+      display: block;
+    }
+
+    .serviceCard {
+        width: 100%
+    }
+}

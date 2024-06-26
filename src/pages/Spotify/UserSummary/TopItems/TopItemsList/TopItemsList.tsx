@@ -18,10 +18,32 @@ function TopItemsList({ items, type }: IProps) {
     <>
       <div className={styles.topListTitle}> Your top 10 </div>
       <div className={styles.itemList}>
-        <div className={styles.itemGroup}>
+        <div className={`${styles.itemGroup} ${styles.mobileVisible}`}>
           <div className={styles.rankColumn}>
             {
-              items.slice(0, 5).map((item: Artist | Album | Track, index: number) => {
+              items.slice(0, 10).map((_item: Artist | Album | Track, index: number) => {
+                return (
+                  <div className={styles.rankNumber} key={index}>
+                    {index + 1}
+                  </div>
+                )
+              })
+            }
+          </div>
+          <div className={styles.itemColumn}>
+            {
+              items.slice(0, 10).map((item: Artist | Album | Track) => {
+                return (
+                  <TopListRow item={item} type={type} key={item.id} />
+                )
+              })
+            }
+          </div>
+        </div>
+        <div className={`${styles.itemGroup} ${styles.mobileHidden}`}>
+          <div className={styles.rankColumn}>
+            {
+              items.slice(0, 5).map((_item: Artist | Album | Track, index: number) => {
                 return (
                   <div className={styles.rankNumber} key={index}>
                     {index + 1}
@@ -40,10 +62,10 @@ function TopItemsList({ items, type }: IProps) {
             }
           </div>
         </div>
-        <div className={styles.itemGroup}>
+        <div className={`${styles.itemGroup} ${styles.mobileHidden}`}>
           <div className={styles.rankColumn}>
             {
-              items.slice(5, 10).map((item: Artist | Album | Track, index: number) => {
+              items.slice(5, 10).map((_item: Artist | Album | Track, index: number) => {
                 return (
                   <div className={styles.rankNumber} key={index + 6}>
                     {index + 6}
@@ -56,7 +78,7 @@ function TopItemsList({ items, type }: IProps) {
             {
               items.slice(5, 10).map((item: Artist | Album | Track) => {
                 return (
-                  <TopListRow item={item} type={type} key={item.id}/>
+                  <TopListRow item={item} type={type} key={item.id} />
                 )
               })
             }

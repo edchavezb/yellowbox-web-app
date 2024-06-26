@@ -1,5 +1,5 @@
 import styles from './Authentication.module.css'
-import { Box, FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react';
+import { Box, FormControl, FormErrorMessage, FormLabel, Input, Text } from '@chakra-ui/react';
 import { firebaseAuth } from 'core/services/firebase';
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import * as yup from "yup";
@@ -60,6 +60,7 @@ const Authentication = () => {
 
   return (
     <Box className={styles.container}>
+      <Text className={styles.mobileTitle} fontWeight={700} marginBottom={'20px'}> Authentication </Text>
       <form id={styles.newBoxForm} onSubmit={handleSubmit(handleUpdatePassword)}>
         <FormControl isInvalid={!!errors.oldPassword}>
           <FormLabel>{"Current Password"}</FormLabel>

@@ -9,3 +9,15 @@
     justify-content: space-between;
     align-items: center;
 }
+
+@media (max-width: 576px) {
+
+    .spotifyWrapper {
+        padding: 0px 10px 20px 10px;
+    }
+
+    .titlePageRow {
+        margin-top: 15px;
+        padding: 0px 10px;
+    }
+}

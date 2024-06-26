@@ -12,3 +12,13 @@
 .userPlaylistsSection {
     margin-top: 50px;
 }
+
+@media (max-width: 576px) {
+    .recentlyPlayedSection{
+        margin-top: 45px;
+    }
+
+    .spotifyWrapper {
+        padding: 15px 30px;
+    }
+}

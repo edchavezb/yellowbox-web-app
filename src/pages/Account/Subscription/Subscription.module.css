@@ -27,3 +27,17 @@
     font-size: 14px;
     color: #b6b6b6;
 }
+
+.mobileTitle {
+    display: none;
+}
+
+@media (max-width: 576px) {
+    .userWrapper {
+        margin-bottom: 20px;
+    }
+
+    .mobileTitle {
+        display: block;
+    }
+}

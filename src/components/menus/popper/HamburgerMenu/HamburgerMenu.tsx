@@ -35,12 +35,32 @@ const HamburgerMenu = ({ setIsOpen }: BoxMenuProps) => {
     history.push('/search')
   }
 
+  const navigateToAccount = () => {
+    setIsOpen(false);
+    history.push('/account')
+  }
+
+  const navigateToServices = () => {
+    setIsOpen(false);
+    history.push('/account/linked-services')
+  }
+
+  const navigateToProfile = () => {
+    setIsOpen(false);
+    history.push('/')
+  }
+
   return (
     <div className={menuItemsList}>
       <div
         className={menuItem}
-        onClick={handleLogOut}>
-        Log out
+        onClick={navigateToProfile}>
+        My Profile
+      </div>
+      <div
+        className={menuItem}
+        onClick={navigateToServices}>
+        Linked Services
       </div>
       <div
         className={menuItem}
@@ -56,6 +76,16 @@ const HamburgerMenu = ({ setIsOpen }: BoxMenuProps) => {
         className={menuItem}
         onClick={() => handleOpenModal("New Box")}>
         New box
+      </div>
+      <div
+        className={menuItem}
+        onClick={navigateToAccount}>
+        Settings
+      </div>
+      <div
+        className={menuItem}
+        onClick={handleLogOut}>
+        Log out
       </div>
     </div>
   );

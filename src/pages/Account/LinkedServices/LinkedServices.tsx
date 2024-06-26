@@ -9,6 +9,7 @@ import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { setAccessToken } from 'core/features/spotifyService/spotifyLoginSlice';
 import { unlinkUserSpotifyAccountApi } from 'core/api/users';
 import { updateUserServices } from 'core/features/user/userSlice';
+import { Link } from 'react-router-dom';
 
 
 const LinkedServices = () => {
@@ -39,7 +40,7 @@ const LinkedServices = () => {
       window.location.replace(response.url)
     }
   }
-  
+
   const handleUnlinkSpotify = async () => {
     const updatedServices = await unlinkUserSpotifyAccountApi(user._id);
     if (updatedServices) {
@@ -48,19 +49,19 @@ const LinkedServices = () => {
   }
 
   const handleLinkAppleMusic = async () => {
-  
+
   }
 
   const handleUninkAppleMusic = async () => {
-   
+
   }
 
   const handleLinkLastFm = async () => {
- 
+
   }
 
   const handleUninkLastFm = async () => {
-  
+
   }
 
   useEffect(() => {
@@ -82,12 +83,14 @@ const LinkedServices = () => {
 
   return (
     <div className={styles.container}>
+      <Text className={styles.mobileTitle} fontWeight={700} marginBottom={'20px'}> Linked Services </Text>
       {
         user.services?.spotify &&
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
           <div className={styles.userWrapper}>
-            <img className={styles.serviceIconSmall} src='/icons/spotify_icon.png' alt='spotify'></img>
-            <Box>
+            <Link to={'/linked-services/spotify'}>
+              <img className={styles.serviceIconSmall} src='/icons/spotify_icon.png' alt='spotify'></img>
+            </Link>            <Box>
               <Text className={styles.smallText} fontSize={'sm'} fontWeight={'300'}> SPOTIFY </Text>
               <Text className={styles.userName} fontSize={'md'} fontWeight={'700'}> Signed in as {spotifyAccountInfo.displayName} </Text>
             </Box>
@@ -122,7 +125,7 @@ const LinkedServices = () => {
         </Box>
       }
       <Text fontSize={'md'} fontWeight={'700'} marginTop={Object.values(user.services).filter(val => !!val).length ? '35px' : '0px'}> Add a new service </Text>
-      <Box display={'flex'} alignItems={'center'} gap={'20px'} width={'100%'} marginTop={'15px'}>
+      <Box display={'flex'} alignItems={'center'} gap={'20px'} width={'100%'} marginTop={'15px'} flexWrap={'wrap'}>
         {
           !user.services?.spotify &&
           <Box className={styles.serviceCard} border={"1px solid"} borderColor={"brandgray.600"}>
