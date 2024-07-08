@@ -10,9 +10,6 @@ import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@
 import SidebarFolder from "./SidebarFolder/SidebarFolder";
 import SidebarBoxList from "./SidebarBoxList/SidebarBoxList";
 import { DndContextTypesafeProps, DragEndEvent, DragOverEvent, DragStartEvent } from "./sidebarTypes";
-import AccountMenu from "components/menus/popper/AccountMenu/AccountMenu";
-import PopperMenu from "components/menus/popper/PopperMenu";
-import ServicesMenu from "components/menus/popper/ServicesMenu/ServicesMenu";
 import { Text } from '@chakra-ui/react'
 
 interface IProps {
@@ -35,9 +32,6 @@ function Sidebar({ user }: IProps) {
   })
   const userDashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes)
   const accountWidgetRef = useRef(null);
-  const servicesButtonRef = useRef(null);
-  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
-  const [isServicesMenuOpen, setIsServicesMenuOpen] = useState(false);
 
   const [activeDraggable, setActiveDraggable] = useState<null | { name: string, id: string }>(null);
   const [dragOverFolder, setDragOverFolder] = useState<null | string>(null);

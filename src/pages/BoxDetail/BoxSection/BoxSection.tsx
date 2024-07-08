@@ -95,7 +95,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
                 return (
                   !!items.length &&
                   <SubSection
-                    itemsMatch={items}
+                    itemsMatch={items as T[]}
                     subName={name}
                     subId={_id}
                     key={_id}

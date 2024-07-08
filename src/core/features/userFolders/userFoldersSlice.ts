@@ -111,6 +111,7 @@ export const removeBoxFromFolderThunk = (folderId: string, boxId: string, boxNam
         dispatch(removeBoxFromFolder({targetId: folderId, boxId}))
         dispatch(addBoxToDashboard({boxId, boxName}))
         await removeBoxFromFolderApi(folderId, boxId)
+        
         if (currentFolder._id === folderId && isUserViewing) {
             // Refresh folder if user viewing it
             dispatch(fetchFolderDetailThunk(currentFolder._id));

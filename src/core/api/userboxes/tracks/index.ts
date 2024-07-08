@@ -6,7 +6,8 @@ export const addTrackToBoxApi = async (boxId: string, track: Track) => {
     return await api.post<{ newTrack: Track }, UserBox>(`boxes/${boxId}/tracks`, { newTrack: track })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -17,7 +18,8 @@ export const updateBoxTracksApi = async (boxId: string, updatedItems: Track[]) =
     })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -29,7 +31,8 @@ export const addTrackToSubsectionApi = async (boxId: string, itemId: string, sub
     })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -41,7 +44,8 @@ export const removeTrackFromSubsectionApi = async (boxId: string, itemId: string
     })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -50,6 +54,7 @@ export const updateBoxTrackApi = async (boxId: string, itemId: string, updatedIt
     return await api.put<{ updatedTrack: Track }, { updatedBox: UserBox }>(`boxes/${boxId}/tracks/${itemId}`, { updatedTrack: updatedItem });
   } catch (err) {
     console.log(err);
+    throw err; 
   }
 }
 
@@ -58,7 +63,8 @@ export const removeBoxTrackApi = async (boxId: string, itemId: string) => {
     return await api.delete<Track[]>(`boxes/${boxId}/tracks/${itemId}`)
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -67,5 +73,6 @@ export const reorderBoxTrackApi = async (boxId: string, sourceIndex: number, des
     return await api.put<{ sourceIndex: number, destinationIndex: number }, UserBox>(`boxes/${boxId}/tracks/reorder`, { sourceIndex, destinationIndex });
   } catch (err) {
     console.log(err);
+    throw err; 
   }
 }

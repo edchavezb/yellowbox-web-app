@@ -7,8 +7,6 @@ import Authentication from './Authentication/Authentication';
 import Notifications from './Notifications/Notifications';
 import Subscription from './Subscription/Subscription';
 import PopperMenu from 'components/menus/popper/PopperMenu';
-import BoxItemMenu from 'components/menus/popper/BoxItemMenu/BoxItemMenu';
-import { type } from 'os';
 import { useState, useRef } from 'react';
 import SettingsNav from 'components/menus/popper/SettingsNav/SettingsNav';
 

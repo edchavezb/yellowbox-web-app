@@ -1,4 +1,4 @@
-import { Artist, Album, Track, Playlist } from "../types/interfaces";
+import { Artist, Album, Track, Playlist, ErrorWithMessage } from "../types/interfaces";
 
 function isAlbum (element: Artist | Album | Track | Playlist): element is Album {
   return  (element as Album).type === "album";
@@ -16,4 +16,8 @@ function isPlaylist (element: Artist | Album | Track | Playlist): element is Pla
   return  (element as Playlist).type === "playlist";
 }
 
-export {isArtist, isAlbum, isTrack, isPlaylist};
+const isErrorWithMessage = (error: any): error is ErrorWithMessage => {
+  return typeof error?.message === 'string';
+};
+
+export {isArtist, isAlbum, isTrack, isPlaylist, isErrorWithMessage};

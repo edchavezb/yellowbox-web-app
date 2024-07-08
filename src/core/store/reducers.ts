@@ -1,9 +1,10 @@
 import userReducer from "core/features/user/userSlice";
 import userBoxesReducer from "core/features/userBoxes/userBoxesSlice";
 import userFoldersReducer from "core/features/userFolders/userFoldersSlice";
-import currentBoxDetailReducer from "core/features/currentBoxDetail/currentBoxDetailSlice"
+import currentBoxDetailReducer from "core/features/currentBoxDetail/currentBoxDetailSlice";
 import spotifyLoginReducer from "core/features/spotifyService/spotifyLoginSlice";
-import modalReducer from "core/features/modal/modalSlice"
+import modalReducer from "core/features/modal/modalSlice";
+import toastReducer from "core/features/toast/toastSlice";
 import currentFolderDetailSlice from "core/features/currentFolderDetail/currentFolderDetailSlice";
 
 const rootReducer = {
@@ -13,7 +14,8 @@ const rootReducer = {
     currentBoxDetailData: currentBoxDetailReducer,
     currentFolderDetailData: currentFolderDetailSlice,
     spotifyLoginData: spotifyLoginReducer,
-    modalData: modalReducer
+    modalData: modalReducer,
+    toastData: toastReducer
 }
 
 export default rootReducer;
