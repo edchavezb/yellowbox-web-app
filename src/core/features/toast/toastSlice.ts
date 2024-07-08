@@ -41,6 +41,15 @@ const toastSlice = createSlice({
       };
       state.isOpen = true;
     },
+    initRemoveFromBoxToast(state, action: PayloadAction<AddToBoxToastPayload>) {
+      const {boxName, itemType} = action.payload;
+      state.options = {
+        title: "Done!",
+        description: `1 ${itemType} was removed from ${boxName}`,
+        status: "info"
+      };
+      state.isOpen = true;
+    },
     initAlreadyInBoxToast(state, action: PayloadAction<AddToBoxToastPayload>) {
       const {boxName, itemType} = action.payload;
       state.options = {
@@ -67,6 +76,7 @@ const toastSlice = createSlice({
 
 export const {
   initAddToBoxToast,
+  initRemoveFromBoxToast,
   initAlreadyInBoxToast,
   initErrorToast,
   setIsToastOpen
