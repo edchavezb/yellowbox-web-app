@@ -2,9 +2,9 @@ import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useState } from 'react';
-import { Album, Artist, Playlist, SectionSorting, Track } from "core/types/interfaces";
+import { Album, Artist, Playlist, Track } from "core/types/interfaces";
 import styles from "./AddToBoxMenu.module.css";
-import { isAlbum, isArtist, isPlaylist, isTrack } from 'core/helpers/typeguards';
+import { isAlbum, isArtist, isErrorWithMessage, isPlaylist, isTrack } from 'core/helpers/typeguards';
 import { extractCrucialData } from 'core/helpers/itemDataHandlers';
 import { addAlbumToBoxApi } from 'core/api/userboxes/albums';
 import { addArtistToBoxApi } from 'core/api/userboxes/artists';
@@ -13,6 +13,8 @@ import { addTrackToBoxApi } from 'core/api/userboxes/tracks';
 import AppButton from 'components/styled/AppButton/AppButton';
 import { FormControl, FormLabel } from '@chakra-ui/react';
 import AppSelect from 'components/styled/AppSelect/AppSelect';
+import { initAddToBoxToast, initAlreadyInBoxToast, initErrorToast } from 'core/features/toast/toastSlice';
+import { BoxItemType } from 'core/types/types';
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -26,26 +28,32 @@ function AddToBoxMenu({ itemData }: IProps) {
   const itemCopy = JSON.parse(JSON.stringify(itemData))
   const [addBox, setAddBox] = useState(userBoxes[0].boxId)
 
-  const handleAddItem = () => {
+  const handleAddItem = async () => {
     const targetId = addBox
     const updatedItem = { ...extractCrucialData(itemCopy) }
-    const isOwner = !!userBoxes.find(box => box.boxId === targetId);
-    if (isOwner) {
+    const userBox = userBoxes.find(box => box.boxId === targetId);
+    if (!!userBox) {
       try {
         if (isArtist(updatedItem)) {
-          addArtistToBoxApi(targetId, updatedItem)
+          await addArtistToBoxApi(targetId, updatedItem)
         }
         else if (isAlbum(updatedItem)) {
-          addAlbumToBoxApi(targetId, updatedItem)
+          await addAlbumToBoxApi(targetId, updatedItem)
         }
         else if (isTrack(updatedItem)) {
-          addTrackToBoxApi(targetId, updatedItem)
+          await addTrackToBoxApi(targetId, updatedItem)
         }
         else if (isPlaylist(updatedItem)) {
-          addPlaylistToBoxApi(targetId, updatedItem)
+          await addPlaylistToBoxApi(targetId, updatedItem)
         }
-      } catch {
-        console.log('Could not add item to box')
+        dispatch(initAddToBoxToast({ itemType: itemData.type as BoxItemType, boxName: userBox.boxName }));
+      } catch (error) {
+        if (isErrorWithMessage(error) && error.message === "Item already in box") {
+          dispatch(initAlreadyInBoxToast({ itemType: itemData.type as BoxItemType, boxName: userBox.boxName }))
+        }
+        else {
+          dispatch(initErrorToast({ error: `Failed to add item to ${userBox.boxName}` }))
+        }
       }
     }
     dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))
