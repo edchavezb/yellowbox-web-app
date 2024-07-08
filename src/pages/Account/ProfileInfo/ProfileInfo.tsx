@@ -173,7 +173,7 @@ const ProfileInfo = () => {
         </Box>
         <FormControl isInvalid={!!errors.email} sx={{ marginTop: "15px" }}>
           <FormLabel>{"Email Address"}</FormLabel>
-          <Input defaultValue={user.account.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
+          <Input defaultValue={user.account?.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
           <FormErrorMessage>
             {errors.email?.message}
           </FormErrorMessage>

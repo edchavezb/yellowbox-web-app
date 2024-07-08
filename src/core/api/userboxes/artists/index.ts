@@ -6,7 +6,8 @@ export const addArtistToBoxApi = async (boxId: string, artist: Artist) => {
     return await api.post<{ newArtist: Artist }, UserBox>(`boxes/${boxId}/artists`, { newArtist: artist })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -17,7 +18,8 @@ export const updateBoxArtistsApi = async (boxId: string, updatedItems: Artist[])
     })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -26,7 +28,8 @@ export const updateBoxArtistApi = async (boxId: string, itemId: string, updatedI
     return await api.put<{ updatedArtist: Artist }, { updatedBox: UserBox }>(`boxes/${boxId}/artists/${itemId}`, { updatedArtist: updatedItem })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -35,7 +38,8 @@ export const removeBoxArtistApi = async (boxId: string, itemId: string) => {
     return await api.delete<Artist[]>(`boxes/${boxId}/artists/${itemId}`)
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -47,7 +51,8 @@ export const addArtistToSubsectionApi = async (boxId: string, itemId: string, su
     })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -59,7 +64,8 @@ export const removeArtistFromSubsectionApi = async (boxId: string, itemId: strin
     })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -68,6 +74,7 @@ export const reorderBoxArtistApi = async (boxId: string, sourceIndex: number, de
     return await api.put<{ sourceIndex: number, destinationIndex: number }, UserBox>(`boxes/${boxId}/artists/reorder`, { sourceIndex, destinationIndex })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }

@@ -6,7 +6,8 @@ export const addPlaylistToBoxApi = async (boxId: string, playlist: Playlist) => 
     return await api.post<{ newPlaylist: Playlist }, UserBox>(`boxes/${boxId}/playlists`, { newPlaylist: playlist })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -17,7 +18,8 @@ export const updateBoxPlaylistsApi = async (boxId: string, updatedItems: Playlis
     })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -29,7 +31,8 @@ export const addPlaylistToSubsectionApi = async (boxId: string, itemId: string, 
     })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -41,7 +44,8 @@ export const removePlaylistFromSubsectionApi = async (boxId: string, itemId: str
     })
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -50,6 +54,7 @@ export const updateBoxPlaylistApi = async (boxId: string, itemId: string, update
     return await api.put<{ updatedPlaylist: Playlist }, { updatedBox: UserBox }>(`boxes/${boxId}/playlists/${itemId}`, { updatedPlaylist: updatedItem });
   } catch (err) {
     console.log(err);
+    throw err; 
   }
 }
 
@@ -58,7 +63,8 @@ export const removeBoxPlaylistApi = async (boxId: string, itemId: string) => {
     return await api.delete<Playlist[]>(`boxes/${boxId}/playlists/${itemId}`)
   }
   catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err; 
   }
 }
 
@@ -67,5 +73,6 @@ export const reorderBoxPlaylistApi = async (boxId: string, sourceIndex: number, 
     return await api.put<{ sourceIndex: number, destinationIndex: number }, UserBox>(`boxes/${boxId}/playlists/reorder`, { sourceIndex, destinationIndex });
   } catch (err) {
     console.log(err);
+    throw err; 
   }
 }

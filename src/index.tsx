@@ -11,7 +11,7 @@ import theme from './theme'
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ChakraProvider theme={theme}>
+      <ChakraProvider theme={theme} toastOptions={{ defaultOptions: { duration: 5000, isClosable: true}}}>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <App />
       </ChakraProvider>

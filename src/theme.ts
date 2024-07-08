@@ -1,5 +1,5 @@
 // 1. import `extendTheme` function
-import { ChakraTheme, DeepPartial, defineStyle, defineStyleConfig, extendTheme, type ThemeConfig } from '@chakra-ui/react'
+import { ChakraTheme, DeepPartial, defineStyle, defineStyleConfig, extendTheme, theme as defaultTheme, type ThemeConfig } from '@chakra-ui/react'
 
 // 2. Add your color mode config
 const config: ThemeConfig = {
@@ -52,6 +52,23 @@ const customTheme: DeepPartial<ChakraTheme> = {
     }
   },
   components: {
+    Alert: {
+      variants: {
+        solid: (props) => { 
+          const { colorScheme } = props
+          if (colorScheme !== "blue") {
+            // use original definition for all color schemes except "blue"
+            return defaultTheme.components.Alert.variants?.solid(props)!
+          }
+          return {
+            container: {
+              bg: 'brandgray.500',
+              color: '#ffffff' // or literal color, e.g. "#0984ff"
+            }
+          }
+        }
+      }
+    },
     Button: buttonTheme,
     Input: {
       defaultProps: {

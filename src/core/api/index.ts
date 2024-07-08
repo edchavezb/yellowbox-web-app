@@ -47,7 +47,10 @@ const api = {
       body: JSON.stringify(postData)
     })
     const responseData = await response.json()
-    return responseData
+    if (!response.ok) {
+      throw new Error(responseData.error || response.statusText);
+    }
+    return responseData;
   },
   put: async <D, R>(endpoint: string, putData: D): Promise<R> => {
     const currentUser = firebaseAuth?.currentUser;
@@ -62,7 +65,10 @@ const api = {
       body: JSON.stringify(putData)
     })
     const responseData = await response.json()
-    return responseData
+    if (!response.ok) {
+      throw new Error(responseData.error || response.statusText);
+    }
+    return responseData;
   },
   delete: async <R>(endpoint: string): Promise<R> => {
     const currentUser = firebaseAuth?.currentUser;
@@ -76,7 +82,10 @@ const api = {
       }
     })
     const responseData = await response.json()
-    return responseData
+    if (!response.ok) {
+      throw new Error(responseData.error || response.statusText);
+    }
+    return responseData;
   }
 }
 

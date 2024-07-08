@@ -1,5 +1,9 @@
 import { BoxSections } from "./types"
 
+export interface ErrorWithMessage {
+  message: string;
+}
+
 export interface SpotifyLoginData {
   auth: SpotifyUserAuth
   displayName?: string

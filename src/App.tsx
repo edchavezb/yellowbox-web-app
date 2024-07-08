@@ -15,10 +15,14 @@ import SpotifyAuthSuccess from './pages/Spotify/AuthSuccess/SpotifyAuthSuccess';
 import { loginService } from 'core/services/loginService';
 import SpotifyDashboard from 'pages/Spotify/SpotifyDashboard';
 import Account from 'pages/Account/Account';
+import { useToast } from '@chakra-ui/react';
+import { setIsToastOpen } from 'core/features/toast/toastSlice';
 
 function App() {
   const dispatch = useAppDispatch();
-  const modalData = useAppSelector(state => state.modalData.modalState)
+  const toast = useToast()
+  const modalState = useAppSelector(state => state.modalData.modalState);
+  const toastState = useAppSelector(state => state.toastData);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,12 +32,22 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (modalData.visible) {
+    if (modalState.visible) {
       document.documentElement.style.overflowY = 'hidden';
     } else {
       document.documentElement.style.overflowY = 'auto';
     }
-  }, [modalData])
+  }, [modalState])
+
+  useEffect(() => {
+    const {isOpen, options} = toastState;
+    if (isOpen) {
+      toast({
+        ...options,
+        onCloseComplete: () => dispatch(setIsToastOpen(false))
+      });
+    }
+  }, [toastState, toast, dispatch])
 
   if (isLoading) {
     return (
