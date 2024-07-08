@@ -22,10 +22,12 @@ interface IProps {
 
 function DeletePrompt({ itemData, boxId, folderId, deleteType }: IProps) {
   const dispatch = useAppDispatch();
-  const userFolders = useAppSelector(state => state.userFoldersData.folders)
+  const userFolders = useAppSelector(state => state.userFoldersData.folders);
+  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes);
+  const boxName = userBoxes.find(box => box.boxId === boxId)?.boxName || "";
   const history = useHistory();
   let promptMessage: string;
-  let deleteItem: (box: string, item: string) => AppThunk;
+  let deleteItem: (boxId: string, boxName: string, itemId: string) => AppThunk;
 
   if (deleteType === "Item" && itemData) {
     switch (itemData.type) {
@@ -71,7 +73,7 @@ function DeletePrompt({ itemData, boxId, folderId, deleteType }: IProps) {
       history.push('/')
     }
     else if (deleteType === "Item" && itemData) {
-      dispatch(deleteItem(boxId!, itemData._id!));
+      dispatch(deleteItem(boxId!, boxName, itemData._id!));
     }
     dispatch(setModalState({ visible: false, type: "", boxId: "", folderId: "", page: "", itemData: undefined }))
   }

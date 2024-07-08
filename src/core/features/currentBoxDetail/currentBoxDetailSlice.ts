@@ -10,6 +10,7 @@ import { BoxSections, ItemData } from "core/types/types"
 import { updateBoxName } from "../userBoxes/userBoxesSlice"
 import { updateFolderBoxNameApi } from "core/api/userfolders"
 import { updateUserFolder } from "../userFolders/userFoldersSlice"
+import { initErrorToast, initRemoveFromBoxToast } from "../toast/toastSlice"
 
 interface CurrentBoxDetailState {
   box: UserBox & { creatorName?: string }
@@ -128,39 +129,47 @@ export const updateBoxSortingThunk = (boxId: string, updatedSorting: SectionSort
   }
 }
 
-export const removeBoxArtistThunk = (boxId: string, itemId: string): AppThunk => async (dispatch) => {
+export const removeBoxArtistThunk = (boxId: string, boxName: string, itemId: string): AppThunk => async (dispatch) => {
   try {
     const updatedArtists = await removeBoxArtistApi(boxId, itemId);
-    dispatch(updateBoxArtists({ updatedArtists: updatedArtists! }))
+    dispatch(updateBoxArtists({ updatedArtists: updatedArtists! }));
+    dispatch(initRemoveFromBoxToast({itemType: 'artist', boxName}));
   } catch (err) {
     console.log(err)
+    dispatch(initErrorToast({error: "Failed to remove artist from box"}));
   }
 }
 
-export const removeBoxAlbumThunk = (boxId: string, itemId: string): AppThunk => async (dispatch) => {
+export const removeBoxAlbumThunk = (boxId: string, boxName: string, itemId: string): AppThunk => async (dispatch) => {
   try {
     const updatedAlbums = await removeBoxAlbumApi(boxId, itemId);
-    dispatch(updateBoxAlbums({ updatedAlbums: updatedAlbums! }))
+    dispatch(updateBoxAlbums({ updatedAlbums: updatedAlbums! }));
+    dispatch(initRemoveFromBoxToast({itemType: 'album', boxName}));
   } catch (err) {
     console.log(err)
+    dispatch(initErrorToast({error: "Failed to remove album from box"}));
   }
 }
 
-export const removeBoxTrackThunk = (boxId: string, itemId: string): AppThunk => async (dispatch) => {
+export const removeBoxTrackThunk = (boxId: string, boxName: string, itemId: string): AppThunk => async (dispatch) => {
   try {
     const updatedTracks = await removeBoxTrackApi(boxId, itemId);
-    dispatch(updateBoxTracks({ updatedTracks: updatedTracks! }))
+    dispatch(updateBoxTracks({ updatedTracks: updatedTracks! }));
+    dispatch(initRemoveFromBoxToast({itemType: 'track', boxName}));
   } catch (err) {
     console.log(err)
+    dispatch(initErrorToast({error: "Failed to remove track from box"}));
   }
 }
 
-export const removeBoxPlaylistThunk = (boxId: string, itemId: string): AppThunk => async (dispatch) => {
+export const removeBoxPlaylistThunk = (boxId: string, boxName: string, itemId: string): AppThunk => async (dispatch) => {
   try {
     const updatedPlaylists = await removeBoxPlaylistApi(boxId, itemId);
-    dispatch(updateBoxPlaylists({ updatedPlaylists: updatedPlaylists! }))
+    dispatch(updateBoxPlaylists({ updatedPlaylists: updatedPlaylists! }));
+    dispatch(initRemoveFromBoxToast({itemType: 'playlist', boxName}));
   } catch (err) {
     console.log(err)
+    dispatch(initErrorToast({error: "Failed to remove playlist from box"}));
   }
 }
 
