@@ -6,6 +6,7 @@ export const spotifyLoginApi = async () => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -15,6 +16,7 @@ export const getSpotifyUserTokenApi = async (code: string, state: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -24,6 +26,7 @@ export const getSpotifyGenericTokenApi = async () => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -33,5 +36,6 @@ export const refreshSpotifyTokenApi = async (refresh_token: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }

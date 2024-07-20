@@ -105,7 +105,7 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset =
           {tracks.total}
         </div>
         <div className={`${styles.colLeftAlgn} ${styles.mobileHidden} ${styles.smallText}`}>
-          <Link to={owner.uri}><div className={styles.ownerName}> {owner.display_name} </div></Link>
+          <Link to={owner?.uri}><div className={styles.ownerName}> {owner?.display_name} </div></Link>
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
           <a href={uri}>
@@ -153,7 +153,7 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset =
             {tracks.total}
           </div>
           <div className={`${styles.colLeftAlgn} ${styles.mobileHidden} ${styles.smallText}`}>
-            <Link to={owner.uri}><div className={styles.ownerName}> {owner.display_name} </div></Link>
+            <Link to={owner?.uri}><div className={styles.ownerName}> {owner?.display_name} </div></Link>
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
             <a href={uri}>

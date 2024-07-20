@@ -6,6 +6,11 @@ interface AddToBoxToastPayload {
   boxName: string
 }
 
+interface AddToFolderToastPayload {
+  folderName: string
+  boxName: string
+}
+
 interface ErrorToastPayload {
   error: string
 }
@@ -32,6 +37,42 @@ const toastSlice = createSlice({
   name: 'toast',
   initialState,
   reducers: {
+    initBoxOrFolderCreatedToast(state, action: PayloadAction<{itemName: string}>) {
+      const {itemName} = action.payload;
+      state.options = {
+        title: "Done!",
+        description: `${itemName} was added to your library`,
+        status: "info"
+      };
+      state.isOpen = true;
+    },
+    initBoxOrFolderDeletedToast(state, action: PayloadAction<{itemType: string}>) {
+      const {itemType} = action.payload;
+      state.options = {
+        title: "Done!",
+        description: `1 ${itemType} was removed from your library`,
+        status: "info"
+      };
+      state.isOpen = true;
+    },
+    initAddToFolderToast(state, action: PayloadAction<AddToFolderToastPayload>) {
+      const {boxName, folderName} = action.payload;
+      state.options = {
+        title: "Done!",
+        description: `${boxName} was added to ${folderName}`,
+        status: "info"
+      };
+      state.isOpen = true;
+    },
+    initRemoveFromFolderToast(state, action: PayloadAction<AddToFolderToastPayload>) {
+      const {boxName, folderName} = action.payload;
+      state.options = {
+        title: "Done!",
+        description: `${boxName} was removed from ${folderName}`,
+        status: "info"
+      };
+      state.isOpen = true;
+    },
     initAddToBoxToast(state, action: PayloadAction<AddToBoxToastPayload>) {
       const {boxName, itemType} = action.payload;
       state.options = {
@@ -75,6 +116,10 @@ const toastSlice = createSlice({
 })
 
 export const {
+  initBoxOrFolderCreatedToast,
+  initBoxOrFolderDeletedToast,
+  initAddToFolderToast,
+  initRemoveFromFolderToast,
   initAddToBoxToast,
   initRemoveFromBoxToast,
   initAlreadyInBoxToast,

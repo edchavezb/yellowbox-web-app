@@ -4,6 +4,7 @@ import { AppThunk } from "core/store/store"
 import { DashboardBox, UserFolder } from "core/types/interfaces"
 import { addBoxToDashboard, fetchDashboardBoxes, removeBoxFromDashboard } from "../userBoxes/userBoxesSlice"
 import { fetchFolderDetailThunk } from "../currentFolderDetail/currentFolderDetailSlice"
+import { initAddToFolderToast, initErrorToast, initRemoveFromFolderToast } from "../toast/toastSlice"
 
 interface UserFoldersState {
     folders: UserFolder[]
@@ -95,13 +96,15 @@ export const addBoxToFolderThunk = (folderId: string, boxId: string, boxName: st
         const { folder: currentFolder, isUserViewing} = getState().currentFolderDetailData;
         dispatch(addBoxToFolder({targetId: folderId, box: {boxId, boxName}}))
         dispatch(removeBoxFromDashboard({targetId: boxId}))
-        await addBoxToFolderApi(folderId, boxId, boxName)
+        const response = await addBoxToFolderApi(folderId, boxId, boxName)
         if (currentFolder._id === folderId && isUserViewing) {
             // Refresh folder if user viewing it
             dispatch(fetchFolderDetailThunk(currentFolder._id));
         }
+        dispatch(initAddToFolderToast({boxName, folderName: response.updatedFolder.name}));
     } catch (err) {
         console.log(err)
+        dispatch(initErrorToast({error: `Failed to add ${boxName} to folder`}));
     }
 }
 
@@ -110,14 +113,15 @@ export const removeBoxFromFolderThunk = (folderId: string, boxId: string, boxNam
         const { folder: currentFolder, isUserViewing} = getState().currentFolderDetailData;
         dispatch(removeBoxFromFolder({targetId: folderId, boxId}))
         dispatch(addBoxToDashboard({boxId, boxName}))
-        await removeBoxFromFolderApi(folderId, boxId)
-        
+        const response = await removeBoxFromFolderApi(folderId, boxId)
         if (currentFolder._id === folderId && isUserViewing) {
             // Refresh folder if user viewing it
             dispatch(fetchFolderDetailThunk(currentFolder._id));
         }
+        dispatch(initRemoveFromFolderToast({boxName, folderName: response.updatedFolder.name}));
     } catch (err) {
         console.log(err)
+        dispatch(initErrorToast({error: `Failed to remove ${boxName} from folder`}));
     }
 }
 
@@ -126,12 +130,14 @@ export const moveBoxBetweenFoldersThunk = (sourceId: string, targetId: string, b
         const { folder: currentFolder, isUserViewing} = getState().currentFolderDetailData;
         dispatch(addBoxToFolder({targetId, box: {boxId, boxName}}))
         dispatch(removeBoxFromFolder({targetId: sourceId, boxId}))
-        await moveBoxBetweenFoldersApi(sourceId, targetId, boxId, boxName)
+        const response = await moveBoxBetweenFoldersApi(sourceId, targetId, boxId, boxName)
         if ((currentFolder._id === sourceId || currentFolder._id === targetId) && isUserViewing) {
             dispatch(fetchFolderDetailThunk(currentFolder._id));
         }
+        dispatch(initAddToFolderToast({boxName, folderName: response.updatedTargetFolder.name}));
     } catch (err) {
         console.log(err)
+        dispatch(initErrorToast({error: `Failed to add ${boxName} to folder`}));
     }
 }
 

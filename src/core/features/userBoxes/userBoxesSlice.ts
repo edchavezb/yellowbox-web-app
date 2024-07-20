@@ -4,6 +4,7 @@ import { getUserBoxesApi, updateUserDashboardBoxesApi } from "core/api/users"
 import { AppThunk } from "core/store/store"
 import { DashboardBox, UserBox, UserFolder } from "core/types/interfaces"
 import { updateUserFolder } from "../userFolders/userFoldersSlice"
+import { initBoxOrFolderCreatedToast, initBoxOrFolderDeletedToast, initErrorToast } from "../toast/toastSlice"
 
 interface UserBoxesState {
     userBoxes: DashboardBox[]
@@ -99,10 +100,12 @@ export const reorderDashboardBoxesThunk = (sourceIndex: number, targetIndex: num
 
 export const createUserBoxThunk = (boxObj: Omit<UserBox, '_id'>): AppThunk => async (dispatch) => {
     try {
-        const newBox = await createUserBoxApi(boxObj)
-        dispatch(createBox(newBox!))
+        const newBox = await createUserBoxApi(boxObj);
+        dispatch(createBox(newBox!));
+        dispatch(initBoxOrFolderCreatedToast({itemName: boxObj.name}));
     } catch (err) {
         console.log(err)
+        dispatch(initErrorToast({error: "Failed to create a new box in your library"}));
     }
 }
 
@@ -110,8 +113,10 @@ export const cloneUserBoxThunk = (boxId: string, name: string, description: stri
     try {
         const newBox = await cloneBoxApi(boxId, name, description, isPublic, creator)
         dispatch(createBox(newBox!))
+        dispatch(initBoxOrFolderCreatedToast({itemName: newBox!.boxName}));
     } catch (err) {
         console.log(err)
+        dispatch(initErrorToast({error: "Failed to clone this box into your library"}));
     }
 }
 
@@ -125,8 +130,10 @@ export const deleteUserBoxThunk = (boxId: string, containingFolder: boolean, fol
         else {
             dispatch(removeBoxFromDashboard({targetId: boxId}))
         }
+        dispatch(initBoxOrFolderDeletedToast({itemType: "box"}));
     } catch (err) {
         console.log(err)
+        dispatch(initErrorToast({error: "Failed to delete this box from your library"}));
     }
 }
 

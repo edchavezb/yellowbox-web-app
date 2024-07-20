@@ -7,6 +7,7 @@ export const getBoxByIdApi = async (boxId: string) => {
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -16,6 +17,7 @@ export const getDashboardBoxesApi = async (boxIds: string[]) => {
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -25,6 +27,7 @@ export const createUserBoxApi = async (data: Omit<UserBox, '_id'>) => {
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -36,6 +39,7 @@ export const deleteUserBoxApi = async (boxId: string, containingFolder: boolean,
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -45,6 +49,7 @@ export const updateUserBoxApi = async (boxId: string, updatedBox: UserBox) => {
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -54,6 +59,7 @@ export const updateBoxSortingApi = async (boxId: string, updatedSorting: Section
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -63,6 +69,7 @@ export const cloneBoxApi = async (boxId: string, name: string, description: stri
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -72,6 +79,7 @@ export const updateBoxInfoApi = async (boxId: string, name: string, description:
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -81,6 +89,7 @@ export const addNoteToBoxApi = async (boxId: string, noteObj: { itemId: string, 
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -90,6 +99,7 @@ export const updateItemNoteApi = async (boxId: string, noteId: string, noteObj: 
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -99,6 +109,7 @@ export const addSubsectionToBoxApi = async (boxId: string, subsectionObj: { type
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -108,6 +119,7 @@ export const updateSubsectionsApi = async (boxId: string, updatedSubsections: Su
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -117,6 +129,7 @@ export const updateSubsectionNameApi = async (boxId: string, subsectionId: strin
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -126,6 +139,7 @@ export const removeSubsectionApi = async (boxId: string, subsectionId: string, t
   }
   catch (err) {
     console.log(err)
+    throw err; 
   }
 }
 
@@ -137,5 +151,6 @@ export const reorderSubsectionItemsApi = async (boxId: string, subSectionId: str
     );
   } catch (err) {
     console.log(err);
+    throw err; 
   }
 }
