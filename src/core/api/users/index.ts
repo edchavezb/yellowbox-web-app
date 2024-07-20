@@ -7,6 +7,7 @@ export const getAuthenticatedUserDataApi = async () => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -16,6 +17,7 @@ export const getUserDataBySpotifyIdApi = async (spotifyId: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -25,6 +27,7 @@ export const dbUsernameCheckApi = async (username: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -34,6 +37,7 @@ export const dbEmailCheckApi = async (email: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -43,6 +47,7 @@ export const createUserApi = async (userData: Omit<YellowboxUser, '_id'>) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -52,6 +57,7 @@ export const updateUserApi = async (userId: string, userData: Omit<YellowboxUser
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -61,6 +67,7 @@ export const getUserBoxesApi = async (userId: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -70,6 +77,7 @@ export const getUserFoldersApi = async (userId: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -79,6 +87,7 @@ export const updateUserDashboardBoxesApi = async (userId: string, updatedBoxIdLi
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -88,6 +97,7 @@ export const linkUserToSpotifyAccountApi = async (userId: string, spotifyData: {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -97,6 +107,7 @@ export const unlinkUserSpotifyAccountApi = async (userId: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -106,5 +117,6 @@ export const verifyUserEmailAddressApi = async (userId: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }

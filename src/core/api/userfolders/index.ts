@@ -7,6 +7,7 @@ export const getFolderByIdApi = async (folderId: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -16,6 +17,7 @@ export const getFoldersByIdsApi = async (folderIds: string[]) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -25,6 +27,7 @@ export const createUserFolderApi = async (data: Omit<UserFolder, '_id'>) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -34,6 +37,7 @@ export const updateUserFolderApi = async (folderId: string, updatedFolder: UserF
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -43,6 +47,7 @@ export const deleteUserFolderApi = async (folderId: string) => {
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -54,6 +59,7 @@ export const updateFolderBoxesApi = async (folderId: string, updatedItems: Dashb
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -63,6 +69,7 @@ export const updateFolderBoxNameApi = async (folderId: string, boxId: string, ne
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -72,6 +79,7 @@ export const addBoxToFolderApi = async (folderId: string, boxId: string, boxName
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
@@ -81,14 +89,16 @@ export const removeBoxFromFolderApi = async (folderId: string, boxId: string) =>
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
 
 export const moveBoxBetweenFoldersApi = async (sourceId: string, targetId: string, boxId: string, boxName: string) => {
     try {
-        return await api.put<{targetId: string, boxName: string}, {updatedSourceFolder: UserFolder, updatedTargetFolder: UserFolder}>(`folders/${sourceId}/boxes/${boxId}`, {boxName, targetId})
+        return await api.put<{targetId: string, boxName: string}, {updatedSourceFolder: UserFolder, updatedTargetFolder: UserFolder}>(`folders/${sourceId}/boxes/${boxId}/move`, {boxName, targetId})
     }
     catch(err) {
         console.log(err)
+        throw err; 
     }
 }
