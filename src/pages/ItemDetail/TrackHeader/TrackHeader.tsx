@@ -16,14 +16,16 @@ const TrackHeader = ({ itemData }: TrackHeaderProps) => {
   return (
     <>
       <div className={styles.itemDataViewer}>
-        <img
-          className={styles.itemImage}
-          src={
-            itemData.album?.images![0]?.url || "https://via.placeholder.com/150"
-          }
-          alt={itemData.name}
-        >
-        </img>
+        <div className={styles.imageWrapper}>
+          <img
+            className={styles.itemImage}
+            src={
+              itemData.album?.images![0]?.url || "https://via.placeholder.com/150"
+            }
+            alt={itemData.name}
+          >
+          </img>
+        </div>
         <div className={styles.metadataContainer}>
           <div className={styles.itemTitle}> {itemData.name} </div>
           <div className={styles.itemArtist}>

@@ -1,4 +1,4 @@
-import { Playlist, PlaylistItem, Track } from "core/types/interfaces";
+import { Playlist, Track } from "core/types/interfaces";
 import styles from "./PlaylistHeader.module.css"
 import { useRef, useState } from "react";
 import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
@@ -8,7 +8,7 @@ interface PlaylistHeaderProps {
   itemData: Playlist
 }
 
-const PlaylistHeader = ({itemData}: PlaylistHeaderProps) => {
+const PlaylistHeader = ({ itemData }: PlaylistHeaderProps) => {
   const [isItemMenuOpen, setIsItemMenuOpen] = useState(false);
   const menuToggleRef = useRef(null);
 
@@ -26,19 +26,21 @@ const PlaylistHeader = ({itemData}: PlaylistHeaderProps) => {
   return (
     <>
       <div className={styles.itemDataViewer}>
-        <img
-          className={styles.itemImage}
-          src={
-            itemData.images![0]?.url || "https://via.placeholder.com/150"
-          }
-          alt={itemData.name}
-        >
-        </img>
+        <div className={styles.imageWrapper}>
+          <img
+            className={styles.itemImage}
+            src={
+              itemData.images![0]?.url || "https://via.placeholder.com/150"
+            }
+            alt={itemData.name}
+          >
+          </img>
+        </div>
         <div className={styles.metadataContainer}>
           <div className={styles.itemTitle}> {itemData.name} </div>
           <div className={styles.itemArtist}>
             {`${itemData.type.charAt(0).toUpperCase()}${itemData.type.slice(1)}`}
-            {` by `}<a href={itemData.owner.uri}><span> {itemData.owner.display_name} </span></a> 
+            {` by `}<a href={itemData.owner.uri}><span> {itemData.owner.display_name} </span></a>
           </div>
           <div className={styles.detailsRow}>
             <div className={styles.metaDataPill}>

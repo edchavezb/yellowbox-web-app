@@ -11,6 +11,13 @@
     display: flex;
     align-items: center;
   }
+
+  .imageWrapper {
+    flex-shrink: 0;
+    max-height: 100px;
+    overflow: hidden;
+    border-radius: 2%;
+  }
   
   .itemImage {
     width: 100px;
