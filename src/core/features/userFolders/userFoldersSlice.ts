@@ -4,7 +4,7 @@ import { AppThunk } from "core/store/store"
 import { DashboardBox, UserFolder } from "core/types/interfaces"
 import { addBoxToDashboard, fetchDashboardBoxes, removeBoxFromDashboard } from "../userBoxes/userBoxesSlice"
 import { fetchFolderDetailThunk } from "../currentFolderDetail/currentFolderDetailSlice"
-import { initAddToFolderToast, initErrorToast, initRemoveFromFolderToast } from "../toast/toastSlice"
+import { initAddToFolderToast, initBoxOrFolderCreatedToast, initBoxOrFolderDeletedToast, initErrorToast, initRemoveFromFolderToast } from "../toast/toastSlice"
 
 interface UserFoldersState {
     folders: UserFolder[]
@@ -73,8 +73,10 @@ export const createUserFolderThunk = (folderObj: Omit<UserFolder, '_id'>): AppTh
     try {
         const response = await createUserFolderApi(folderObj)
         dispatch(createUserFolder(response?.newFolder!))
+        dispatch(initBoxOrFolderCreatedToast({itemName: response.newFolder.name}))
     } catch (err) {
         console.log(err)
+        dispatch(initErrorToast({error: `Failed to create new folder`}));
     }
 }
 
@@ -86,8 +88,10 @@ export const deleteUserFolderThunk = (folderId: string): AppThunk => async (disp
             dispatch(fetchDashboardFolders(updatedDashboardFolders));
             dispatch(fetchDashboardBoxes(updatedDashboardBoxes));
         }
+        dispatch(initBoxOrFolderDeletedToast({itemType: 'folder'}))
     } catch (err) {
         console.log(err)
+        dispatch(initErrorToast({error: `Failed to delete folder`}));
     }
 }
 
