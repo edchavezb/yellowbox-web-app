@@ -1,7 +1,7 @@
 import { ModalType, setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { Artist, Album, Track, Playlist, SectionSorting } from "core/types/interfaces";
+import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 import styles from "./BoxItemMenu.module.css";
 import { Link } from "react-router-dom";
 import { reorderBoxItemsThunk, reorderSubsectionItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
@@ -19,8 +19,8 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const { isUserViewing: boxDetailViewing, box } = useAppSelector(state => state.currentBoxDetailData)
-  const { _id: boxId, notes } = box || {};
-  const subSection = box?.subSections?.find(sub => sub._id === subId);
+  const { boxId, notes } = box || {};
+  const subSection = box?.subsections?.find(sub => sub.subsectionId === subId);
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const isOwner = userBoxes.some(box => box.boxId === boxId);
   const { menuItemsList, menuItem } = styles;
@@ -37,15 +37,15 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
   }
 
   const handleCopyURL = () => {
-    navigator.clipboard.writeText(itemData.external_urls.spotify);
+    navigator.clipboard.writeText(`https://open.spotify.com/${itemData.type}/${itemData.spotifyId}`);
   }
 
   const handleMoveToTop = () => {
     if (subSection) {
-      dispatch(reorderSubsectionItemsThunk(boxId, itemData._id!, subId!, itemIndex!, 0));
+      dispatch(reorderSubsectionItemsThunk(boxId, itemData.itemId!, subId!, itemIndex!, 0));
     }
     else {
-      dispatch(reorderBoxItemsThunk(boxId, itemData._id!, itemIndex!, 0, itemData.type));
+      dispatch(reorderBoxItemsThunk(boxId, itemData.itemId!, itemIndex!, 0, itemData.type));
     }
     setIsOpen(false);
   }
@@ -54,7 +54,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
     let lastItemIndex;
     if (subSection) {
       lastItemIndex = subSection.items.length - 1;
-      dispatch(reorderSubsectionItemsThunk(boxId, itemData._id!, subId!, itemIndex!, lastItemIndex));
+      dispatch(reorderSubsectionItemsThunk(boxId, itemData.itemId!, subId!, itemIndex!, lastItemIndex));
     }
     else {
       switch (itemData.type) {
@@ -74,7 +74,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
           lastItemIndex = 0;
           break;
       }
-      dispatch(reorderBoxItemsThunk(boxId, itemData._id!, itemIndex!, lastItemIndex, itemData.type));
+      dispatch(reorderBoxItemsThunk(boxId, itemData.itemId!, itemIndex!, lastItemIndex, itemData.type));
     }
     setIsOpen(false);
   }
@@ -83,7 +83,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
     <div className={menuItemsList}>
       {
         viewMode === 'wall' &&
-        <Link to={`/detail/${itemData.type}/${itemData.id}`}>
+        <Link to={`/detail/${itemData.type}/${itemData.spotifyId}`}>
           <div className={menuItem}>
             {`Navigate to ${itemData.type}`}
           </div>
@@ -122,7 +122,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         </div>
       }
       {
-        (boxDetailViewing && isOwner && box.sectionSorting[`${itemData.type}s` as keyof SectionSorting]?.primarySorting === "custom") &&
+        (boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") &&
         <div
           className={menuItem}
           onClick={() => handleMoveToTop()}>
@@ -130,7 +130,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         </div>
       }
       {
-        (boxDetailViewing && isOwner && box.sectionSorting[`${itemData.type}s` as keyof SectionSorting]?.primarySorting === "custom") &&
+        (boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") &&
         <div
           className={menuItem}
           onClick={() => handleMoveToBottom()}>
@@ -142,7 +142,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         <div
           className={menuItem}
           onClick={() => handleOpenModal("Item Note")}>
-          {notes?.some(note => note.itemId === itemData.id) ? 'View note' : 'Add note'}
+          {notes?.some(note => note.itemId === itemData.spotifyId) ? 'View note' : 'Add note'}
         </div>
       }
       <div
@@ -150,7 +150,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         onClick={() => handleCopyURL()}>
         Copy Spotify URL
       </div>
-      <a href={itemData.uri}>
+      <a href={`spotify:${itemData.type}:${itemData.spotifyId}`}>
         <div className={menuItem}>
           Open on Spotify
         </div>

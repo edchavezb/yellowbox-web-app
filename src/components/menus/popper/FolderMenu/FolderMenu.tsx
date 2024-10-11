@@ -9,9 +9,9 @@ interface BoxMenuProps {
 
 const FolderMenu = ({ setIsOpen }: BoxMenuProps) => {
   const dispatch = useAppDispatch();
-  const { _id: folderId } = useAppSelector(state => state.currentFolderDetailData.folder)
+  const { folderId } = useAppSelector(state => state.currentFolderDetailData.folder)
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
-  const isOwner = userFolders.some(folder => folder._id === folderId);
+  const isOwner = userFolders.some(folder => folder.folderId === folderId);
   const { menuItemsList, menuItem } = styles;
 
   const handleOpenModal = (modalType: ModalType) => {

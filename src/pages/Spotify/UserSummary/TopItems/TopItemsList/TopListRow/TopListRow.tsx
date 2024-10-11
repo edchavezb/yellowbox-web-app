@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Album, Track, Artist } from 'core/types/interfaces';
+import { ApiAlbum, ApiTrack, ApiArtist } from 'core/types/interfaces';
 import styles from "./TopListRow.module.css";
 
 interface IProps {
-  item: Artist | Album | Track
+  item: ApiArtist | ApiAlbum | ApiTrack
   type: TopItemsSelectItems
 }
 
@@ -18,13 +18,13 @@ function TopListRow({ item, type }: IProps) {
     let imageSrc;
     switch (type) {
       case TopItemsSelectItems.ALBUMS:
-        imageSrc = (item as Album).images[1].url
+        imageSrc = (item as ApiAlbum).images[1].url
         break;
       case TopItemsSelectItems.ARTISTS:
-        imageSrc = (item as Artist).images![1].url
+        imageSrc = (item as ApiArtist).images![1].url
         break;
       case TopItemsSelectItems.TRACKS:
-        imageSrc = (item as Track).album?.images![1].url
+        imageSrc = (item as ApiTrack).album?.images![1].url
         break;
       default:
         break;
@@ -39,7 +39,7 @@ function TopListRow({ item, type }: IProps) {
         <div className={styles.topItem}>
           <img src={getItemImage() ?? ''} className={styles.itemImage} alt={item.name} />
           <div className={styles.itemData}>
-            <Link to={`/detail/artist/${(item as Artist).id}`}>
+            <Link to={`/detail/artist/${(item as ApiArtist).id}`}>
               <div className={styles.artistName}> {item.name} </div>
             </Link>
           </div>
@@ -50,14 +50,14 @@ function TopListRow({ item, type }: IProps) {
         <div className={styles.topItem}>
           <img src={getItemImage() ?? ''} className={styles.itemImage} alt={item.name} />
           <div className={styles.itemData}>
-            <Link to={`/detail/track/${(item as Track).id}`}>
+            <Link to={`/detail/track/${(item as ApiTrack).id}`}>
               <div className={styles.itemDataName}>
                 {item.name}
               </div>
             </Link>
-            <Link to={`/detail/artist/${(item as Track).artists[0].id}`}>
+            <Link to={`/detail/artist/${(item as ApiTrack).artists[0].id}`}>
               <div className={styles.itemDataArtist}>
-                {(item as Track).artists[0].name}
+                {(item as ApiTrack).artists[0].name}
               </div>
             </Link>
           </div>
@@ -68,14 +68,14 @@ function TopListRow({ item, type }: IProps) {
         <div className={styles.topItem}>
           <img src={getItemImage() ?? ''} className={styles.itemImage} alt={item.name} />
           <div className={styles.itemData}>
-            <Link to={`/detail/album/${(item as Album).id}`}>
+            <Link to={`/detail/album/${(item as ApiAlbum).id}`}>
               <div className={styles.itemDataName}>
                 {item.name}
               </div>
             </Link>
-            <Link to={`/detail/artist/${(item as Album).artists[0].id}`}>
+            <Link to={`/detail/artist/${(item as ApiAlbum).artists[0].id}`}>
               <div className={styles.itemDataArtist}>
-                {(item as Album).artists[0].name}
+                {(item as ApiAlbum).artists[0].name}
               </div>
             </Link>
           </div>

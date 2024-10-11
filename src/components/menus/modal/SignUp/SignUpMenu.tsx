@@ -5,7 +5,7 @@ import * as yup from "yup";
 import styles from "./SignUpMenu.module.css";
 import { firebaseAuth } from 'core/services/firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { createUserApi, dbUsernameCheckApi } from 'core/api/users';
+import { createUserApi, dbUsernameCheckApi, UserCreateDTO } from 'core/api/users';
 import { YellowboxUser } from 'core/types/interfaces';
 import useDebouncePromise from 'core/hooks/useDebouncePromise';
 import { cacheYupTest } from 'core/helpers/cacheYupTest';
@@ -65,19 +65,13 @@ function SignUpMenu() {
         password.trim()
       );
       await sendEmailVerification(newFirebaseUser.user)
-      const newAppUser: Omit<YellowboxUser, "_id"> = {
+      const newAppUser: UserCreateDTO = {
         firebaseId: newFirebaseUser.user.uid,
         username: username.toLowerCase().trim(),
-        image: "",
-        account: {
-          accountTier: "free",
-          signUpDate: (new Date()).toISOString(),
-          emailVerified: false,
-          email,
-          showTutorial: true
-        },
-        billing: {},
-        services: {}
+        firstName: "",
+        lastName: "",
+        imageUrl: "",
+        email: email
       }
       const savedUser = await createUserApi(newAppUser);
       if (savedUser) {

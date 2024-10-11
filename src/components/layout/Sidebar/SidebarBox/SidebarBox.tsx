@@ -6,7 +6,6 @@ import { isArtist, isAlbum, isTrack, isPlaylist, isErrorWithMessage } from "core
 import { CSS } from '@dnd-kit/utilities';
 import { SortableData, UseSortableArguments, useSortable } from "@dnd-kit/sortable";
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { extractCrucialData } from "core/helpers/itemDataHandlers";
 import { addAlbumToBoxApi } from "core/api/userboxes/albums";
 import { addArtistToBoxApi } from "core/api/userboxes/artists";
 import { addPlaylistToBoxApi } from "core/api/userboxes/playlists";
@@ -52,7 +51,7 @@ const SidebarBox = ({ box }: SidebarBoxProps) => {
   } = useAppSortable({
     id: box.boxId,
     data: {
-      name: box.boxName
+      name: box.name
     }
   });
   const draggableStyle = {
@@ -81,13 +80,13 @@ const SidebarBox = ({ box }: SidebarBoxProps) => {
         else if (isPlaylist(draggedData)) {
           await addPlaylistToBoxApi(targetBoxId, draggedData);
         }
-        dispatch(initAddToBoxToast({ itemType: draggedData.type as BoxItemType, boxName: userBox.boxName }));
+        dispatch(initAddToBoxToast({ itemType: draggedData.type as BoxItemType, boxName: userBox.name }));
       } catch (error) {
         if (isErrorWithMessage(error) && error.message === "Item already in box") {
-          dispatch(initAlreadyInBoxToast({ itemType: draggedData.type as BoxItemType, boxName: userBox.boxName }))
+          dispatch(initAlreadyInBoxToast({ itemType: draggedData.type as BoxItemType, boxName: userBox.name }))
         }
         else {
-          dispatch(initErrorToast({ error: `Failed to add item to ${userBox.boxName}` }))
+          dispatch(initErrorToast({ error: `Failed to add item to ${userBox.name}` }))
         }
       }
     }
@@ -115,8 +114,7 @@ const SidebarBox = ({ box }: SidebarBoxProps) => {
     event.stopPropagation();
     (event.target as Element).className = styles.boxName
     const data = JSON.parse(event.dataTransfer.getData("data"))
-    const crucialData = extractCrucialData(data)
-    addToBox(crucialData, event.currentTarget.id, userCreatedBoxes)
+    addToBox(data, event.currentTarget.id, userCreatedBoxes)
   }
 
   return (
@@ -126,7 +124,7 @@ const SidebarBox = ({ box }: SidebarBoxProps) => {
       onDragLeave={(e) => handleDragLeave(e)}
       onDragOver={(e) => handleDragOver(e)}
       onDrop={(e) => handleDrop(e)}>
-      <div className={styles.boxName}> {box.boxName} </div>
+      <div className={styles.boxName}> {box.name} </div>
     </div>
   )
 }

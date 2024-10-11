@@ -1,5 +1,14 @@
-import { DashboardBox, UserFolder, UserServices, YellowboxUser } from '../../types/interfaces'
+import { DashboardBox, UserFolder, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
+
+export interface UserCreateDTO {
+    firebaseId: string
+    username: string,
+    firstName: string,
+    lastName: string,
+    imageUrl: string,
+    email: string
+}
 
 export const getAuthenticatedUserDataApi = async () => {
     try {
@@ -23,7 +32,7 @@ export const getUserDataBySpotifyIdApi = async (spotifyId: string) => {
 
 export const dbUsernameCheckApi = async (username: string) => {
     try {
-        return await api.get<{usernameExists: boolean}>(`users/checkUsername/${username}`, {})
+        return await api.get<{usernameExists: boolean}>(`users/check-username/${username}`, {})
     }
     catch(err) {
         console.log(err)
@@ -33,7 +42,7 @@ export const dbUsernameCheckApi = async (username: string) => {
 
 export const dbEmailCheckApi = async (email: string) => {
     try {
-        return await api.get<{emailExists: boolean}>(`users/checkEmail/${email}`, {})
+        return await api.get<{emailExists: boolean}>(`users/check-email/${email}`, {})
     }
     catch(err) {
         console.log(err)
@@ -41,9 +50,9 @@ export const dbEmailCheckApi = async (email: string) => {
     }
 }
 
-export const createUserApi = async (userData: Omit<YellowboxUser, '_id'>) => {
+export const createUserApi = async (userData: UserCreateDTO) => {
     try {
-        return await api.post<Omit<YellowboxUser, '_id'>, YellowboxUser>('users', userData)
+        return await api.post<UserCreateDTO, YellowboxUser>('users', userData)
     }
     catch(err) {
         console.log(err)
@@ -51,9 +60,9 @@ export const createUserApi = async (userData: Omit<YellowboxUser, '_id'>) => {
     }
 }
 
-export const updateUserApi = async (userId: string, userData: Omit<YellowboxUser, '_id'>) => {
+export const updateUserApi = async (userId: string, userData: Omit<YellowboxUser, 'userId'>) => {
     try {
-        return await api.put<Omit<YellowboxUser, '_id'>, YellowboxUser>(`users/${userId}/`, userData)
+        return await api.put<Omit<YellowboxUser, 'userId'>, YellowboxUser>(`users/${userId}/`, userData)
     }
     catch(err) {
         console.log(err)
@@ -103,7 +112,7 @@ export const linkUserToSpotifyAccountApi = async (userId: string, spotifyData: {
 
 export const unlinkUserSpotifyAccountApi = async (userId: string) => {
     try {
-        return await api.post<{}, UserServices>(`users/${userId}/spotify/unlink`, {})
+        return await api.post<{}, {}>(`users/${userId}/spotify/unlink`, {})
     }
     catch(err) {
         console.log(err)
@@ -113,7 +122,7 @@ export const unlinkUserSpotifyAccountApi = async (userId: string) => {
 
 export const verifyUserEmailAddressApi = async (userId: string) => {
     try {
-        return await api.put<{}, YellowboxUser>(`users/${userId}/verifyEmail`, {})
+        return await api.put<{}, YellowboxUser>(`users/${userId}/verify-email`, {})
     }
     catch(err) {
         console.log(err)

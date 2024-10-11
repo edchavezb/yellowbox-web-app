@@ -1,7 +1,7 @@
 import { cloneUserBoxThunk, createUserBoxThunk } from 'core/features/userBoxes/userBoxesSlice';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useState } from 'react';
-import { UserBox } from 'core/types/interfaces';
+import { BoxCreateDTO, UserBox } from 'core/types/interfaces';
 import styles from "./NewBoxMenu.module.css";
 import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
@@ -18,69 +18,26 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const user = useAppSelector(state => state.userData.authenticatedUser)
+  const userDashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes);
   const [boxDetails, setBoxDetails] = useState(
     action !== "New Box" ?
       {
         boxName: `${currentBox.name}${action === "Clone Box" ? " - Copy" : ""}`,
         boxDesc: currentBox.description,
-        boxPublic: currentBox.public
+        boxPublic: currentBox.isPublic
       }
       :
       { boxName: "", boxDesc: "", boxPublic: true }
   )
 
   const newUserBox = () => {
-    const blankBox: Omit<UserBox, '_id'> = {
+    const maxBoxPosition = Math.max(...userDashboardBoxes.map(box => box.position!));
+    const blankBox: BoxCreateDTO = {
       name: boxDetails.boxName,
       description: boxDetails.boxDesc,
-      creator: user._id,
-      public: boxDetails.boxPublic,
-      artists: [],
-      albums: [],
-      tracks: [],
-      playlists: [],
-      sectionSorting: {
-        artists: {
-          primarySorting: "custom",
-          secondarySorting: "none",
-          view: "grid",
-          ascendingOrder: false,
-          displaySubSections: false,
-          displayGrouping: false
-        },
-        albums: {
-          primarySorting: "custom",
-          secondarySorting: "none",
-          view: "grid",
-          ascendingOrder: false,
-          displaySubSections: false,
-          displayGrouping: false
-        },
-        tracks: {
-          primarySorting: "custom",
-          secondarySorting: "none",
-          view: "grid",
-          ascendingOrder: false,
-          displaySubSections: false,
-          displayGrouping: false
-        },
-        playlists: {
-          primarySorting: "custom",
-          secondarySorting: "none",
-          view: "grid",
-          ascendingOrder: false,
-          displaySubSections: false,
-          displayGrouping: false
-        }
-      },
-      sectionVisibility: {
-        artists: true,
-        albums: true,
-        tracks: true,
-        playlists: true
-      },
-      subSections: [],
-      notes: []
+      creatorId: user.userId,
+      isPublic: boxDetails.boxPublic,
+      position: maxBoxPosition + 1
     }
     return blankBox;
   }
@@ -104,12 +61,12 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
 
   const handleCloneBox = async () => {
     const { boxName, boxDesc, boxPublic } = boxDetails;
-    dispatch(cloneUserBoxThunk(currentBox._id, boxName, boxDesc, boxPublic, user._id))
+    dispatch(cloneUserBoxThunk(currentBox.boxId, boxName, boxDesc, boxPublic, user.userId))
   }
 
   const handleUpdateBox = async () => {
     const { boxName, boxDesc, boxPublic } = boxDetails;
-    dispatch(updateCurrentBoxDetailThunk(currentBox._id, boxName, boxDesc, boxPublic))
+    dispatch(updateCurrentBoxDetailThunk(currentBox.boxId, boxName, boxDesc, boxPublic))
   }
 
   const handleSubmitBtnClick = async () => {
@@ -139,9 +96,9 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
           onChange={(e) => setBoxDetails(state => ({ ...state, boxDesc: e.target.value }))}
         />
         <div className={styles.formElement}>
-          <input type={'checkbox'} name="public-toggle" checked={boxDetails.boxPublic}
+          <input type={'checkbox'} name="isPublic-toggle" checked={boxDetails.boxPublic}
             onChange={(e) => setBoxDetails(state => ({ ...state, boxPublic: e.target.checked }))} />
-          <label className={styles.formElement} htmlFor="public-toggle"> Make this box public &#x24D8; </label>
+          <label className={styles.formElement} htmlFor="isPublic-toggle"> Make this box isPublic &#x24D8; </label>
         </div>
       </form>
       <div id={styles.modalFooter}>

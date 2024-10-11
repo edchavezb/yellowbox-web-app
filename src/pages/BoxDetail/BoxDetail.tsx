@@ -52,7 +52,7 @@ function BoxDetail() {
   return (
     <>
       {
-        (isLoggedIn !== null && currentBox._id === boxId) &&
+        (isLoggedIn !== null && currentBox.boxId === boxId) &&
         <div id={styles.mainPanel}>
           <div className={styles.boxHeader}>
             <div className={styles.boxSquare}>
@@ -64,7 +64,7 @@ function BoxDetail() {
                 {`${currentBox?.description}`}
               </div>
               <div className={styles.creator}>
-                Box by <span className={styles.creatorName}>{currentBox.creatorName}</span>
+                Box by <span className={styles.creatorName}>{currentBox.creator.username}</span>
               </div>
             </div>
             <div className={styles.menuButtonWrapper}>

@@ -27,6 +27,7 @@ function App() {
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(async (authUser) => {
+      console.log("Auth changed")
       loginService(firebaseAuth, authUser, dispatch, setIsLoading);
     });
   }, [dispatch]);

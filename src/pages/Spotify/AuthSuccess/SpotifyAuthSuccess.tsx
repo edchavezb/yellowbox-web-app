@@ -13,7 +13,7 @@ function SpotifyAuthSuccess() {
   let location = useLocation();
   let history = useHistory();
   const dispatch = useAppDispatch();
-  const userId = useAppSelector(state => state.userData.authenticatedUser._id);
+  const userId = useAppSelector(state => state.userData.authenticatedUser.userId);
 
   useEffect(() => {
     const getSpotifyLoginData = async (code: string, state: string) => {

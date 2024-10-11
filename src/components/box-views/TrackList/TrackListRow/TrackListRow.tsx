@@ -4,8 +4,9 @@ import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Track } from "../../../../core/types/interfaces";
+import { Track } from "core/types/interfaces";
 import styles from "./TrackListRow.module.css";
+import { getUri } from "core/helpers/itemDataHandlers";
 
 interface IProps {
   element: Track
@@ -18,10 +19,10 @@ interface IProps {
 }
 
 function TrackListRow({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: {index: dbIndex || index} })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.spotifyId!, data: {index: dbIndex || index} })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
+  const { name, type, artists, duration, explicit, spotifyId } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
@@ -29,7 +30,7 @@ function TrackListRow({ element, setElementDragging, dbIndex, index, offset = 0,
 
   const getArtistLinks = () => {
     const artistArray = artists?.slice(0, 3).map((artist, idx, arr) => {
-      return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
+      return <Link to={`/detail/artist/${artist.spotifyId}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
     })
 
     return artistArray;
@@ -57,19 +58,19 @@ function TrackListRow({ element, setElementDragging, dbIndex, index, offset = 0,
           <img className={styles.reorderIcon} src="/icons/reorder.svg" alt="reorder"></img>
         </div>
         <div className={styles.colLeftAlgn}>
-          <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
+          <div className={styles.name}> <Link to={`/detail/${type}/${spotifyId}`}> <span className={styles.name}> {name} </span> </Link></div>
         </div>
         <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
           {getArtistLinks()}
         </div>
         <div className={styles.colCentered}>
-          {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
+          {`${Math.floor(duration / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration % 60000 / 1000)}`.padStart(2, '0')}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
           {explicit ? "Explicit" : "Clean"}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-          <a href={uri}>
+          <a href={getUri(type, spotifyId)}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
               {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -90,19 +91,19 @@ function TrackListRow({ element, setElementDragging, dbIndex, index, offset = 0,
         >
           <div className={styles.colLeftAlgn}>{index + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
-            <div className={styles.name}> <Link to={`/detail/${type}/${id}`}> <span className={styles.name}> {name} </span> </Link></div>
+            <div className={styles.name}> <Link to={`/detail/${type}/${spotifyId}`}> <span className={styles.name}> {name} </span> </Link></div>
           </div>
           <div className={`${styles.colLeftAlgn} ${styles.mobileHidden}`}>
             {getArtistLinks()}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-            {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
+            {`${Math.floor(duration / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration % 60000 / 1000)}`.padStart(2, '0')}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
             {explicit ? "Explicit" : "Clean"}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-            <a href={uri}>
+            <a href={getUri(type, spotifyId)}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 {type === "track" ? <span> Play </span> : <span> Open </span>}

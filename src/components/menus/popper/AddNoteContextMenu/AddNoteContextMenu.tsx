@@ -7,26 +7,26 @@ import { ItemData } from "core/types/types";
 
 interface AddNoteContextMenuProps {
   item: ItemData
-  subSections: Subsection[];
+  subsections: Subsection[];
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const AddNoteContextMenu = ({ item, subSections, setIsOpen }: AddNoteContextMenuProps) => {
+const AddNoteContextMenu = ({ item, subsections, setIsOpen }: AddNoteContextMenuProps) => {
   const dispatch = useAppDispatch();
   const { box } = useAppSelector(state => state.currentBoxDetailData)
-  const { _id: boxId } = box || {};
+  const { boxId } = box || {};
   const { menuItemsList, menuItem } = styles;
 
   const handleAddNoteToSubSection = (subSectionId: string) => {
-    dispatch(addNoteToBoxThunk(boxId, item.id, "", subSectionId))
+    dispatch(addNoteToBoxThunk(boxId, item.itemId!, "", subSectionId))
     setIsOpen(false);
   }
 
   return (
     <div className={menuItemsList}>
-      {subSections.map(subSection => {
+      {subsections.map(subSection => {
         return (
-          <div className={menuItem} onClick={() => handleAddNoteToSubSection(subSection._id!)}> {subSection.name} </div>
+          <div className={menuItem} onClick={() => handleAddNoteToSubSection(subSection.subsectionId!)}> {subSection.name} </div>
         )
       })}
     </div>

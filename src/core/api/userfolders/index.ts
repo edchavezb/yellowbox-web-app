@@ -21,9 +21,9 @@ export const getFoldersByIdsApi = async (folderIds: string[]) => {
     }
 }
 
-export const createUserFolderApi = async (data: Omit<UserFolder, '_id'>) => {
+export const createUserFolderApi = async (data: Omit<UserFolder, 'folderId'>) => {
     try {
-        return await api.post<Omit<UserFolder, '_id'>, {newFolder: UserFolder, updatedDashboardFolders: string[]}>('folders', data)
+        return await api.post<Omit<UserFolder, 'folderId'>, {newFolder: UserFolder, updatedDashboardFolders: string[]}>('folders', data)
     }
     catch(err) {
         console.log(err)

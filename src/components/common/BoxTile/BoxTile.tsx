@@ -16,7 +16,7 @@ const BoxTile = ({ box }: { box: DashboardBox }) => {
   } = useAppSortable({
     id: box.boxId,
     data: {
-      name: box.boxName
+      name: box.name
     }
   });
 
@@ -39,7 +39,7 @@ const BoxTile = ({ box }: { box: DashboardBox }) => {
       </div>
       <div className={styles.boxName}>
         <Link to={`/box/${box.boxId}`}>
-          {box.boxName}
+          {box.name}
         </Link>
       </div>
     </div>

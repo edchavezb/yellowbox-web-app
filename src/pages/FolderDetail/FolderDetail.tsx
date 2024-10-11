@@ -49,7 +49,7 @@ function FolderDetail() {
   return (
     <>
       {
-        (isLoggedIn !== null && currentFolder._id === folderId) &&
+        (isLoggedIn !== null && currentFolder.folderId === folderId) &&
         <div id={styles.mainPanel}>
           <div className={styles.folderHeader}>
             <div className={styles.folderSquare}>
@@ -79,7 +79,7 @@ function FolderDetail() {
               <SortableContext
                 items={currentFolder.boxes.map(item => item.boxId!)}
                 strategy={rectSortingStrategy}
-                id={`detail-${currentFolder._id}`}
+                id={`detail-${currentFolder.folderId}`}
               >
                 {currentFolder.boxes.map(box => {
                   return (

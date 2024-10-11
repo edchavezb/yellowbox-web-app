@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addNoteToBoxApi, addSubsectionToBoxApi, getBoxByIdApi, removeSubsectionApi, reorderSubsectionItemsApi, updateBoxInfoApi, updateBoxSortingApi, updateItemNoteApi, updateSubsectionNameApi, updateSubsectionsApi } from "core/api/userboxes"
+import { addNoteToBoxApi, addSubsectionToBoxApi, getBoxByIdApi, removeSubsectionApi, reorderSubsectionItemsApi, updateAllSectionSettingsApi, updateBoxInfoApi, updateBoxSectionSettingsApi, updateItemNoteApi, updateSubsectionNameApi, updateSubsectionsApi } from "core/api/userboxes"
 import { removeBoxAlbumApi, addAlbumToSubsectionApi, removeAlbumFromSubsectionApi, reorderBoxAlbumApi } from "core/api/userboxes/albums"
 import { removeBoxArtistApi, addArtistToSubsectionApi, removeArtistFromSubsectionApi, reorderBoxArtistApi } from "core/api/userboxes/artists"
 import { removeBoxPlaylistApi, addPlaylistToSubsectionApi, removePlaylistFromSubsectionApi, reorderBoxPlaylistApi } from "core/api/userboxes/playlists"
 import { removeBoxTrackApi, addTrackToSubsectionApi, removeTrackFromSubsectionApi, reorderBoxTrackApi } from "core/api/userboxes/tracks"
 import { AppThunk } from "core/store/store"
-import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from "core/types/interfaces"
+import { Album, Artist, Playlist, SectionSettings, Subsection, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
 import { updateBoxName } from "../userBoxes/userBoxesSlice"
 import { updateFolderBoxNameApi } from "core/api/userfolders"
@@ -33,13 +33,20 @@ const currentBoxDetailSlice = createSlice({
       const { name, description } = action.payload;
       state.box.name = name
       state.box.description = description
-      state.box.public = action.payload.public
+      state.box.isPublic = action.payload.isPublic
     },
     setIsUserViewing(state, action: PayloadAction<boolean>) {
       state.isUserViewing = action.payload
     },
-    updateBoxSorting(state, action: PayloadAction<SectionSorting>) {
-      state.box.sectionSorting = action.payload;
+    updateBoxSectionSettings(state, action: PayloadAction<SectionSettings>) {
+      const { type } = action.payload;
+  
+      state.box.sectionSettings = state.box.sectionSettings.map((setting) =>
+        setting.type === type ? { ...setting, ...action.payload } : setting
+      );
+    },
+    updateAllSectionSettings(state, action: PayloadAction<SectionSettings[]>) {  
+      state.box.sectionSettings = action.payload;
     },
     updateBoxArtists(state, action: PayloadAction<{ updatedArtists: Artist[] }>) {
       const { updatedArtists } = action.payload;
@@ -61,12 +68,12 @@ const currentBoxDetailSlice = createSlice({
       state.box.notes = action.payload;
     },
     updateBoxSubsections(state, action: PayloadAction<Subsection[]>) {
-      state.box.subSections = action.payload;
+      state.box.subsections = action.payload;
     },
     updateBoxSubsectionById(state, action: PayloadAction<{ subId: string, updatedSub: Subsection }>) {
       const { subId, updatedSub } = action.payload;
-      const targetIndex = state.box.subSections.findIndex(sub => sub._id === subId);
-      state.box.subSections[targetIndex] = updatedSub;
+      const targetIndex = state.box.subsections.findIndex(sub => sub.subsectionId === subId);
+      state.box.subsections[targetIndex] = updatedSub;
     }
   }
 })
@@ -75,7 +82,8 @@ export const {
   setIsUserViewing,
   setCurrentBoxDetail,
   updateCurrentBoxDetail,
-  updateBoxSorting,
+  updateBoxSectionSettings,
+  updateAllSectionSettings,
   updateBoxArtists,
   updateBoxAlbums,
   updateBoxTracks,
@@ -106,9 +114,9 @@ export const updateCurrentBoxDetailThunk = (boxId: string, name: string, descrip
     if (updatedBox) {
       dispatch(updateCurrentBoxDetail(updatedBox!))
       if (containingFolder) {
-        const apiResponse = await updateFolderBoxNameApi(containingFolder._id, boxId, updatedBox.name);
+        const apiResponse = await updateFolderBoxNameApi(containingFolder.folderId, boxId, updatedBox.name);
         if (apiResponse?.updatedFolder) {
-          dispatch(updateUserFolder({ targetId: containingFolder._id, updatedFolder: apiResponse.updatedFolder }))
+          dispatch(updateUserFolder({ targetId: containingFolder.folderId, updatedFolder: apiResponse.updatedFolder }))
         }
       }
       else (
@@ -120,10 +128,19 @@ export const updateCurrentBoxDetailThunk = (boxId: string, name: string, descrip
   }
 }
 
-export const updateBoxSortingThunk = (boxId: string, updatedSorting: SectionSorting): AppThunk => async (dispatch) => {
+export const updateBoxSectionSettingsThunk = (boxId: string, updatedSettings: SectionSettings): AppThunk => async (dispatch) => {
   try {
-    const newSorting = await updateBoxSortingApi(boxId, updatedSorting);
-    dispatch(updateBoxSorting(newSorting!))
+    const newSettings = await updateBoxSectionSettingsApi(boxId, updatedSettings);
+    dispatch(updateBoxSectionSettings(newSettings!))
+  } catch (err) {
+    // TODO: Handle api error
+  }
+}
+
+export const updateAllSectionSettingsThunk = (boxId: string, updatedSettings: SectionSettings[]): AppThunk => async (dispatch) => {
+  try {
+    const newSettings = await updateAllSectionSettingsApi(boxId, updatedSettings);
+    dispatch(updateAllSectionSettings(newSettings!))
   } catch (err) {
     // TODO: Handle api error
   }
@@ -215,7 +232,7 @@ export const updateSubsectionNameThunk = (boxId: string, subsectionId: string, n
 export const removeSubsectionThunk = (boxId: string, subsectionId: string, type: BoxSections): AppThunk => async (dispatch) => {
   try {
     const updatedBox = await removeSubsectionApi(boxId, subsectionId, type);
-    const updatedSubsections = updatedBox?.subSections;
+    const updatedSubsections = updatedBox?.subsections;
     dispatch(updateBoxSubsections(updatedSubsections!))
     const updatedSection = updatedBox![type as keyof Pick<UserBox, 'albums' | 'artists' | 'tracks' | 'playlists'>];
     switch (type) {
@@ -239,18 +256,18 @@ export const removeSubsectionThunk = (boxId: string, subsectionId: string, type:
   }
 }
 
-export const reorderSubsectionsThunk = (boxId: string, subSections: Subsection[], draggedId: string, targetId: string, type: string): AppThunk => async (dispatch) => {
+export const reorderSubsectionsThunk = (boxId: string, subsections: Subsection[], draggedId: string, targetId: string, type: string): AppThunk => async (dispatch) => {
   const partition = (arr: Subsection[], type: string) => {
     const passed = arr.filter(sub => sub.type === type);
     const failed = arr.filter(sub => sub.type !== type);
     return [passed, failed];
   };
   try {
-    const subsectionsCopy = JSON.parse(JSON.stringify(subSections));
+    const subsectionsCopy = JSON.parse(JSON.stringify(subsections));
     const [subsToReorder, rest] = partition(subsectionsCopy, type);
-    const draggedSub = subsToReorder.find(sub => sub._id === draggedId)
-    const draggedIndex = subsToReorder.findIndex(sub => sub._id === draggedId);
-    const targetIndex = subsToReorder.findIndex(sub => sub._id === targetId);
+    const draggedSub = subsToReorder.find(sub => sub.subsectionId === draggedId)
+    const draggedIndex = subsToReorder.findIndex(sub => sub.subsectionId === draggedId);
+    const targetIndex = subsToReorder.findIndex(sub => sub.subsectionId === targetId);
     subsToReorder.splice(draggedIndex, 1);
     subsToReorder.splice(targetIndex, 0, draggedSub!)
     const reorderedSubs = subsToReorder.map(
@@ -268,30 +285,30 @@ export const reorderSubsectionsThunk = (boxId: string, subSections: Subsection[]
 
 export const addItemToSubsectionThunk = (boxId: string, type: BoxSections, subsectionId: string, itemData: ItemData): AppThunk => async (dispatch) => {
   try {
-    const { _id, ...itemFields } = itemData
+    const { itemId, ...itemFields } = itemData
     let response: UserBox | null = null;
     switch (type) {
       case 'artists':
-        response = await addArtistToSubsectionApi(boxId, itemData._id!, subsectionId, itemFields as Artist) as UserBox
+        response = await addArtistToSubsectionApi(boxId, itemData.itemId!, subsectionId, itemFields as Artist) as UserBox
         dispatch(updateBoxArtists({ updatedArtists: response.artists! }))
         break;
       case 'albums':
-        response = await addAlbumToSubsectionApi(boxId, itemData._id!, subsectionId, itemFields as Album) as UserBox
+        response = await addAlbumToSubsectionApi(boxId, itemData.itemId!, subsectionId, itemFields as Album) as UserBox
         dispatch(updateBoxAlbums({ updatedAlbums: response.albums! }))
         break;
       case 'tracks':
-        response = await addTrackToSubsectionApi(boxId, itemData._id!, subsectionId, itemFields as Track) as UserBox
+        response = await addTrackToSubsectionApi(boxId, itemData.itemId!, subsectionId, itemFields as Track) as UserBox
         dispatch(updateBoxTracks({ updatedTracks: response.tracks! }))
         break;
       case 'playlists':
-        response = await addPlaylistToSubsectionApi(boxId, itemData._id!, subsectionId, itemFields as Playlist) as UserBox
+        response = await addPlaylistToSubsectionApi(boxId, itemData.itemId!, subsectionId, itemFields as Playlist) as UserBox
         dispatch(updateBoxPlaylists({ updatedPlaylists: response.playlists! }))
         break;
       default:
         break;
     }
     if (response) {
-      dispatch(updateBoxSubsections(response.subSections))
+      dispatch(updateBoxSubsections(response.subsections))
     }
   } catch (err) {
     console.log(err)
@@ -322,7 +339,7 @@ export const removeItemFromSubsectionThunk = (boxId: string, type: BoxSections, 
         break;
     }
     if (response) {
-      dispatch(updateBoxSubsections(response.subSections))
+      dispatch(updateBoxSubsections(response.subsections))
     }
   } catch (err) {
     console.log(err)
@@ -330,8 +347,8 @@ export const removeItemFromSubsectionThunk = (boxId: string, type: BoxSections, 
 }
 
 export const reorderBoxItemsThunk = (boxId: string, itemId: string, sourceIndex: number, destinationIndex: number, itemType: string): AppThunk => async (dispatch, getState) => {
-  const reorderItems = <T extends { _id?: string }[]>(items: T) => {
-    const reorderItem = items.find(item => item._id === itemId)
+  const reorderItems = <T extends { itemId?: string }[]>(items: T) => {
+    const reorderItem = items.find(item => item.itemId === itemId)
     items.splice(sourceIndex, 1);
     items.splice(destinationIndex, 0, reorderItem!)
     return items;
@@ -372,11 +389,11 @@ export const reorderBoxItemsThunk = (boxId: string, itemId: string, sourceIndex:
 
 export const reorderSubsectionItemsThunk = (boxId: string, itemId: string, subId: string, sourceIndex: number, destinationIndex: number): AppThunk => async (dispatch, getState) => {
   try {
-    const subsections = getState().currentBoxDetailData.box.subSections;
-    const targetSub = subsections.find(sub => sub._id === subId);
+    const subsections = getState().currentBoxDetailData.box.subsections;
+    const targetSub = subsections.find(sub => sub.subsectionId === subId);
     if (targetSub) {
       const itemsCopy: ItemData[] = JSON.parse(JSON.stringify(targetSub?.items));
-      const draggedItem = itemsCopy.find(item => item._id === itemId)
+      const draggedItem = itemsCopy.find(item => item.itemId === itemId)
       itemsCopy.splice(sourceIndex, 1);
       itemsCopy.splice(destinationIndex, 0, draggedItem!)
       const updatedSub = { ...targetSub, items: itemsCopy };

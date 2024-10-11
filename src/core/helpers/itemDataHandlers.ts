@@ -1,17 +1,18 @@
-import { Artist, Album, Track, Playlist, ItemImage } from "core/types/interfaces";
+import { Artist, Album, Track, Playlist, ItemImage, ApiAlbum, ApiArtist, ApiTrack, ApiPlaylist } from "core/types/interfaces";
 import * as checkType from "core/helpers/typeguards";
 type MusicData = Artist | Album | Track | Playlist;
+type ApiMusicData = ApiArtist | ApiAlbum | ApiTrack | ApiPlaylist;
 
 export const getItemProperty = (item: MusicData, propertyName: string, upperCase: boolean): string | number | Date => {
     let propertyValue!: string | number | Date
     switch (propertyName) {
-      case "release_year":
-        propertyValue = checkType.isTrack(item) ? parseInt(item.album!["release_date"].split("-")[0])
-          : checkType.isAlbum(item) ? parseInt(item["release_date"].split("-")[0]) : ""
+      case "releaseYear":
+        propertyValue = checkType.isTrack(item) ? parseInt(item.albumReleaseDate.split("-")[0])
+          : checkType.isAlbum(item) ? parseInt(item["releaseDate"].split("-")[0]) : ""
         break;
-      case "release_date":
-        propertyValue = checkType.isTrack(item) ? new Date(item.album!.release_date)
-          : checkType.isAlbum(item) ? new Date(item.release_date) : ""
+      case "releaseDate":
+        propertyValue = checkType.isTrack(item) ? new Date(item.albumReleaseDate)
+          : checkType.isAlbum(item) ? new Date(item.releaseDate) : ""
         break;
       case "artist":
         propertyValue = checkType.isTrack(item) || checkType.isAlbum(item) ? item.artists[0].name : ""
@@ -20,13 +21,13 @@ export const getItemProperty = (item: MusicData, propertyName: string, upperCase
         propertyValue = item.name
         break;
       case "album":
-        propertyValue = checkType.isTrack(item) ? item.album!.name : ""
+        propertyValue = checkType.isTrack(item) ? item.albumName! : ""
         break;
       case "duration":
-        propertyValue = checkType.isTrack(item) ? item.duration_ms : ""
+        propertyValue = checkType.isTrack(item) ? item.duration : ""
         break;
-      case "track_number":
-        propertyValue = checkType.isTrack(item) ? item.track_number : ""
+      case "trackNumber":
+        propertyValue = checkType.isTrack(item) ? item.trackNumber : ""
         break;
       case "popularity":
         propertyValue = !checkType.isAlbum(item) && !checkType.isPlaylist(item)? item.popularity! : "";
@@ -37,32 +38,66 @@ export const getItemProperty = (item: MusicData, propertyName: string, upperCase
     return typeof propertyValue === "string" && upperCase ? propertyValue.toUpperCase() : propertyValue
   }
 
-export const extractCrucialData = (item: MusicData) => {
+export const extractApiData = (item: ApiMusicData) => {
   let extractedData: MusicData;
   switch (item.type) {
     case "artist": {
-      const { external_urls, genres, id, images, name, popularity, type, uri } = item as Artist
-      extractedData = { external_urls, genres, id, images, name, popularity, type, uri, subSectionCount: 0 }
+      const { genres, id, images, name, popularity, type, uri } = item as ApiArtist
+      extractedData = { genres, spotifyId: id, images, name, popularity, type, uri, subSectionCount: 0 } as Artist
       break;
     }
     case "album": {
-      const { album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri } = item as Album
-      extractedData = { album_type, artists, external_urls, id, images, name, release_date, total_tracks, type, uri, subSectionCount: 0 }
+      const { album_type, artists, id, images, name, release_date, total_tracks, type } = item as ApiAlbum
+      extractedData = { 
+        albumType: album_type, 
+        artists: artists.map(artist => ({name: artist.name, spotifyId: artist.id})), 
+        spotifyId: id, 
+        images, 
+        name, 
+        releaseDate: release_date, 
+        totalTracks: total_tracks, 
+        type, 
+        subSectionCount: 0 
+      } as Album
       break;
     }
     case "track": {
-      const { album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri } = item as Track
-      extractedData = { album, artists, duration_ms, explicit, external_urls, id, name, popularity, preview_url, track_number, type, uri, subSectionCount: 0 }
+      const { album, artists, duration_ms, explicit, id, name, popularity, track_number, type, uri } = item as ApiTrack
+      extractedData = { 
+        albumId: album?.id, 
+        albumName: album?.name,
+        albumReleaseDate: album?.release_date,
+        albumImages: album?.images,
+        artists: artists.map(artist => ({name: artist.name, spotifyId: artist.id})), 
+        duration: duration_ms, 
+        explicit, 
+        spotifyId: id, 
+        name, 
+        popularity, 
+        trackNumber: track_number, 
+        type, 
+        uri, 
+        subSectionCount: 0 
+      } as Track
       break;
     }
-    case "playlist": {
-      const { description, external_urls, id, images, name, owner, tracks, type, uri } = item as Playlist
+    case "playlist":
+    default: {
+      const { description, id, images, name, owner, tracks, type } = item as ApiPlaylist
       const { items, ...tracksData } = tracks
-      extractedData = { description, external_urls, id, images, name, owner, tracks: tracksData, type, uri, subSectionCount: 0 }
+      extractedData = { 
+        description, 
+        spotifyId: id, 
+        images, 
+        name, 
+        ownerId: owner.id,
+        ownerDisplayName: owner.display_name,
+        totalTracks: tracksData.total, 
+        type, 
+        subSectionCount: 0 
+      } as Playlist
       break;
     }
-    default:
-      extractedData = item
   }
   return extractedData
 }
@@ -99,9 +134,9 @@ export const getElementImage = (item: MusicData, size: string = "big") => {
     }
   }
   else if (checkType.isTrack(item)) {
-    const { album } = item;
-    if (album){
-      itemImages = album.images;
+    const { albumId, albumImages } = item;
+    if (albumId){
+      itemImages = albumImages;
       sizeIndex = getSizeIndex(size);
     }
   }
@@ -114,4 +149,8 @@ export const getElementImage = (item: MusicData, size: string = "big") => {
   }
 
   return itemImages && itemImages.length ? itemImages[sizeIndex]?.url : "https://via.placeholder.com/150"
+}
+
+export const getUri = (type: string, id: string) => {
+  return `spotify:${type}:${id}`
 }

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { Album } from "core/types/interfaces";
 import styles from "./ListRowAlbum.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { extractCrucialData, getElementImage } from "core/helpers/itemDataHandlers";
+import { extractApiData, getElementImage } from "core/helpers/itemDataHandlers";
 import { updateBoxAlbumApi } from "core/api/userboxes/albums";
 
 interface IProps {
@@ -24,11 +24,11 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.itemId!, data: { index: dbIndex || index } })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [elementImage, setElementImage] = useState(getElementImage(element, "small"));
-  const { name, type, artists, album_type, release_date, id, uri } = element;
+  const { name, type, artists, albumType, releaseDate, spotifyId } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
@@ -36,14 +36,14 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
 
   const getArtistLinks = () => {
     const artistArray = artists.slice(0, 3).map((artist, idx, arr) => {
-      return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
+      return <Link to={`/detail/artist/${artist.spotifyId}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
     })
 
     return artistArray;
   }
 
-  const queryItemIdApi = async (type: string, id: string, token: string) => {
-    const response = await fetch(`https://api.spotify.com/v1/${type}s/${id}`, {
+  const queryItemIdApi = async (type: string, spotifyId: string, token: string) => {
+    const response = await fetch(`https://api.spotify.com/v1/${type}s/${spotifyId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -55,12 +55,12 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
   }
 
   const handleImageError = async () => {
-    const itemResponse = await queryItemIdApi(element.type, element.id, spotifyToken!);
+    const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
     const itemImage = getElementImage(itemResponse, "small");
     setElementImage(itemImage);
-    const itemData = extractCrucialData(itemResponse);
-    itemData._id = element._id
-    updateBoxAlbumApi(currentBox._id, itemData._id!, itemData as Album)
+    const itemData = extractApiData(itemResponse);
+    itemData.itemId = element.itemId
+    updateBoxAlbumApi(currentBox.boxId, itemData.itemId!, itemData as Album)
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps["element"]) => {
@@ -87,7 +87,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
         <div className={styles.colLeftAlgn}>
           <div className={styles.nameArtistCol}>
             <div className={styles.imgWrapper}>
-              <Link to={`/detail/${type}/${id}`}>
+              <Link to={`/detail/${type}/${spotifyId}`}>
                 <img
                   draggable="false"
                   className={styles.itemImage}
@@ -99,7 +99,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
             </div>
             <div className={styles.flexColumn}>
               <div className={styles.name}>
-                <Link to={`/detail/${type}/${id}`}>
+                <Link to={`/detail/${type}/${spotifyId}`}>
                   <span className={styles.nameText}>{name}</span>
                 </Link>
               </div>
@@ -110,13 +110,13 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
           </div>
         </div>
         <div className={`${styles.colCentered} ${styles.smallText} ${styles.mobileHidden}`}>
-          {release_date.split("-")[0]}
+          {releaseDate.split("-")[0]}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
-          {`${album_type.charAt(0).toUpperCase()}${album_type.slice(1)}`}
+          {`${albumType.charAt(0).toUpperCase()}${albumType.slice(1)}`}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-          <a href={uri}>
+          <a href={`spotify:${type}:${spotifyId}`}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
               {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -135,7 +135,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
           <div className={styles.colLeftAlgn}>
             <div className={styles.nameArtistCol}>
               <div className={styles.imgWrapper}>
-                <Link to={`/detail/${type}/${id}`}>
+                <Link to={`/detail/${type}/${spotifyId}`}>
                   <img
                     draggable="false"
                     className={styles.itemImage}
@@ -147,7 +147,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
               </div>
               <div className={styles.flexColumn}>
                 <div className={`${styles.name} ${styles.lineClamp}`}>
-                  <Link to={`/detail/${type}/${id}`}>
+                  <Link to={`/detail/${type}/${spotifyId}`}>
                     <span className={styles.nameText}>{name}</span>
                   </Link>
                 </div>
@@ -158,13 +158,13 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
             </div>
           </div>
           <div className={`${styles.colCentered} ${styles.smallText} ${styles.mobileHidden}`}>
-            {release_date.split("-")[0]}
+            {releaseDate.split("-")[0]}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
-            {`${album_type.charAt(0).toUpperCase()}${album_type.slice(1)}`}
+            {`${albumType.charAt(0).toUpperCase()}${albumType.slice(1)}`}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-            <a href={uri}>
+            <a href={`spotify:${type}:${spotifyId}`}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 {type === "track" ? <span> Play </span> : <span> Open </span>}

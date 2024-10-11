@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Album, Track } from 'core/types/interfaces';
+import { ApiAlbum, ApiTrack } from 'core/types/interfaces';
 import styles from "./TrackVisualizer.module.css";
 
 interface IProps {
-	data: Track
-  album: Album
+	data: ApiTrack
+  album: ApiAlbum
   boxId?: string
   page?: string
 }

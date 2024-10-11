@@ -13,14 +13,14 @@ interface IProps {
 function AddToSubsectionMenu({ itemData }: IProps) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
-  const validSubsections = currentBox.subSections.filter(subsection => subsection.type === `${itemData.type}s`)
+  const validSubsections = currentBox.subsections.filter(subsection => subsection.type === `${itemData.type}s`)
 
   const handleAddItem = (subsectionId: string) => {
-    dispatch(addItemToSubsectionThunk(currentBox._id, `${itemData.type}s` as BoxSections, subsectionId, itemData))
+    dispatch(addItemToSubsectionThunk(currentBox.boxId, `${itemData.type}s` as BoxSections, subsectionId, itemData))
   }
 
   const handleRemoveItem = (subsectionId: string) => {
-    dispatch(removeItemFromSubsectionThunk(currentBox._id, `${itemData.type}s` as BoxSections, subsectionId, itemData._id!, itemData.id))
+    dispatch(removeItemFromSubsectionThunk(currentBox.boxId, `${itemData.type}s` as BoxSections, subsectionId, itemData.itemId!, itemData.spotifyId))
   }
 
   return (
@@ -35,11 +35,11 @@ function AddToSubsectionMenu({ itemData }: IProps) {
               <div className={styles.subsectionList}>
                 {validSubsections.map(subsection => {
                   return (
-                    <div key={subsection._id} className={styles.subsectionRow}>
+                    <div key={subsection.subsectionId} className={styles.subsectionRow}>
                       <input
                         type={'checkbox'}
-                        value={subsection._id}
-                        checked={subsection.items.some((item: ItemData) => item.id === itemData.id)}
+                        value={subsection.subsectionId}
+                        checked={subsection.items.some((item: ItemData) => item.spotifyId === itemData.spotifyId)}
                         onChange={(e) => {
                           if (e.target.checked) {
                             handleAddItem(e.target.value);

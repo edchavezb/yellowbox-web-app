@@ -46,7 +46,7 @@ const ProfileInfo = () => {
         'email-check',
         'Email already in use',
         cacheYupTest(async (value) => {
-          const valid = await debouncedEmailCheck(user.account.email, value as string);
+          const valid = await debouncedEmailCheck(user.accountData.email, value as string);
           return valid as boolean;
         })),
     firstName: yup.string(),
@@ -120,14 +120,14 @@ const ProfileInfo = () => {
           email
         );
       }
-      const userWithChanges: Omit<YellowboxUser, '_id'> = {
+      const userWithChanges: Omit<YellowboxUser, 'userId'> = {
         ...user,
-        account: { ...user.account, email },
+        accountData: { ...user.accountData, email },
         username,
         firstName,
         lastName
       }
-      const updatedUser = await updateUserApi(user._id, userWithChanges);
+      const updatedUser = await updateUserApi(user.userId, userWithChanges);
       if (updatedUser) {
         dispatch(updateUserBasicInfo({username, firstName: firstName || "", lastName: lastName || "", email}))
         setValidData(null);
@@ -148,7 +148,7 @@ const ProfileInfo = () => {
     <div className={styles.container}>
       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
         <div className={styles.userWrapper}>
-          <img className={styles.userImage} src={user.image ? user.image : "/user.png"} alt="user" />
+          <img className={styles.userImage} src={user.imageUrl ? user.imageUrl : "/user.png"} alt="user" />
           <Text className={styles.userName} fontSize={'md'} fontWeight={'700'}> Signed in as {user.username} </Text>
         </div>
         <AppButton text={'Log Out'} onClick={handleLogOut} />
@@ -173,7 +173,7 @@ const ProfileInfo = () => {
         </Box>
         <FormControl isInvalid={!!errors.email} sx={{ marginTop: "15px" }}>
           <FormLabel>{"Email Address"}</FormLabel>
-          <Input defaultValue={user.account?.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
+          <Input defaultValue={user.accountData?.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
           <FormErrorMessage>
             {errors.email?.message}
           </FormErrorMessage>

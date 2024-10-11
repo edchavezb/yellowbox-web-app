@@ -13,26 +13,26 @@ import AppButton from 'components/styled/AppButton/AppButton';
 function SubsectionsMenu() {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
-  const artistSubsections = currentBox.subSections
+  const artistSubsections = currentBox.subsections
     .filter(subsection => subsection.type === 'artists').sort(sortSubsections)
-  const albumSubsections = currentBox.subSections
+  const albumSubsections = currentBox.subsections
     .filter(subsection => subsection.type === 'albums').sort(sortSubsections)
-  const trackSubsections = currentBox.subSections
+  const trackSubsections = currentBox.subsections
     .filter(subsection => subsection.type === 'tracks').sort(sortSubsections)
-  const playlistSubsections = currentBox.subSections
+  const playlistSubsections = currentBox.subsections
     .filter(subsection => subsection.type === 'playlists').sort(sortSubsections)
 
   const handleCreateSubsection = async (type: BoxSections, index: number) => {
-    dispatch(addSubsectionToBoxThunk(currentBox._id, type, index, ''));
+    dispatch(addSubsectionToBoxThunk(currentBox.boxId, type, index, ''));
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
-    const subsectionType = currentBox.subSections.find(sub => sub._id === active.id)?.type
+    const subsectionType = currentBox.subsections.find(sub => sub.subsectionId === active.id)?.type
     dispatch(
       reorderSubsectionsThunk(
-        currentBox._id,
-        currentBox.subSections,
+        currentBox.boxId,
+        currentBox.subsections,
         active.id as string,
         over?.id as string,
         subsectionType!
@@ -58,13 +58,13 @@ function SubsectionsMenu() {
             </div>
             <div className={styles.rowsWrapper}>
               <SortableContext
-                items={artistSubsections.map(subsection => subsection._id!)}
+                items={artistSubsections.map(subsection => subsection.subsectionId!)}
                 strategy={verticalListSortingStrategy}
               >
                 {!!currentBox?.artists?.length &&
                   artistSubsections.map((subsection) => {
                     return (
-                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection._id!} />
+                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection.subsectionId!} />
                     )
                   })
                 }
@@ -83,13 +83,13 @@ function SubsectionsMenu() {
             </div>
             <div className={styles.rowsWrapper}>
               <SortableContext
-                items={albumSubsections.map(subsection => subsection._id!)}
+                items={albumSubsections.map(subsection => subsection.subsectionId!)}
                 strategy={verticalListSortingStrategy}
               >
                 {!!currentBox?.albums?.length &&
                   albumSubsections.map((subsection) => {
                     return (
-                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection._id!} />
+                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection.subsectionId!} />
                     )
                   })
                 }
@@ -108,13 +108,13 @@ function SubsectionsMenu() {
             </div>
             <div className={styles.rowsWrapper}>
               <SortableContext
-                items={trackSubsections.map(subsection => subsection._id!)}
+                items={trackSubsections.map(subsection => subsection.subsectionId!)}
                 strategy={verticalListSortingStrategy}
               >
                 {!!currentBox?.tracks?.length &&
                   trackSubsections.map((subsection) => {
                     return (
-                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection._id!} />
+                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection.subsectionId!} />
                     )
                   })
                 }
@@ -133,13 +133,13 @@ function SubsectionsMenu() {
             </div>
             <div className={styles.rowsWrapper}>
               <SortableContext
-                items={playlistSubsections.map(subsection => subsection._id!)}
+                items={playlistSubsections.map(subsection => subsection.subsectionId!)}
                 strategy={verticalListSortingStrategy}
               >
                 {!!currentBox?.playlists?.length &&
                   playlistSubsections.map((subsection) => {
                     return (
-                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection._id!} />
+                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection.subsectionId!} />
                     )
                   })
                 }

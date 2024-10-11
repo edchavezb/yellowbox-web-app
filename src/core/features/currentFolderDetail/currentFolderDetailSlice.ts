@@ -25,7 +25,7 @@ const currentFolderDetailSlice = createSlice({
       const { name, description } = action.payload;
       state.folder.name = name;
       state.folder.description = description;
-      state.folder.public = action.payload.public;
+      state.folder.isPublic = action.payload.isPublic;
     },
     updateFolderBoxes(state, action: PayloadAction<{ updatedBoxes: DashboardBox[] }>) {
       state.folder.boxes = action.payload.updatedBoxes;

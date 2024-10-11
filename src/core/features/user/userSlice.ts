@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { UserServices, YellowboxUser } from "core/types/interfaces"
+import { UserSpotifyAccount, YellowboxUser } from "core/types/interfaces"
 
 interface UserState {
     authenticatedUser: YellowboxUser
@@ -21,15 +21,15 @@ const userSlice = createSlice({
         setIsUserLoggedIn(state, action: PayloadAction<boolean>) {
             state.isUserLoggedIn = action.payload
         },
-        updateUserServices(state, action: PayloadAction<UserServices>){
-            state.authenticatedUser.services = action.payload
+        updateUserSpotifyAccount(state, action: PayloadAction<UserSpotifyAccount | null>){
+            state.authenticatedUser.spotifyAccount = action.payload
         },
         updateUserBasicInfo(state, action: PayloadAction<{firstName: string, lastName: string, username: string, email: string}>){
             const {username, firstName, lastName, email} = action.payload;
             state.authenticatedUser.username = username;
             state.authenticatedUser.firstName = firstName;
             state.authenticatedUser.lastName = lastName;
-            state.authenticatedUser.account.email = email;
+            state.authenticatedUser.accountData.email = email;
         }
     }
 })
@@ -37,7 +37,7 @@ const userSlice = createSlice({
 export const { 
     setAuthenticatedUser,
     setIsUserLoggedIn,
-    updateUserServices,
+    updateUserSpotifyAccount,
     updateUserBasicInfo
 } = userSlice.actions;
 

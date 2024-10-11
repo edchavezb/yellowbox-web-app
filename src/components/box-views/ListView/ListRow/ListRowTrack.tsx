@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Track } from "../../../../core/types/interfaces";
 import styles from "./ListRowTrack.module.css";
-import { extractCrucialData, getElementImage } from "core/helpers/itemDataHandlers";
+import { extractApiData, getElementImage, getUri } from "core/helpers/itemDataHandlers";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { updateBoxTrackApi } from "core/api/userboxes/tracks";
 
@@ -24,11 +24,11 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element._id!, data: { index: dbIndex || index } })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.itemId!, data: { index: dbIndex || index } })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [elementImage, setElementImage] = useState(getElementImage(element, "small"));
-  const { name, type, artists, album, duration_ms, explicit, id, uri } = element;
+  const { name, type, artists, albumId, albumName, duration, explicit, spotifyId } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
@@ -36,14 +36,14 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
 
   const getArtistLinks = () => {
     const artistArray = artists?.slice(0, 3).map((artist, idx, arr) => {
-      return <Link to={`/detail/artist/${artist.id}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
+      return <Link to={`/detail/artist/${artist.spotifyId}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
     })
 
     return artistArray;
   }
 
-  const queryItemIdApi = async (type: string, id: string, token: string) => {
-    const response = await fetch(`https://api.spotify.com/v1/${type}s/${id}`, {
+  const queryItemIdApi = async (type: string, spotifyId: string, token: string) => {
+    const response = await fetch(`https://api.spotify.com/v1/${type}s/${spotifyId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -55,12 +55,12 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
   }
 
   const handleImageError = async () => {
-    const itemResponse = await queryItemIdApi(element.type, element.id, spotifyToken!);
+    const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
     const itemImage = getElementImage(itemResponse, "small");
     setElementImage(itemImage);
-    const itemData = extractCrucialData(itemResponse);
-    itemData._id = element._id
-    updateBoxTrackApi(currentBox._id, itemData._id!, itemData as Track)
+    const itemData = extractApiData(itemResponse);
+    itemData.itemId = element.itemId
+    updateBoxTrackApi(currentBox.boxId, itemData.itemId!, itemData as Track)
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps["element"]) => {
@@ -87,7 +87,7 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
         <div className={styles.colLeftAlgn}>
           <div className={styles.nameArtistCol}>
             <div className={styles.imgWrapper}>
-              <Link to={`/detail/${type}/${id}`}>
+              <Link to={`/detail/${type}/${spotifyId}`}>
                 <img
                   draggable="false"
                   className={styles.itemImage}
@@ -99,7 +99,7 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
             </div>
             <div className={styles.flexColumn}>
               <div className={`${styles.name} ${styles.lineClamp}`}>
-                <Link to={`/detail/${type}/${id}`}>
+                <Link to={`/detail/${type}/${spotifyId}`}>
                   <span className={styles.nameText}>{name}</span>
                 </Link>
               </div>
@@ -110,16 +110,16 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
           </div>
         </div>
         <div className={`${styles.colLeftAlgn} ${styles.mobileHidden} ${styles.smallText} ${styles.lineClamp}`}>
-          <Link to={`/detail/album/${album!.id}`}><span className={styles.albumName}> {album!.name} </span></Link>
+          <Link to={`/detail/album/${albumId}`}><span className={styles.albumName}> {albumName} </span></Link>
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
-          {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
+          {`${Math.floor(duration / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration % 60000 / 1000)}`.padStart(2, '0')}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
           {explicit ? "Explicit" : "Clean"}
         </div>
         <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-          <a href={uri}>
+          <a href={getUri(type, spotifyId)}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
               {type === "track" ? <span> Play </span> : <span> Open </span>}
@@ -142,7 +142,7 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
           <div className={styles.colLeftAlgn}>
             <div className={styles.nameArtistCol}>
               <div className={styles.imgWrapper}>
-                <Link to={`/detail/${type}/${id}`}>
+                <Link to={`/detail/${type}/${spotifyId}`}>
                   <img
                     draggable="false"
                     className={styles.itemImage}
@@ -154,7 +154,7 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
               </div>
               <div className={styles.flexColumn}>
                 <div className={`${styles.name} ${styles.lineClamp}`}>
-                  <Link to={`/detail/${type}/${id}`}>
+                  <Link to={`/detail/${type}/${spotifyId}`}>
                     <span className={styles.nameText}>{name}</span>
                   </Link>
                 </div>
@@ -166,20 +166,20 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
           </div>
           <div className={`${styles.colLeftAlgn} ${styles.mobileHidden} ${styles.smallText} ${styles.lineClamp}`}>
             {
-              album ?
-                <Link to={`/detail/album/${album!.id}`}><span className={styles.albumName}> {album!.name} </span></Link>
+              albumId ?
+                <Link to={`/detail/album/${albumId}`}><span className={styles.albumName}> {albumName} </span></Link>
                 :
                 <span className={styles.albumName}> Not found </span>
             }
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
-            {`${Math.floor(duration_ms / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration_ms % 60000 / 1000)}`.padStart(2, '0')}
+            {`${Math.floor(duration / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration % 60000 / 1000)}`.padStart(2, '0')}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden} ${styles.smallText}`}>
             {explicit ? "Explicit" : "Clean"}
           </div>
           <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-            <a href={uri}>
+            <a href={getUri(type, spotifyId)}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 {type === "track" ? <span> Play </span> : <span> Open </span>}

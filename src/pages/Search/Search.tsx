@@ -2,11 +2,12 @@ import styles from "./Search.module.css"
 import { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import SearchResults from "./SearchResults/SearchResults"
-import { Album, Artist, Playlist, Track } from 'core/types/interfaces';
+import { Album, ApiAlbum, ApiArtist, ApiPlaylist, ApiTrack, Artist, Playlist, Track } from 'core/types/interfaces';
 import { getSpotifyGenericTokenApi } from "core/api/spotify";
 import useDebounce from "core/hooks/useDebounce";
 import { URL_IDENTIFIER } from "core/constants/constants";
 import { Text } from '@chakra-ui/react'
+import { extractApiData } from "core/helpers/itemDataHandlers";
 
 interface SearchResultsState {
   artists: Artist[]
@@ -84,10 +85,10 @@ function Search() {
     })
     const { artists, albums, tracks, playlists } = await response.json();
     setSearchData({
-      artists: artists.items,
-      albums: albums.items,
-      tracks: tracks.items,
-      playlists: playlists.items
+      artists: artists.items.map((item: ApiArtist) => extractApiData(item)),
+      albums: albums.items.map((item: ApiAlbum) => extractApiData(item)),
+      tracks: tracks.items.map((item: ApiTrack) => extractApiData(item)),
+      playlists: playlists.items.map((item: ApiPlaylist) => extractApiData(item)),
     })
   }
 

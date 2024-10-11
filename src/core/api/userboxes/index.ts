@@ -1,9 +1,9 @@
-import { DashboardBox, SectionSorting, Subsection, UserBox, UserFolder, YellowboxUser } from '../../types/interfaces'
+import { BoxCreateDTO, DashboardBox, SectionSettings, Subsection, UserBox, UserFolder, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
 export const getBoxByIdApi = async (boxId: string) => {
   try {
-    return await api.get<{ boxData: UserBox, creatorName: string }>('boxes/', { boxId })
+    return await api.get<{ boxData: UserBox, creatorName: string }>(`boxes/${boxId}`, {})
   }
   catch (err) {
     console.log(err)
@@ -21,9 +21,9 @@ export const getDashboardBoxesApi = async (boxIds: string[]) => {
   }
 }
 
-export const createUserBoxApi = async (data: Omit<UserBox, '_id'>) => {
+export const createUserBoxApi = async (data: BoxCreateDTO) => {
   try {
-    return await api.post<Omit<UserBox, '_id'>, DashboardBox>('boxes', data)
+    return await api.post<BoxCreateDTO, DashboardBox>('boxes', data)
   }
   catch (err) {
     console.log(err)
@@ -53,9 +53,28 @@ export const updateUserBoxApi = async (boxId: string, updatedBox: UserBox) => {
   }
 }
 
-export const updateBoxSortingApi = async (boxId: string, updatedSorting: SectionSorting) => {
+export const updateBoxSectionSettingsApi = async (boxId: string, updatedSettings: SectionSettings) => {
+  const { type } = updatedSettings;
   try {
-    return await api.put<SectionSorting, SectionSorting>(`boxes/${boxId}/sectionSorting`, updatedSorting)
+    return await api.put<SectionSettings, SectionSettings>(`boxes/${boxId}/section-settings/${type}`, updatedSettings)
+  }
+  catch (err) {
+    console.log(err)
+    throw err; 
+  }
+}
+
+export const updateAllSectionSettingsApi = async (boxId: string, updatedSettings: SectionSettings[]) => {
+  const artistSettings = updatedSettings.find(section => section.type === 'artists')!;
+  const albumSettings = updatedSettings.find(section => section.type === 'albums')!;
+  const trackSettings = updatedSettings.find(section => section.type === 'tracks')!;
+  const playlistSettings = updatedSettings.find(section => section.type === 'playlists')!;
+  try {
+    const artistsResult = await api.put<SectionSettings, SectionSettings>(`boxes/${boxId}/section-settings/artists`, artistSettings);
+    const albumsResult = await api.put<SectionSettings, SectionSettings>(`boxes/${boxId}/section-settings/albums`, albumSettings);
+    const tracksResult = await api.put<SectionSettings, SectionSettings>(`boxes/${boxId}/section-settings/tracks`, trackSettings);
+    const playlistsResult = await api.put<SectionSettings, SectionSettings>(`boxes/${boxId}/section-settings/playlists`, playlistSettings);
+    return [artistsResult, albumsResult, tracksResult, playlistsResult];
   }
   catch (err) {
     console.log(err)
@@ -125,7 +144,7 @@ export const updateSubsectionsApi = async (boxId: string, updatedSubsections: Su
 
 export const updateSubsectionNameApi = async (boxId: string, subsectionId: string, name: string) => {
   try {
-    return await api.put<{ name: string }, UserBox['subSections']>(`boxes/${boxId}/subsections/${subsectionId}`, { name })
+    return await api.put<{ name: string }, UserBox['subsections']>(`boxes/${boxId}/subsections/${subsectionId}`, { name })
   }
   catch (err) {
     console.log(err)

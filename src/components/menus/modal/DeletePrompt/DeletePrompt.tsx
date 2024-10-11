@@ -24,7 +24,7 @@ function DeletePrompt({ itemData, boxId, folderId, deleteType }: IProps) {
   const dispatch = useAppDispatch();
   const userFolders = useAppSelector(state => state.userFoldersData.folders);
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes);
-  const boxName = userBoxes.find(box => box.boxId === boxId)?.boxName || "";
+  const boxName = userBoxes.find(box => box.boxId === boxId)?.name || "";
   const history = useHistory();
   let promptMessage: string;
   let deleteItem: (boxId: string, boxName: string, itemId: string) => AppThunk;
@@ -68,12 +68,12 @@ function DeletePrompt({ itemData, boxId, folderId, deleteType }: IProps) {
       history.push('/')
     }
     else if (deleteType === "Box") {
-      const containingFolderId = userFolders.find(folder => folder.boxes.map(dashboardBox => dashboardBox.boxId).includes(boxId!))?._id;
+      const containingFolderId = userFolders.find(folder => folder.boxes.map(dashboardBox => dashboardBox.boxId).includes(boxId!))?.folderId;
       dispatch(deleteUserBoxThunk(boxId!, !!containingFolderId, containingFolderId));
       history.push('/')
     }
     else if (deleteType === "Item" && itemData) {
-      dispatch(deleteItem(boxId!, boxName, itemData._id!));
+      dispatch(deleteItem(boxId!, boxName, itemData.itemId!));
     }
     dispatch(setModalState({ visible: false, type: "", boxId: "", folderId: "", page: "", itemData: undefined }))
   }

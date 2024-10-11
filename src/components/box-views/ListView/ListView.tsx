@@ -20,6 +20,7 @@ interface IProps<T> {
 }
 
 function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, sectionType, isSubsection, subId, isReorderingMode }: IProps<T>) {
+  console.log(data)
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
@@ -72,7 +73,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       case "tracks":
         itemComponent =
           <ListRowTrack
-            key={e.id}
+            key={e.itemId}
             dbIndex={dbIndex}
             index={index}
             offset={offset}
@@ -85,7 +86,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       case "albums":
         itemComponent =
           <ListRowAlbum
-            key={e.id}
+            key={e.itemId}
             dbIndex={dbIndex}
             index={index}
             offset={offset}
@@ -98,7 +99,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       case "playlists":
         itemComponent =
           <ListRowPlaylist
-            key={e.id}
+            key={e.itemId}
             dbIndex={dbIndex}
             index={index}
             offset={offset}
@@ -111,7 +112,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       default:
         itemComponent =
           <ListRowTrack
-            key={e.id}
+            key={e.itemId}
             dbIndex={dbIndex}
             index={index}
             offset={offset}
@@ -131,7 +132,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
     if (isSubsection) {
       dispatch(
         reorderSubsectionItemsThunk(
-          currentBox._id,
+          currentBox.boxId,
           active.id as string,
           subId!,
           active?.data?.current?.index as number,
@@ -142,7 +143,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
     else {
       dispatch(
         reorderBoxItemsThunk(
-          currentBox._id,
+          currentBox.boxId,
           active?.id as string,
           active?.data?.current?.index as number,
           over?.data?.current?.index as number,
@@ -163,7 +164,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
               <div className={styles.itemContainer}>
                 {getListHeader()}
                 <SortableContext
-                  items={data.map(item => item._id!)}
+                  items={data.map(item => item.itemId!)}
                   strategy={verticalListSortingStrategy}
                 >
                   {data.map((element, index) => {

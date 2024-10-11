@@ -12,7 +12,7 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const boxDetailViewing = useAppSelector(state => state.currentBoxDetailData.isUserViewing)
-  const { _id: boxId, name: boxName } = useAppSelector(state => state.currentBoxDetailData.box)
+  const { boxId, name: boxName } = useAppSelector(state => state.currentBoxDetailData.box)
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
   const containingFolder = userFolders.find(folder => folder.boxes.map(dashboardBox => dashboardBox.boxId).includes(boxId));
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
@@ -32,7 +32,8 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
 
   const handleRemoveFromFolder = () => {
     if (containingFolder) {
-      dispatch(removeBoxFromFolderThunk(containingFolder._id, boxId, boxName));
+      const highestFolderPosition = Math.max(...containingFolder.boxes.map(box => box.folderPosition!))
+      dispatch(removeBoxFromFolderThunk(containingFolder.folderId, boxId, boxName, highestFolderPosition + 1));
     }
   }
 
