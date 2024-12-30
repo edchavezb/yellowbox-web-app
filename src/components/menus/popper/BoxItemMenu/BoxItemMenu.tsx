@@ -5,17 +5,20 @@ import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 import styles from "./BoxItemMenu.module.css";
 import { Link } from "react-router-dom";
 import { reorderBoxItemsThunk, reorderSubsectionItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { useEffect, useState } from "react";
+import { set } from "react-hook-form";
 
 interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
   itemIndex?: number
+  isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   itemType: string
   subId?: string
   viewMode?: string
 }
 
-const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxItemMenuProps) => {
+const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }: BoxItemMenuProps) => {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const { isUserViewing: boxDetailViewing, box } = useAppSelector(state => state.currentBoxDetailData)
@@ -23,7 +26,15 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
   const subSection = box?.subsections?.find(sub => sub.subsectionId === subId);
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const isOwner = userBoxes.some(box => box.boxId === boxId);
-  const { menuItemsList, menuItem } = styles;
+  const { menuItemsList, menuItem, menuItemSuccess } = styles;
+  const [isUrlCopied, setIsUrlCopied] = useState(false);
+
+  useEffect(() => {
+    setIsUrlCopied(false);
+    return () => {
+      setIsUrlCopied(false);
+    }
+  }, [isOpen])
 
   const handleAddToQueue = () => {
     //TODO: Implement add to queue
@@ -38,6 +49,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
 
   const handleCopyURL = () => {
     navigator.clipboard.writeText(`https://open.spotify.com/${itemData.type}/${itemData.spotifyId}`);
+    setIsUrlCopied(true);
   }
 
   const handleMoveToTop = () => {
@@ -145,16 +157,16 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
           {itemData.note ? 'View note' : 'Add note'}
         </div>
       }
-      <div
-        className={menuItem}
-        onClick={() => handleCopyURL()}>
-        Copy Spotify URL
-      </div>
       <a href={`spotify:${itemData.type}:${itemData.spotifyId}`}>
         <div className={menuItem}>
           Open on Spotify
         </div>
       </a>
+      <div
+        className={isUrlCopied ? menuItemSuccess : menuItem}
+        onClick={() => handleCopyURL()}>
+        {isUrlCopied ? 'URL copied!' : 'Copy Spotify URL'}
+      </div>
     </div>
   );
 };

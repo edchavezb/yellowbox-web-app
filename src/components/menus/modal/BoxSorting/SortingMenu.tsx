@@ -57,17 +57,17 @@ function SortingMenu() {
                 <FormControl display={"inline-flex"} gap={"8px"} maxWidth={"fit-content"} alignItems={"center"}>
                   <FormLabel margin={"0px"}>View as</FormLabel>
                   <AppSelect
-                   value={settingsMap[section as keyof typeof settingsMap].view}
-                   onChange={e => {
-                     const value = e.target.value
-                     handleSelectChange(value, section, "view")
-                   }}
+                    value={settingsMap[section as keyof typeof settingsMap].view}
+                    onChange={e => {
+                      const value = e.target.value
+                      handleSelectChange(value, section, "view")
+                    }}
                   >
                     <>
-                    <option value="grid"> Grid </option>
-                    {section !== "artists" && <option value="list"> List </option>}
-                    {section === "artists" && <option value="wall"> Wall </option>}
-                    <option value="details"> Details </option>
+                      <option value="grid"> Grid </option>
+                      {section !== "artists" && <option value="list"> List </option>}
+                      {section === "artists" && <option value="wall"> Wall </option>}
+                      <option value="details"> Details </option>
                     </>
                   </AppSelect>
                 </FormControl>
@@ -83,9 +83,10 @@ function SortingMenu() {
                       <option value="custom"> Custom </option>
                       {section === "artists" || section === "playlists" ? <option value="name"> Name </option> : ""}
                       {section === "albums" || section === "tracks" ? <option value="name"> Title </option> : ""}
-                      {section !== "artists" && section !== "playlists" ? <option value="release_year"> Release Year </option> : ""}
+                      {section !== "artists" && section !== "playlists" ? <option value="releaseYear"> Release Year </option> : ""}
+                      {section !== "artists" && section !== "playlists" ? <option value="releaseMonth"> Release Month </option> : ""}
+                      {section !== "artists" && section !== "playlists" ? <option value="releaseDate"> Release Date </option> : ""}
                       {section !== "artists" && section !== "playlists" ? <option value="artist"> Artist </option> : ""}
-                      {section !== "albums" && section !== "playlists" ? <option value="popularity"> Popularity </option> : ""}
                       {section === "tracks" ? <option value="album"> Album </option> : ""}
                       {section === "tracks" ? <option value="duration"> Duration </option> : ""}
                       {section === "tracks" ? <option value="track_number"> Track Number </option> : ""}
@@ -93,42 +94,44 @@ function SortingMenu() {
                   </AppSelect>
                 </FormControl>
 
-                <FormControl display={"inline-flex"} gap={"8px"} maxWidth={"fit-content"} alignItems={"center"}>
-                  <FormLabel margin={"0px"}>then by</FormLabel>
-                  <AppSelect value={settingsMap[section as keyof typeof settingsMap].secondarySorting}
-                    onChange={e => {
-                      const value = e.target.value
-                      handleSelectChange(value, section, "secondarySorting")
-                    }}
-                    disabled={settingsMap[section as keyof typeof settingsMap].primarySorting === "custom"}>
-                    <>
-                      <option value="none" disabled hidden> Select... </option>
-                      {section === "artists" || section === "playlists" ? <option value="name" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "name"}> Name </option> : ""}
-                      {section === "albums" || section === "tracks" ? <option value="name" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "name"}> Title </option> : ""}
-                      {section !== "artists" && section !== "playlists" ? <option value="release_year" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "release_year"}> Release Year </option> : ""}
-                      {section !== "artists" && section !== "playlists" ? <option value="release_date" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "release_date"}> Release Date </option> : ""}
-                      {section !== "artists" && section !== "playlists" ? <option value="artist" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "artist"}> Artist </option> : ""}
-                      {section !== "albums" && section !== "playlists" ? <option value="popularity" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "popularity"}> Popularity </option> : ""}
-                      {section === "tracks" ? <option value="album" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "album"}> Album </option> : ""}
-                      {section === "tracks" ? <option value="duration" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "duration"}> Duration </option> : ""}
-                      {section === "tracks" ? <option value="track_number" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "track_number"}> Track Number </option> : ""}
-                    </>
-                  </AppSelect>
-                </FormControl>
+                {section !== "artists" &&
+                  <FormControl display={"inline-flex"} gap={"8px"} maxWidth={"fit-content"} alignItems={"center"}>
+                    <FormLabel margin={"0px"}>then by</FormLabel>
+                    <AppSelect value={settingsMap[section as keyof typeof settingsMap].secondarySorting}
+                      onChange={e => {
+                        const value = e.target.value
+                        handleSelectChange(value, section, "secondarySorting")
+                      }}
+                      disabled={settingsMap[section as keyof typeof settingsMap].primarySorting === "custom"}>
+                      <>
+                        <option value="none" disabled hidden> Select... </option>
+                        {section === "artists" || section === "playlists" ? <option value="name" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "name"}> Name </option> : ""}
+                        {section === "albums" || section === "tracks" ? <option value="name" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "name"}> Title </option> : ""}
+                        {section !== "artists" && section !== "playlists" ? <option value="releaseYear" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "releaseYear"}> Release Year </option> : ""}
+                        {section !== "artists" && section !== "playlists" ? <option value="releaseMonth" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "releaseMonth"}> Release Month </option> : ""}
+                        {section !== "artists" && section !== "playlists" ? <option value="releaseDate" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "releaseDate"}> Release Date </option> : ""}
+                        {section !== "artists" && section !== "playlists" ? <option value="artist" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "artist"}> Artist </option> : ""}
+                        {section === "tracks" ? <option value="album" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "album"}> Album </option> : ""}
+                        {section === "tracks" ? <option value="duration" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "duration"}> Duration </option> : ""}
+                        {section === "tracks" ? <option value="track_number" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "track_number"}> Track Number </option> : ""}
+                      </>
+                    </AppSelect>
+                  </FormControl>
+                }
 
                 <FormControl display={"inline-flex"} gap={"8px"} maxWidth={"fit-content"} alignItems={"center"}>
                   <FormLabel margin={"0px"}>Order</FormLabel>
                   <AppSelect
-                   value={(settingsMap[section as keyof typeof settingsMap].sortingOrder === 'ASCENDING').toString()}
-                   onChange={e => {
-                     const booleanValue = e.target.value === "true"
-                     handleSelectChange(booleanValue, section, "ascendingOrder")
-                   }}
-                   disabled={settingsMap[section as keyof typeof settingsMap].primarySorting === "custom"}
+                    value={(settingsMap[section as keyof typeof settingsMap].sortingOrder === 'ASCENDING').toString()}
+                    onChange={e => {
+                      const booleanValue = e.target.value === "true"
+                      handleSelectChange(booleanValue, section, "ascendingOrder")
+                    }}
+                    disabled={settingsMap[section as keyof typeof settingsMap].primarySorting === "custom"}
                   >
                     <>
-                    <option value="true"> Ascending </option>
-                    <option value="false"> Descending </option>
+                      <option value="true"> Ascending </option>
+                      <option value="false"> Descending </option>
                     </>
                   </AppSelect>
                 </FormControl>
@@ -144,7 +147,7 @@ function SortingMenu() {
                         const updatedSection = e.target.checked && sectionCopy.displaySubsections ?
                           { ...sectionCopy, displayGrouping: e.target.checked, displaySubsections: false }
                           : { ...sectionCopy, displayGrouping: e.target.checked }
-                          setSectionSettings(state => ([ ...state.filter(item => item.type !== section), updatedSection ]))
+                        setSectionSettings(state => ([...state.filter(item => item.type !== section), updatedSection]))
                       }}
                     />
                     <label htmlFor="grouping"> Show grouping </label>
@@ -157,7 +160,7 @@ function SortingMenu() {
                       const updatedSection = e.target.checked && sectionCopy.displayGrouping ?
                         { ...sectionCopy, displaySubsections: e.target.checked, displayGrouping: false }
                         : { ...sectionCopy, displaySubsections: e.target.checked }
-                      setSectionSettings(state => ([ ...state.filter(item => item.type !== section), updatedSection ]))
+                      setSectionSettings(state => ([...state.filter(item => item.type !== section), updatedSection]))
                     }}
                   />
                   <label htmlFor="sub-section"> Show sub-sections </label>

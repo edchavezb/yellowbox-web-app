@@ -87,19 +87,9 @@ export const getUserFoldersApi = async (userId: string) => {
     }
 }
 
-export const updateUserDashboardBoxesApi = async (userId: string, updatedBoxIdList: string[]) => {
+export const reorderDashboardBoxApi = async (userId: string, boxId: string, destinationId: string) => {
     try {
-        return await api.put<{updatedBoxIdList: string[]}, string[]>(`users/${userId}/dashboardBoxes`, {updatedBoxIdList})
-    }
-    catch(err) {
-        console.log(err)
-        throw err; 
-    }
-}
-
-export const reorderDashboardBoxApi = async (userId: string, boxId: string, newPosition: number) => {
-    try {
-        return await api.put<{newPosition: number}, string[]>(`users/${userId}/reorder-box/${boxId}`, {newPosition})
+        return await api.put<{destinationId: string}, {message: string}>(`users/${userId}/boxes/${boxId}/reorder`, {destinationId})
     }
     catch(err) {
         console.log(err)

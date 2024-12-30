@@ -23,7 +23,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
   const sortData = useCallback(
     (data: T[]) => {
       if (sectionSettings.primarySorting === "custom") {
-        return data; // No sorting
+        return data; // Sorting by custom position occurs in the backend
       }
       return twoFactorSort<T>([...data as T[]], sectionSettings.primarySorting, sectionSettings.secondarySorting, sectionSettings.sortingOrder === 'ASCENDING');
     },
@@ -51,6 +51,19 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
     [currentBox.subsections, type]
   );
   const sortedData = useMemo(() => sortData(sectionItems), [sectionItems, sortData]);
+
+  const getGroupingName = (group: string) => {
+    const sorting = sectionSettings.primarySorting;
+    if (sorting === "releaseDate" || sorting === "releaseMonth") {
+      const [year, month, day] = group.split('-').map(Number);
+      const date = new Date(year, month - 1, day); // month is 0-indexed
+      return sorting === "releaseDate" ? 
+        date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) 
+        : date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    return group;
+  }
 
   const [height, setHeight] = useState<string | number>("auto");
   const [isReorderingMode, setIsReorderingMode] = useState(false);
@@ -112,7 +125,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
                   !!matchedItems.length &&
                   <SubSection
                     itemsMatch={matchedItems}
-                    subName={group}
+                    subName={getGroupingName(group)}
                     key={group}
                     viewType={sectionSettings.view}
                     listType={type}

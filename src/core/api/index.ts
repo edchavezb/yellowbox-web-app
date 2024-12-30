@@ -1,5 +1,9 @@
 import { firebaseAuth } from "core/services/firebase";
 
+export interface ResponseError extends Error {
+  status?: number;
+}
+
 const apiURL = process.env.REACT_APP_PROJECT_API;
 
 const api = {
@@ -7,15 +11,20 @@ const api = {
     const currentUser = firebaseAuth?.currentUser;
     const authToken = await currentUser?.getIdToken();
     const url = new URL(`${apiURL}/${endpoint}`);
-    url.search = new URLSearchParams(params).toString()
+    url.search = new URLSearchParams(params).toString();
+
     const response = await fetch(url.toString(), {
       headers: {
         'Authorization': `Bearer ${authToken}`,
       }
     });
+
     if (!response.ok) {
-      throw new Error(response.statusText);
+      const responseError: ResponseError = new Error(response.statusText);
+      responseError.status = response.status;
+      throw responseError;
     }
+
     return await (response.json() as Promise<R>);
   },
   getManyById: async <R>(endpoint: string, ids: string[]) => {

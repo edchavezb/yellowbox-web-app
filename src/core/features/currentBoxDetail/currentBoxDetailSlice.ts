@@ -11,17 +11,20 @@ import { updateBoxName } from "../userBoxes/userBoxesSlice"
 import { updateUserFolderBox } from "../userFolders/userFoldersSlice"
 import { initErrorToast, initRemoveFromBoxToast } from "../toast/toastSlice"
 import { reorderItems } from "core/helpers/reorderItems"
+import { ResponseError } from "core/api"
 
 type MusicData = Artist | Album | Track | Playlist;
 
 interface CurrentBoxDetailState {
   box: UserBox & { creatorName?: string }
+  boxError: { errorCode: number | null; error: string } | null
   isUserViewing: boolean
   isDataFetching: boolean
 }
 
 const initialState: CurrentBoxDetailState = {
   box: {} as UserBox,
+  boxError: null,
   isUserViewing: false,
   isDataFetching: false
 };
@@ -32,6 +35,9 @@ const currentBoxDetailSlice = createSlice({
   reducers: {
     setCurrentBoxDetail(state, action: PayloadAction<UserBox & { creatorName?: string }>) {
       state.box = action.payload
+    },
+    setCurrentBoxError(state, action: PayloadAction<{ errorCode: number | null; error: string }>) {
+      state.boxError = action.payload
     },
     updateCurrentBoxDetail(state, action: PayloadAction<UserBox>) {
       const { name, description } = action.payload;
@@ -147,6 +153,7 @@ const currentBoxDetailSlice = createSlice({
 export const {
   setIsUserViewing,
   setIsBoxDataFetching,
+  setCurrentBoxError,
   setCurrentBoxDetail,
   updateCurrentBoxDetail,
   updateBoxSectionSettings,
@@ -169,10 +176,12 @@ export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch)
     if (currentBoxDetail) {
       const { boxData, creatorName } = currentBoxDetail;
       dispatch(setCurrentBoxDetail({ ...boxData, creatorName }))
+      dispatch(setCurrentBoxError({ errorCode: null, error: '' }))
       dispatch(setIsUserViewing(true))
     }
   } catch (err) {
     dispatch(setCurrentBoxDetail({} as UserBox))
+    dispatch(setCurrentBoxError({ errorCode: (err as ResponseError).status || null, error: (err as ResponseError).message }));
   }
 }
 
@@ -476,28 +485,28 @@ export const reorderBoxItemsThunk = (boxId: string, boxItemId: string, sourceInd
       case 'artist':
         const artistsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.artists));
         const destinationArtistId = artistsCopy[destinationIndex].boxItemId;
-        const updatedArtists = reorderItems<Artist[]>(artistsCopy, sourceIndex, destinationIndex)
+        const updatedArtists = reorderItems(artistsCopy, sourceIndex, destinationIndex)
         dispatch(updateBoxArtists({ updatedArtists }))
         await reorderBoxArtistApi(boxId, boxItemId, destinationArtistId)
         break;
       case 'album':
         const albumsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.albums));
         const destinationAlbumId = albumsCopy[destinationIndex].boxItemId;
-        const updatedAlbums = reorderItems<Album[]>(albumsCopy, sourceIndex, destinationIndex)
+        const updatedAlbums = reorderItems(albumsCopy, sourceIndex, destinationIndex)
         dispatch(updateBoxAlbums({ updatedAlbums }))
         await reorderBoxAlbumApi(boxId, boxItemId, destinationAlbumId)
         break;
       case 'track':
         const tracksCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.tracks));
         const destinationTrackId = tracksCopy[destinationIndex].boxItemId;
-        const updatedTracks = reorderItems<Track[]>(tracksCopy, sourceIndex, destinationIndex)
+        const updatedTracks = reorderItems(tracksCopy, sourceIndex, destinationIndex)
         dispatch(updateBoxTracks({ updatedTracks }))
         await reorderBoxTrackApi(boxId, boxItemId, destinationTrackId)
         break;
       case 'playlist':
         const playlistsCopy = JSON.parse(JSON.stringify(getState().currentBoxDetailData.box.playlists));
         const destinationPlaylistId = playlistsCopy[destinationIndex].boxItemId;
-        const updatedPlaylists = reorderItems<Playlist[]>(playlistsCopy, sourceIndex, destinationIndex)
+        const updatedPlaylists = reorderItems(playlistsCopy, sourceIndex, destinationIndex)
         dispatch(updateBoxPlaylists({ updatedPlaylists }))
         await reorderBoxPlaylistApi(boxId, boxItemId, destinationPlaylistId)
         break;

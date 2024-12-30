@@ -48,7 +48,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   let authorName!: ReactElement | JSX.Element[] | string;
   let metadata!: JSX.Element | string;
 
-  const getArtistLinks = (artistArr: {name: string, spotifyId: string}[]) => {
+  const getArtistLinks = (artistArr: { name: string, spotifyId: string }[]) => {
     const artistArray = artistArr.slice(0, 3).map((artist, idx, arr) => {
       return <Link to={`/detail/artist/${artist.spotifyId}`} key={idx}><span className={styles.artistName}> {`${artist.name}${arr[idx + 1] ? ", " : ""}`} </span> </Link>;
     })
@@ -152,7 +152,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
     setElementImage(itemImage);
     updateItemImagesInDb(itemData as T);
   }
-  
+
   function updateItemImagesInDb(updatedElement: T) {
     if (checkType.isAlbum(updatedElement)) {
       updateAlbumImagesApi(updatedElement.spotifyId, updatedElement.images)
@@ -232,25 +232,27 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
       <>
         <div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
           <div className={styles.itemPosition}>{itemIndex + 1}</div>
-          <div className={styles.imageContainer}>
-            <Link to={`/detail/${type}/${spotifyId}`} className={styles.itemLink} draggable="false">
+          <div className={styles.imageColumn}>
+            <div className={styles.imageContainer}>
               <a href={`spotify:${type}:${spotifyId}`}>
                 <div className={styles.instantPlay}>
                   <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                   {type === "track" ? <span> Play </span> : <span> Open </span>}
                 </div>
               </a>
-              <img
-                draggable="false"
-                className={styles.itemImage}
-                alt={name}
-                src={elementImage}
-                onError={handleImageError}
-              />
-              <div className={styles.positionMobile}>
-                {itemIndex + 1}
-              </div>
-            </Link>
+              <Link to={`/detail/${type}/${spotifyId}`} className={styles.itemLink} draggable="false">
+                <img
+                  draggable="false"
+                  className={styles.itemImage}
+                  alt={name}
+                  src={elementImage}
+                  onError={handleImageError}
+                />
+                <div className={styles.positionMobile}>
+                  {itemIndex + 1}
+                </div>
+              </Link>
+            </div>
           </div>
           <div className={styles.dataCol}>
             <div className={styles.itemName}>
@@ -282,7 +284,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           </div>
         </div>
         <PopperMenu referenceRef={detailRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
     )

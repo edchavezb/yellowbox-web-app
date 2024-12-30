@@ -30,26 +30,36 @@ function Home({ location }: RouteComponentProps) {
     return (
       <div className={styles.homeContainer}>
         <Text fontSize={"xl"} fontWeight={"700"}> Welcome {userData.username} </Text>
-        <Text fontSize={"lg"} fontWeight={"700"} sx={{marginTop: "20px", marginBottom: "10px"}}> Your folders </Text>
-        <div className={styles.folderList}>
-          {
-            sortedFolders.map(folder => {
-              return(
-               <FolderTile folder={folder} />
-              )
-            })
-          }
-        </div>
-        <Text fontSize={"lg"} fontWeight={"700"} sx={{marginTop: "20px", marginBottom: "10px"}}> Your boxes </Text>
-        <div className={styles.boxList}>
-          {
-            dashboardBoxes.map(box => {
-              return(
-               <BoxTile box={box} />
-              )
-            })
-          }
-        </div>
+        {
+          !!sortedFolders.length &&
+          <>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> Your folders </Text>
+            <div className={styles.folderList}>
+              {
+                sortedFolders.map(folder => {
+                  return (
+                    <FolderTile folder={folder} />
+                  )
+                })
+              }
+            </div>
+          </>
+        }
+        {
+          !!dashboardBoxes.length &&
+          <>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> Your boxes </Text>
+            <div className={styles.boxList}>
+              {
+                dashboardBoxes.map(box => {
+                  return (
+                    <BoxTile box={box} />
+                  )
+                })
+              }
+            </div>
+          </>
+        }
       </div>
     );
   }

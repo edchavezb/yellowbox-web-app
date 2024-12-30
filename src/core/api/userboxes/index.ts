@@ -1,7 +1,5 @@
-import { Album, Artist, BoxCreateDTO, DashboardBox, Playlist, SectionSettings, Subsection, Track, UserBox, UserFolder, YellowboxUser } from '../../types/interfaces'
+import { BoxCreateDTO, DashboardBox, SectionSettings, Subsection, UserBox, UserFolder, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
-
-type MusicData = Artist | Album | Track | Playlist;
 
 export const getBoxByIdApi = async (boxId: string) => {
   try {
@@ -13,9 +11,9 @@ export const getBoxByIdApi = async (boxId: string) => {
   }
 }
 
-export const getDashboardBoxesApi = async (boxIds: string[]) => {
+export const getDashboardBoxesApi = async (userId: string) => {
   try {
-    return await api.getManyById<DashboardBox[]>('boxes/multiple', boxIds)
+    return await api.get<DashboardBox[]>(`users/${userId}/boxes/unparented`, {})
   }
   catch (err) {
     console.log(err)

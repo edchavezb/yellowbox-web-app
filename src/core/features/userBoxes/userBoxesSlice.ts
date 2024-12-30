@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { cloneBoxApi, createUserBoxApi, deleteUserBoxApi, getDashboardBoxesApi } from "core/api/userboxes"
-import { getUserBoxesApi, reorderDashboardBoxApi, updateUserDashboardBoxesApi } from "core/api/users"
+import { getUserBoxesApi, reorderDashboardBoxApi } from "core/api/users"
 import { AppThunk } from "core/store/store"
 import { BoxCreateDTO, DashboardBox, UserBox, UserFolder } from "core/types/interfaces"
 import { updateUserFolder } from "../userFolders/userFoldersSlice"
 import { initBoxOrFolderCreatedToast, initBoxOrFolderDeletedToast, initErrorToast } from "../toast/toastSlice"
+import { reorderItems } from "core/helpers/reorderItems"
 
 interface UserBoxesState {
     userBoxes: DashboardBox[]
@@ -75,24 +76,23 @@ export const fetchUserBoxes = (userId: string): AppThunk => async (dispatch) => 
     }
 }
 
-export const fetchDashboardBoxes = (boxIds: string[]): AppThunk => async (dispatch) => {
+export const fetchDashboardBoxes = (userId: string): AppThunk => async (dispatch) => {
     try {
-        const dashboardBoxes = await getDashboardBoxesApi(boxIds);
+        const dashboardBoxes = await getDashboardBoxesApi(userId);
         dispatch(setDashboardBoxes(dashboardBoxes!))
     } catch (err) {
         dispatch(setDashboardBoxes([]))
     }
 }
 
-export const reorderDashboardBoxesThunk = (sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
+export const reorderDashboardBoxesThunk = (boxId: string, sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
   try {
     const userId = getState().userData.authenticatedUser.userId;
     const boxesCopy = JSON.parse(JSON.stringify(getState().userBoxesData.dashboardBoxes)) as DashboardBox[];
-    const reorderItem = boxesCopy.splice(sourceIndex, 1)[0];
-    const targetItem = boxesCopy[targetIndex];
-    boxesCopy.splice(targetIndex, 0, reorderItem);
-    dispatch(setDashboardBoxes(boxesCopy));
-    await reorderDashboardBoxApi(userId, reorderItem.boxId, targetItem.position!)
+    const destinationId = boxesCopy[targetIndex].boxId;
+    const updatedBoxes = reorderItems(boxesCopy, sourceIndex, targetIndex);
+    dispatch(setDashboardBoxes(updatedBoxes));
+    await reorderDashboardBoxApi(userId, boxId, destinationId)
   } catch (err) {
     console.log(err)
   }

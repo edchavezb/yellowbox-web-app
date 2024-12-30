@@ -68,10 +68,10 @@ function Search() {
     })
     const item = await response.json();
     setSearchData({
-      artists: item.type === 'artist' ? [item as Artist] : [],
-      albums: item.type === 'album' ? [item as Album] : [],
-      tracks: item.type === 'track' ? [item as Track] : [],
-      playlists: item.type === 'playlist' ? [item as Playlist] : []
+      artists: item.type === 'artist' ? [extractApiData(item) as Artist] : [],
+      albums: item.type === 'album' ? [extractApiData(item) as Album] : [],
+      tracks: item.type === 'track' ? [extractApiData(item) as Track] : [],
+      playlists: item.type === 'playlist' ? [extractApiData(item) as Playlist] : []
     })
   }
 

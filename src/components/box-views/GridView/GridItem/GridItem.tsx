@@ -166,7 +166,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
           {authorNameLink}
         </div >
         <PopperMenu referenceRef={gridItemRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} />
         </PopperMenu>
       </>
     )

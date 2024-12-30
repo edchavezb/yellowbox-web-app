@@ -20,6 +20,7 @@ function BoxDetail() {
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+  const error = useAppSelector(state => state.currentBoxDetailData.boxError);
   const isBoxEmpty = useMemo(
     () => currentBox?.albums?.length === 0 && currentBox?.artists?.length === 0 && currentBox?.tracks?.length === 0 && currentBox?.playlists?.length === 0,
     [currentBox]
@@ -47,6 +48,16 @@ function BoxDetail() {
     if (accessToken) {
       dispatch(setGenericToken({ genericToken: accessToken }));
     }
+  }
+
+  if (error?.errorCode === 404) {
+    return (
+      <div id={styles.mainPanel}>
+        <Text fontSize={"xl"} fontWeight={"700"} sx={{ marginTop: '80px', marginBottom: "20px", textAlign: "center" }}>
+          Oops. The box you are looking for does not exist.
+        </Text>
+      </div>
+    )
   }
 
   return (

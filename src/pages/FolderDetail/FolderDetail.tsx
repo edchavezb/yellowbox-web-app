@@ -3,13 +3,14 @@ import styles from "./FolderDetail.module.css";
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useParams } from 'react-router-dom';
-import { fetchFolderDetailThunk, reorderFolderBoxesThunk, setIsUserViewing } from 'core/features/currentFolderDetail/currentFolderDetailSlice';
+import { fetchFolderDetailThunk, setIsUserViewing } from 'core/features/currentFolderDetail/currentFolderDetailSlice';
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import BoxTile from 'components/common/BoxTile/BoxTile';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import FolderMenu from 'components/menus/popper/FolderMenu/FolderMenu';
 import { Text } from '@chakra-ui/react'
+import { reorderFolderBoxesThunk } from 'core/features/userFolders/userFoldersSlice';
 
 function FolderDetail() {
   const { id: folderId } = useParams<{ id: string }>();
@@ -41,7 +42,7 @@ function FolderDetail() {
       const activeSortable = active?.data?.current?.sortable
       const targetSortable = over?.data?.current?.sortable
       if (targetSortable) {
-        dispatch(reorderFolderBoxesThunk(folderId, activeSortable.index, targetSortable.index))
+        dispatch(reorderFolderBoxesThunk(folderId, active?.id as string, activeSortable.index, targetSortable.index))
       }
     }
   }

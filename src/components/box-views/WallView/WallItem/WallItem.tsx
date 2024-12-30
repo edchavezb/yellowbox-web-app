@@ -96,7 +96,7 @@ function WallItem({ element, itemIndex, setElementDragging, reorderingMode, subI
           <div className={styles.name} ref={wallItemRef}> {name} </div>
         </div>
         <PopperMenu referenceRef={wallItemRef} placement={'right'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} viewMode="wall" />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} viewMode="wall" />
         </PopperMenu>
       </>
   )

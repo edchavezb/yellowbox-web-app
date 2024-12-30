@@ -12,7 +12,6 @@ import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import SubmitButton from 'components/styled/SubmitButton/SubmitButton';
 import { cacheYupTest } from 'core/helpers/cacheYupTest';
-import { YellowboxUser } from 'core/types/interfaces';
 import { useForm } from 'react-hook-form';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
@@ -22,6 +21,7 @@ const ProfileInfo = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const user = useAppSelector(state => state.userData.authenticatedUser);
+  const [userImage, setUserImage] = useState(user.imageUrl);
   const [validData, setValidData] = useState<{ username: string, email: string, firstName?: string, lastName?: string } | null>(null);
   const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
   const [password, setPassword] = useState('');
@@ -88,6 +88,10 @@ const ProfileInfo = () => {
     500
   );
 
+  const handleImageError = async () => {
+    setUserImage("/user.png");
+  }
+
   const handleLogOut = async () => {
     try {
       await signOut(firebaseAuth);
@@ -147,7 +151,7 @@ const ProfileInfo = () => {
     <div className={styles.container}>
       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
         <div className={styles.userWrapper}>
-          <img className={styles.userImage} src={user.imageUrl ? user.imageUrl : "/user.png"} alt="user" />
+          <img className={styles.userImage} id={styles.userImage} src={userImage || "/user.png"} alt="user" onError={handleImageError} />
           <Text className={styles.userName} fontSize={'md'} fontWeight={'700'}> Signed in as {user.username} </Text>
         </div>
         <AppButton text={'Log Out'} onClick={handleLogOut} />

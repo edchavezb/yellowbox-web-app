@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getFolderByIdApi, updateFolderBoxesApi, updateUserFolderDetailsApi } from "core/api/userfolders";
+import { getFolderByIdApi, updateUserFolderDetailsApi } from "core/api/userfolders";
 import { AppThunk } from "core/store/store";
 import { DashboardBox, UserFolder } from "core/types/interfaces";
 import { updateSidebarFolderBoxes, updateUserFolder } from "../userFolders/userFoldersSlice";
@@ -62,21 +62,6 @@ export const updateCurrentFolderDetailThunk = (folderId: string, name: string, d
     const folderDetail = await updateUserFolderDetailsApi(folderId, name, description, isPublic);
     dispatch(updateCurrentFolderDetail(folderDetail!.updatedFolder))
     dispatch(updateUserFolder({ targetId: folderId, updatedFolder: folderDetail!.updatedFolder }))
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-export const reorderFolderBoxesThunk = (folderId: string, sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
-  try {
-    const folderBoxesCopy = JSON.parse(JSON.stringify(getState().currentFolderDetailData.folder.boxes)) as DashboardBox[];
-    const reorderItem = folderBoxesCopy.splice(sourceIndex, 1)[0];
-    folderBoxesCopy.splice(targetIndex, 0, reorderItem);
-    dispatch(updateFolderBoxes({ updatedBoxes: folderBoxesCopy }));
-    const response = await updateFolderBoxesApi(folderId, folderBoxesCopy)
-    if (response?.updatedFolder) {
-      dispatch(updateSidebarFolderBoxes({ targetId: folderId, updatedBoxes: response.updatedFolder.boxes }))
-    }
   } catch (err) {
     console.log(err)
   }

@@ -17,6 +17,10 @@
     gap: 6px;
 }
 
+.folderIcon {
+    margin-top: -2px;
+}
+
 .folderIcon, .chevronIcon {
     width: 15px
 }
@@ -40,12 +44,12 @@
 .chevronWrapper {
     height: 21px;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     cursor: pointer;
 }
 
 .chevronIcon {
-    margin-bottom: 2px;
+    margin-top: 2px;
     transition: transform 0.1s ease-in-out;
 }
 

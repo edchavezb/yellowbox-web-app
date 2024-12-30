@@ -1,5 +1,5 @@
 import { reorderDashboardBoxesThunk, setDashboardBoxes, setUserBoxes } from "core/features/userBoxes/userBoxesSlice";
-import { addBoxToFolderThunk, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderSidebarFolderBoxesThunk, setUserFolders } from "core/features/userFolders/userFoldersSlice";
+import { addBoxToFolderThunk, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderFolderBoxesThunk, setUserFolders } from "core/features/userFolders/userFoldersSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useEffect, useRef, useState } from "react";
@@ -23,7 +23,6 @@ export function AppDndContext(props: DndContextTypesafeProps) {
 function Sidebar({ user }: IProps) {
   const dispatch = useAppDispatch();
   const userFolders = useAppSelector(state => state.userFoldersData.folders);
-  console.log(userFolders);
   const sortedFolders = [...userFolders].sort((folderA, folderB) => {
     if (folderA.name > folderB.name) return 1
     if (folderA.name < folderB.name) return -1
@@ -35,6 +34,7 @@ function Sidebar({ user }: IProps) {
   const highestDashboardBoxPosition = Math.max(...userDashboardBoxes.map(box => box.position!));
   const accountWidgetRef = useRef(null);
 
+  const [userImage, setUserImage] = useState(user.imageUrl);
   const [activeDraggable, setActiveDraggable] = useState<null | { name: string, id: string }>(null);
   const [dragOverFolder, setDragOverFolder] = useState<null | string>(null);
   const sensors = useSensors(
@@ -52,6 +52,10 @@ function Sidebar({ user }: IProps) {
       dispatch(setDashboardBoxes(user.boxes!.filter(box => !box.folderId)))
     }
   }, [user, dispatch])
+
+  const handleImageError = async () => {
+    setUserImage("/user.png");
+  }
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -78,10 +82,10 @@ function Sidebar({ user }: IProps) {
         if (targetSortable.containerId === activeSortable?.containerId) {
           // Reorder dashboard boxes or within folder 
           if (targetSortable.containerId === 'boxList') {
-            dispatch(reorderDashboardBoxesThunk(activeSortable.index, targetSortable.index))
+            dispatch(reorderDashboardBoxesThunk(active?.id as string, activeSortable.index, targetSortable.index));
           }
           else {
-            dispatch(reorderSidebarFolderBoxesThunk(activeSortable?.containerId as string, activeSortable.index, targetSortable.index))
+            dispatch(reorderFolderBoxesThunk(activeSortable?.containerId as string, active?.id as string, activeSortable.index, targetSortable.index));
           }
         }
         else if (targetSortable.containerId === 'boxList') {
@@ -127,7 +131,7 @@ function Sidebar({ user }: IProps) {
         <>
           <Link className={styles.serviceLink} to={`/account`}>
             <div id={styles.user}>
-              <img id={styles.userImage} src={user.imageUrl ? user.imageUrl : "/user.png"} alt="user" />
+              <img id={styles.userImage} src={userImage || "/user.png"} alt="user" onError={handleImageError} />
               <span id={styles.userName} ref={accountWidgetRef}> {user.username} </span>
             </div>
           </Link>
@@ -136,6 +140,12 @@ function Sidebar({ user }: IProps) {
               <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "5px" }}>
                 Linked services
               </Text>
+              {
+                !user.spotifyAccount?.spotifyId &&
+                <div className={styles.servicesPrompt} >
+                  <span> Navigate to your <Link to={`/account`} className={styles.accountLink}>account settings</Link> to link services </span>
+                </div>
+              }
               {
                 user.spotifyAccount?.spotifyId &&
                 <Link className={styles.serviceLink} to={`/linked-services/spotify`}>

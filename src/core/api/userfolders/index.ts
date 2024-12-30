@@ -43,19 +43,7 @@ export const updateUserFolderDetailsApi = async (folderId: string, name: string,
 
 export const deleteUserFolderApi = async (folderId: string) => {
     try {
-        return await api.delete<{updatedDashboardFolders: string[], updatedDashboardBoxes: string[]}>(`folders/${folderId}`)
-    }
-    catch(err) {
-        console.log(err)
-        throw err; 
-    }
-}
-
-export const updateFolderBoxesApi = async (folderId: string, updatedItems: DashboardBox[]) => {
-    try {
-        return await api.put<{updatedItems: DashboardBox[]}, {updatedFolder: UserFolder}>(`folders/${folderId}/boxes`, {
-            updatedItems
-        })
+        return await api.delete<{updatedDashboardFolders: UserFolder[], updatedDashboardBoxes: DashboardBox[]}>(`folders/${folderId}`)
     }
     catch(err) {
         console.log(err)
@@ -83,9 +71,19 @@ export const removeBoxFromFolderApi = async (folderId: string, boxId: string) =>
     }
 }
 
-export const moveBoxBetweenFoldersApi = async (sourceId: string, targetId: string, boxId: string, boxName: string) => {
+export const reorderFolderBoxesApi = async (folderId: string, boxId: string, destinationId: string) => {
     try {
-        return await api.put<{targetId: string, boxName: string}, {updatedSourceFolder: UserFolder, updatedTargetFolder: UserFolder}>(`folders/${sourceId}/boxes/${boxId}/move`, {boxName, targetId})
+        return await api.put<{destinationId: string}, {message: string}>(`folders/${folderId}/boxes/${boxId}/reorder`, {destinationId})
+    }
+    catch(err) {
+        console.log(err)
+        throw err; 
+    }
+}
+
+export const moveBoxBetweenFoldersApi = async (sourceFolderId: string, targetFolderId: string, boxId: string, newFolderPosition: number) => {
+    try {
+        return await api.put<{targetFolderId: string, newFolderPosition: number}, {updatedSourceFolder: UserFolder, updatedTargetFolder: UserFolder}>(`folders/${sourceFolderId}/boxes/${boxId}/change-folder`, {targetFolderId, newFolderPosition})
     }
     catch(err) {
         console.log(err)
