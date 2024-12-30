@@ -17,6 +17,7 @@
     border: 5px solid gray;
     border-radius: 3px;
     cursor: grab;
+    box-sizing: content-box;
 }
 
 .instantPlay {

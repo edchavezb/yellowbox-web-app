@@ -8,23 +8,21 @@ import { Playlist } from "core/types/interfaces";
 import styles from "./ListRowPlaylist.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { extractApiData, getElementImage, getUri } from "core/helpers/itemDataHandlers";
-import { updateBoxPlaylistApi } from "core/api/userboxes/playlists";
+import { updatePlaylistImagesApi } from "core/api/userboxes/playlists";
 
 interface IProps {
   element: Playlist
-  dbIndex?: number
-  index: number
+  itemIndex: number
   offset?: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
-  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+function ListRowPlaylist({ element, setElementDragging, itemIndex, offset = 0, reorderingMode, subId }: IProps) {
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.itemId!, data: { index: dbIndex || index } })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: { index: itemIndex } })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [elementImage, setElementImage] = useState(getElementImage(element, "small"));
@@ -48,11 +46,10 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset =
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-    const itemImage = getElementImage(itemResponse, "small");
-    setElementImage(itemImage);
     const itemData = extractApiData(itemResponse);
-    itemData.itemId = element.itemId
-    updateBoxPlaylistApi(currentBox.boxId, itemData.itemId!, itemData as Playlist)
+    const itemImage = getElementImage(itemData, "small");
+    setElementImage(itemImage);
+    updatePlaylistImagesApi(itemData.spotifyId!, (itemData as Playlist).images);
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps["element"]) => {
@@ -123,7 +120,7 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset =
     return (
       <>
         <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
-          <div className={`${styles.colRightAlgn} ${styles.smallText} ${styles.indexCol}`}>{index + offset + 1}</div>
+          <div className={`${styles.colRightAlgn} ${styles.smallText} ${styles.indexCol}`}>{itemIndex + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.nameArtistCol}>
               <div className={styles.imgWrapper}>
@@ -168,7 +165,7 @@ function ListRowPlaylist({ element, setElementDragging, dbIndex, index, offset =
           </div>
         </div>
         <PopperMenu referenceRef={playlistRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={dbIndex || index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
     )

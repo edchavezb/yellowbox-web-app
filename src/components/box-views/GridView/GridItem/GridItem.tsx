@@ -9,10 +9,10 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { extractApiData, getElementImage, getUri } from "core/helpers/itemDataHandlers";
-import { updateBoxAlbumApi } from "core/api/userboxes/albums";
-import { updateBoxArtistApi } from "core/api/userboxes/artists";
-import { updateBoxPlaylistApi } from "core/api/userboxes/playlists";
-import { updateBoxTrackApi } from "core/api/userboxes/tracks";
+import { updateAlbumImagesApi } from "core/api/userboxes/albums";
+import { updateArtistImagesApi } from "core/api/userboxes/artists";
+import { updatePlaylistImagesApi } from "core/api/userboxes/playlists";
+import { updateTrackImagesApi } from "core/api/userboxes/tracks";
 
 interface IProps<T> {
   element: T
@@ -23,9 +23,8 @@ interface IProps<T> {
 }
 
 function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIndex, setElementDragging, reorderingMode, subId}: IProps<T>) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.itemId!, data: {index: itemIndex} })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: {index: itemIndex} })
   const gridItemRef = useRef(null);
-  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
   const { name, type, spotifyId } = element;
@@ -60,21 +59,6 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
     return authorLink;
   }
 
-  function updateItemInBox(updatedElement: T) {
-    if (checkType.isAlbum(updatedElement)) {
-      updateBoxAlbumApi(currentBox.boxId, updatedElement.itemId!, updatedElement)
-    }
-    else if (checkType.isArtist(updatedElement)) {
-      updateBoxArtistApi(currentBox.boxId, updatedElement.itemId!, updatedElement)
-    }
-    else if (checkType.isTrack(updatedElement)) {
-      updateBoxTrackApi(currentBox.boxId, updatedElement.itemId!, updatedElement)
-    }
-    else if (checkType.isPlaylist(updatedElement)) {
-      updateBoxPlaylistApi(currentBox.boxId, updatedElement.itemId!, updatedElement)
-    }
-  }
-
   const queryItemIdApi = async (type: string, spotifyId: string, token: string) => {
     const response = await fetch(`https://api.spotify.com/v1/${type}s/${spotifyId}`, {
       method: 'GET',
@@ -98,11 +82,25 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-    const itemImage = getElementImage(itemResponse);
-    setElementImage(itemImage);
     const itemData = extractApiData(itemResponse);
-    itemData.itemId = element.itemId
-    updateItemInBox(itemData as T);
+    const itemImage = getElementImage(itemData as T);
+    setElementImage(itemImage);
+    updateItemImagesInDb(itemData as T);
+  }
+  
+  function updateItemImagesInDb(updatedElement: T) {
+    if (checkType.isAlbum(updatedElement)) {
+      updateAlbumImagesApi(updatedElement.spotifyId, updatedElement.images)
+    }
+    else if (checkType.isArtist(updatedElement)) {
+      updateArtistImagesApi(updatedElement.spotifyId, updatedElement.images!)
+    }
+    else if (checkType.isTrack(updatedElement)) {
+      updateTrackImagesApi(updatedElement.spotifyId, updatedElement.albumImages)
+    }
+    else if (checkType.isPlaylist(updatedElement)) {
+      updatePlaylistImagesApi(updatedElement.spotifyId, updatedElement.images)
+    }
   }
 
   if (reorderingMode) {

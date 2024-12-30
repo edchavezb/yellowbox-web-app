@@ -6,7 +6,7 @@ import { EmailAuthProvider, reauthenticateWithCredential, signOut, updateEmail }
 import { firebaseAuth } from "core/services/firebase";
 import { useHistory } from "react-router-dom";
 import { useRef, useState } from 'react';
-import { dbEmailCheckApi, dbUsernameCheckApi, updateUserApi } from 'core/api/users';
+import { dbEmailCheckApi, dbUsernameCheckApi, updateUserBasicInfoApi } from 'core/api/users';
 import useDebouncePromise from 'core/hooks/useDebouncePromise';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -46,7 +46,7 @@ const ProfileInfo = () => {
         'email-check',
         'Email already in use',
         cacheYupTest(async (value) => {
-          const valid = await debouncedEmailCheck(user.accountData.email, value as string);
+          const valid = await debouncedEmailCheck(user.email, value as string);
           return valid as boolean;
         })),
     firstName: yup.string(),
@@ -120,14 +120,13 @@ const ProfileInfo = () => {
           email
         );
       }
-      const userWithChanges: Omit<YellowboxUser, 'userId'> = {
-        ...user,
-        accountData: { ...user.accountData, email },
+      const userWithChanges = {
+        email,
         username,
         firstName,
         lastName
       }
-      const updatedUser = await updateUserApi(user.userId, userWithChanges);
+      const updatedUser = await updateUserBasicInfoApi(user.userId, userWithChanges);
       if (updatedUser) {
         dispatch(updateUserBasicInfo({username, firstName: firstName || "", lastName: lastName || "", email}))
         setValidData(null);
@@ -173,7 +172,7 @@ const ProfileInfo = () => {
         </Box>
         <FormControl isInvalid={!!errors.email} sx={{ marginTop: "15px" }}>
           <FormLabel>{"Email Address"}</FormLabel>
-          <Input defaultValue={user.accountData?.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
+          <Input defaultValue={user.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
           <FormErrorMessage>
             {errors.email?.message}
           </FormErrorMessage>

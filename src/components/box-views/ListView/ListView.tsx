@@ -20,7 +20,6 @@ interface IProps<T> {
 }
 
 function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, sectionType, isSubsection, subId, isReorderingMode }: IProps<T>) {
-  console.log(data)
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
@@ -67,17 +66,15 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
   }
 
   const getListItemComponent = (e: T, index: number) => {
-    const { dbIndex, ...element } = e; //dbIndex is a sorting-only property, we don't want to propagate it elsewhere
     let itemComponent;
     switch (sectionType) {
       case "tracks":
         itemComponent =
           <ListRowTrack
-            key={e.itemId}
-            dbIndex={dbIndex}
-            index={index}
+            key={e.boxItemId}
+            itemIndex={index}
             offset={offset}
-            element={element as T as Track}
+            element={e as T as Track}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -86,11 +83,10 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       case "albums":
         itemComponent =
           <ListRowAlbum
-            key={e.itemId}
-            dbIndex={dbIndex}
-            index={index}
+            key={e.boxItemId}
+            itemIndex={index}
             offset={offset}
-            element={element as T as Album}
+            element={e as T as Album}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -99,11 +95,10 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       case "playlists":
         itemComponent =
           <ListRowPlaylist
-            key={e.itemId}
-            dbIndex={dbIndex}
-            index={index}
+            key={e.boxItemId}
+            itemIndex={index}
             offset={offset}
-            element={element as T as Playlist}
+            element={e as T as Playlist}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -112,11 +107,10 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
       default:
         itemComponent =
           <ListRowTrack
-            key={e.itemId}
-            dbIndex={dbIndex}
-            index={index}
+            key={e.boxItemId}
+            itemIndex={index}
             offset={offset}
-            element={element as T as Track}
+            element={e as T as Track}
             setElementDragging={setElementDragging}
             reorderingMode={isReorderingMode ? isReorderingMode : false}
             subId={subId}
@@ -164,7 +158,7 @@ function ListView<T extends Artist | Album | Track | Playlist>({ data, offset, s
               <div className={styles.itemContainer}>
                 {getListHeader()}
                 <SortableContext
-                  items={data.map(item => item.itemId!)}
+                  items={data.map(item => item.boxItemId!)}
                   strategy={verticalListSortingStrategy}
                 >
                   {data.map((element, index) => {

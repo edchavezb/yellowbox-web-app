@@ -8,23 +8,22 @@ import { Track } from "../../../../core/types/interfaces";
 import styles from "./ListRowTrack.module.css";
 import { extractApiData, getElementImage, getUri } from "core/helpers/itemDataHandlers";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { updateBoxTrackApi } from "core/api/userboxes/tracks";
+import { updateTrackImagesApi } from "core/api/userboxes/tracks";
 
 interface IProps {
   element: Track
   dbIndex?: number
-  index: number
+  itemIndex: number
   offset?: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
-  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+function ListRowTrack({ element, setElementDragging, itemIndex, offset = 0, reorderingMode, subId }: IProps) {
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.itemId!, data: { index: dbIndex || index } })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: { index: itemIndex } })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [elementImage, setElementImage] = useState(getElementImage(element, "small"));
@@ -56,11 +55,10 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-    const itemImage = getElementImage(itemResponse, "small");
-    setElementImage(itemImage);
     const itemData = extractApiData(itemResponse);
-    itemData.itemId = element.itemId
-    updateBoxTrackApi(currentBox.boxId, itemData.itemId!, itemData as Track)
+    const itemImage = getElementImage(itemData, "small");
+    setElementImage(itemImage);
+    updateTrackImagesApi(itemData.spotifyId!, (itemData as Track).albumImages);
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps["element"]) => {
@@ -138,7 +136,7 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
           onDragEnd={() => handleDragEnd()}
           className={styles.itemRow}
         >
-          <div className={`${styles.colRightAlgn} ${styles.smallText} ${styles.indexCol}`}>{index + offset + 1}</div>
+          <div className={`${styles.colRightAlgn} ${styles.smallText} ${styles.indexCol}`}>{itemIndex + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.nameArtistCol}>
               <div className={styles.imgWrapper}>
@@ -191,7 +189,7 @@ function ListRowTrack({ element, setElementDragging, dbIndex, index, offset = 0,
           </div>
         </div >
         <PopperMenu referenceRef={trackRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={dbIndex || index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
     )

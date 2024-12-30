@@ -26,12 +26,11 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
   )
 
   const newUserFolder = () => {
-    const blankFolder: Omit<UserFolder, 'folderId'> = {
+    const blankFolder: Omit<UserFolder, 'folderId' | 'boxes'> = {
       name: folderDetails.folderName,
       description: folderDetails.folderDesc,
       creator: user.userId,
-      isPublic: folderDetails.isPublic,
-      boxes: []
+      isPublic: folderDetails.isPublic
     }
     return blankFolder;
   }
@@ -40,15 +39,14 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
     dispatch(createUserFolderThunk(newUserFolder()))
   }
 
-  const handleUpdateFolder = async (updatedFolder: UserFolder) => {
-    dispatch(updateCurrentFolderDetailThunk(currentFolder.folderId, updatedFolder))
+  const handleUpdateFolder = async (name: string, description: string, isPublic: boolean) => {
+    dispatch(updateCurrentFolderDetailThunk(currentFolder.folderId, name, description, isPublic))
   }
 
   const handleSubmitBtnClick = async () => {
     if (editMode) {
       const { folderName, folderDesc, isPublic } = folderDetails
-      const updatedBox = { ...currentFolder, name: folderName, description: folderDesc, public: isPublic }
-      await handleUpdateFolder(updatedBox)
+      await handleUpdateFolder(folderName, folderDesc, isPublic)
     }
     else {
       await handleSaveNewFolder()

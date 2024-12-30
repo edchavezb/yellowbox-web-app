@@ -8,23 +8,21 @@ import { Album } from "core/types/interfaces";
 import styles from "./ListRowAlbum.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { extractApiData, getElementImage } from "core/helpers/itemDataHandlers";
-import { updateBoxAlbumApi } from "core/api/userboxes/albums";
+import { updateAlbumImagesApi } from "core/api/userboxes/albums";
 
 interface IProps {
   element: Album
-  dbIndex?: number
-  index: number
+  itemIndex: number
   offset?: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
-  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+function ListRowAlbum({ element, setElementDragging, itemIndex, offset = 0, reorderingMode, subId }: IProps) {
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.itemId!, data: { index: dbIndex || index } })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: { index: itemIndex } })
   const albumRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [elementImage, setElementImage] = useState(getElementImage(element, "small"));
@@ -56,11 +54,10 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-    const itemImage = getElementImage(itemResponse, "small");
-    setElementImage(itemImage);
     const itemData = extractApiData(itemResponse);
-    itemData.itemId = element.itemId
-    updateBoxAlbumApi(currentBox.boxId, itemData.itemId!, itemData as Album)
+    const itemImage = getElementImage(itemData, "small");
+    setElementImage(itemImage);
+    updateAlbumImagesApi(itemData.spotifyId!, (itemData as Album).images);
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps["element"]) => {
@@ -131,7 +128,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
     return (
       <>
         <div draggable onDragStart={(event) => handleDrag(event, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
-          <div className={`${styles.colRightAlgn} ${styles.smallText} ${styles.indexCol}`}>{index + offset + 1}</div>
+          <div className={`${styles.colRightAlgn} ${styles.smallText} ${styles.indexCol}`}>{itemIndex + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.nameArtistCol}>
               <div className={styles.imgWrapper}>
@@ -176,7 +173,7 @@ function ListRowAlbum({ element, setElementDragging, dbIndex, index, offset = 0,
           </div>
         </div>
         <PopperMenu referenceRef={albumRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={dbIndex || index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
     )

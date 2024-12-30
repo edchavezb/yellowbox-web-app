@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getFolderByIdApi, updateFolderBoxesApi, updateUserFolderApi } from "core/api/userfolders";
+import { getFolderByIdApi, updateFolderBoxesApi, updateUserFolderDetailsApi } from "core/api/userfolders";
 import { AppThunk } from "core/store/store";
 import { DashboardBox, UserFolder } from "core/types/interfaces";
 import { updateSidebarFolderBoxes, updateUserFolder } from "../userFolders/userFoldersSlice";
@@ -57,9 +57,9 @@ export const fetchFolderDetailThunk = (folderId: string): AppThunk => async (dis
   }
 };
 
-export const updateCurrentFolderDetailThunk = (folderId: string, updatedFolder: UserFolder): AppThunk => async (dispatch) => {
+export const updateCurrentFolderDetailThunk = (folderId: string, name: string, description: string, isPublic: boolean): AppThunk => async (dispatch) => {
   try {
-    const folderDetail = await updateUserFolderApi(folderId, updatedFolder);
+    const folderDetail = await updateUserFolderDetailsApi(folderId, name, description, isPublic);
     dispatch(updateCurrentFolderDetail(folderDetail!.updatedFolder))
     dispatch(updateUserFolder({ targetId: folderId, updatedFolder: folderDetail!.updatedFolder }))
   } catch (err) {

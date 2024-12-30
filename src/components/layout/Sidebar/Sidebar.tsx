@@ -1,5 +1,5 @@
-import { fetchDashboardBoxes, fetchUserBoxes, reorderDashboardBoxesThunk, setDashboardBoxes } from "core/features/userBoxes/userBoxesSlice";
-import { addBoxToFolderThunk, fetchDashboardFolders, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderSidebarFolderBoxesThunk, setUserFolders } from "core/features/userFolders/userFoldersSlice";
+import { reorderDashboardBoxesThunk, setDashboardBoxes, setUserBoxes } from "core/features/userBoxes/userBoxesSlice";
+import { addBoxToFolderThunk, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderSidebarFolderBoxesThunk, setUserFolders } from "core/features/userFolders/userFoldersSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useEffect, useRef, useState } from "react";
@@ -48,8 +48,8 @@ function Sidebar({ user }: IProps) {
   useEffect(() => {
     if (user?.userId) {
       dispatch(setUserFolders(user.folders!))
-      dispatch(setDashboardBoxes(user.boxes!))
-      dispatch(fetchUserBoxes(user.userId!))
+      dispatch(setUserBoxes(user.boxes!))
+      dispatch(setDashboardBoxes(user.boxes!.filter(box => !box.folderId)))
     }
   }, [user, dispatch])
 
@@ -89,7 +89,7 @@ function Sidebar({ user }: IProps) {
           dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string, boxName!, highestDashboardBoxPosition + 1))
         }
         else {
-          const highestFolderPosition = Math.max(...(userFolders.find(folder => folder.folderId === targetSortable.containerId)?.boxes.map(box => box.folderPosition!) || []));
+          const highestFolderPosition = Math.max(0, ...(userFolders.find(folder => folder.folderId === targetSortable.containerId)?.boxes.map(box => box.folderPosition!) || []));
           if (activeSortable?.containerId === 'boxList' && boxName) {
             // Add to folder
             dispatch(addBoxToFolderThunk(targetSortable.containerId as string, active.id as string, boxName, highestFolderPosition + 1))
@@ -105,7 +105,7 @@ function Sidebar({ user }: IProps) {
         dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string, boxName!, highestDashboardBoxPosition + 1))
       }
       else {
-        const highestFolderPosition = Math.max(...(userFolders.find(folder => folder.folderId === over.id)?.boxes.map(box => box.folderPosition!) || []));
+        const highestFolderPosition = Math.max(0, ...(userFolders.find(folder => folder.folderId === over.id)?.boxes.map(box => box.folderPosition!) || []));
         if (activeSortable?.containerId === 'boxList' && boxName) {
           // Add to folder
           dispatch(addBoxToFolderThunk(over.id as string, active.id as string, boxName, highestFolderPosition + 1))

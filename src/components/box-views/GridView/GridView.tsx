@@ -16,7 +16,6 @@ interface IProps<T> {
 }
 
 function GridView<T extends Artist | Album | Track | Playlist>({ data, isSubsection, subId, isReorderingMode }: IProps<T>) {
-  console.log(data)
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
@@ -59,16 +58,15 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isSubsect
               onDragEnd={handleDragEnd}>
               <div className={styles.itemContainer}>
                 <SortableContext
-                  items={data.map(item => item.itemId!)}
+                  items={data.map(item => item.boxItemId!)}
                   strategy={rectSortingStrategy}
                 >
                   {data.map((e, index) => {
-                    const {dbIndex, ...element} = e; //dbIndex is a sorting-only property, we don't want to propagate it elsewhere
                     return (
                       <GridItem<T>
                         key={e.spotifyId}
-                        element={element as T}
-                        itemIndex={dbIndex || index}
+                        element={e as T}
+                        itemIndex={index}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
                         subId={subId}
@@ -82,12 +80,11 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isSubsect
           :
           <div className={styles.itemContainer}>
             {data.map((e, index) => {
-              const {dbIndex, ...element} = e;
               return (
                 <GridItem<T>
                   key={e.spotifyId}
-                  element={element as T}
-                  itemIndex={dbIndex || index}
+                  element={e as T}
+                  itemIndex={index}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode}
                   subId={subId}

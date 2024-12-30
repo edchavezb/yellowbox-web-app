@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { ARTIST_VIEW_MODES, VIEW_MODES } from "core/constants/constants";
-import { updateBoxSectionSettings, updateBoxSectionSettingsThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
+import { setIsBoxDataFetching, updateBoxSectionSettings, updateBoxSectionSettingsThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
@@ -28,6 +28,7 @@ const SectionControls = ({ type, isReorderingMode, setIsReorderingMode }: Sectio
       ...sectionSettings,
       view: newViewMode
     }
+    dispatch(setIsBoxDataFetching(true));
     if (isOwner) {
       dispatch(updateBoxSectionSettingsThunk(currentBox.boxId, updatedSettings))
     } else {
@@ -40,6 +41,7 @@ const SectionControls = ({ type, isReorderingMode, setIsReorderingMode }: Sectio
       ...sectionSettings,
       displaySubsections: !sectionSettings.displaySubsections
     }
+    dispatch(setIsBoxDataFetching(true));
     if (isOwner) {
       dispatch(updateBoxSectionSettingsThunk(currentBox.boxId, updatedSettings))
     } else {

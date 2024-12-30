@@ -31,7 +31,8 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
   )
 
   const newUserBox = () => {
-    const maxBoxPosition = Math.max(...userDashboardBoxes.map(box => box.position!));
+    const maxBoxPosition = Math.max(...userDashboardBoxes.map(box => box.position!)) ?? 0;
+    console.log(maxBoxPosition)
     const blankBox: BoxCreateDTO = {
       name: boxDetails.boxName,
       description: boxDetails.boxDesc,
@@ -98,7 +99,7 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
         <div className={styles.formElement}>
           <input type={'checkbox'} name="isPublic-toggle" checked={boxDetails.boxPublic}
             onChange={(e) => setBoxDetails(state => ({ ...state, boxPublic: e.target.checked }))} />
-          <label className={styles.formElement} htmlFor="isPublic-toggle"> Make this box isPublic &#x24D8; </label>
+          <label className={styles.formElement} htmlFor="isPublic-toggle"> Make this box public &#x24D8; </label>
         </div>
       </form>
       <div id={styles.modalFooter}>

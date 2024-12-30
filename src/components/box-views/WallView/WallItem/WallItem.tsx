@@ -6,7 +6,7 @@ import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import { extractApiData, getElementImage } from "core/helpers/itemDataHandlers";
-import { updateBoxArtistApi } from "core/api/userboxes/artists";
+import { updateArtistImagesApi } from "core/api/userboxes/artists";
 import { useAppSelector } from "core/hooks/useAppSelector";
 
 interface IProps {
@@ -18,9 +18,8 @@ interface IProps {
 }
 
 function WallItem({ element, itemIndex, setElementDragging, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element.itemId!, data: {index: itemIndex} })
+  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element.boxItemId!, data: {index: itemIndex} })
   const wallItemRef = useRef(null);
-  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
   const { name, type } = element;
@@ -53,11 +52,10 @@ function WallItem({ element, itemIndex, setElementDragging, reorderingMode, subI
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-    const itemImage = getElementImage(itemResponse);
-    setElementImage(itemImage);
     const itemData = extractApiData(itemResponse);
-    itemData.itemId = element.itemId
-    updateBoxArtistApi(currentBox.boxId, itemData.itemId!, itemData)
+    const itemImage = getElementImage(itemData, "small");
+    setElementImage(itemImage);
+    updateArtistImagesApi(itemData.spotifyId!, (itemData as Artist).images!);
   }
 
   return (

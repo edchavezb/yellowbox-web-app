@@ -27,7 +27,7 @@ function DeletePrompt({ itemData, boxId, folderId, deleteType }: IProps) {
   const boxName = userBoxes.find(box => box.boxId === boxId)?.name || "";
   const history = useHistory();
   let promptMessage: string;
-  let deleteItem: (boxId: string, boxName: string, itemId: string) => AppThunk;
+  let deleteItem: (boxId: string, boxName: string, boxItemId: string) => AppThunk;
 
   if (deleteType === "Item" && itemData) {
     switch (itemData.type) {
@@ -73,7 +73,7 @@ function DeletePrompt({ itemData, boxId, folderId, deleteType }: IProps) {
       history.push('/')
     }
     else if (deleteType === "Item" && itemData) {
-      dispatch(deleteItem(boxId!, boxName, itemData.itemId!));
+      dispatch(deleteItem(boxId!, boxName, itemData.boxItemId!));
     }
     dispatch(setModalState({ visible: false, type: "", boxId: "", folderId: "", page: "", itemData: undefined }))
   }

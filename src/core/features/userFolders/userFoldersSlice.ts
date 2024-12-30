@@ -19,11 +19,16 @@ const userFoldersSlice = createSlice({
     initialState,
     reducers: {
         setUserFolders(state, action: PayloadAction<UserFolder[]>) {
-            state.folders = action.payload
+            state.folders = action.payload;
         },
         updateUserFolder(state, action: PayloadAction<{targetId: string, updatedFolder: UserFolder}>) {
             const targetIndex = state.folders.findIndex(folder => folder.folderId === action.payload.targetId);
             state.folders[targetIndex] = action.payload.updatedFolder;
+        },
+        updateUserFolderBox(state, action: PayloadAction<{folderId: string, boxId: string, updatedBox: DashboardBox}>) {
+            const folderIndex = state.folders.findIndex(folder => folder.folderId === action.payload.folderId);
+            const boxIndex = state.folders[folderIndex].boxes.findIndex(box => box.boxId === action.payload.boxId);
+            state.folders[folderIndex].boxes[boxIndex] = action.payload.updatedBox;
         },
         createUserFolder(state, action: PayloadAction<UserFolder>) {
             state.folders.push(action.payload);
@@ -52,6 +57,7 @@ const userFoldersSlice = createSlice({
 export const { 
     setUserFolders, 
     updateUserFolder, 
+    updateUserFolderBox,
     createUserFolder, 
     deleteUserFolder,
     addBoxToFolder,
@@ -69,7 +75,7 @@ export const fetchDashboardFolders = (folderIds: string[]): AppThunk => async (d
     }
 }
 
-export const createUserFolderThunk = (folderObj: Omit<UserFolder, 'folderId'>): AppThunk => async (dispatch) => {
+export const createUserFolderThunk = (folderObj: Omit<UserFolder, 'folderId'  | 'boxes'>): AppThunk => async (dispatch) => {
     try {
         const response = await createUserFolderApi(folderObj)
         dispatch(createUserFolder(response?.newFolder!))
@@ -100,7 +106,7 @@ export const addBoxToFolderThunk = (folderId: string, boxId: string, boxName: st
         const { folder: currentFolder, isUserViewing} = getState().currentFolderDetailData;
         dispatch(addBoxToFolder({targetId: folderId, box: {boxId, name: boxName, position: null, folderPosition}}))
         dispatch(removeBoxFromDashboard({targetId: boxId}))
-        const response = await addBoxToFolderApi(folderId, boxId, boxName)
+        const response = await addBoxToFolderApi(folderId, boxId, folderPosition)
         if (currentFolder.folderId === folderId && isUserViewing) {
             // Refresh folder if user viewing it
             dispatch(fetchFolderDetailThunk(currentFolder.folderId));

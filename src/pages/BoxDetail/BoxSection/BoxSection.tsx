@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import AnimateHeight from 'react-animate-height';
 import SubSection from "./SubSection/SubSection"
 import styles from "./BoxSection.module.css";
@@ -20,14 +20,14 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
   const sectionSettings = currentBox.sectionSettings.find(section => section.type === type)!;
   const sectionIconSrc = `/icons/${type}.svg`;
 
-  const sortedData = useMemo(
-    () => {
+  const sortData = useCallback(
+    (data: T[]) => {
       if (sectionSettings.primarySorting === "custom") {
-        return sectionItems.map((item, index) => ({...item, dbIndex: index}))
+        return data; // No sorting
       }
-      return twoFactorSort<T>([...sectionItems as T[]], sectionSettings.primarySorting, sectionSettings.secondarySorting, sectionSettings.sortingOrder === 'ASCENDING');
+      return twoFactorSort<T>([...data as T[]], sectionSettings.primarySorting, sectionSettings.secondarySorting, sectionSettings.sortingOrder === 'ASCENDING');
     },
-    [sectionItems, sectionSettings]
+    [sectionSettings]
   );
   const groupingSections = useMemo(
     () => Array.from(new Set(sectionItems.map(e => getItemProperty(e, sectionSettings.primarySorting, false) as string))).sort((a, b) => {
@@ -42,14 +42,15 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
     [sectionItems, sectionSettings]
   );
   const subSectionArray = useMemo(
-    () => currentBox.subsections.filter(subsection => subsection.type === type).sort(
+    () => currentBox.subsections.filter(subsection => subsection.itemType === type).sort(
       (a: Subsection, b: Subsection) => {
-        if (a.index! < b.index!) return -1
-        else if (a.index! > b.index!) return 1
+        if (a.position! < b.position!) return -1
+        else if (a.position! > b.position!) return 1
         return 0
       }),
     [currentBox.subsections, type]
   );
+  const sortedData = useMemo(() => sortData(sectionItems), [sectionItems, sortData]);
 
   const [height, setHeight] = useState<string | number>("auto");
   const [isReorderingMode, setIsReorderingMode] = useState(false);
@@ -76,7 +77,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
               sectionSettings.displaySubsections &&
               <div className={styles.defaultSubSection}>
                 <ViewComponent
-                  data={(sortedData as T[]).filter(item => !item.subSectionCount)}
+                  data={(sortedData as T[]).filter(item => !item.subsections!.length)}
                   viewType={sectionSettings.view}
                   isReorderingMode={isReorderingMode}
                   isSubsection={false}
@@ -87,19 +88,17 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
             {
               sectionSettings.displaySubsections &&
               subSectionArray.map(subsection => {
-                let { name, subsectionId, items } = subsection
-                if (sectionSettings.primarySorting !== "custom"){
-                  items = twoFactorSort([...items as T[]], sectionSettings.primarySorting, sectionSettings.secondarySorting, sectionSettings.sortingOrder === 'ASCENDING')
-                }
+                const { name, subsectionId, itemType, items } = subsection;
+                const subsectionItems = sortData(items as T[]);
                 return (
-                  !!items.length &&
+                  !!subsectionItems.length &&
                   <SubSection
-                    itemsMatch={items as T[]}
+                    itemsMatch={subsectionItems as T[]}
                     subName={name}
                     subId={subsectionId}
                     key={subsectionId}
                     viewType={sectionSettings.view}
-                    listType={type}
+                    listType={itemType}
                     isReorderingMode={isReorderingMode}
                   />
                 )

@@ -11,16 +11,17 @@ interface IProps {
 }
 
 function AddToSubsectionMenu({ itemData }: IProps) {
+  console.log(itemData);
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
-  const validSubsections = currentBox.subsections.filter(subsection => subsection.type === `${itemData.type}s`)
+  const validSubsections = currentBox.subsections.filter(subsection => subsection.itemType === `${itemData.type}s`)
 
   const handleAddItem = (subsectionId: string) => {
     dispatch(addItemToSubsectionThunk(currentBox.boxId, `${itemData.type}s` as BoxSections, subsectionId, itemData))
   }
 
   const handleRemoveItem = (subsectionId: string) => {
-    dispatch(removeItemFromSubsectionThunk(currentBox.boxId, `${itemData.type}s` as BoxSections, subsectionId, itemData.itemId!, itemData.spotifyId))
+    dispatch(removeItemFromSubsectionThunk(currentBox.boxId, subsectionId, itemData.boxItemId!, `${itemData.type}s` as BoxSections))
   }
 
   return (

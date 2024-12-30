@@ -29,7 +29,7 @@ const userSlice = createSlice({
             state.authenticatedUser.username = username;
             state.authenticatedUser.firstName = firstName;
             state.authenticatedUser.lastName = lastName;
-            state.authenticatedUser.accountData.email = email;
+            state.authenticatedUser.email = email;
         }
     }
 })

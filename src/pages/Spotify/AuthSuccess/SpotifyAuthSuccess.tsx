@@ -13,7 +13,7 @@ function SpotifyAuthSuccess() {
   let location = useLocation();
   let history = useHistory();
   const dispatch = useAppDispatch();
-  const userId = useAppSelector(state => state.userData.authenticatedUser.userId);
+  const user = useAppSelector(state => state.userData.authenticatedUser);
 
   useEffect(() => {
     const getSpotifyLoginData = async (code: string, state: string) => {
@@ -39,9 +39,9 @@ function SpotifyAuthSuccess() {
         userId: id
       }
       dispatch(setSpotifyLoginData(spotifyLogin))
-      const updatedUser = await linkUserToSpotifyAccountApi(userId, {refreshToken: refresh, id});
-      if (updatedUser) {        
-        dispatch(setAuthenticatedUser(updatedUser));
+      const spotifyAccountData = await linkUserToSpotifyAccountApi(user.userId, {refreshToken: refresh, spotifyId: id});
+      if (spotifyAccountData) {        
+        dispatch(setAuthenticatedUser({...user, spotifyAccount: spotifyAccountData}));
       }
       history.push('/')
     }

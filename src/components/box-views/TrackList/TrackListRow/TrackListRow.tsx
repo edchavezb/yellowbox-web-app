@@ -10,16 +10,15 @@ import { getUri } from "core/helpers/itemDataHandlers";
 
 interface IProps {
   element: Track
-  dbIndex?: number
-  index: number
+  itemIndex: number
   offset?: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function TrackListRow({ element, setElementDragging, dbIndex, index, offset = 0, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.spotifyId!, data: {index: dbIndex || index} })
+function TrackListRow({ element, setElementDragging, itemIndex, offset = 0, reorderingMode, subId }: IProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.spotifyId!, data: {index: itemIndex} })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { name, type, artists, duration, explicit, spotifyId } = element;
@@ -89,7 +88,7 @@ function TrackListRow({ element, setElementDragging, dbIndex, index, offset = 0,
           onDragEnd={() => handleDragEnd()}
           className={styles.itemRow}
         >
-          <div className={styles.colLeftAlgn}>{index + offset + 1}</div>
+          <div className={styles.colLeftAlgn}>{itemIndex + offset + 1}</div>
           <div className={styles.colLeftAlgn}>
             <div className={styles.name}> <Link to={`/detail/${type}/${spotifyId}`}> <span className={styles.name}> {name} </span> </Link></div>
           </div>
@@ -115,7 +114,7 @@ function TrackListRow({ element, setElementDragging, dbIndex, index, offset = 0,
           </div>
         </div >
         <PopperMenu referenceRef={trackRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={dbIndex || index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
     )

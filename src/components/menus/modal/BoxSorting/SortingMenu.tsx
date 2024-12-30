@@ -144,7 +144,7 @@ function SortingMenu() {
                         const updatedSection = e.target.checked && sectionCopy.displaySubsections ?
                           { ...sectionCopy, displayGrouping: e.target.checked, displaySubsections: false }
                           : { ...sectionCopy, displayGrouping: e.target.checked }
-                        setSectionSettings(state => ({ ...state, [section]: updatedSection }))
+                          setSectionSettings(state => ([ ...state.filter(item => item.type !== section), updatedSection ]))
                       }}
                     />
                     <label htmlFor="grouping"> Show grouping </label>
@@ -157,7 +157,7 @@ function SortingMenu() {
                       const updatedSection = e.target.checked && sectionCopy.displayGrouping ?
                         { ...sectionCopy, displaySubsections: e.target.checked, displayGrouping: false }
                         : { ...sectionCopy, displaySubsections: e.target.checked }
-                      setSectionSettings(state => ({ ...state, [section]: updatedSection }))
+                      setSectionSettings(state => ([ ...state.filter(item => item.type !== section), updatedSection ]))
                     }}
                   />
                   <label htmlFor="sub-section"> Show sub-sections </label>

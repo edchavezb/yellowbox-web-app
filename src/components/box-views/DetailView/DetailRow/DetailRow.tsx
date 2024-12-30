@@ -11,23 +11,22 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import { extractApiData, getElementImage } from "core/helpers/itemDataHandlers";
-import { updateBoxAlbumApi } from "core/api/userboxes/albums";
-import { updateBoxArtistApi } from "core/api/userboxes/artists";
-import { updateBoxPlaylistApi } from "core/api/userboxes/playlists";
-import { updateBoxTrackApi } from "core/api/userboxes/tracks";
 import useWindowDimensions from "core/hooks/useWindowDimensions";
+import { updateAlbumImagesApi } from "core/api/userboxes/albums";
+import { updateArtistImagesApi } from "core/api/userboxes/artists";
+import { updatePlaylistImagesApi } from "core/api/userboxes/playlists";
+import { updateTrackImagesApi } from "core/api/userboxes/tracks";
 
 interface IProps<T> {
   element: T
-  dbIndex?: number
-  index: number
+  itemIndex: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
 }
 
-function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, dbIndex, index, reorderingMode, subId }: IProps<T>) {
-  const { name, type, spotifyId } = element;
+function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, itemIndex, reorderingMode, subId }: IProps<T>) {
+  const { name, type, spotifyId, note } = element;
   const dispatch = useAppDispatch();
   const detailRowRef = useRef(null);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
@@ -37,7 +36,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
   const isOwner = userBoxes.some(box => box.boxId === currentBox.boxId);
 
   const { width } = useWindowDimensions();
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.itemId!, data: { index: dbIndex || index } })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: { index: itemIndex } })
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
@@ -99,7 +98,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
     metadata =
       <div className={styles.metaDataContainer}>
         <div className={styles.metaDataPill}>
-          {`${albumReleaseDate.split("-")[0]}`}
+          {`${albumReleaseDate?.split("-")[0]}`}
         </div>
         <div className={styles.metaDataPill}>
           {`${Math.floor(duration / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration % 60000 / 1000)}`.padStart(2, '0')}
@@ -125,21 +124,6 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
       </div>
   }
 
-  function updateItemInBox(updatedElement: T) {
-    if (checkType.isAlbum(updatedElement)) {
-      updateBoxAlbumApi(currentBox.boxId, updatedElement.itemId!, updatedElement)
-    }
-    else if (checkType.isArtist(updatedElement)) {
-      updateBoxArtistApi(currentBox.boxId, updatedElement.itemId!, updatedElement)
-    }
-    else if (checkType.isTrack(updatedElement)) {
-      updateBoxTrackApi(currentBox.boxId, updatedElement.itemId!, updatedElement)
-    }
-    else if (checkType.isPlaylist(updatedElement)) {
-      updateBoxPlaylistApi(currentBox.boxId, updatedElement.itemId!, updatedElement)
-    }
-  }
-
   const queryItemIdApi = async (type: string, spotifyId: string, token: string) => {
     const response = await fetch(`https://api.spotify.com/v1/${type}s/${spotifyId}`, {
       method: 'GET',
@@ -163,11 +147,25 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-    const itemImage = getElementImage(itemResponse);
-    setElementImage(itemImage);
     const itemData = extractApiData(itemResponse);
-    itemData.itemId = element.itemId
-    updateItemInBox(itemData as T);
+    const itemImage = getElementImage(itemData as T);
+    setElementImage(itemImage);
+    updateItemImagesInDb(itemData as T);
+  }
+  
+  function updateItemImagesInDb(updatedElement: T) {
+    if (checkType.isAlbum(updatedElement)) {
+      updateAlbumImagesApi(updatedElement.spotifyId, updatedElement.images)
+    }
+    else if (checkType.isArtist(updatedElement)) {
+      updateArtistImagesApi(updatedElement.spotifyId, updatedElement.images!)
+    }
+    else if (checkType.isTrack(updatedElement)) {
+      updateTrackImagesApi(updatedElement.spotifyId, updatedElement.albumImages)
+    }
+    else if (checkType.isPlaylist(updatedElement)) {
+      updatePlaylistImagesApi(updatedElement.spotifyId, updatedElement.images)
+    }
   }
 
   if (reorderingMode) {
@@ -198,7 +196,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
               onError={handleImageError}
             />
             <div className={styles.positionMobile}>
-              {index + 1}
+              {itemIndex + 1}
             </div>
           </div>
         </div>
@@ -218,10 +216,10 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           <div className={styles.notesPanel} onClick={() => dispatch(setModalState({ visible: true, type: "Item Note", boxId: currentBox.boxId, page: "", itemData: element }))}>
             <div className={styles.notesTitle}> NOTES </div>
             <div className={styles.notesDisplay}>
-              {'Note placeholder'}
+              {note}
             </div>
             <div className={styles.notesOverlay}>
-              <div className={styles.overlayTitle}> {true ? 'EXPAND ⛶' : 'ADD NOTE ✎'} </div>
+              <div className={styles.overlayTitle}>  {!note && isOwner ? 'ADD NOTE ✎' : 'EXPAND ⛶'} </div>
             </div>
           </div>
         </div>
@@ -233,7 +231,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
     return (
       <>
         <div draggable onDragStart={(e) => handleDrag(e, element)} onDragEnd={() => handleDragEnd()} className={styles.itemRow}>
-          <div className={styles.itemPosition}>{index + 1}</div>
+          <div className={styles.itemPosition}>{itemIndex + 1}</div>
           <div className={styles.imageContainer}>
             <Link to={`/detail/${type}/${spotifyId}`} className={styles.itemLink} draggable="false">
               <a href={`spotify:${type}:${spotifyId}`}>
@@ -250,7 +248,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
                 onError={handleImageError}
               />
               <div className={styles.positionMobile}>
-                {index + 1}
+                {itemIndex + 1}
               </div>
             </Link>
           </div>
@@ -270,11 +268,11 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
             <div className={styles.notesPanel} onClick={() => dispatch(setModalState({ visible: true, type: "Item Note", boxId: currentBox.boxId, page: "", subId, itemData: element }))}>
               <div className={styles.notesTitle}> NOTES </div>
               <div className={styles.notesDisplay}>
-                {'Note placeholder'}
+                {note}
               </div>
               <div className={styles.notesOverlay}>
                 <div className={styles.overlayTitle}>
-                  {true && isOwner ? 'ADD NOTE ✎' : 'EXPAND ⛶'}
+                  {!note && isOwner ? 'ADD NOTE ✎' : 'EXPAND ⛶'}
                 </div>
               </div>
             </div>
@@ -284,7 +282,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           </div>
         </div>
         <PopperMenu referenceRef={detailRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={dbIndex || index} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu itemData={element} itemIndex={itemIndex} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
         </PopperMenu>
       </>
     )

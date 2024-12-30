@@ -3,7 +3,7 @@ import api from '../index'
 
 export const getFolderByIdApi = async (folderId: string) => {
     try {
-        return await api.get<{folderData: UserFolder, creatorName: string}>('folders/', {folderId})
+        return await api.get<{folderData: UserFolder, creatorName: string}>(`folders/${folderId}`, {})
     }
     catch(err) {
         console.log(err)
@@ -21,9 +21,9 @@ export const getFoldersByIdsApi = async (folderIds: string[]) => {
     }
 }
 
-export const createUserFolderApi = async (data: Omit<UserFolder, 'folderId'>) => {
+export const createUserFolderApi = async (data: Omit<UserFolder, 'folderId' | 'boxes'>) => {
     try {
-        return await api.post<Omit<UserFolder, 'folderId'>, {newFolder: UserFolder, updatedDashboardFolders: string[]}>('folders', data)
+        return await api.post<Omit<UserFolder, 'folderId' | 'boxes'>, {newFolder: UserFolder, updatedDashboardFolders: string[]}>('folders', data)
     }
     catch(err) {
         console.log(err)
@@ -31,9 +31,9 @@ export const createUserFolderApi = async (data: Omit<UserFolder, 'folderId'>) =>
     }
 }
 
-export const updateUserFolderApi = async (folderId: string, updatedFolder: UserFolder) => {
+export const updateUserFolderDetailsApi = async (folderId: string, name: string, description: string, isPublic: boolean) => {
     try {
-        return await api.put<UserFolder, {updatedFolder: UserFolder}>(`folders/${folderId}`, updatedFolder)
+        return await api.put<{name: string, description: string, isPublic: boolean}, {updatedFolder: UserFolder}>(`folders/${folderId}/folder-details`, {name, description, isPublic})
     }
     catch(err) {
         console.log(err)
@@ -63,19 +63,9 @@ export const updateFolderBoxesApi = async (folderId: string, updatedItems: Dashb
     }
 }
 
-export const updateFolderBoxNameApi = async (folderId: string, boxId: string, newName: string) => {
+export const addBoxToFolderApi = async (folderId: string, boxId: string, folderPosition: number) => {
     try {
-        return await api.put<{name: string}, {updatedFolder: UserFolder}>(`folders/${folderId}/boxes/${boxId}`, {name: newName})
-    }
-    catch(err) {
-        console.log(err)
-        throw err; 
-    }
-}
-
-export const addBoxToFolderApi = async (folderId: string, boxId: string, boxName: string) => {
-    try {
-        return await api.post<{boxId: string, boxName: string}, {updatedFolder: UserFolder, updatedDashboardBoxes: string[]}>(`folders/${folderId}/boxes`, {boxId, boxName})
+        return await api.post<{boxId: string, folderPosition: number}, {updatedFolder: UserFolder, updatedDashboardBoxes: string[]}>(`folders/${folderId}/boxes`, {boxId, folderPosition})
     }
     catch(err) {
         console.log(err)

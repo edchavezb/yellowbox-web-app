@@ -12,9 +12,9 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const boxDetailViewing = useAppSelector(state => state.currentBoxDetailData.isUserViewing)
-  const { boxId, name: boxName } = useAppSelector(state => state.currentBoxDetailData.box)
+  const { boxId, name: boxName, folder: boxFolder } = useAppSelector(state => state.currentBoxDetailData.box)
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
-  const containingFolder = userFolders.find(folder => folder.boxes.map(dashboardBox => dashboardBox.boxId).includes(boxId));
+  const isInFolder = !!boxFolder;
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const isOwner = !!userBoxes.find(box => box.boxId === boxId);
   const { menuItemsList, menuItem } = styles;
@@ -31,9 +31,9 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
   }
 
   const handleRemoveFromFolder = () => {
-    if (containingFolder) {
-      const highestFolderPosition = Math.max(...containingFolder.boxes.map(box => box.folderPosition!))
-      dispatch(removeBoxFromFolderThunk(containingFolder.folderId, boxId, boxName, highestFolderPosition + 1));
+    if (isInFolder) {
+      const highestFolderPosition = Math.max(...userFolders.find(folder => folder.folderId === boxFolder.folderId)!.boxes.map(box => box.folderPosition!))
+      dispatch(removeBoxFromFolderThunk(boxFolder.folderId, boxId, boxName, highestFolderPosition + 1));
     }
   }
 
@@ -85,7 +85,7 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
         Copy box URL
       </div>
       {
-        (boxDetailViewing && isOwner && !containingFolder) &&
+        (boxDetailViewing && isOwner && !isInFolder) &&
         <div
           className={menuItem}
           onClick={() => handleOpenModal("Add To Folder")}>
@@ -93,11 +93,11 @@ const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
         </div>
       }
       {
-        (boxDetailViewing && isOwner && containingFolder) &&
+        (boxDetailViewing && isOwner && isInFolder) &&
         <div
           className={menuItem}
           onClick={() => handleRemoveFromFolder()}>
-          {`Remove from ${containingFolder.name}`}
+          {`Remove from ${boxFolder.name}`}
         </div>
       }
     </div>

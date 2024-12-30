@@ -1,5 +1,14 @@
 import api from "core/api"
-import { Track, UserBox } from "core/types/interfaces"
+import { ItemImage, Subsection, Track, UserBox } from "core/types/interfaces"
+
+export const updateTrackImagesApi = async (spotifyId: string, updatedImages: ItemImage[]) => {
+  try {
+    return await api.put<{ updatedImages: ItemImage[] }, { updatedBox: UserBox }>(`tracks/${spotifyId}/images`, { updatedImages });
+  } catch (err) {
+    console.log(err);
+    throw err; 
+  }
+};
 
 export const addTrackToBoxApi = async (boxId: string, track: Track) => {
   try {
@@ -11,56 +20,18 @@ export const addTrackToBoxApi = async (boxId: string, track: Track) => {
   }
 }
 
-export const updateBoxTracksApi = async (boxId: string, updatedItems: Track[]) => {
+export const reorderBoxTrackApi = async (boxId: string, boxTrackId: string, destinationId: string) => {
   try {
-    return await api.put<{ updatedItems: Track[] }, UserBox>(`boxes/${boxId}/tracks`, {
-      updatedItems
-    })
-  }
-  catch (err) {
-    console.log(err);
-    throw err; 
-  }
-}
-
-export const addTrackToSubsectionApi = async (boxId: string, itemId: string, subsectionId: string, itemData: Track) => {
-  try {
-    return await api.put<{ subsectionId: string, itemData: Track }, UserBox>(`boxes/${boxId}/tracks/${itemId}/subsection`, {
-      subsectionId,
-      itemData
-    })
-  }
-  catch (err) {
-    console.log(err);
-    throw err; 
-  }
-}
-
-export const removeTrackFromSubsectionApi = async (boxId: string, itemId: string, spotifyId: string, subsectionId: string) => {
-  try {
-    return await api.put<{ subsectionId: string, spotifyId: string }, UserBox>(`boxes/${boxId}/tracks/${itemId}/subsection/remove`, {
-      subsectionId,
-      spotifyId
-    })
-  }
-  catch (err) {
-    console.log(err);
-    throw err; 
-  }
-}
-
-export const updateBoxTrackApi = async (boxId: string, itemId: string, updatedItem: Track) => {
-  try {
-    return await api.put<{ updatedTrack: Track }, { updatedBox: UserBox }>(`boxes/${boxId}/tracks/${itemId}`, { updatedTrack: updatedItem });
+    return await api.put<{ destinationId: string }, UserBox>(`boxes/${boxId}/tracks/${boxTrackId}/reorder`, { destinationId });
   } catch (err) {
     console.log(err);
     throw err; 
   }
 }
 
-export const removeBoxTrackApi = async (boxId: string, itemId: string) => {
+export const removeBoxTrackApi = async (boxId: string, boxTrackId: string) => {
   try {
-    return await api.delete<Track[]>(`boxes/${boxId}/tracks/${itemId}`)
+    return await api.delete<Track[]>(`boxes/${boxId}/tracks/${boxTrackId}`)
   }
   catch (err) {
     console.log(err);
@@ -68,11 +39,65 @@ export const removeBoxTrackApi = async (boxId: string, itemId: string) => {
   }
 }
 
-export const reorderBoxTrackApi = async (boxId: string, sourceIndex: number, destinationIndex: number) => {
+export const addTrackToSubsectionApi = async (boxId: string, subsectionId: string, boxTrackId: string) => {
   try {
-    return await api.put<{ sourceIndex: number, destinationIndex: number }, UserBox>(`boxes/${boxId}/tracks/reorder`, { sourceIndex, destinationIndex });
+    return await api.post<{ boxTrackId: string }, UserBox>(`boxes/${boxId}/subsections/${subsectionId}/tracks`, {
+      boxTrackId
+    })
+  }
+  catch (err) {
+    console.log(err);
+    throw err; 
+  }
+}
+
+export const reorderSubsectionTrackApi = async (boxId: string, subsectionId: string, boxTrackId: string, destinationId: string) => {
+  try {
+    return await api.put<{ destinationId: string }, { updatedSubsections: Subsection[] }>(
+      `boxes/${boxId}/subsections/${subsectionId}/tracks/${boxTrackId}/reorder`,
+      { destinationId }
+    );
   } catch (err) {
     console.log(err);
     throw err; 
   }
 }
+
+export const removeTrackFromSubsectionApi = async (boxId: string, subsectionId: string, boxTrackId: string) => {
+  try {
+    return await api.delete<UserBox>(`boxes/${boxId}/subsections/${subsectionId}/tracks/${boxTrackId}/remove`)
+  }
+  catch (err) {
+    console.log(err);
+    throw err; 
+  }
+}
+
+export const updateBoxTrackNoteApi = async (boxId: string, boxTrackId: string, note: string) => {
+  try {
+    return await api.put<{ note: string }, { updatedNote: string }>(
+      `boxes/${boxId}/tracks/${boxTrackId}/note`,
+      { note }
+    );
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+export const updateSubsectionTrackNoteApi = async (
+  boxId: string,
+  subsectionId: string,
+  boxTrackId: string,
+  note: string
+) => {
+  try {
+    return await api.put<{ note: string }, { updatedNote: string }>(
+      `boxes/${boxId}/subsections/${subsectionId}/tracks/${boxTrackId}/note`,
+      { note }
+    );
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};

@@ -19,7 +19,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const { isUserViewing: boxDetailViewing, box } = useAppSelector(state => state.currentBoxDetailData)
-  const { boxId, notes } = box || {};
+  const { boxId } = box || {};
   const subSection = box?.subsections?.find(sub => sub.subsectionId === subId);
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
   const isOwner = userBoxes.some(box => box.boxId === boxId);
@@ -42,10 +42,10 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
 
   const handleMoveToTop = () => {
     if (subSection) {
-      dispatch(reorderSubsectionItemsThunk(boxId, itemData.itemId!, subId!, itemIndex!, 0));
+      dispatch(reorderSubsectionItemsThunk(boxId, itemData.boxItemId!, subId!, itemIndex!, 0));
     }
     else {
-      dispatch(reorderBoxItemsThunk(boxId, itemData.itemId!, itemIndex!, 0, itemData.type));
+      dispatch(reorderBoxItemsThunk(boxId, itemData.boxItemId!, itemIndex!, 0, itemData.type));
     }
     setIsOpen(false);
   }
@@ -54,7 +54,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
     let lastItemIndex;
     if (subSection) {
       lastItemIndex = subSection.items.length - 1;
-      dispatch(reorderSubsectionItemsThunk(boxId, itemData.itemId!, subId!, itemIndex!, lastItemIndex));
+      dispatch(reorderSubsectionItemsThunk(boxId, itemData.boxItemId!, subId!, itemIndex!, lastItemIndex));
     }
     else {
       switch (itemData.type) {
@@ -74,7 +74,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
           lastItemIndex = 0;
           break;
       }
-      dispatch(reorderBoxItemsThunk(boxId, itemData.itemId!, itemIndex!, lastItemIndex, itemData.type));
+      dispatch(reorderBoxItemsThunk(boxId, itemData.boxItemId!, itemIndex!, lastItemIndex, itemData.type));
     }
     setIsOpen(false);
   }
@@ -142,7 +142,7 @@ const BoxItemMenu = ({ itemData, itemIndex, setIsOpen, subId, viewMode }: BoxIte
         <div
           className={menuItem}
           onClick={() => handleOpenModal("Item Note")}>
-          {notes?.some(note => note.itemId === itemData.spotifyId) ? 'View note' : 'Add note'}
+          {itemData.note ? 'View note' : 'Add note'}
         </div>
       }
       <div

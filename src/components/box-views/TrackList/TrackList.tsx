@@ -79,7 +79,7 @@ function TrackList({ data, offset, isSubsection, subId, isReorderingMode }: IPro
                 >
                   {data.map((element, index) => {
                     return (
-                      <TrackListRow element={extractApiData(element) as Track} index={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} />
+                      <TrackListRow element={extractApiData(element) as Track} itemIndex={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} />
                     )
                   })}
                 </SortableContext>
@@ -91,7 +91,7 @@ function TrackList({ data, offset, isSubsection, subId, isReorderingMode }: IPro
             <ListHeader />
             {data.map((element, index) => {
               return (
-                <TrackListRow element={extractApiData(element) as Track} index={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} />
+                <TrackListRow element={extractApiData(element) as Track} itemIndex={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} />
               )
             })}
           </div>

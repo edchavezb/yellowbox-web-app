@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { cloneBoxApi, createUserBoxApi, deleteUserBoxApi, getDashboardBoxesApi } from "core/api/userboxes"
-import { getUserBoxesApi, updateUserDashboardBoxesApi } from "core/api/users"
+import { getUserBoxesApi, reorderDashboardBoxApi, updateUserDashboardBoxesApi } from "core/api/users"
 import { AppThunk } from "core/store/store"
 import { BoxCreateDTO, DashboardBox, UserBox, UserFolder } from "core/types/interfaces"
 import { updateUserFolder } from "../userFolders/userFoldersSlice"
@@ -76,7 +76,6 @@ export const fetchUserBoxes = (userId: string): AppThunk => async (dispatch) => 
 }
 
 export const fetchDashboardBoxes = (boxIds: string[]): AppThunk => async (dispatch) => {
-    console.log(boxIds)
     try {
         const dashboardBoxes = await getDashboardBoxesApi(boxIds);
         dispatch(setDashboardBoxes(dashboardBoxes!))
@@ -90,10 +89,10 @@ export const reorderDashboardBoxesThunk = (sourceIndex: number, targetIndex: num
     const userId = getState().userData.authenticatedUser.userId;
     const boxesCopy = JSON.parse(JSON.stringify(getState().userBoxesData.dashboardBoxes)) as DashboardBox[];
     const reorderItem = boxesCopy.splice(sourceIndex, 1)[0];
+    const targetItem = boxesCopy[targetIndex];
     boxesCopy.splice(targetIndex, 0, reorderItem);
     dispatch(setDashboardBoxes(boxesCopy));
-    const updatedBoxIds = boxesCopy.map(box => box.boxId);
-    await updateUserDashboardBoxesApi(userId, updatedBoxIds)
+    await reorderDashboardBoxApi(userId, reorderItem.boxId, targetItem.position!)
   } catch (err) {
     console.log(err)
   }

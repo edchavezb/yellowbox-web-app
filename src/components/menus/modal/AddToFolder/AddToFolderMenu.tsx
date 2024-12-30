@@ -21,7 +21,7 @@ function AddToFolderMenu({ page, boxId }: IProps) {
   const [targetFolder, setTargetFolder] = useState(userFolders[0].folderId)
 
   const handleAddItem = () => {
-    const highestFolderPosition = Math.max(...(userFolders.find(folder => folder.folderId === targetFolder)?.boxes.map(box => box.folderPosition!) || []))
+    const highestFolderPosition = Math.max(0, ...(userFolders.find(folder => folder.folderId === targetFolder)?.boxes.map(box => box.folderPosition!) || []));
     try {
       dispatch(addBoxToFolderThunk(targetFolder, boxId, boxName!, highestFolderPosition + 1))
     } catch {

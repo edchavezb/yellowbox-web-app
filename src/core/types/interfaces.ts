@@ -28,6 +28,7 @@ export interface YellowboxUser {
   userId: string
   firebaseId: string
   username: string
+  email: string
   firstName?: string
   lastName?: string
   imageUrl?: string
@@ -58,7 +59,6 @@ export interface UserAccountData {
   accountTier: string
   signUpDate: string
   emailVerified: boolean
-  email: string
   showTutorial: boolean
 }
 
@@ -70,6 +70,12 @@ export interface UserBox {
     userId: string,
     username: string
   }
+  position: number,
+  folderPosition: number,
+  folder: {
+    name: string,
+    folderId: string
+  }
   description: string
   artists: Artist[]
   albums: Album[]
@@ -77,7 +83,6 @@ export interface UserBox {
   playlists: Playlist[]
   sectionSettings: SectionSettings[]
   subsections: Subsection[]
-  notes: { noteId: string, itemId: string, noteText: string, subSectionId?: string }[]
 }
 
 export interface UserFolder {
@@ -98,7 +103,7 @@ export interface BoxCreateDTO {
 }
 
 export interface FolderCreateDTO {
-  creatorId: string
+  creator: string
   name: string
   description: string
   isPublic: boolean
@@ -109,6 +114,7 @@ export interface DashboardBox {
   name: string
   position: number | null
   folderPosition: number | null
+  folderId?: string | null
 }
 
 export interface SectionSettings {
@@ -130,11 +136,11 @@ export interface Visibility {
 }
 
 export interface Subsection {
-  subsectionId?: string,
-  type: BoxSections,
+  subsectionId: string,
+  itemType: BoxSections,
   name: string,
   items: Artist[] | Album[] | Track[] | Playlist[]
-  index?: number
+  position: number
 }
 
 export interface UpdateBoxPayload {
@@ -144,33 +150,36 @@ export interface UpdateBoxPayload {
 }
 
 export interface Album {
-  itemId?: string
+  boxItemId?: string
+  spotifyId: string
   albumType: string
   artists: { name: string, spotifyId: string }[]
-  spotifyId: string
   images: ItemImage[]
   name: string
   releaseDate: string
   totalTracks: number
   type: string
-  subSectionCount?: number
-  dbIndex?: number
+  position?: number
+  subsections?: string[],
+  note?: string
 }
 
 export interface Artist {
-  itemId?: string
-  genres?: string[]
+  boxItemId?: string
   spotifyId: string
+  genres?: string[]
   images?: ItemImage[]
   name: string
   popularity?: number
   type: string
-  subSectionCount?: number
-  dbIndex?: number
+  position?: number
+  subsections?: string[]
+  note?: string
 }
 
 export interface Track {
-  itemId?: string
+  boxItemId?: string
+  spotifyId: string
   albumName?: string
   albumReleaseDate: string
   albumId: string
@@ -178,27 +187,28 @@ export interface Track {
   artists: { name: string, spotifyId: string }[]
   duration: number
   explicit: string
-  spotifyId: string
   name: string
   popularity: number
   trackNumber: number
   type: string
-  subSectionCount?: number
-  dbIndex?: number
+  position?: number
+  subsections?: string[]
+  note?: string
 }
 
 export interface Playlist {
-  itemId?: string
-  description: string
+  boxItemId?: string
   spotifyId: string
+  description: string
   images: ItemImage[]
   name: string
   ownerId: string
   ownerDisplayName: string
   totalTracks: number
   type: string
-  subSectionCount?: number
-  dbIndex?: number
+  position?: number
+  subsections?: string[]
+  note?: string
 }
 
 export interface ApiArtist {

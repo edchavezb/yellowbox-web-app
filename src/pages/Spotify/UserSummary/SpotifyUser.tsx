@@ -1,5 +1,5 @@
 import styles from "./SpotifyUser.module.css"
-import { Playlist, Track } from "core/types/interfaces";
+import { ApiPlaylist, ApiTrack, Playlist, Track } from "core/types/interfaces";
 import { useCallback, useEffect, useState } from "react";
 import GridView from "components/box-views/GridView/GridView";
 import ListView from "components/box-views/ListView/ListView";
@@ -9,6 +9,7 @@ import { refreshSpotifyTokenApi } from "core/api/spotify";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setAccessToken } from "core/features/spotifyService/spotifyLoginSlice";
 import { Text } from '@chakra-ui/react'
+import { extractApiData } from "core/helpers/itemDataHandlers";
 
 interface SpotifyUserData {
   display_name: string
@@ -22,8 +23,8 @@ function SpotifyUser() {
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const spotifyAuthData = useAppSelector(state => state.spotifyLoginData.userData.auth)
   const [userData, setUserData] = useState<SpotifyUserData>({} as SpotifyUserData);
-  const [recentlyPlayed, setRecentlyPlayed] = useState<Track[]>([]);
-  const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
+  const [recentlyPlayed, setRecentlyPlayed] = useState<ApiTrack[]>([]);
+  const [userPlaylists, setUserPlaylists] = useState<ApiPlaylist[]>([]);
 
   const getUserData = useCallback(async (token: string) => {
     const response = await fetch('https://api.spotify.com/v1/me', {
@@ -49,7 +50,7 @@ function SpotifyUser() {
       }
     })
     const data = await response.json();
-    setRecentlyPlayed(data?.items?.map((item: { track: Track }) => item.track).slice(0, 10) || [])
+    setRecentlyPlayed(data?.items?.map((item: { track: ApiTrack }) => item.track).slice(0, 10) || [])
   }, [])
 
   const getUserPlaylists = useCallback(async (token: string) => {
@@ -94,14 +95,14 @@ function SpotifyUser() {
           !!recentlyPlayed?.length &&
           <div className={styles.recentlyPlayedSection}>
             <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '20px', marginBottom: "10px" }}> Recently played tracks </Text>
-            <ListView<Track> data={recentlyPlayed} sectionType={'tracklist'} />
+            <ListView<Track> data={recentlyPlayed.map(track => extractApiData(track)) as Track[]} sectionType={'tracklist'} />
           </div>
         }
         {
           !!userPlaylists.length &&
           <div className={styles.userPlaylistsSection}>
             <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '20px', marginBottom: "10px" }}> Your playlists </Text>
-            <GridView<Playlist> data={userPlaylists} />
+            <GridView<Playlist> data={userPlaylists.map(playlist => extractApiData(playlist)) as Playlist[]} />
           </div>
         }
       </div>
