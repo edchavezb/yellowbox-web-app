@@ -4,7 +4,8 @@ import { getItemProperty } from "core/helpers/itemDataHandlers";
 export const twoFactorSort = <T extends Artist | Album | Track | Playlist>(array: T[], sortFactorOne: string, sortFactorTwo: string, ascending: boolean) => {
     if (sortFactorOne === "custom") return array
     const sortOrderFactor = ascending ? 1 : -1;
-    const sortedArray = array.toSorted((a, b) => {
+    const arrayCopy = JSON.parse(JSON.stringify(array)) as T[];
+    arrayCopy.sort((a, b) => {
       const [factorOneInA, factorOneInB] = [getItemProperty(a, sortFactorOne, true), getItemProperty(b, sortFactorOne, true)]
       const [factorTwoInA, factorTwoInB] = [getItemProperty(a, sortFactorTwo, true), getItemProperty(b, sortFactorTwo, true)]
 
@@ -16,5 +17,5 @@ export const twoFactorSort = <T extends Artist | Album | Track | Playlist>(array
       }
       return 0
     })
-    return sortedArray;
+    return arrayCopy;
 }

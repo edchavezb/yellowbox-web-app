@@ -1,7 +1,8 @@
 import { AnyAction, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import logger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 import rootReducer from "./reducers";
 
+const logger: any = createLogger();
 const preloadedState = {}
 
 const store = configureStore({

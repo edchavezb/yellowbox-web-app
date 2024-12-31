@@ -6,18 +6,19 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { YellowboxUser } from "core/types/interfaces";
 import styles from "./Sidebar.module.css";
-import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, DndContextProps, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import SidebarFolder from "./SidebarFolder/SidebarFolder";
 import SidebarBoxList from "./SidebarBoxList/SidebarBoxList";
-import { DndContextTypesafeProps, DragEndEvent, DragOverEvent, DragStartEvent } from "./sidebarTypes";
+import { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core";
 import { Text } from '@chakra-ui/react'
+import { DndContextTypesafeProps } from "./sidebarTypes";
 
 interface IProps {
   user: YellowboxUser
 }
 
 export function AppDndContext(props: DndContextTypesafeProps) {
-  return <DndContext {...props} />;
+  return <DndContext {...props as DndContextProps} />;
 }
 
 function Sidebar({ user }: IProps) {
