@@ -31,7 +31,7 @@ export const reorderBoxPlaylistApi = async (boxId: string, boxPlaylistId: string
 
 export const removeBoxPlaylistApi = async (boxId: string, boxPlaylistId: string) => {
   try {
-    return await api.delete<Playlist[]>(`boxes/${boxId}/playlists/${boxPlaylistId}`)
+    return await api.delete<UserBox>(`boxes/${boxId}/playlists/${boxPlaylistId}`)
   }
   catch (err) {
     console.log(err);

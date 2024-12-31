@@ -31,7 +31,7 @@ export const reorderBoxTrackApi = async (boxId: string, boxTrackId: string, dest
 
 export const removeBoxTrackApi = async (boxId: string, boxTrackId: string) => {
   try {
-    return await api.delete<Track[]>(`boxes/${boxId}/tracks/${boxTrackId}`)
+    return await api.delete<UserBox>(`boxes/${boxId}/tracks/${boxTrackId}`)
   }
   catch (err) {
     console.log(err);

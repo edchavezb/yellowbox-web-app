@@ -31,7 +31,7 @@ export const reorderBoxAlbumApi = async (boxId: string, boxAlbumId: string, dest
 
 export const removeBoxAlbumApi = async (boxId: string, boxAlbumId: string) => {
   try {
-    return await api.delete<Album[]>(`boxes/${boxId}/albums/${boxAlbumId}`)
+    return await api.delete<UserBox>(`boxes/${boxId}/albums/${boxAlbumId}`)
   }
   catch (err) {
     console.log(err);

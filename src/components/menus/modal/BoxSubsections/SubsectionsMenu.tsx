@@ -7,20 +7,19 @@ import SubsectionRow from './SubsectionRow/SubsectionRow';
 import { BoxSections } from 'core/types/types';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Subsection } from 'core/types/interfaces';
 import AppButton from 'components/styled/AppButton/AppButton';
 
 function SubsectionsMenu() {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const artistSubsections = currentBox.subsections
-    .filter(subsection => subsection.itemType === 'artists').sort(sortSubsections)
+    .filter(subsection => subsection.itemType === 'artists')
   const albumSubsections = currentBox.subsections
-    .filter(subsection => subsection.itemType === 'albums').sort(sortSubsections)
+    .filter(subsection => subsection.itemType === 'albums')
   const trackSubsections = currentBox.subsections
-    .filter(subsection => subsection.itemType === 'tracks').sort(sortSubsections)
+    .filter(subsection => subsection.itemType === 'tracks')
   const playlistSubsections = currentBox.subsections
-    .filter(subsection => subsection.itemType === 'playlists').sort(sortSubsections)
+    .filter(subsection => subsection.itemType === 'playlists')
 
   const handleCreateSubsection = async (type: BoxSections, index: number) => {
     dispatch(addSubsectionToBoxThunk(currentBox.boxId, type, index, ''));
@@ -28,22 +27,17 @@ function SubsectionsMenu() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
+    console.log(over, active);
     const subsectionType = currentBox.subsections.find(sub => sub.subsectionId === active.id)?.itemType
     dispatch(
       reorderSubsectionsThunk(
         currentBox.boxId,
         currentBox.subsections,
-        active.id as string,
-        over?.id as string,
+        active?.data?.current?.sortable.index as number,
+        over?.data?.current?.sortable.index as number,
         subsectionType!
       )
     );
-  }
-
-  function sortSubsections(a: Subsection, b: Subsection) {
-    if (a.position! > b.position!) return 1
-    if (a.position! < b.position!) return -1
-    return 0
   }
 
   return (

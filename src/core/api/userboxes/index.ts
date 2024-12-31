@@ -109,9 +109,9 @@ export const addSubsectionToBoxApi = async (boxId: string, subsectionObj: { item
   }
 }
 
-export const updateSubsectionsApi = async (boxId: string, updatedSubsections: Subsection[]) => {
+export const reorderSubsectionsApi = async (boxId: string, subsectionId: string, destinationId: string) => {
   try {
-    return await api.put<Subsection[], Subsection[]>(`boxes/${boxId}/subsections`, updatedSubsections)
+    return await api.put<{destinationId: string}, {message: string}>(`boxes/${boxId}/subsections/${subsectionId}/reorder`, { destinationId })
   }
   catch (err) {
     console.log(err)
