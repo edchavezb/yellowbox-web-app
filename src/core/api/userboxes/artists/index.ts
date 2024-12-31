@@ -1,5 +1,14 @@
 import api from "core/api"
-import { Artist, UserBox } from "core/types/interfaces"
+import { Artist, ItemImage, Subsection, UserBox } from "core/types/interfaces"
+
+export const updateArtistImagesApi = async (spotifyId: string, updatedImages: ItemImage[]) => {
+  try {
+    return await api.put<{ updatedImages: ItemImage[] }, { updatedBox: UserBox }>(`artists/${spotifyId}/images`, { updatedImages });
+  } catch (err) {
+    console.log(err);
+    throw err; 
+  }
+};
 
 export const addArtistToBoxApi = async (boxId: string, artist: Artist) => {
   try {
@@ -11,10 +20,29 @@ export const addArtistToBoxApi = async (boxId: string, artist: Artist) => {
   }
 }
 
-export const updateBoxArtistsApi = async (boxId: string, updatedItems: Artist[]) => {
+export const reorderBoxArtistApi = async (boxId: string, boxArtistId: string, destinationId: string) => {
   try {
-    return await api.put<{ updatedItems: Artist[] }, UserBox>(`boxes/${boxId}/artists`, {
-      updatedItems
+    return await api.put<{ destinationId: string }, UserBox>(`boxes/${boxId}/artists/${boxArtistId}/reorder`, { destinationId });
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export const removeBoxArtistApi = async (boxId: string, boxArtistId: string) => {
+  try {
+    return await api.delete<UserBox>(`boxes/${boxId}/artists/${boxArtistId}`)
+  }
+  catch (err) {
+    console.log(err);
+    throw err; 
+  }
+}
+
+export const addArtistToSubsectionApi = async (boxId: string, subsectionId: string, boxArtistId: string) => {
+  try {
+    return await api.post<{ boxArtistId: string }, UserBox>(`boxes/${boxId}/subsections/${subsectionId}/artists`, {
+      boxArtistId
     })
   }
   catch (err) {
@@ -23,9 +51,21 @@ export const updateBoxArtistsApi = async (boxId: string, updatedItems: Artist[])
   }
 }
 
-export const updateBoxArtistApi = async (boxId: string, itemId: string, updatedItem: Artist) => {
+export const reorderSubsectionArtistApi = async (boxId: string, subsectionId: string, boxItemId: string, destinationId: string) => {
   try {
-    return await api.put<{ updatedArtist: Artist }, { updatedBox: UserBox }>(`boxes/${boxId}/artists/${itemId}`, { updatedArtist: updatedItem })
+    return await api.put<{ destinationId: string }, { updatedSubsections: Subsection[] }>(
+      `boxes/${boxId}/subsections/${subsectionId}/artists/${boxItemId}/reorder`,
+      { destinationId }
+    );
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export const removeArtistFromSubsectionApi = async (boxId: string, boxArtistId: string, subsectionId: string) => {
+  try {
+    return await api.delete<UserBox>(`boxes/${boxId}/subsections/${subsectionId}/artists/${boxArtistId}`)
   }
   catch (err) {
     console.log(err);
@@ -33,48 +73,31 @@ export const updateBoxArtistApi = async (boxId: string, itemId: string, updatedI
   }
 }
 
-export const removeBoxArtistApi = async (boxId: string, itemId: string) => {
+export const updateBoxArtistNoteApi = async (boxId: string, boxArtistId: string, note: string) => {
   try {
-    return await api.delete<Artist[]>(`boxes/${boxId}/artists/${itemId}`)
-  }
-  catch (err) {
+    return await api.put<{ note: string }, { updatedNote: string }>(
+      `boxes/${boxId}/artists/${boxArtistId}/note`,
+      { note }
+    );
+  } catch (err) {
     console.log(err);
-    throw err; 
+    throw err;
   }
-}
+};
 
-export const addArtistToSubsectionApi = async (boxId: string, itemId: string, subsectionId: string, itemData: Artist) => {
+export const updateSubsectionArtistNoteApi = async (
+  boxId: string,
+  subsectionId: string,
+  boxArtistId: string,
+  note: string
+) => {
   try {
-    return await api.put<{ subsectionId: string, itemData: Artist }, UserBox>(`boxes/${boxId}/artists/${itemId}/subsection`, {
-      subsectionId,
-      itemData
-    })
-  }
-  catch (err) {
+    return await api.put<{ note: string }, { updatedNote: string }>(
+      `boxes/${boxId}/subsections/${subsectionId}/artists/${boxArtistId}/note`,
+      { note }
+    );
+  } catch (err) {
     console.log(err);
-    throw err; 
+    throw err;
   }
-}
-
-export const removeArtistFromSubsectionApi = async (boxId: string, itemId: string, spotifyId: string, subsectionId: string) => {
-  try {
-    return await api.put<{ subsectionId: string, spotifyId: string }, UserBox>(`boxes/${boxId}/artists/${itemId}/subsection/remove`, {
-      subsectionId,
-      spotifyId
-    })
-  }
-  catch (err) {
-    console.log(err);
-    throw err; 
-  }
-}
-
-export const reorderBoxArtistApi = async (boxId: string, sourceIndex: number, destinationIndex: number) => {
-  try {
-    return await api.put<{ sourceIndex: number, destinationIndex: number }, UserBox>(`boxes/${boxId}/artists/reorder`, { sourceIndex, destinationIndex })
-  }
-  catch (err) {
-    console.log(err);
-    throw err; 
-  }
-}
+};

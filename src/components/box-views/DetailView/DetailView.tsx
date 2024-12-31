@@ -27,7 +27,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isSubse
     if (isSubsection) {
       dispatch(
         reorderSubsectionItemsThunk(
-          currentBox._id,
+          currentBox.boxId,
           active.id as string,
           subId!,
           active?.data?.current?.index as number,
@@ -38,7 +38,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isSubse
     else {
       dispatch(
         reorderBoxItemsThunk(
-          currentBox._id,
+          currentBox.boxId,
           active?.id as string,
           active?.data?.current?.index as number,
           over?.data?.current?.index as number,
@@ -58,17 +58,15 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isSubse
               onDragEnd={handleDragEnd}>
               <div className={styles.itemContainer}>
                 <SortableContext
-                  items={data.map(item => item._id!)}
+                  items={data.map(item => item.boxItemId!)}
                   strategy={verticalListSortingStrategy}
                 >
                   {data.map((e, index) => {
-                    const { dbIndex, ...element } = e; //dbIndex is a sorting-only property, we don't want to propagate it elsewhere
                     return (
                       <DetailRow
-                        key={e.id}
-                        dbIndex={dbIndex}
-                        index={index}
-                        element={element as T}
+                        key={e.spotifyId}
+                        itemIndex={index}
+                        element={e as T}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
                         subId={subId}
@@ -82,13 +80,11 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isSubse
           :
           <div className={styles.itemContainer}>
             {data.map((e, index) => {
-              const {dbIndex, ...element} = e;
               return (
                 <DetailRow
-                  key={e.id}
-                  dbIndex={dbIndex}
-                  index={index}
-                  element={element as T}
+                  key={e.spotifyId}
+                  itemIndex={index}
+                  element={e as T}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode ? isReorderingMode : false}
                   subId={subId}

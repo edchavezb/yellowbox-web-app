@@ -5,7 +5,7 @@ import * as yup from "yup";
 import styles from "./SignUpMenu.module.css";
 import { firebaseAuth } from 'core/services/firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { createUserApi, dbUsernameCheckApi } from 'core/api/users';
+import { createUserApi, dbEmailCheckApi, dbUsernameCheckApi, UserCreateDTO } from 'core/api/users';
 import { YellowboxUser } from 'core/types/interfaces';
 import useDebouncePromise from 'core/hooks/useDebouncePromise';
 import { cacheYupTest } from 'core/helpers/cacheYupTest';
@@ -28,7 +28,14 @@ function SignUpMenu() {
         })),
     email: yup.string()
       .required('Email is a required field')
-      .email('Please enter a valid email format'),
+      .email('Please enter a valid email format')
+      .test(
+        'email-check',
+        'Email already in use',
+        cacheYupTest(async (value) => {
+          const valid = await debouncedEmailCheck(value as string);
+          return valid as boolean;
+        })),
     password: yup.string()
       .required('Password is a required field')
       .min(8, 'Password must be at least 8 characters')
@@ -56,6 +63,17 @@ function SignUpMenu() {
     1000
   );
 
+  const debouncedEmailCheck = useDebouncePromise(
+    async (email) => {
+      const response = await dbEmailCheckApi(email.toLowerCase().trim());
+      if (response?.emailExists !== undefined) {
+        const isValid = !response?.emailExists;
+        return isValid;
+      }
+    },
+    500
+  );
+
   const handleSubmitForm = async (data: FormData) => {
     const { username, email, password } = data;
     try {
@@ -65,19 +83,13 @@ function SignUpMenu() {
         password.trim()
       );
       await sendEmailVerification(newFirebaseUser.user)
-      const newAppUser: Omit<YellowboxUser, "_id"> = {
+      const newAppUser: UserCreateDTO = {
         firebaseId: newFirebaseUser.user.uid,
         username: username.toLowerCase().trim(),
-        image: "",
-        account: {
-          accountTier: "free",
-          signUpDate: (new Date()).toISOString(),
-          emailVerified: false,
-          email,
-          showTutorial: true
-        },
-        billing: {},
-        services: {}
+        firstName: "",
+        lastName: "",
+        imageUrl: "",
+        email: email
       }
       const savedUser = await createUserApi(newAppUser);
       if (savedUser) {

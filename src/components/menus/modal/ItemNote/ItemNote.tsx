@@ -1,4 +1,4 @@
-import { addNoteToBoxThunk, updateItemNoteThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { updateBoxItemNoteThunk, updateSubsectionItemNoteThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useEffect, useRef, useState } from "react";
@@ -19,14 +19,12 @@ interface IProps {
 
 function ItemNote({ itemData, boxId, subId }: IProps) {
   const dispatch = useAppDispatch();
-  const { name, id } = itemData;
+  const { name, boxItemId, type } = itemData;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
-  const isOwner = userBoxes.some(box => box.boxId === currentBox._id);
-  const itemNotes = currentBox.notes.filter(note => note.itemId === id);
-  const currentNote = subId ? itemNotes.find(note => note.subSectionId === subId) : itemNotes.find(note => !note.subSectionId)
-  const subSectionName = currentBox.subSections.find(sub => sub._id === subId)?.name
-  const [editorNote, setEditorNote] = useState(currentNote?.noteText || "");
+  const isOwner = userBoxes.some(box => box.boxId === currentBox.boxId);
+  const subSectionName = currentBox.subsections.find(sub => sub.subsectionId === subId)?.name
+  const [editorNote, setEditorNote] = useState(itemData.note || "");
   const [isEditorEnabled, setIsEditorEnabled] = useState(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
 
@@ -50,12 +48,11 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
   }
 
   const saveNoteHandler = () => {
-    const currentNoteId = currentNote?._id;
-    if (currentNoteId) {
-      dispatch(updateItemNoteThunk(boxId, currentNoteId!, editorNote!));
+    if (subId) {
+      dispatch(updateSubsectionItemNoteThunk(boxId, subId, editorNote!, boxItemId!, type));
     }
     else {
-      dispatch(addNoteToBoxThunk(boxId, itemData.id!, editorNote || "", subId));
+      dispatch(updateBoxItemNoteThunk(boxId, editorNote!, boxItemId!, type));
     }
     dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))
   }
@@ -74,13 +71,13 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
     elementImages = images
   }
   else if (checkType.isTrack(itemData)) {
-    const { artists, album } = itemData;
+    const { artists, albumImages } = itemData;
     authorName = artists[0].name
-    elementImages = album!.images;
+    elementImages = albumImages;
   }
   else if (checkType.isPlaylist(itemData)) {
-    const { images, owner } = itemData;
-    authorName = owner.display_name!;
+    const { images, ownerDisplayName } = itemData;
+    authorName = ownerDisplayName!;
     elementImages = images
   }
 
@@ -140,7 +137,7 @@ function ItemNote({ itemData, boxId, subId }: IProps) {
         isOwner &&
         <div id={styles.modalFooter}>
           <AppButton
-            onClick={saveNoteHandler} disabled={itemNotes.find(note => note.subSectionId === subId)?.noteText === editorNote || !editorNote}
+            onClick={saveNoteHandler} disabled={itemData.note === editorNote || !editorNote}
             text={"Save changes"}
           />
           <AppButton

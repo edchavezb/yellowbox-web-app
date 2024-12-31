@@ -26,12 +26,12 @@ function SubsectionRow({ rowId, section, name }: SubsectionRowProps) {
   }
 
   const handleSaveName = () => {
-    dispatch(updateSubsectionNameThunk(currentBox._id, rowId, nameInput))
+    dispatch(updateSubsectionNameThunk(currentBox.boxId, rowId, nameInput))
     setIsInputEnabled(false);
   }
   
   const handleDeleteRow = () => {
-    dispatch(removeSubsectionThunk(currentBox._id, rowId, section))
+    dispatch(removeSubsectionThunk(currentBox.boxId, rowId, section))
   }
 
   const handleFocusOut = (e: React.FocusEvent) => {

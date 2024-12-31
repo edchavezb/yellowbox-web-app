@@ -4,10 +4,11 @@ import { refreshSpotifyTokenApi } from "core/api/spotify";
 import { setAccessToken } from "core/features/spotifyService/spotifyLoginSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { Album } from "core/types/interfaces";
+import { Album, ApiAlbum } from "core/types/interfaces";
 import { useCallback, useEffect, useState } from "react";
 import styles from "./UserAlbums.module.css"
 import { Text } from '@chakra-ui/react'
+import { extractApiData } from "core/helpers/itemDataHandlers";
 
 const UserAlbums = () => {
   const dispatch = useAppDispatch();
@@ -17,7 +18,7 @@ const UserAlbums = () => {
   const [page, setPage] = useState(1);
   const [hasPrevious, setHasPrevious] = useState<boolean>(false);
   const [hasNext, setHasNext] = useState<boolean>(true);
-  const [savedAlbums, setSavedAlbums] = useState<Album[]>([]);
+  const [savedAlbums, setSavedAlbums] = useState<ApiAlbum[]>([]);
 
   const fetchSavedAlbums = useCallback(async (token: string) => {
     const response = await fetch(`https://api.spotify.com/v1/me/albums?offset=${(page - 1) * 48}&limit=48`, {
@@ -76,7 +77,7 @@ const UserAlbums = () => {
             </Text>
             <PageSwitcher pageNumber={page} decrementHandler={handleDecrementPage} incrementHandler={handleIncrementPage} hasPrevious={isFetching ? false : hasPrevious} hasNext={isFetching ? false : hasNext} />
           </div>
-          <GridView<Album> data={savedAlbums} />
+          <GridView<Album> data={savedAlbums.map(album => extractApiData(album)) as Album[]} />
         </div>
       </div>
     );

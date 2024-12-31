@@ -20,18 +20,17 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
   const user = useAppSelector(state => state.userData.authenticatedUser)
   const [folderDetails, setFolderDetails] = useState(
     editMode ?
-      { folderName: currentFolder.name, folderDesc: currentFolder.description, isPublic: currentFolder.public }
+      { folderName: currentFolder.name, folderDesc: currentFolder.description, isPublic: currentFolder.isPublic }
       :
       { folderName: "", folderDesc: "", isPublic: true }
   )
 
   const newUserFolder = () => {
-    const blankFolder: Omit<UserFolder, '_id'> = {
+    const blankFolder: Omit<UserFolder, 'folderId' | 'boxes'> = {
       name: folderDetails.folderName,
       description: folderDetails.folderDesc,
-      creator: user._id,
-      public: folderDetails.isPublic,
-      boxes: []
+      creator: user.userId,
+      isPublic: folderDetails.isPublic
     }
     return blankFolder;
   }
@@ -40,15 +39,14 @@ function NewFolderMenu({ editMode }: NewFolderMenuProps) {
     dispatch(createUserFolderThunk(newUserFolder()))
   }
 
-  const handleUpdateFolder = async (updatedFolder: UserFolder) => {
-    dispatch(updateCurrentFolderDetailThunk(currentFolder._id, updatedFolder))
+  const handleUpdateFolder = async (name: string, description: string, isPublic: boolean) => {
+    dispatch(updateCurrentFolderDetailThunk(currentFolder.folderId, name, description, isPublic))
   }
 
   const handleSubmitBtnClick = async () => {
     if (editMode) {
       const { folderName, folderDesc, isPublic } = folderDetails
-      const updatedBox = { ...currentFolder, name: folderName, description: folderDesc, public: isPublic }
-      await handleUpdateFolder(updatedBox)
+      await handleUpdateFolder(folderName, folderDesc, isPublic)
     }
     else {
       await handleSaveNewFolder()

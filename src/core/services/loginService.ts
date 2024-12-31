@@ -15,16 +15,16 @@ export const loginService = async (auth: Auth, authUser: User | null, dispatch: 
         dispatch(setAuthenticatedUser(appUser!))
         dispatch(setIsUserLoggedIn(true))
 
-        if (appUser.services?.spotify) {
-          const { refreshToken, id: spotifyId } = appUser.services.spotify;
+        if (appUser.spotifyAccount?.spotifyId) {
+          const { refreshToken, spotifyId } = appUser.spotifyAccount;
           const spotifyLogin = await getSpotifyLoginData(refreshToken, spotifyId);
           if (spotifyLogin) {
             dispatch(setSpotifyLoginData(spotifyLogin))
           }
         }
 
-        if (appUser.account.emailVerified !== authUser.emailVerified) {
-          const verifiedUser = await verifyUserEmailAddressApi(appUser._id);
+        if (appUser.accountData.emailVerified !== authUser.emailVerified) {
+          const verifiedUser = await verifyUserEmailAddressApi(appUser.userId);
           if (verifiedUser) {
             dispatch(setAuthenticatedUser(verifiedUser));
           }
@@ -35,6 +35,7 @@ export const loginService = async (auth: Auth, authUser: User | null, dispatch: 
       }
     }
     catch (err) {
+      console.error(err)
       signOut(auth);
     }
   }

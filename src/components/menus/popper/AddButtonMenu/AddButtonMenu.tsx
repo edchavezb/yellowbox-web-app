@@ -9,7 +9,7 @@ interface BoxMenuProps {
 
 const AddButtonMenu = ({ setIsOpen }: BoxMenuProps) => {
   const dispatch = useAppDispatch();
-  const { _id: boxId } = useAppSelector(state => state.currentBoxDetailData.box)
+  const { boxId } = useAppSelector(state => state.currentBoxDetailData.box)
   const { menuItemsList, menuItem } = styles;
 
   const handleOpenModal = (modalType: ModalType) => {

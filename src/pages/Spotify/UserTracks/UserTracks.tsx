@@ -2,12 +2,13 @@ import { refreshSpotifyTokenApi } from "core/api/spotify";
 import { setAccessToken } from "core/features/spotifyService/spotifyLoginSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { Album } from "core/types/interfaces";
+import { Album, ApiTrack, Track } from "core/types/interfaces";
 import { useCallback, useEffect, useState } from "react";
 import styles from "./UserTracks.module.css"
 import ListView from "components/box-views/ListView/ListView";
 import PageSwitcher from "components/common/Pagination/PageSwitcher";
 import { Text } from '@chakra-ui/react'
+import { extractApiData } from "core/helpers/itemDataHandlers";
 
 const UserTracks = () => {
   const dispatch = useAppDispatch();
@@ -17,7 +18,7 @@ const UserTracks = () => {
   const [page, setPage] = useState(1);
   const [hasPrevious, setHasPrevious] = useState<boolean>(false);
   const [hasNext, setHasNext] = useState<boolean>(true);
-  const [savedTracks, setSavedTracks] = useState<Album[]>([]);
+  const [savedTracks, setSavedTracks] = useState<ApiTrack[]>([]);
 
   const fetchSavedAlbums = useCallback(async (token: string) => {
     const response = await fetch(`https://api.spotify.com/v1/me/tracks?offset=${(page - 1) * 50}&limit=50`, {
@@ -76,7 +77,7 @@ const UserTracks = () => {
             </Text>
             <PageSwitcher pageNumber={page} decrementHandler={handleDecrementPage} incrementHandler={handleIncrementPage} hasPrevious={isFetching ? false : hasPrevious} hasNext={isFetching ? false : hasNext} />
           </div>
-          <ListView<Album> data={savedTracks} offset={(page - 1) * 50} sectionType={'tracks'} />
+          <ListView<Track> data={savedTracks.map(track => extractApiData(track)) as Track[]} offset={(page - 1) * 50} sectionType={'tracks'} />
         </div>
       </div>
     );

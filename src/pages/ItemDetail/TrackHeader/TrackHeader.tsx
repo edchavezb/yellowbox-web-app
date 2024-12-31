@@ -1,12 +1,13 @@
-import { Track } from "core/types/interfaces";
+import { ApiTrack, Track } from "core/types/interfaces";
 import styles from "./TrackHeader.module.css"
 import { useRef, useState } from "react";
 import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
 import { Link } from "react-router-dom";
+import { extractApiData } from "core/helpers/itemDataHandlers";
 
 interface TrackHeaderProps {
-  itemData: Track
+  itemData: ApiTrack
 }
 
 const TrackHeader = ({ itemData }: TrackHeaderProps) => {
@@ -62,7 +63,7 @@ const TrackHeader = ({ itemData }: TrackHeaderProps) => {
         </div>
       </div>
       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>
-        <BoxItemMenu itemData={itemData} itemType={itemData.type} setIsOpen={setIsItemMenuOpen} />
+        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} />
       </PopperMenu>
     </>
   )

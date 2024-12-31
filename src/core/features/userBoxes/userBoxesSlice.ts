@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { cloneBoxApi, createUserBoxApi, deleteUserBoxApi, getDashboardBoxesApi } from "core/api/userboxes"
-import { getUserBoxesApi, updateUserDashboardBoxesApi } from "core/api/users"
+import { getUserBoxesApi, reorderDashboardBoxApi } from "core/api/users"
 import { AppThunk } from "core/store/store"
-import { DashboardBox, UserBox, UserFolder } from "core/types/interfaces"
+import { BoxCreateDTO, DashboardBox, UserFolder } from "core/types/interfaces"
 import { updateUserFolder } from "../userFolders/userFoldersSlice"
 import { initBoxOrFolderCreatedToast, initBoxOrFolderDeletedToast, initErrorToast } from "../toast/toastSlice"
+import { reorderItems } from "core/helpers/reorderItems"
 
 interface UserBoxesState {
     userBoxes: DashboardBox[]
@@ -28,9 +29,9 @@ const userBoxesSlice = createSlice({
         },
         updateBoxName(state, action: PayloadAction<{targetId: string, newName: string}>) {
             const targetIndex = state.userBoxes.findIndex(box => box.boxId === action.payload.targetId);
-            state.userBoxes[targetIndex].boxName = action.payload.newName;
+            state.userBoxes[targetIndex].name = action.payload.newName;
             const targetIndexDashboard = state.dashboardBoxes.findIndex(box => box.boxId === action.payload.targetId);
-            state.dashboardBoxes[targetIndexDashboard].boxName = action.payload.newName;
+            state.dashboardBoxes[targetIndexDashboard].name = action.payload.newName;
         },
         createBox(state, action: PayloadAction<DashboardBox>) {
             state.userBoxes.push(action.payload);
@@ -42,9 +43,9 @@ const userBoxesSlice = createSlice({
                 state.userBoxes.splice(targetIndex, 1);
             }
         },
-        addBoxToDashboard(state, action: PayloadAction<{boxId: string, boxName: string}>) {
-            const {boxId, boxName} = action.payload;
-            state.dashboardBoxes.push({boxId, boxName})
+        addBoxToDashboard(state, action: PayloadAction<{boxId: string, boxName: string, position: number}>) {
+            const {boxId, boxName, position} = action.payload;
+            state.dashboardBoxes.push({boxId, name: boxName, position, folderPosition: null})
         },
         removeBoxFromDashboard(state, action: PayloadAction<{targetId: string}>) {
             const targetIndex = state.dashboardBoxes.findIndex(box => box.boxId === action.payload.targetId);
@@ -75,30 +76,29 @@ export const fetchUserBoxes = (userId: string): AppThunk => async (dispatch) => 
     }
 }
 
-export const fetchDashboardBoxes = (boxIds: string[]): AppThunk => async (dispatch) => {
+export const fetchDashboardBoxes = (userId: string): AppThunk => async (dispatch) => {
     try {
-        const dashboardBoxes = await getDashboardBoxesApi(boxIds);
+        const dashboardBoxes = await getDashboardBoxesApi(userId);
         dispatch(setDashboardBoxes(dashboardBoxes!))
     } catch (err) {
         dispatch(setDashboardBoxes([]))
     }
 }
 
-export const reorderDashboardBoxesThunk = (sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
+export const reorderDashboardBoxesThunk = (boxId: string, sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
   try {
-    const userId = getState().userData.authenticatedUser._id;
+    const userId = getState().userData.authenticatedUser.userId;
     const boxesCopy = JSON.parse(JSON.stringify(getState().userBoxesData.dashboardBoxes)) as DashboardBox[];
-    const reorderItem = boxesCopy.splice(sourceIndex, 1)[0];
-    boxesCopy.splice(targetIndex, 0, reorderItem);
-    dispatch(setDashboardBoxes(boxesCopy));
-    const updatedBoxIds = boxesCopy.map(box => box.boxId);
-    await updateUserDashboardBoxesApi(userId, updatedBoxIds)
+    const destinationId = boxesCopy[targetIndex].boxId;
+    const updatedBoxes = reorderItems(boxesCopy, sourceIndex, targetIndex);
+    dispatch(setDashboardBoxes(updatedBoxes));
+    await reorderDashboardBoxApi(userId, boxId, destinationId)
   } catch (err) {
     console.log(err)
   }
 }
 
-export const createUserBoxThunk = (boxObj: Omit<UserBox, '_id'>): AppThunk => async (dispatch) => {
+export const createUserBoxThunk = (boxObj: BoxCreateDTO): AppThunk => async (dispatch) => {
     try {
         const newBox = await createUserBoxApi(boxObj);
         dispatch(createBox(newBox!));
@@ -113,7 +113,7 @@ export const cloneUserBoxThunk = (boxId: string, name: string, description: stri
     try {
         const newBox = await cloneBoxApi(boxId, name, description, isPublic, creator)
         dispatch(createBox(newBox!))
-        dispatch(initBoxOrFolderCreatedToast({itemName: newBox!.boxName}));
+        dispatch(initBoxOrFolderCreatedToast({itemName: newBox!.name}));
     } catch (err) {
         console.log(err)
         dispatch(initErrorToast({error: "Failed to clone this box into your library"}));

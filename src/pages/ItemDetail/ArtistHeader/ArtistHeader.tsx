@@ -1,11 +1,12 @@
-import { Artist } from "core/types/interfaces";
+import { ApiArtist } from "core/types/interfaces";
 import styles from "./ArtistHeader.module.css"
 import { useRef, useState } from "react";
 import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
+import { extractApiData } from "core/helpers/itemDataHandlers";
 
 interface ArtistHeaderProps {
-  itemData: Artist
+  itemData: ApiArtist
 }
 
 const ArtistHeader = ({ itemData }: ArtistHeaderProps) => {
@@ -59,7 +60,7 @@ const ArtistHeader = ({ itemData }: ArtistHeaderProps) => {
         </div>
       </div>
       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>
-        <BoxItemMenu itemData={itemData} itemType={itemData.type} setIsOpen={setIsItemMenuOpen} />
+        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} />
       </PopperMenu>
     </>
   )

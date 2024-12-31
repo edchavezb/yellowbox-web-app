@@ -25,90 +25,107 @@ export interface SpotifyAccountInfo {
 }
 
 export interface YellowboxUser {
-  _id: string
+  userId: string
   firebaseId: string
   username: string
+  email: string
   firstName?: string
   lastName?: string
-  image: string
+  imageUrl?: string
   billing: UserBilling
-  account: UserAccountData
-  services: UserServices
-  dashboardFolders?: string[]
-  dashboardBoxes?: string[]
+  accountData: UserAccountData
+  spotifyAccount?: UserSpotifyAccount | null
+  appleMusicAccount?: UserSpotifyAccount | null
+  lastFmAccount?: UserSpotifyAccount | null
+  boxes?: DashboardBox[]
+  folders?: UserFolder[]
 }
 
-export interface UserServices {
-  [key: string]: {
-    refreshToken: string
-    id: string
-  }
+export interface UserSpotifyAccount {
+  userId: string
+  refreshToken: string
+  spotifyId: string
 }
 
 export interface UserBilling {
-  stripeData?: {
-    customerId: string
-    subscription: {
-      subscriptionId: string
-      status: string
-      priceId: string
-      productId: string
-    }
-  }
+  stripeCustomerId: string
+  stripeSubscriptionId: string
+  stripeSubscriptionStatus: string
+  stripePriceId: string
+  stripeProductId: string
 }
 
 export interface UserAccountData {
   accountTier: string
   signUpDate: string
   emailVerified: boolean
-  email: string
   showTutorial: boolean
 }
 
 export interface UserBox {
-  _id: string
+  boxId: string
   name: string
-  public: boolean
-  creator: string
+  isPublic: boolean
+  creator: {
+    userId: string,
+    username: string
+  }
+  position: number,
+  folderPosition: number,
+  folder: {
+    name: string,
+    folderId: string
+  }
   description: string
   artists: Artist[]
   albums: Album[]
   tracks: Track[]
   playlists: Playlist[]
-  sectionSorting: SectionSorting
-  sectionVisibility: Visibility
-  subSections: Subsection[]
-  notes: { _id: string, itemId: string, noteText: string, subSectionId?: string }[]
+  sectionSettings: SectionSettings[]
+  subsections: Subsection[]
 }
 
 export interface UserFolder {
-  _id: string
+  folderId: string
   name: string,
-  public: boolean,
+  isPublic: boolean,
   creator: string
   description: string,
   boxes: DashboardBox[]
 }
 
+export interface BoxCreateDTO {
+  creatorId: string
+  position: number
+  name: string
+  description: string
+  isPublic: boolean
+}
+
+export interface FolderCreateDTO {
+  creator: string
+  name: string
+  description: string
+  isPublic: boolean
+}
+
 export interface DashboardBox {
   boxId: string,
-  boxName: string
+  name: string
+  position: number | null
+  folderPosition: number | null
+  folderId?: string | null
 }
 
-export interface SectionSorting {
-  artists: Sorting
-  albums: Sorting
-  tracks: Sorting
-  playlists: Sorting
-}
-
-export interface Sorting {
+export interface SectionSettings {
   primarySorting: string
   secondarySorting: string
   view: string
-  ascendingOrder: boolean
+  sortingOrder: 'ASCENDING' | 'DESCENDING'
   displayGrouping: boolean
-  displaySubSections: boolean
+  displaySubsections: boolean
+  isVisible: boolean
+  type: string
 }
 
 export interface Visibility {
@@ -119,11 +136,11 @@ export interface Visibility {
 }
 
 export interface Subsection {
-  _id?: string,
-  type: BoxSections,
+  subsectionId: string,
+  itemType: BoxSections,
   name: string,
   items: Artist[] | Album[] | Track[] | Playlist[]
-  index?: number
+  position: number
 }
 
 export interface UpdateBoxPayload {
@@ -133,91 +150,126 @@ export interface UpdateBoxPayload {
 }
 
 export interface Album {
-  _id?: string
-  album_type: string
-  artists: Artist[]
-  external_urls: {
-    spotify: string
-  }
-  id: string
+  boxItemId?: string
+  spotifyId: string
+  albumType: string
+  artists: { name: string, spotifyId: string }[]
   images: ItemImage[]
   name: string
-  release_date: string
-  total_tracks: number
-  tracks?: {
-    href: string
-    items: Track[]
-    limit?: number
-    next?: string
-    offset?: number
-    previous?: string
-    total: number
-  }
+  releaseDate: string
+  totalTracks: number
   type: string
-  uri: string
-  subSectionCount?: number
-  dbIndex?: number
+  position?: number
+  subsections?: string[],
+  note?: string
 }
 
 export interface Artist {
-  _id?: string
-  external_urls: {
-    spotify: string
-  }
+  boxItemId?: string
+  spotifyId: string
   genres?: string[]
+  images?: ItemImage[]
+  name: string
+  popularity?: number
+  type: string
+  position?: number
+  subsections?: string[]
+  note?: string
+}
+
+export interface Track {
+  boxItemId?: string
+  spotifyId: string
+  albumName?: string
+  albumReleaseDate: string
+  albumId: string
+  albumImages: ItemImage[]
+  artists: { name: string, spotifyId: string }[]
+  duration: number
+  explicit: string
+  name: string
+  popularity: number
+  trackNumber: number
+  type: string
+  position?: number
+  subsections?: string[]
+  note?: string
+}
+
+export interface Playlist {
+  boxItemId?: string
+  spotifyId: string
+  description: string
+  images: ItemImage[]
+  name: string
+  ownerId: string
+  ownerDisplayName: string
+  totalTracks: number
+  type: string
+  position?: number
+  subsections?: string[]
+  note?: string
+}
+
+export interface ApiArtist {
   id: string
+  genres?: string[]
   images?: ItemImage[]
   name: string
   popularity?: number
   type: string
   uri: string
-  subSectionCount?: number
-  dbIndex?: number
 }
 
-export interface Track {
-  _id?: string
-  album?: Album
-  artists: Artist[]
-  duration_ms: number
-  explicit: string
-  external_urls: {
-    spotify: string
-  }
-  id: string
-  name: string
-  popularity: number
-  preview_url?: string
-  track_number: number
-  type: string
-  uri: string
-  subSectionCount?: number
-  dbIndex?: number
-}
-
-export interface Playlist {
-  _id?: string
-  description: string
-  external_urls: {
-    spotify: string
-  }
+export interface ApiAlbum {
+  album_type: string
+  total_tracks: number
   id: string
   images: ItemImage[]
-  name: string
-  owner: SpotifyUser
-  tracks: {
+  name: string,
+  release_date: string
+  type: string
+  artists: ApiArtist[]
+  tracks?: {
     href: string
-    items?: PlaylistItem[]
+    items: ApiTrack[]
     limit?: number
     next?: string
     offset?: number
     previous?: string
     total: number
   }
+}
+
+export interface ApiTrack {
+  album?: ApiAlbum
+  artists: ApiArtist[]
+  duration_ms: number
+  explicit: string
+  id: string
+  name: string
+  popularity: number
+  track_number: number
   type: string
   uri: string
-  subSectionCount?: number
-  dbIndex?: number
+}
+
+export interface ApiPlaylist {
+  description: string
+  id: string
+  images: ItemImage[]
+  name: string
+  type: string
+  owner: SpotifyUser
+  tracks: {
+    href: string
+    items: PlaylistItem[]
+    limit?: number
+    next?: string
+    offset?: number
+    previous?: string
+    total: number
+  }
 }
 
 export interface SpotifyUser {
@@ -236,7 +288,7 @@ export interface PlaylistItem {
   added_by: SpotifyUser
   is_local: boolean
   primary_color: string
-  track: Track // TODO: Hey bro you need to do something here
+  track: ApiTrack // TODO: Hey bro you need to do something here
 }
 
 export interface ItemImage {

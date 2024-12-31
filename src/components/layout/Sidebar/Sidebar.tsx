@@ -1,5 +1,5 @@
-import { fetchDashboardBoxes, fetchUserBoxes, reorderDashboardBoxesThunk } from "core/features/userBoxes/userBoxesSlice";
-import { addBoxToFolderThunk, fetchDashboardFolders, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderSidebarFolderBoxesThunk } from "core/features/userFolders/userFoldersSlice";
+import { reorderDashboardBoxesThunk, setDashboardBoxes, setUserBoxes } from "core/features/userBoxes/userBoxesSlice";
+import { addBoxToFolderThunk, moveBoxBetweenFoldersThunk, removeBoxFromFolderThunk, reorderFolderBoxesThunk, setUserFolders } from "core/features/userFolders/userFoldersSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useEffect, useRef, useState } from "react";
@@ -31,8 +31,10 @@ function Sidebar({ user }: IProps) {
     }
   })
   const userDashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes)
+  const highestDashboardBoxPosition = Math.max(...userDashboardBoxes.map(box => box.position!));
   const accountWidgetRef = useRef(null);
 
+  const [userImage, setUserImage] = useState(user.imageUrl);
   const [activeDraggable, setActiveDraggable] = useState<null | { name: string, id: string }>(null);
   const [dragOverFolder, setDragOverFolder] = useState<null | string>(null);
   const sensors = useSensors(
@@ -44,12 +46,16 @@ function Sidebar({ user }: IProps) {
   )
 
   useEffect(() => {
-    if (user?._id) {
-      dispatch(fetchDashboardFolders(user.dashboardFolders!))
-      dispatch(fetchDashboardBoxes(user.dashboardBoxes!))
-      dispatch(fetchUserBoxes(user._id!))
+    if (user?.userId) {
+      dispatch(setUserFolders(user.folders!))
+      dispatch(setUserBoxes(user.boxes!))
+      dispatch(setDashboardBoxes(user.boxes!.filter(box => !box.folderId)))
     }
   }, [user, dispatch])
+
+  const handleImageError = async () => {
+    setUserImage("/user.png");
+  }
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -76,39 +82,41 @@ function Sidebar({ user }: IProps) {
         if (targetSortable.containerId === activeSortable?.containerId) {
           // Reorder dashboard boxes or within folder 
           if (targetSortable.containerId === 'boxList') {
-            dispatch(reorderDashboardBoxesThunk(activeSortable.index, targetSortable.index))
+            dispatch(reorderDashboardBoxesThunk(active?.id as string, activeSortable.index, targetSortable.index));
           }
           else {
-            dispatch(reorderSidebarFolderBoxesThunk(activeSortable?.containerId as string, activeSortable.index, targetSortable.index))
+            dispatch(reorderFolderBoxesThunk(activeSortable?.containerId as string, active?.id as string, activeSortable.index, targetSortable.index));
           }
         }
         else if (targetSortable.containerId === 'boxList') {
           // Remove from folder
-          dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string, boxName!))
+          dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string, boxName!, highestDashboardBoxPosition + 1))
         }
         else {
+          const highestFolderPosition = Math.max(0, ...(userFolders.find(folder => folder.folderId === targetSortable.containerId)?.boxes.map(box => box.folderPosition!) || []));
           if (activeSortable?.containerId === 'boxList' && boxName) {
             // Add to folder
-            dispatch(addBoxToFolderThunk(targetSortable.containerId as string, active.id as string, boxName))
+            dispatch(addBoxToFolderThunk(targetSortable.containerId as string, active.id as string, boxName, highestFolderPosition + 1))
           }
           else {
             // Move between folders
-            dispatch(moveBoxBetweenFoldersThunk(activeSortable?.containerId as string, targetSortable.containerId as string, active.id as string, boxName!))
+            dispatch(moveBoxBetweenFoldersThunk(activeSortable?.containerId as string, targetSortable.containerId as string, active.id as string, boxName!, highestFolderPosition + 1))
           }
         }
       }
       else if (over.id === 'boxList') {
         // Remove from folder
-        dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string, boxName!))
+        dispatch(removeBoxFromFolderThunk(activeSortable?.containerId! as string, active.id as string, boxName!, highestDashboardBoxPosition + 1))
       }
       else {
+        const highestFolderPosition = Math.max(0, ...(userFolders.find(folder => folder.folderId === over.id)?.boxes.map(box => box.folderPosition!) || []));
         if (activeSortable?.containerId === 'boxList' && boxName) {
           // Add to folder
-          dispatch(addBoxToFolderThunk(over.id as string, active.id as string, boxName))
+          dispatch(addBoxToFolderThunk(over.id as string, active.id as string, boxName, highestFolderPosition + 1))
         }
         else {
           // Move between folders
-          dispatch(moveBoxBetweenFoldersThunk(activeSortable?.containerId as string, over.id as string, active.id as string, boxName!))
+          dispatch(moveBoxBetweenFoldersThunk(activeSortable?.containerId as string, over.id as string, active.id as string, boxName!, highestFolderPosition + 1))
         }
       }
     }
@@ -119,22 +127,27 @@ function Sidebar({ user }: IProps) {
   return (
     <div className={`${styles.mainPanel} ${styles.customScrollbar}`}>
       {
-        user._id &&
+        user.userId &&
         <>
           <Link className={styles.serviceLink} to={`/account`}>
             <div id={styles.user}>
-              <img id={styles.userImage} src={user.image ? user.image : "/user.png"} alt="user" />
+              <img id={styles.userImage} src={userImage || "/user.png"} alt="user" onError={handleImageError} />
               <span id={styles.userName} ref={accountWidgetRef}> {user.username} </span>
             </div>
           </Link>
           {
-            !!Object.values(user.services).filter(val => !!val).length &&
             <div id={styles.servicesList}>
               <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "5px" }}>
                 Linked services
               </Text>
               {
-                user.services?.spotify &&
+                !user.spotifyAccount?.spotifyId &&
+                <div className={styles.servicesPrompt} >
+                  <span> Navigate to your <Link to={`/account`} className={styles.accountLink}>account settings</Link> to link services </span>
+                </div>
+              }
+              {
+                user.spotifyAccount?.spotifyId &&
                 <Link className={styles.serviceLink} to={`/linked-services/spotify`}>
                   <div className={styles.serviceButton}><img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img><span> Spotify </span></div>
                 </Link>
@@ -149,7 +162,7 @@ function Sidebar({ user }: IProps) {
               <div className={styles.folderList}>
                 {!!sortedFolders.length && sortedFolders.map(folder => {
                   return (
-                    <SidebarFolder folder={folder} key={folder._id} isDraggingOver={folder._id === dragOverFolder} />
+                    <SidebarFolder folder={folder} key={folder.folderId} isDraggingOver={folder.folderId === dragOverFolder} />
                   )
                 })}
               </div>

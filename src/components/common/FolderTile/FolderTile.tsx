@@ -6,7 +6,7 @@ const FolderTile = ({ folder }: { folder: UserFolder }) => {
   const history = useHistory();
 
   const navigateToBox = () => {
-    history.push(`/folder/${folder._id}`)
+    history.push(`/folder/${folder.folderId}`)
   }
 
   return (
@@ -15,7 +15,7 @@ const FolderTile = ({ folder }: { folder: UserFolder }) => {
         <img className={styles.folderIcon} src="/icons/folder.svg" alt="folder" />
       </div>
       <div className={styles.folderName}>
-        <Link to={`/folder/${folder._id}`}>
+        <Link to={`/folder/${folder.folderId}`}>
           {folder.name}
         </Link>
       </div>

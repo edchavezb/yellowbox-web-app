@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Track } from "core/types/interfaces";
+import { ApiTrack, Track } from "core/types/interfaces";
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import styles from "./TrackList.module.css";
@@ -7,9 +7,10 @@ import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { reorderBoxItemsThunk, reorderSubsectionItemsThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import TrackListRow from './TrackListRow/TrackListRow';
+import { extractApiData } from 'core/helpers/itemDataHandlers';
 
 interface IProps {
-  data: Track[]
+  data: ApiTrack[]
   offset?: number
   sectionType: string
   isSubsection?: boolean
@@ -41,7 +42,7 @@ function TrackList({ data, offset, isSubsection, subId, isReorderingMode }: IPro
     if (isSubsection) {
       dispatch(
         reorderSubsectionItemsThunk(
-          currentBox._id,
+          currentBox.boxId,
           active.id as string,
           subId!,
           active?.data?.current?.index as number,
@@ -52,7 +53,7 @@ function TrackList({ data, offset, isSubsection, subId, isReorderingMode }: IPro
     else {
       dispatch(
         reorderBoxItemsThunk(
-          currentBox._id,
+          currentBox.boxId,
           active?.id as string,
           active?.data?.current?.index as number,
           over?.data?.current?.index as number,
@@ -73,12 +74,12 @@ function TrackList({ data, offset, isSubsection, subId, isReorderingMode }: IPro
               <div className={styles.itemContainer}>
                 <ListHeader />
                 <SortableContext
-                  items={data.map(item => item._id!)}
+                  items={data.map(item => item.id!)}
                   strategy={verticalListSortingStrategy}
                 >
                   {data.map((element, index) => {
                     return (
-                      <TrackListRow element={element} index={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} />
+                      <TrackListRow element={extractApiData(element) as Track} itemIndex={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} />
                     )
                   })}
                 </SortableContext>
@@ -90,7 +91,7 @@ function TrackList({ data, offset, isSubsection, subId, isReorderingMode }: IPro
             <ListHeader />
             {data.map((element, index) => {
               return (
-                <TrackListRow element={element} index={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} />
+                <TrackListRow element={extractApiData(element) as Track} itemIndex={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} />
               )
             })}
           </div>

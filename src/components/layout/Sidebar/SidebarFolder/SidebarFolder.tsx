@@ -15,17 +15,17 @@ const SidebarFolder = ({ folder, isDraggingOver }: DashboardFolderProps) => {
   const history = useHistory();
   const [isFolderOpen, setIsFolderOpen] = useState(false);
   const { isOver, setNodeRef } = useDroppable({
-    id: folder._id,
+    id: folder.folderId,
   });
   const rotateStyle = { transform: `rotate(${isFolderOpen ? '90' : '0'}deg)` };
 
   const navigateToFolder = () => {
-    history.push(`/folder/${folder._id}`)
+    history.push(`/folder/${folder.folderId}`)
   }
 
   return (
     <div className={ isDraggingOver ? styles.folderWrapperHighlighted : styles.folderWrapper} ref={setNodeRef}>
-      <div className={styles.folderLink} id={folder._id} key={folder._id}>
+      <div className={styles.folderLink} id={folder.folderId} key={folder.folderId}>
         <img className={styles.folderIcon} src="/icons/folder.svg" alt="folder"></img>
         <div className={styles.folderName} onClick={navigateToFolder}> {folder.name} </div>
         <div className={styles.chevronWrapper} onClick={() => setIsFolderOpen(!isFolderOpen)}>
@@ -42,7 +42,7 @@ const SidebarFolder = ({ folder, isDraggingOver }: DashboardFolderProps) => {
             <SortableContext
               items={folder.boxes.map(item => item.boxId!)}
               strategy={verticalListSortingStrategy}
-              id={folder._id}
+              id={folder.folderId}
             >
               {folder.boxes.map(box => {
                 return (

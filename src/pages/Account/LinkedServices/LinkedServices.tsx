@@ -8,7 +8,7 @@ import { refreshSpotifyTokenApi, spotifyLoginApi } from 'core/api/spotify';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { setAccessToken } from 'core/features/spotifyService/spotifyLoginSlice';
 import { unlinkUserSpotifyAccountApi } from 'core/api/users';
-import { updateUserServices } from 'core/features/user/userSlice';
+import { updateUserSpotifyAccount } from 'core/features/user/userSlice';
 import { Link } from 'react-router-dom';
 
 
@@ -42,9 +42,9 @@ const LinkedServices = () => {
   }
 
   const handleUnlinkSpotify = async () => {
-    const updatedServices = await unlinkUserSpotifyAccountApi(user._id);
+    const updatedServices = await unlinkUserSpotifyAccountApi(user.userId);
     if (updatedServices) {
-      dispatch(updateUserServices(updatedServices));
+      dispatch(updateUserSpotifyAccount(null));
     }
   }
 
@@ -85,7 +85,7 @@ const LinkedServices = () => {
     <div className={styles.container}>
       <Text className={styles.mobileTitle} fontWeight={700} marginBottom={'20px'}> Linked Services </Text>
       {
-        user.services?.spotify &&
+        user.spotifyAccount &&
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
           <div className={styles.userWrapper}>
             <Link to={'/linked-services/spotify'}>
@@ -99,7 +99,7 @@ const LinkedServices = () => {
         </Box>
       }
       {
-        user.services?.appleMusic &&
+        user.appleMusicAccount &&
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
           <div className={styles.userWrapper}>
             <img className={styles.serviceIconSmall} src='/icons/spotify_icon.png' alt='spotify'></img>
@@ -112,7 +112,7 @@ const LinkedServices = () => {
         </Box>
       }
       {
-        user.services?.lastFm &&
+        user.lastFmAccount &&
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
           <div className={styles.userWrapper}>
             <img className={styles.serviceIconSmall} src='/icons/spotify_icon.png' alt='spotify'></img>
@@ -124,10 +124,10 @@ const LinkedServices = () => {
           <AppButton text={'Remove'} onClick={handleUninkLastFm} />
         </Box>
       }
-      <Text fontSize={'md'} fontWeight={'700'} marginTop={Object.values(user.services).filter(val => !!val).length ? '35px' : '0px'}> Add a new service </Text>
+      <Text fontSize={'md'} fontWeight={'700'} marginTop={user?.spotifyAccount && user?.appleMusicAccount && user.lastFmAccount? '35px' : '0px'}> Add a new service </Text>
       <Box display={'flex'} alignItems={'center'} gap={'20px'} width={'100%'} marginTop={'15px'} flexWrap={'wrap'}>
         {
-          !user.services?.spotify &&
+          !user?.spotifyAccount &&
           <Box className={styles.serviceCard} border={"1px solid"} borderColor={"brandgray.600"}>
             <img className={styles.serviceIconLarge} src='/icons/spotify_icon.png' alt='spotify'></img>
             <Text fontSize={'md'} fontWeight={'500'}> Spotify </Text>
@@ -135,7 +135,7 @@ const LinkedServices = () => {
           </Box>
         }
         {
-          !user.services?.appleMusic &&
+          !user?.appleMusicAccount &&
           <Box className={styles.serviceCard} border={"1px solid"} borderColor={"brandgray.600"}>
             <img className={styles.serviceIconLarge} src='/icons/applemusic_icon.svg' alt='lastfm'></img>
             <Text fontSize={'md'} fontWeight={'500'}> Apple Music </Text>
@@ -143,7 +143,7 @@ const LinkedServices = () => {
           </Box>
         }
         {
-          !user.services?.lastFm &&
+          !user.lastFmAccount &&
           <Box className={styles.serviceCard} border={"1px solid"} borderColor={"brandgray.600"}>
             <img className={styles.serviceIconLarge} src='/icons/lastfm_icon.svg' alt='lastfm'></img>
             <Text fontSize={'md'} fontWeight={'500'}> Last.fm </Text>

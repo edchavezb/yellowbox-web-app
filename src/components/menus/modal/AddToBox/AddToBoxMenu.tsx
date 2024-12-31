@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Album, Artist, Playlist, Track } from "core/types/interfaces";
 import styles from "./AddToBoxMenu.module.css";
 import { isAlbum, isArtist, isErrorWithMessage, isPlaylist, isTrack } from 'core/helpers/typeguards';
-import { extractCrucialData } from 'core/helpers/itemDataHandlers';
 import { addAlbumToBoxApi } from 'core/api/userboxes/albums';
 import { addArtistToBoxApi } from 'core/api/userboxes/artists';
 import { addPlaylistToBoxApi } from 'core/api/userboxes/playlists';
@@ -30,7 +29,7 @@ function AddToBoxMenu({ itemData }: IProps) {
 
   const handleAddItem = async () => {
     const targetId = addBox
-    const updatedItem = { ...extractCrucialData(itemCopy) }
+    const updatedItem = itemCopy
     const userBox = userBoxes.find(box => box.boxId === targetId);
     if (!!userBox) {
       try {
@@ -46,13 +45,13 @@ function AddToBoxMenu({ itemData }: IProps) {
         else if (isPlaylist(updatedItem)) {
           await addPlaylistToBoxApi(targetId, updatedItem)
         }
-        dispatch(initAddToBoxToast({ itemType: itemData.type as BoxItemType, boxName: userBox.boxName }));
+        dispatch(initAddToBoxToast({ itemType: itemData.type as BoxItemType, boxName: userBox.name }));
       } catch (error) {
         if (isErrorWithMessage(error) && error.message === "Item already in box") {
-          dispatch(initAlreadyInBoxToast({ itemType: itemData.type as BoxItemType, boxName: userBox.boxName }))
+          dispatch(initAlreadyInBoxToast({ itemType: itemData.type as BoxItemType, boxName: userBox.name }))
         }
         else {
-          dispatch(initErrorToast({ error: `Failed to add item to ${userBox.boxName}` }))
+          dispatch(initErrorToast({ error: `Failed to add item to ${userBox.name}` }))
         }
       }
     }
@@ -70,7 +69,7 @@ function AddToBoxMenu({ itemData }: IProps) {
           >
             <>
               {userBoxes.map(box => {
-                return (<option key={box.boxId} value={box.boxId}> {box.boxName} </option>)
+                return (<option key={box.boxId} value={box.boxId}> {box.name} </option>)
               })}
             </>
           </AppSelect>

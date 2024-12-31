@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import AnimateHeight from 'react-animate-height';
 import SubSection from "./SubSection/SubSection"
 import styles from "./BoxSection.module.css";
-import { Album, Artist, Playlist, SectionSorting, Subsection, Track, UserBox } from 'core/types/interfaces';
+import { Album, Artist, Playlist, Subsection, Track, UserBox } from 'core/types/interfaces';
 import { getItemProperty } from "core/helpers/itemDataHandlers";
 import { twoFactorSort } from 'core/helpers/twoFactorSort';
 import { useAppSelector } from 'core/hooks/useAppSelector';
@@ -17,40 +17,53 @@ interface IProps {
 function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible }: IProps) {
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const sectionItems = currentBox[type as keyof Pick<UserBox, 'albums' | 'artists' | 'tracks' | 'playlists'>] as T[];
-  const boxSorting = currentBox.sectionSorting;
-  const sectionSorting = boxSorting[type as keyof SectionSorting];
+  const sectionSettings = currentBox.sectionSettings.find(section => section.type === type)!;
   const sectionIconSrc = `/icons/${type}.svg`;
 
-  const sortedData = useMemo(
-    () => {
-      if (sectionSorting.primarySorting === "custom") {
-        return sectionItems.map((item, index) => ({...item, dbIndex: index}))
+  const sortData = useCallback(
+    (data: T[]) => {
+      if (sectionSettings.primarySorting === "custom") {
+        return data; // Sorting by custom position occurs in the backend
       }
-      return twoFactorSort<T>([...sectionItems as T[]], sectionSorting.primarySorting, sectionSorting.secondarySorting, sectionSorting.ascendingOrder);
+      return twoFactorSort<T>([...data as T[]], sectionSettings.primarySorting, sectionSettings.secondarySorting, sectionSettings.sortingOrder === 'ASCENDING');
     },
-    [sectionItems, sectionSorting]
+    [sectionSettings]
   );
   const groupingSections = useMemo(
-    () => Array.from(new Set(sectionItems.map(e => getItemProperty(e, sectionSorting.primarySorting, false) as string))).sort((a, b) => {
+    () => Array.from(new Set(sectionItems.map(e => getItemProperty(e, sectionSettings.primarySorting, false) as string))).sort((a, b) => {
       if (a > b) {
-        return sectionSorting.ascendingOrder ? 1 : -1;
+        return sectionSettings.sortingOrder === 'ASCENDING' ? 1 : -1;
       }
       else if (a < b) {
-        return sectionSorting.ascendingOrder ? -1 : 1;
+        return sectionSettings.sortingOrder === 'ASCENDING' ? -1 : 1;
       }
       return 0;
     }),
-    [sectionItems, sectionSorting]
+    [sectionItems, sectionSettings]
   );
   const subSectionArray = useMemo(
-    () => currentBox.subSections.filter(subsection => subsection.type === type).sort(
+    () => currentBox.subsections.filter(subsection => subsection.itemType === type).sort(
       (a: Subsection, b: Subsection) => {
-        if (a.index! < b.index!) return -1
-        else if (a.index! > b.index!) return 1
+        if (a.position! < b.position!) return -1
+        else if (a.position! > b.position!) return 1
         return 0
       }),
-    [currentBox.subSections, type]
+    [currentBox.subsections, type]
   );
+  const sortedData = useMemo(() => sortData(sectionItems), [sectionItems, sortData]);
+
+  const getGroupingName = (group: string) => {
+    const sorting = sectionSettings.primarySorting;
+    if (sorting === "releaseDate" || sorting === "releaseMonth") {
+      const [year, month, day] = group.split('-').map(Number);
+      const date = new Date(year, month - 1, day); // month is 0-indexed
+      return sorting === "releaseDate" ? 
+        date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) 
+        : date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    return group;
+  }
 
   const [height, setHeight] = useState<string | number>("auto");
   const [isReorderingMode, setIsReorderingMode] = useState(false);
@@ -71,14 +84,14 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
           <SectionControls type={type} isReorderingMode={isReorderingMode} setIsReorderingMode={setIsReorderingMode} />
         </div>
 
-        {sectionSorting.displaySubSections || sectionSorting.displayGrouping ?
+        {sectionSettings.displaySubsections || sectionSettings.displayGrouping ?
           <div className={styles.sectionWithSubs}>
             {
-              sectionSorting.displaySubSections &&
+              sectionSettings.displaySubsections &&
               <div className={styles.defaultSubSection}>
                 <ViewComponent
-                  data={(sortedData as T[]).filter(item => !item.subSectionCount)}
-                  viewType={sectionSorting.view}
+                  data={(sortedData as T[]).filter(item => !item.subsections!.length)}
+                  viewType={sectionSettings.view}
                   isReorderingMode={isReorderingMode}
                   isSubsection={false}
                   listType={type}
@@ -86,37 +99,35 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
               </div>
             }
             {
-              sectionSorting.displaySubSections &&
+              sectionSettings.displaySubsections &&
               subSectionArray.map(subsection => {
-                let { name, _id, items } = subsection
-                if (sectionSorting.primarySorting !== "custom"){
-                  items = twoFactorSort([...items as T[]], sectionSorting.primarySorting, sectionSorting.secondarySorting, sectionSorting.ascendingOrder)
-                }
+                const { name, subsectionId, itemType, items } = subsection;
+                const subsectionItems = sortData(items as T[]);
                 return (
-                  !!items.length &&
+                  !!subsectionItems.length &&
                   <SubSection
-                    itemsMatch={items as T[]}
+                    itemsMatch={subsectionItems as T[]}
                     subName={name}
-                    subId={_id}
-                    key={_id}
-                    viewType={sectionSorting.view}
-                    listType={type}
+                    subId={subsectionId}
+                    key={subsectionId}
+                    viewType={sectionSettings.view}
+                    listType={itemType}
                     isReorderingMode={isReorderingMode}
                   />
                 )
               })
             }
             {
-              sectionSorting.displayGrouping &&
+              sectionSettings.displayGrouping &&
               groupingSections.map(group => {
-                const matchedItems = sortedData.filter(e => getItemProperty(e, sectionSorting.primarySorting, false) === group)
+                const matchedItems = sortedData.filter(e => getItemProperty(e, sectionSettings.primarySorting, false) === group)
                 return (
                   !!matchedItems.length &&
                   <SubSection
                     itemsMatch={matchedItems}
-                    subName={group}
+                    subName={getGroupingName(group)}
                     key={group}
-                    viewType={sectionSorting.view}
+                    viewType={sectionSettings.view}
                     listType={type}
                     isReorderingMode={isReorderingMode}
                   />
@@ -127,7 +138,7 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
           :
           <ViewComponent
             data={sortedData}
-            viewType={sectionSorting.view}
+            viewType={sectionSettings.view}
             isReorderingMode={isReorderingMode}
             isSubsection={false}
             listType={type}

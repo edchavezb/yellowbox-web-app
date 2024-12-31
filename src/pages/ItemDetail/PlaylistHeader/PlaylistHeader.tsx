@@ -1,18 +1,19 @@
-import { Playlist, Track } from "core/types/interfaces";
+import { ApiPlaylist, ApiTrack, Playlist, Track } from "core/types/interfaces";
 import styles from "./PlaylistHeader.module.css"
 import { useRef, useState } from "react";
 import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
+import { extractApiData, getUri } from "core/helpers/itemDataHandlers";
 
 interface PlaylistHeaderProps {
-  itemData: Playlist
+  itemData: ApiPlaylist
 }
 
 const PlaylistHeader = ({ itemData }: PlaylistHeaderProps) => {
   const [isItemMenuOpen, setIsItemMenuOpen] = useState(false);
   const menuToggleRef = useRef(null);
 
-  const getPlaylistRuntime = (tracks: Track[]) => {
+  const getPlaylistRuntime = (tracks: ApiTrack[]) => {
     const milliSecs = tracks
       .map(track => track.duration_ms)
       .reduce(
@@ -46,7 +47,7 @@ const PlaylistHeader = ({ itemData }: PlaylistHeaderProps) => {
             <div className={styles.metaDataPill}>
               {` ${getPlaylistRuntime(itemData.tracks!.items!.map(item => item.track))}`}
             </div>
-            <a href={itemData.uri}>
+            <a href={getUri(itemData.type, itemData.id)}>
               <div className={styles.metaDataPill}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
                 <span> Open </span>
@@ -59,7 +60,7 @@ const PlaylistHeader = ({ itemData }: PlaylistHeaderProps) => {
         </div>
       </div>
       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>
-        <BoxItemMenu itemData={itemData} itemType={itemData.type} setIsOpen={setIsItemMenuOpen} />
+        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} />
       </PopperMenu>
     </>
   )

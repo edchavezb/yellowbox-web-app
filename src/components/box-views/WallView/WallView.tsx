@@ -26,7 +26,7 @@ function WallView({ data, isSubsection, subId, isReorderingMode }: IProps) {
     if (isSubsection) {
       dispatch(
         reorderSubsectionItemsThunk(
-          currentBox._id,
+          currentBox.boxId,
           active.id as string,
           subId!,
           active?.data?.current?.index as number,
@@ -37,7 +37,7 @@ function WallView({ data, isSubsection, subId, isReorderingMode }: IProps) {
     else {
       dispatch(
         reorderBoxItemsThunk(
-          currentBox._id,
+          currentBox.boxId,
           active?.id as string,
           active?.data?.current?.index as number,
           over?.data?.current?.index as number,
@@ -57,16 +57,15 @@ function WallView({ data, isSubsection, subId, isReorderingMode }: IProps) {
               onDragEnd={handleDragEnd}>
               <div className={styles.itemContainer}>
                 <SortableContext
-                  items={data.map(item => item._id!)}
+                  items={data.map(item => item.boxItemId!)}
                   strategy={rectSortingStrategy}
                 >
                   {data.map((e, index) => {
-                    const { dbIndex, ...element } = e; //dbIndex is a sorting-only property, we don't want to propagate it elsewhere
                     return (
                       <WallItem
-                        key={e.id}
-                        element={element}
-                        itemIndex={dbIndex || index}
+                        key={e.boxItemId}
+                        element={e}
+                        itemIndex={index}
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
                         subId={subId}
@@ -80,12 +79,11 @@ function WallView({ data, isSubsection, subId, isReorderingMode }: IProps) {
           :
           <div className={styles.itemContainer}>
             {data.map((e, index) => {
-              const { dbIndex, ...element } = e;
               return (
                 <WallItem
-                  key={e.id}
-                  element={element}
-                  itemIndex={dbIndex || index}
+                  key={e.boxItemId}
+                  element={e}
+                  itemIndex={index}
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode}
                   subId={subId}

@@ -6,13 +6,12 @@ import { EmailAuthProvider, reauthenticateWithCredential, signOut, updateEmail }
 import { firebaseAuth } from "core/services/firebase";
 import { useHistory } from "react-router-dom";
 import { useRef, useState } from 'react';
-import { dbEmailCheckApi, dbUsernameCheckApi, updateUserApi } from 'core/api/users';
+import { dbEmailCheckApi, dbUsernameCheckApi, updateUserBasicInfoApi } from 'core/api/users';
 import useDebouncePromise from 'core/hooks/useDebouncePromise';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import SubmitButton from 'components/styled/SubmitButton/SubmitButton';
 import { cacheYupTest } from 'core/helpers/cacheYupTest';
-import { YellowboxUser } from 'core/types/interfaces';
 import { useForm } from 'react-hook-form';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
@@ -22,6 +21,7 @@ const ProfileInfo = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const user = useAppSelector(state => state.userData.authenticatedUser);
+  const [userImage, setUserImage] = useState(user.imageUrl);
   const [validData, setValidData] = useState<{ username: string, email: string, firstName?: string, lastName?: string } | null>(null);
   const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
   const [password, setPassword] = useState('');
@@ -46,7 +46,7 @@ const ProfileInfo = () => {
         'email-check',
         'Email already in use',
         cacheYupTest(async (value) => {
-          const valid = await debouncedEmailCheck(user.account.email, value as string);
+          const valid = await debouncedEmailCheck(user.email, value as string);
           return valid as boolean;
         })),
     firstName: yup.string(),
@@ -88,6 +88,10 @@ const ProfileInfo = () => {
     500
   );
 
+  const handleImageError = async () => {
+    setUserImage("/user.png");
+  }
+
   const handleLogOut = async () => {
     try {
       await signOut(firebaseAuth);
@@ -120,14 +124,13 @@ const ProfileInfo = () => {
           email
         );
       }
-      const userWithChanges: Omit<YellowboxUser, '_id'> = {
-        ...user,
-        account: { ...user.account, email },
+      const userWithChanges = {
+        email,
         username,
         firstName,
         lastName
       }
-      const updatedUser = await updateUserApi(user._id, userWithChanges);
+      const updatedUser = await updateUserBasicInfoApi(user.userId, userWithChanges);
       if (updatedUser) {
         dispatch(updateUserBasicInfo({username, firstName: firstName || "", lastName: lastName || "", email}))
         setValidData(null);
@@ -148,7 +151,7 @@ const ProfileInfo = () => {
     <div className={styles.container}>
       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
         <div className={styles.userWrapper}>
-          <img className={styles.userImage} src={user.image ? user.image : "/user.png"} alt="user" />
+          <img className={styles.userImage} id={styles.userImage} src={userImage || "/user.png"} alt="user" onError={handleImageError} />
           <Text className={styles.userName} fontSize={'md'} fontWeight={'700'}> Signed in as {user.username} </Text>
         </div>
         <AppButton text={'Log Out'} onClick={handleLogOut} />
@@ -173,7 +176,7 @@ const ProfileInfo = () => {
         </Box>
         <FormControl isInvalid={!!errors.email} sx={{ marginTop: "15px" }}>
           <FormLabel>{"Email Address"}</FormLabel>
-          <Input defaultValue={user.account?.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
+          <Input defaultValue={user.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
           <FormErrorMessage>
             {errors.email?.message}
           </FormErrorMessage>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Album, Track } from 'core/types/interfaces';
+import { Album, ApiAlbum, ApiArtist, ApiTrack, Track } from 'core/types/interfaces';
 import styles from "./SpotifyTopItems.module.css";
 import { Artist } from 'core/types/interfaces';
 import TopItemsList from './TopItemsList/TopItemsList';
@@ -21,9 +21,9 @@ enum TimeRanges {
 }
 
 interface TopItemsState {
-  [TopItemsSelectItems.ARTISTS]: Artist[],
-  [TopItemsSelectItems.TRACKS]: Track[],
-  [TopItemsSelectItems.ALBUMS]: Album[]
+  [TopItemsSelectItems.ARTISTS]: ApiArtist[],
+  [TopItemsSelectItems.TRACKS]: ApiTrack[],
+  [TopItemsSelectItems.ALBUMS]: ApiAlbum[]
 }
 
 const TopItemsInitialState: TopItemsState = {
@@ -82,7 +82,7 @@ function SpotifyTopItems() {
     return await response.json();
   }
 
-  const computeTopAlbums = (tracks: Track[]) => {
+  const computeTopAlbums = (tracks: ApiTrack[]) => {
     const allAlbums = tracks.map(track => track.album!).filter(album => album.album_type !== 'SINGLE');
     const scoreBoard: { [key: string]: number } = {}
     allAlbums.forEach(album => {
@@ -93,7 +93,7 @@ function SpotifyTopItems() {
         scoreBoard[id]++
       }
     })
-    const uniqueAlbums = allAlbums.reduce<Album[]>((acc, curr) =>
+    const uniqueAlbums = allAlbums.reduce<ApiAlbum[]>((acc, curr) =>
       acc.some(album => album.id === curr!.id) ? acc : [...acc, curr]
       , [])
     const sortedAlbums = uniqueAlbums.sort((a, b) => {
@@ -107,7 +107,7 @@ function SpotifyTopItems() {
       }
       return 0;
     })
-    return sortedAlbums as Album[]
+    return sortedAlbums as ApiAlbum[]
   }
 
   return (

@@ -17,12 +17,13 @@ function AddToFolderMenu({ page, boxId }: IProps) {
   const dispatch = useAppDispatch();
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
-  const boxName = userBoxes.find(box => box.boxId === boxId)?.boxName
-  const [targetFolder, setTargetFolder] = useState(userFolders[0]._id)
+  const boxName = userBoxes.find(box => box.boxId === boxId)?.name
+  const [targetFolder, setTargetFolder] = useState(userFolders[0].folderId)
 
   const handleAddItem = () => {
+    const highestFolderPosition = Math.max(0, ...(userFolders.find(folder => folder.folderId === targetFolder)?.boxes.map(box => box.folderPosition!) || []));
     try {
-      dispatch(addBoxToFolderThunk(targetFolder, boxId, boxName!))
+      dispatch(addBoxToFolderThunk(targetFolder, boxId, boxName!, highestFolderPosition + 1))
     } catch {
       console.log('Could not add item to folder')
     }
@@ -40,7 +41,7 @@ function AddToFolderMenu({ page, boxId }: IProps) {
           >
             <>
               {userFolders.map(folder => {
-                return (<option key={folder._id} value={folder._id}> {folder.name} </option>)
+                return (<option key={folder.folderId} value={folder.folderId}> {folder.name} </option>)
               })}
             </>
           </AppSelect>

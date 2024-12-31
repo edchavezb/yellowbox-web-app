@@ -1,10 +1,9 @@
 import { useMemo } from "react";
 import { ARTIST_VIEW_MODES, VIEW_MODES } from "core/constants/constants";
-import { updateBoxSortingThunk, updateBoxSorting } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { setIsBoxDataFetching, updateBoxSectionSettings, updateBoxSectionSettingsThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { setModalState } from "core/features/modal/modalSlice";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { SectionSorting } from "core/types/interfaces";
 import styles from "./SectionControls.module.css";
 
 interface SectionControlsProps {
@@ -17,69 +16,70 @@ const SectionControls = ({ type, isReorderingMode, setIsReorderingMode }: Sectio
   const dispatch = useAppDispatch();
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes);
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
-  const boxSorting = currentBox.sectionSorting;
-  const sectionSorting = boxSorting[type as keyof SectionSorting];
-  const isOwner = useMemo(() => !!userBoxes.find(box => box.boxId === currentBox?._id), [currentBox, userBoxes]);
+  const sectionSettings = currentBox.sectionSettings.find(section => section.type === type)!;
+  const isOwner = useMemo(() => !!userBoxes.find(box => box.boxId === currentBox?.boxId), [currentBox, userBoxes]);
 
   const handleCycleViewMode = () => {
     const viewModes = type === 'artists' ? ARTIST_VIEW_MODES : VIEW_MODES;
-    const viewIndex = Object.keys(viewModes).indexOf(sectionSorting.view);
+    const viewIndex = Object.keys(viewModes).indexOf(sectionSettings.view);
     const newIndex = viewIndex === Object.keys(viewModes).length - 1 ? 0 : viewIndex + 1
     const newViewMode = viewModes[Object.keys(viewModes)[newIndex] as keyof typeof viewModes]
-    const updatedSorting = {
-      ...boxSorting,
-      [type]: { ...sectionSorting, view: newViewMode }
+    const updatedSettings = {
+      ...sectionSettings,
+      view: newViewMode
     }
+    dispatch(setIsBoxDataFetching(true));
     if (isOwner) {
-      dispatch(updateBoxSortingThunk(currentBox._id, updatedSorting))
+      dispatch(updateBoxSectionSettingsThunk(currentBox.boxId, updatedSettings))
     } else {
-      dispatch(updateBoxSorting(updatedSorting))
+      dispatch(updateBoxSectionSettings(updatedSettings))
     }
   }
 
   const handleToggleSubsections = () => {
-    const updatedSorting = {
-      ...boxSorting,
-      [type]: { ...sectionSorting, displaySubSections: !sectionSorting.displaySubSections }
+    const updatedSettings = {
+      ...sectionSettings,
+      displaySubsections: !sectionSettings.displaySubsections
     }
+    dispatch(setIsBoxDataFetching(true));
     if (isOwner) {
-      dispatch(updateBoxSortingThunk(currentBox._id, updatedSorting))
+      dispatch(updateBoxSectionSettingsThunk(currentBox.boxId, updatedSettings))
     } else {
-      dispatch(updateBoxSorting(updatedSorting))
+      dispatch(updateBoxSectionSettings(updatedSettings))
     }
   }
 
   const handleOpenSortingMenu = () => {
-    dispatch(setModalState({ visible: true, type: "Sorting Options", boxId: currentBox._id, page: "Box" }))
+    dispatch(setModalState({ visible: true, type: "Sorting Options", boxId: currentBox.boxId, page: "Box" }))
   }
 
   return (
     <div className={styles.toggleButtonDashboard}>
       <div className={styles.toggleButton} onClick={handleCycleViewMode}>
-        {`View as: ${sectionSorting.view?.slice(0, 1).toUpperCase()}${sectionSorting.view?.slice(1)}`}
+        {`View as: ${sectionSettings.view?.slice(0, 1).toUpperCase()}${sectionSettings.view?.slice(1)}`}
       </div>
       {
-        sectionSorting.primarySorting === 'custom' &&
+        sectionSettings.primarySorting === 'custom' &&
         <div className={styles.toggleButton} onClick={handleToggleSubsections}>
-          {`Show subsections: ${sectionSorting.displaySubSections ? 'On' : 'Off'}`}
+          {`Show subsections: ${sectionSettings.displaySubsections ? 'On' : 'Off'}`}
         </div>
       }
       {
-        sectionSorting.primarySorting !== 'custom' &&
+        sectionSettings.primarySorting !== 'custom' &&
         <div className={styles.toggleButton} onClick={handleOpenSortingMenu}>
-          {`Show grouping: ${sectionSorting.displayGrouping ? 'On' : 'Off'}`}
+          {`Show grouping: ${sectionSettings.displayGrouping ? 'On' : 'Off'}`}
         </div>
       }
       <div className={styles.toggleButton} onClick={handleOpenSortingMenu}>
         {
-          sectionSorting.primarySorting === 'name' && type !== 'artists' ?
+          sectionSettings.primarySorting === 'name' && type !== 'artists' ?
             `Sort by: Title`
             :
-            `Sort by: ${sectionSorting.primarySorting?.slice(0, 1).toUpperCase()}${sectionSorting.primarySorting.replace('_', ' ')?.slice(1)}`
+            `Sort by: ${sectionSettings.primarySorting?.slice(0, 1).toUpperCase()}${sectionSettings.primarySorting.replace('_', ' ')?.slice(1)}`
         }
       </div>
       {
-        (sectionSorting.primarySorting === 'custom' && isOwner) &&
+        (sectionSettings.primarySorting === 'custom' && isOwner) &&
         <div className={styles.toggleButton} onClick={() => setIsReorderingMode(!isReorderingMode)}>
           {`Reordering: ${isReorderingMode ? 'On' : 'Off'}`}
         </div>

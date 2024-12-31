@@ -7,43 +7,37 @@ import SubsectionRow from './SubsectionRow/SubsectionRow';
 import { BoxSections } from 'core/types/types';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Subsection } from 'core/types/interfaces';
 import AppButton from 'components/styled/AppButton/AppButton';
 
 function SubsectionsMenu() {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
-  const artistSubsections = currentBox.subSections
-    .filter(subsection => subsection.type === 'artists').sort(sortSubsections)
-  const albumSubsections = currentBox.subSections
-    .filter(subsection => subsection.type === 'albums').sort(sortSubsections)
-  const trackSubsections = currentBox.subSections
-    .filter(subsection => subsection.type === 'tracks').sort(sortSubsections)
-  const playlistSubsections = currentBox.subSections
-    .filter(subsection => subsection.type === 'playlists').sort(sortSubsections)
+  const artistSubsections = currentBox.subsections
+    .filter(subsection => subsection.itemType === 'artists')
+  const albumSubsections = currentBox.subsections
+    .filter(subsection => subsection.itemType === 'albums')
+  const trackSubsections = currentBox.subsections
+    .filter(subsection => subsection.itemType === 'tracks')
+  const playlistSubsections = currentBox.subsections
+    .filter(subsection => subsection.itemType === 'playlists')
 
   const handleCreateSubsection = async (type: BoxSections, index: number) => {
-    dispatch(addSubsectionToBoxThunk(currentBox._id, type, index, ''));
+    dispatch(addSubsectionToBoxThunk(currentBox.boxId, type, index, ''));
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
-    const subsectionType = currentBox.subSections.find(sub => sub._id === active.id)?.type
+    console.log(over, active);
+    const subsectionType = currentBox.subsections.find(sub => sub.subsectionId === active.id)?.itemType
     dispatch(
       reorderSubsectionsThunk(
-        currentBox._id,
-        currentBox.subSections,
-        active.id as string,
-        over?.id as string,
+        currentBox.boxId,
+        currentBox.subsections,
+        active?.data?.current?.sortable.index as number,
+        over?.data?.current?.sortable.index as number,
         subsectionType!
       )
     );
-  }
-
-  function sortSubsections(a: Subsection, b: Subsection) {
-    if (a.index! > b.index!) return 1
-    if (a.index! < b.index!) return -1
-    return 0
   }
 
   return (
@@ -52,105 +46,113 @@ function SubsectionsMenu() {
       onDragEnd={handleDragEnd}>
       <div className={styles.modalBody}>
         <div className={styles.sectionsWrapper}>
-          <div className={styles.section}>
-            <div className={styles.sectionName}>
-              Artists
-            </div>
-            <div className={styles.rowsWrapper}>
-              <SortableContext
-                items={artistSubsections.map(subsection => subsection._id!)}
-                strategy={verticalListSortingStrategy}
-              >
-                {!!currentBox?.artists?.length &&
-                  artistSubsections.map((subsection) => {
-                    return (
-                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection._id!} />
-                    )
-                  })
-                }
-              </SortableContext>
-            </div>
-            <div className={styles.newButtonWrapper}>
-              <div className={styles.newButton} onClick={() => handleCreateSubsection('artists', artistSubsections.length)}>
-                <img className={styles.plusIcon} src="/icons/plus.svg" alt="new subsection"></img>
+          {!!currentBox?.artists?.length &&
+            <div className={styles.section}>
+              <div className={styles.sectionName}>
+                Artists
+              </div>
+              <div className={styles.rowsWrapper}>
+                <SortableContext
+                  items={artistSubsections.map(subsection => subsection.subsectionId!)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {
+                    artistSubsections.map((subsection) => {
+                      return (
+                        <SubsectionRow section={subsection.itemType} name={subsection.name} rowId={subsection.subsectionId!} key={subsection.subsectionId} />
+                      )
+                    })
+                  }
+                </SortableContext>
+              </div>
+              <div className={styles.newButtonWrapper}>
+                <div className={styles.newButton} onClick={() => handleCreateSubsection('artists', artistSubsections.length)}>
+                  <img className={styles.plusIcon} src="/icons/plus.svg" alt="new subsection"></img>
+                </div>
               </div>
             </div>
-          </div>
+          }
 
-          <div className={styles.section}>
-            <div className={styles.sectionName}>
-              Albums
-            </div>
-            <div className={styles.rowsWrapper}>
-              <SortableContext
-                items={albumSubsections.map(subsection => subsection._id!)}
-                strategy={verticalListSortingStrategy}
-              >
-                {!!currentBox?.albums?.length &&
-                  albumSubsections.map((subsection) => {
-                    return (
-                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection._id!} />
-                    )
-                  })
-                }
-              </SortableContext>
-            </div>
-            <div className={styles.newButtonWrapper}>
-              <div className={styles.newButton} onClick={() => handleCreateSubsection('albums', albumSubsections.length)}>
-                <img className={styles.plusIcon} src="/icons/plus.svg" alt="new subsection"></img>
+          {!!currentBox?.albums?.length &&
+            <div className={styles.section}>
+              <div className={styles.sectionName}>
+                Albums
+              </div>
+              <div className={styles.rowsWrapper}>
+                <SortableContext
+                  items={albumSubsections.map(subsection => subsection.subsectionId!)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {
+                    albumSubsections.map((subsection) => {
+                      return (
+                        <SubsectionRow section={subsection.itemType} name={subsection.name} rowId={subsection.subsectionId!} key={subsection.subsectionId} />
+                      )
+                    })
+                  }
+                </SortableContext>
+              </div>
+              <div className={styles.newButtonWrapper}>
+                <div className={styles.newButton} onClick={() => handleCreateSubsection('albums', albumSubsections.length)}>
+                  <img className={styles.plusIcon} src="/icons/plus.svg" alt="new subsection"></img>
+                </div>
               </div>
             </div>
-          </div>
+          }
 
-          <div className={styles.section}>
-            <div className={styles.sectionName}>
-              Tracks
-            </div>
-            <div className={styles.rowsWrapper}>
-              <SortableContext
-                items={trackSubsections.map(subsection => subsection._id!)}
-                strategy={verticalListSortingStrategy}
-              >
-                {!!currentBox?.tracks?.length &&
-                  trackSubsections.map((subsection) => {
-                    return (
-                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection._id!} />
-                    )
-                  })
-                }
-              </SortableContext>
-            </div>
-            <div className={styles.newButtonWrapper}>
-              <div className={styles.newButton} onClick={() => handleCreateSubsection('tracks', trackSubsections.length)}>
-                <img className={styles.plusIcon} src="/icons/plus.svg" alt="new subsection"></img>
+          {!!currentBox?.tracks?.length &&
+            <div className={styles.section}>
+              <div className={styles.sectionName}>
+                Tracks
+              </div>
+              <div className={styles.rowsWrapper}>
+                <SortableContext
+                  items={trackSubsections.map(subsection => subsection.subsectionId!)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {!!currentBox?.tracks?.length &&
+                    trackSubsections.map((subsection) => {
+                      return (
+                        <SubsectionRow section={subsection.itemType} name={subsection.name} rowId={subsection.subsectionId!} key={subsection.subsectionId} />
+                      )
+                    })
+                  }
+                </SortableContext>
+              </div>
+              <div className={styles.newButtonWrapper}>
+                <div className={styles.newButton} onClick={() => handleCreateSubsection('tracks', trackSubsections.length)}>
+                  <img className={styles.plusIcon} src="/icons/plus.svg" alt="new subsection"></img>
+                </div>
               </div>
             </div>
-          </div>
+          }
 
-          <div className={styles.section}>
-            <div className={styles.sectionName}>
-              Playlists
-            </div>
-            <div className={styles.rowsWrapper}>
-              <SortableContext
-                items={playlistSubsections.map(subsection => subsection._id!)}
-                strategy={verticalListSortingStrategy}
-              >
-                {!!currentBox?.playlists?.length &&
-                  playlistSubsections.map((subsection) => {
-                    return (
-                      <SubsectionRow section={subsection.type} name={subsection.name} rowId={subsection._id!} />
-                    )
-                  })
-                }
-              </SortableContext>
-            </div>
-            <div className={styles.newButtonWrapper}>
-              <div className={styles.newButton} onClick={() => handleCreateSubsection('playlists', playlistSubsections.length)}>
-                <img className={styles.plusIcon} src="/icons/plus.svg" alt="new subsection"></img>
+          {!!currentBox?.playlists?.length &&
+            <div className={styles.section}>
+              <div className={styles.sectionName}>
+                Playlists
+              </div>
+              <div className={styles.rowsWrapper}>
+                <SortableContext
+                  items={playlistSubsections.map(subsection => subsection.subsectionId!)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {!!currentBox?.playlists?.length &&
+                    playlistSubsections.map((subsection) => {
+                      return (
+                        <SubsectionRow section={subsection.itemType} name={subsection.name} rowId={subsection.subsectionId!} key={subsection.subsectionId} />
+                      )
+                    })
+                  }
+                </SortableContext>
+              </div>
+              <div className={styles.newButtonWrapper}>
+                <div className={styles.newButton} onClick={() => handleCreateSubsection('playlists', playlistSubsections.length)}>
+                  <img className={styles.plusIcon} src="/icons/plus.svg" alt="new subsection"></img>
+                </div>
               </div>
             </div>
-          </div>
+          }
         </div>
 
         <div className={styles.modalFooter}>

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getFolderByIdApi, updateFolderBoxesApi, updateUserFolderApi } from "core/api/userfolders";
+import { getFolderByIdApi, updateUserFolderDetailsApi } from "core/api/userfolders";
 import { AppThunk } from "core/store/store";
 import { DashboardBox, UserFolder } from "core/types/interfaces";
 import { updateSidebarFolderBoxes, updateUserFolder } from "../userFolders/userFoldersSlice";
@@ -25,7 +25,7 @@ const currentFolderDetailSlice = createSlice({
       const { name, description } = action.payload;
       state.folder.name = name;
       state.folder.description = description;
-      state.folder.public = action.payload.public;
+      state.folder.isPublic = action.payload.isPublic;
     },
     updateFolderBoxes(state, action: PayloadAction<{ updatedBoxes: DashboardBox[] }>) {
       state.folder.boxes = action.payload.updatedBoxes;
@@ -57,26 +57,11 @@ export const fetchFolderDetailThunk = (folderId: string): AppThunk => async (dis
   }
 };
 
-export const updateCurrentFolderDetailThunk = (folderId: string, updatedFolder: UserFolder): AppThunk => async (dispatch) => {
+export const updateCurrentFolderDetailThunk = (folderId: string, name: string, description: string, isPublic: boolean): AppThunk => async (dispatch) => {
   try {
-    const folderDetail = await updateUserFolderApi(folderId, updatedFolder);
+    const folderDetail = await updateUserFolderDetailsApi(folderId, name, description, isPublic);
     dispatch(updateCurrentFolderDetail(folderDetail!.updatedFolder))
     dispatch(updateUserFolder({ targetId: folderId, updatedFolder: folderDetail!.updatedFolder }))
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-export const reorderFolderBoxesThunk = (folderId: string, sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
-  try {
-    const folderBoxesCopy = JSON.parse(JSON.stringify(getState().currentFolderDetailData.folder.boxes)) as DashboardBox[];
-    const reorderItem = folderBoxesCopy.splice(sourceIndex, 1)[0];
-    folderBoxesCopy.splice(targetIndex, 0, reorderItem);
-    dispatch(updateFolderBoxes({ updatedBoxes: folderBoxesCopy }));
-    const response = await updateFolderBoxesApi(folderId, folderBoxesCopy)
-    if (response?.updatedFolder) {
-      dispatch(updateSidebarFolderBoxes({ targetId: folderId, updatedBoxes: response.updatedFolder.boxes }))
-    }
   } catch (err) {
     console.log(err)
   }
