@@ -4,9 +4,8 @@ import GridView from 'components/box-views/GridView/GridView';
 import ListView from 'components/box-views/ListView/ListView';
 import TrackVisualizer from './TrackDetail/TrackVisualizer/TrackVisualizer'
 import styles from "./ItemDetail.module.css"
-import { Album, ApiAlbum, ApiArtist, ApiPlaylist, ApiTrack, Artist, Playlist, Track } from 'core/types/interfaces';
+import { ApiAlbum, ApiArtist, ApiPlaylist, ApiTrack } from 'core/types/interfaces';
 import * as checkType from 'core/helpers/typeguards';
-import { useAppSelector } from 'core/hooks/useAppSelector';
 import { getSpotifyGenericTokenApi } from 'core/api/spotify';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import BoxItemMenu from 'components/menus/popper/BoxItemMenu/BoxItemMenu';
@@ -24,7 +23,6 @@ function ItemDetail() {
   const history = useHistory();
   const params = useParams<{ id: string, type: string }>()
   const menuToggleRef = useRef(null);
-  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const [itemData, setItemData] = useState<ApiMusicData>({} as ApiMusicData)
   const [itemContents, setItemContents] = useState({ items: [] })
   const [itemAlbum, setItemAlbum] = useState<ApiAlbum>({ name: "", release_date: "", album_id: "", album_type: "", artists: [], external_urls: { spotify: "" }, id: "", images: [], total_tracks: 0, type: "album", uri: "" } as ApiAlbum)

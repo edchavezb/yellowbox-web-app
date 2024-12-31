@@ -1,4 +1,4 @@
-import { Auth, User, signOut } from "@firebase/auth";
+import { Auth, User, signOut } from "firebase/auth";
 import { getAuthenticatedUserDataApi, verifyUserEmailAddressApi } from "core/api/users";
 import { setSpotifyLoginData } from "core/features/spotifyService/spotifyLoginSlice";
 import { setAuthenticatedUser, setIsUserLoggedIn } from "core/features/user/userSlice";

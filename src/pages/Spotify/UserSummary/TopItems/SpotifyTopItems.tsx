@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Album, ApiAlbum, ApiArtist, ApiTrack, Track } from 'core/types/interfaces';
+import { ApiAlbum, ApiArtist, ApiTrack } from 'core/types/interfaces';
 import styles from "./SpotifyTopItems.module.css";
-import { Artist } from 'core/types/interfaces';
 import TopItemsList from './TopItemsList/TopItemsList';
 import MostPlayedItem from './MostPlayedItem/MostPlayedItem';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { FormControl, FormLabel } from '@chakra-ui/react';
 import AppSelect from 'components/styled/AppSelect/AppSelect';
 
 enum TopItemsSelectItems {
