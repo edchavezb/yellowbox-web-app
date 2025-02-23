@@ -3,7 +3,7 @@ import { Artist, ItemImage, Subsection, UserBox } from "core/types/interfaces"
 
 export const updateArtistImagesApi = async (spotifyId: string, updatedImages: ItemImage[]) => {
   try {
-    return await api.put<{ updatedImages: ItemImage[] }, { updatedBox: UserBox }>(`artists/${spotifyId}/images`, { updatedImages });
+    return await api.put<{ updatedImages: ItemImage[] }, { updatedBox: UserBox }>(`items/artists/${spotifyId}/images`, { updatedImages });
   } catch (err) {
     console.log(err);
     throw err; 
