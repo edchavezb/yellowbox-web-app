@@ -18,7 +18,7 @@ interface IProps {
 }
 
 function WallItem({ element, itemIndex, setElementDragging, reorderingMode, subId }: IProps) {
-  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element.boxItemId!, data: {index: itemIndex} })
+  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: element.boxItemId!, data: { index: itemIndex } })
   const wallItemRef = useRef(null);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
@@ -52,10 +52,12 @@ function WallItem({ element, itemIndex, setElementDragging, reorderingMode, subI
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-    const itemData = extractApiData(itemResponse);
-    const itemImage = getElementImage(itemData, "small");
-    setElementImage(itemImage);
-    updateArtistImagesApi(itemData.spotifyId!, (itemData as Artist).images!);
+    if (!itemResponse.error) {
+      const itemData = extractApiData(itemResponse);
+      const itemImage = getElementImage(itemData);
+      setElementImage(itemImage);
+      updateArtistImagesApi(itemData.spotifyId!, (itemData as Artist).images!);
+    }
   }
 
   return (
@@ -67,7 +69,7 @@ function WallItem({ element, itemIndex, setElementDragging, reorderingMode, subI
         {...listeners}
         {...attributes}
       >
-       <img
+        <img
           draggable="false"
           className={styles.itemImage}
           alt={name}

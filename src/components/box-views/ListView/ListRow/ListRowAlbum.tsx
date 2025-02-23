@@ -54,10 +54,12 @@ function ListRowAlbum({ element, setElementDragging, itemIndex, offset = 0, reor
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-    const itemData = extractApiData(itemResponse);
-    const itemImage = getElementImage(itemData, "small");
-    setElementImage(itemImage);
-    updateAlbumImagesApi(itemData.spotifyId!, (itemData as Album).images);
+    if (!itemResponse.error) {
+      const itemData = extractApiData(itemResponse);
+      const itemImage = getElementImage(itemData);
+      setElementImage(itemImage);
+      updateAlbumImagesApi(itemData.spotifyId!, (itemData as Album).images);
+    }
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps["element"]) => {

@@ -147,10 +147,12 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-    const itemData = extractApiData(itemResponse);
-    const itemImage = getElementImage(itemData as T);
-    setElementImage(itemImage);
-    updateItemImagesInDb(itemData as T);
+    if (!itemResponse.error) {
+      const itemData = extractApiData(itemResponse);
+      const itemImage = getElementImage(itemData as T);
+      setElementImage(itemImage);
+      updateItemImagesInDb(itemData as T);
+    }
   }
 
   function updateItemImagesInDb(updatedElement: T) {
