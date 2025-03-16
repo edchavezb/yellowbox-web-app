@@ -75,7 +75,7 @@ export const moveAlbumBetweenSubsectionsApi = async (boxId: string, subsectionId
   }
 }
 
-export const removeAlbumFromSubsectionApi = async (boxId: string, boxAlbumId: string, subsectionId: string) => {
+export const removeAlbumFromSubsectionApi = async (boxId: string, subsectionId: string, boxAlbumId: string) => {
   try {
     return await api.delete<UserBox>(`boxes/${boxId}/subsections/${subsectionId}/albums/${boxAlbumId}`)
   }

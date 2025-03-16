@@ -75,7 +75,7 @@ export const movePlaylistBetweenSubsectionsApi = async (boxId: string, subsectio
   }
 }
 
-export const removePlaylistFromSubsectionApi = async (boxId: string, boxPlaylistId: string, subsectionId: string) => {
+export const removePlaylistFromSubsectionApi = async (boxId: string, subsectionId: string, boxPlaylistId: string) => {
   try {
     return await api.delete<UserBox>(`boxes/${boxId}/subsections/${subsectionId}/playlists/${boxPlaylistId}`)
   }

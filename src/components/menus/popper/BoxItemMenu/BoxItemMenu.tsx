@@ -4,9 +4,10 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 import styles from "./BoxItemMenu.module.css";
 import { Link } from "react-router-dom";
-import { reorderBoxItemsThunk, reorderSubsectionItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { removeItemFromSubsectionThunk, reorderBoxItemsThunk, reorderSubsectionItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 import { useEffect, useState } from "react";
 import { set } from "react-hook-form";
+import { BoxSections } from "core/types/types";
 
 interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
@@ -38,6 +39,11 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }
 
   const handleAddToQueue = () => {
     //TODO: Implement add to queue
+  }
+
+  const handleRemoveFromSubsection = () => {
+    dispatch(removeItemFromSubsectionThunk(boxId, subId!, itemData.boxItemId!, `${itemData.type}s` as BoxSections))
+    setIsOpen(false);
   }
 
   const handleOpenModal = (modalType: ModalType) => {
@@ -122,7 +128,15 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }
         <div
           className={menuItem}
           onClick={() => handleOpenModal("Add To Subsection")}>
-          Add to subsection...
+          Add to subsections...
+        </div>
+      }
+      {
+        (boxDetailViewing && isOwner && itemData.subsectionId) &&
+        <div
+          className={menuItem}
+          onClick={handleRemoveFromSubsection}>
+          Remove from this subsection
         </div>
       }
       {
