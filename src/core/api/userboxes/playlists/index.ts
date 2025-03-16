@@ -63,7 +63,19 @@ export const reorderSubsectionPlaylistApi = async (boxId: string, subsectionId: 
   }
 }
 
-export const removePlaylistFromSubsectionApi = async (boxId: string, boxPlaylistId: string, subsectionId: string) => {
+export const movePlaylistBetweenSubsectionsApi = async (boxId: string, subsectionId: string, destinationSubsectionId: string, boxItemId: string) => {
+  try {
+    return await api.put<{ destinationSubsectionId: string }, UserBox>(
+      `boxes/${boxId}/subsections/${subsectionId}/playlists/${boxItemId}/move`,
+      { destinationSubsectionId }
+    );
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export const removePlaylistFromSubsectionApi = async (boxId: string, subsectionId: string, boxPlaylistId: string) => {
   try {
     return await api.delete<UserBox>(`boxes/${boxId}/subsections/${subsectionId}/playlists/${boxPlaylistId}`)
   }

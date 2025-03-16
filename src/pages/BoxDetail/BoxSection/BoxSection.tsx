@@ -104,7 +104,6 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
                 const { name, subsectionId, itemType, items } = subsection;
                 const subsectionItems = sortData(items as T[]);
                 return (
-                  !!subsectionItems.length &&
                   <SubSection
                     itemsMatch={subsectionItems as T[]}
                     subName={name}

@@ -162,6 +162,7 @@ export interface Album {
   position?: number
   subsections?: string[],
   note?: string
+  subsectionId?: string
 }
 
 export interface Artist {
@@ -175,6 +176,7 @@ export interface Artist {
   position?: number
   subsections?: string[]
   note?: string
+  subsectionId?: string
 }
 
 export interface Track {
@@ -194,6 +196,7 @@ export interface Track {
   position?: number
   subsections?: string[]
   note?: string
+  subsectionId?: string
 }
 
 export interface Playlist {
@@ -209,6 +212,7 @@ export interface Playlist {
   position?: number
   subsections?: string[]
   note?: string
+  subsectionId?: string
 }
 
 export interface ApiArtist {
