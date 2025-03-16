@@ -2,7 +2,7 @@ import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import styles from "./SubsectionsMenu.module.css";
 import { setModalState } from 'core/features/modal/modalSlice';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { addSubsectionToBoxThunk, reorderSubsectionsThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
+import { addSubsectionToBoxThunk, fetchBoxDetailThunk, reorderSubsectionsThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import SubsectionRow from './SubsectionRow/SubsectionRow';
 import { BoxSections } from 'core/types/types';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
@@ -27,7 +27,6 @@ function SubsectionsMenu() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
-    console.log(over, active);
     const subsectionType = currentBox.subsections.find(sub => sub.subsectionId === active.id)?.itemType
     dispatch(
       reorderSubsectionsThunk(
@@ -38,6 +37,11 @@ function SubsectionsMenu() {
         subsectionType!
       )
     );
+  }
+
+  const handleSubmitChanges = () => {
+    dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }));
+    dispatch(fetchBoxDetailThunk(currentBox.boxId));
   }
 
   return (
@@ -157,7 +161,7 @@ function SubsectionsMenu() {
 
         <div className={styles.modalFooter}>
           <AppButton
-            onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}
+            onClick={handleSubmitChanges}
             text={"Done"}
           />
         </div>
