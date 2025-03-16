@@ -11,7 +11,6 @@ interface IProps {
 }
 
 function AddToSubsectionMenu({ itemData }: IProps) {
-  console.log(itemData);
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box)
   const validSubsections = currentBox.subsections.filter(subsection => subsection.itemType === `${itemData.type}s`)

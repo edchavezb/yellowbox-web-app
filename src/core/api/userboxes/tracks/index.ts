@@ -63,9 +63,21 @@ export const reorderSubsectionTrackApi = async (boxId: string, subsectionId: str
   }
 }
 
+export const moveTrackBetweenSubsectionsApi = async (boxId: string, subsectionId: string, destinationSubsectionId: string, boxItemId: string) => {
+  try {
+    return await api.put<{ destinationSubsectionId: string }, UserBox>(
+      `boxes/${boxId}/subsections/${subsectionId}/tracks/${boxItemId}/move`,
+      { destinationSubsectionId }
+    );
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 export const removeTrackFromSubsectionApi = async (boxId: string, subsectionId: string, boxTrackId: string) => {
   try {
-    return await api.delete<UserBox>(`boxes/${boxId}/subsections/${subsectionId}/tracks/${boxTrackId}/remove`)
+    return await api.delete<UserBox>(`boxes/${boxId}/subsections/${subsectionId}/tracks/${boxTrackId}`)
   }
   catch (err) {
     console.log(err);

@@ -63,6 +63,18 @@ export const reorderSubsectionArtistApi = async (boxId: string, subsectionId: st
   }
 }
 
+export const moveArtistBetweenSubsectionsApi = async (boxId: string, subsectionId: string, destinationSubsectionId: string, boxItemId: string) => {
+  try {
+    return await api.put<{ destinationSubsectionId: string }, UserBox>(
+      `boxes/${boxId}/subsections/${subsectionId}/artists/${boxItemId}/move`,
+      { destinationSubsectionId }
+    );
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 export const removeArtistFromSubsectionApi = async (boxId: string, boxArtistId: string, subsectionId: string) => {
   try {
     return await api.delete<UserBox>(`boxes/${boxId}/subsections/${subsectionId}/artists/${boxArtistId}`)

@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { addSubsectionToBoxApi, getBoxByIdApi, removeSubsectionApi, reorderSubsectionsApi, updateAllSectionSettingsApi, updateBoxInfoApi, updateBoxSectionSettingsApi, updateSubsectionNameApi } from "core/api/userboxes"
-import { removeBoxAlbumApi, addAlbumToSubsectionApi, removeAlbumFromSubsectionApi, reorderBoxAlbumApi, reorderSubsectionAlbumApi, updateBoxAlbumNoteApi, updateSubsectionAlbumNoteApi } from "core/api/userboxes/albums"
-import { removeBoxArtistApi, addArtistToSubsectionApi, removeArtistFromSubsectionApi, reorderBoxArtistApi, reorderSubsectionArtistApi, updateBoxArtistNoteApi, updateSubsectionArtistNoteApi } from "core/api/userboxes/artists"
-import { removeBoxPlaylistApi, addPlaylistToSubsectionApi, removePlaylistFromSubsectionApi, reorderBoxPlaylistApi, reorderSubsectionPlaylistApi, updateBoxPlaylistNoteApi, updateSubsectionPlaylistNoteApi } from "core/api/userboxes/playlists"
-import { removeBoxTrackApi, addTrackToSubsectionApi, removeTrackFromSubsectionApi, reorderBoxTrackApi, reorderSubsectionTrackApi, updateBoxTrackNoteApi, updateSubsectionTrackNoteApi } from "core/api/userboxes/tracks"
+import { removeBoxAlbumApi, addAlbumToSubsectionApi, removeAlbumFromSubsectionApi, reorderBoxAlbumApi, reorderSubsectionAlbumApi, updateBoxAlbumNoteApi, updateSubsectionAlbumNoteApi, moveAlbumBetweenSubsectionsApi } from "core/api/userboxes/albums"
+import { removeBoxArtistApi, addArtistToSubsectionApi, removeArtistFromSubsectionApi, reorderBoxArtistApi, reorderSubsectionArtistApi, updateBoxArtistNoteApi, updateSubsectionArtistNoteApi, moveArtistBetweenSubsectionsApi } from "core/api/userboxes/artists"
+import { removeBoxPlaylistApi, addPlaylistToSubsectionApi, removePlaylistFromSubsectionApi, reorderBoxPlaylistApi, reorderSubsectionPlaylistApi, updateBoxPlaylistNoteApi, updateSubsectionPlaylistNoteApi, movePlaylistBetweenSubsectionsApi } from "core/api/userboxes/playlists"
+import { removeBoxTrackApi, addTrackToSubsectionApi, removeTrackFromSubsectionApi, reorderBoxTrackApi, reorderSubsectionTrackApi, updateBoxTrackNoteApi, updateSubsectionTrackNoteApi, moveTrackBetweenSubsectionsApi } from "core/api/userboxes/tracks"
 import { AppThunk } from "core/store/store"
 import { Album, Artist, Playlist, SectionSettings, Subsection, Track, UserBox } from "core/types/interfaces"
 import { BoxSections, ItemData } from "core/types/types"
@@ -435,27 +435,66 @@ export const addItemToSubsectionThunk = (boxId: string, type: BoxSections, subse
     }
   } catch (err) {
     console.log(err)
+    dispatch(initErrorToast({ error: "Can't add item to subsection" }));
   }
 }
+
+export const moveItemBetweenSubsectionsThunk = (
+  boxId: string,
+  type: BoxSections,
+  currentSubsectionId: string,
+  destinationSubsectionId: string,
+  itemData: ItemData
+): AppThunk => async (dispatch) => {
+  try {
+    let response: UserBox | null = null;
+    switch (type) {
+      case 'artists':
+        response = await moveArtistBetweenSubsectionsApi(boxId, currentSubsectionId, destinationSubsectionId, itemData.boxItemId!) as UserBox;
+        dispatch(updateBoxArtists({ updatedArtists: response.artists! }));
+        break;
+      case 'albums':
+        response = await moveAlbumBetweenSubsectionsApi(boxId, currentSubsectionId, destinationSubsectionId, itemData.boxItemId!) as UserBox;
+        dispatch(updateBoxAlbums({ updatedAlbums: response.albums! }));
+        break;
+      case 'tracks':
+        response = await moveTrackBetweenSubsectionsApi(boxId, currentSubsectionId, destinationSubsectionId, itemData.boxItemId!) as UserBox;
+        dispatch(updateBoxTracks({ updatedTracks: response.tracks! }));
+        break;
+      case 'playlists':
+        response = await movePlaylistBetweenSubsectionsApi(boxId, currentSubsectionId, destinationSubsectionId, itemData.boxItemId!) as UserBox;
+        dispatch(updateBoxPlaylists({ updatedPlaylists: response.playlists! }));
+        break;
+      default:
+        break;
+    }
+    if (response) {
+      dispatch(updateBoxSubsections(response.subsections));
+    }
+  } catch (err) {
+    console.log(err);
+    dispatch(initErrorToast({ error: "Can't move item between subsections" }));
+  }
+};
 
 export const removeItemFromSubsectionThunk = (boxId: string, subsectionId: string, boxItemId: string, type: BoxSections): AppThunk => async (dispatch) => {
   try {
     let response: UserBox | null = null;
     switch (type) {
       case 'artists':
-        response = await removeArtistFromSubsectionApi(boxId, boxItemId, subsectionId) as UserBox
+        response = await removeArtistFromSubsectionApi(boxId, subsectionId, boxItemId) as UserBox
         dispatch(updateBoxArtists({ updatedArtists: response.artists! }))
         break;
       case 'albums':
-        response = await removeAlbumFromSubsectionApi(boxId, boxItemId, subsectionId) as UserBox
+        response = await removeAlbumFromSubsectionApi(boxId, subsectionId, boxItemId) as UserBox
         dispatch(updateBoxAlbums({ updatedAlbums: response.albums! }))
         break;
       case 'tracks':
-        response = await removeTrackFromSubsectionApi(boxId, boxItemId, subsectionId) as UserBox
+        response = await removeTrackFromSubsectionApi(boxId, subsectionId, boxItemId) as UserBox
         dispatch(updateBoxTracks({ updatedTracks: response.tracks! }))
         break;
       case 'playlists':
-        response = await removePlaylistFromSubsectionApi(boxId, boxItemId, subsectionId) as UserBox
+        response = await removePlaylistFromSubsectionApi(boxId, subsectionId, boxItemId) as UserBox
         dispatch(updateBoxPlaylists({ updatedPlaylists: response.playlists! }))
         break;
       default:
