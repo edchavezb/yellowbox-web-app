@@ -22,8 +22,8 @@ interface IProps<T> {
   subId?: string
 }
 
-function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIndex, setElementDragging, reorderingMode, subId}: IProps<T>) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: {index: itemIndex} })
+function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIndex, setElementDragging, reorderingMode, subId }: IProps<T>) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: { index: itemIndex } })
   const gridItemRef = useRef(null);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
@@ -39,7 +39,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
 
   function getElementAuthorLink(item: T) {
     let authorLink: ReactElement | string = '';
-  
+
     if (checkType.isAlbum(item)) {
       const { artists } = item;
       authorLink = <Link to={`/detail/artist/${artists[0].spotifyId}`}><div className={styles.artistName}> {artists[0].name} </div> </Link>
@@ -55,7 +55,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
       const { ownerDisplayName, ownerId } = item;
       authorLink = <a href={getUri('user', ownerId)}><div className={styles.artistName}> {ownerDisplayName} </div></a>;
     }
-  
+
     return authorLink;
   }
 
@@ -88,8 +88,11 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
       setElementImage(itemImage);
       updateItemImagesInDb(itemData as T);
     }
+    else {
+      console.log("Error fetching item data")
+    }
   }
-  
+
   function updateItemImagesInDb(updatedElement: T) {
     if (checkType.isAlbum(updatedElement)) {
       updateAlbumImagesApi(updatedElement.spotifyId, updatedElement.images)

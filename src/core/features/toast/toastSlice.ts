@@ -3,7 +3,8 @@ import { BoxItemType } from "core/types/types"
 
 interface AddToBoxToastPayload {
   itemType: BoxItemType
-  boxName: string
+  boxName?: string
+  isQueue?: boolean
 }
 
 interface AddToFolderToastPayload {
@@ -74,28 +75,28 @@ const toastSlice = createSlice({
       state.isOpen = true;
     },
     initAddToBoxToast(state, action: PayloadAction<AddToBoxToastPayload>) {
-      const {boxName, itemType} = action.payload;
+      const {boxName, itemType, isQueue} = action.payload;
       state.options = {
         title: "Done!",
-        description: `1 ${itemType} was added to ${boxName}`,
+        description: `1 ${itemType} was added to ${isQueue ? "your queue" : boxName}`,
         status: "info"
       };
       state.isOpen = true;
     },
     initRemoveFromBoxToast(state, action: PayloadAction<AddToBoxToastPayload>) {
-      const {boxName, itemType} = action.payload;
+      const {boxName, itemType, isQueue} = action.payload;
       state.options = {
         title: "Done!",
-        description: `1 ${itemType} was removed from ${boxName}`,
+        description: `1 ${itemType} was removed from ${isQueue ? "your queue" : boxName}`,
         status: "info"
       };
       state.isOpen = true;
     },
     initAlreadyInBoxToast(state, action: PayloadAction<AddToBoxToastPayload>) {
-      const {boxName, itemType} = action.payload;
+      const {boxName, itemType, isQueue} = action.payload;
       state.options = {
         title: "Item already in Box",
-        description: `This ${itemType} already exists in ${boxName}`,
+        description: `This ${itemType} already exists in ${isQueue ? "your queue" : boxName}`,
         status: "info"
       };
       state.isOpen = true;

@@ -6,8 +6,11 @@ import styles from "./BoxItemMenu.module.css";
 import { Link } from "react-router-dom";
 import { removeItemFromSubsectionThunk, reorderBoxItemsThunk, reorderSubsectionItemsThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 import { useEffect, useState } from "react";
-import { set } from "react-hook-form";
-import { BoxSections } from "core/types/types";
+import { BoxItemType, BoxSections } from "core/types/types";
+import { isAlbum, isArtist, isErrorWithMessage, isPlaylist, isTrack } from "core/helpers/typeguards";
+import { addAlbumToQueueApi, addArtistToQueueApi, addPlaylistToQueueApi, addTrackToQueueApi } from "core/api/userqueue";
+import { initAddToBoxToast, initAlreadyInBoxToast, initErrorToast } from "core/features/toast/toastSlice";
+import { removeQueueAlbumThunk, removeQueueArtistThunk, removeQueuePlaylistThunk, removeQueueTrackThunk } from "core/features/userQueue/userQueueSlice";
 
 interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
@@ -17,11 +20,13 @@ interface BoxItemMenuProps {
   itemType: string
   subId?: string
   viewMode?: string
+  queueItemId?: string
 }
 
-const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }: BoxItemMenuProps) => {
+const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode, queueItemId }: BoxItemMenuProps) => {
   const dispatch = useAppDispatch();
-  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
+  const userData = useAppSelector(state => state.userData);
+  const { isUserLoggedIn: isLoggedIn, authenticatedUser } = userData;
   const { isUserViewing: boxDetailViewing, box } = useAppSelector(state => state.currentBoxDetailData)
   const { boxId } = box || {};
   const subSection = box?.subsections?.find(sub => sub.subsectionId === subId);
@@ -37,8 +42,47 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }
     }
   }, [isOpen])
 
-  const handleAddToQueue = () => {
-    //TODO: Implement add to queue
+  const handleAddToQueue = async () => {
+    const userId = authenticatedUser?.userId;
+    try {
+      if (isArtist(itemData)) {
+        await addArtistToQueueApi(userId, itemData)
+      }
+      else if (isAlbum(itemData)) {
+        await addAlbumToQueueApi(userId, itemData)
+      }
+      else if (isTrack(itemData)) {
+        await addTrackToQueueApi(userId, itemData)
+      }
+      else if (isPlaylist(itemData)) {
+        await addPlaylistToQueueApi(userId, itemData)
+      }
+      dispatch(initAddToBoxToast({ itemType: itemData.type as BoxItemType, isQueue: true }));
+    } catch (error) {
+      if (isErrorWithMessage(error) && error.message === "Item already in queue") {
+        dispatch(initAlreadyInBoxToast({ itemType: itemData.type as BoxItemType, isQueue: true }))
+      }
+      else {
+        dispatch(initErrorToast({ error: `Failed to add item to your queue` }))
+      }
+    }
+    setIsOpen(false);
+  }
+
+  const handleRemoveFromQueue = async () => {
+    if (isArtist(itemData)) {
+      dispatch(removeQueueArtistThunk(authenticatedUser?.userId!, queueItemId!, itemData.spotifyId))
+    }
+    else if (isAlbum(itemData)) {
+      dispatch(removeQueueAlbumThunk(authenticatedUser?.userId!, queueItemId!, itemData.spotifyId))
+    }
+    else if (isTrack(itemData)) {
+      dispatch(removeQueueTrackThunk(authenticatedUser?.userId!, queueItemId!, itemData.spotifyId))
+    }
+    else if (isPlaylist(itemData)) {
+      dispatch(removeQueuePlaylistThunk(authenticatedUser?.userId!, queueItemId!, itemData.spotifyId))
+    }
+    setIsOpen(false);
   }
 
   const handleRemoveFromSubsection = () => {
@@ -58,7 +102,7 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }
     setIsUrlCopied(true);
   }
 
-  const handleMoveToTop = () => {
+  const handleMoveToBoxTop = () => {
     if (subSection) {
       dispatch(reorderSubsectionItemsThunk(boxId, itemData.boxItemId!, subId!, itemIndex!, 0));
     }
@@ -68,7 +112,7 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }
     setIsOpen(false);
   }
 
-  const handleMoveToBottom = () => {
+  const handleMoveToBoxBottom = () => {
     let lastItemIndex;
     if (subSection) {
       lastItemIndex = subSection.items.length - 1;
@@ -97,6 +141,12 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }
     setIsOpen(false);
   }
 
+  const handleMoveToQueueTop = () => {
+  }
+
+  const handleMoveToQueueBottom = () => {
+  }
+
   return (
     <div className={menuItemsList}>
       {
@@ -108,11 +158,19 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }
         </Link>
       }
       {
-        isLoggedIn &&
+        (isLoggedIn && !queueItemId) &&
         <div
           className={menuItem}
           onClick={() => handleAddToQueue()}>
           Add to your queue
+        </div>
+      }
+      {
+        (isLoggedIn && queueItemId) &&
+        <div
+          className={menuItem}
+          onClick={handleRemoveFromQueue}>
+          Remove from your queue
         </div>
       }
       {
@@ -148,18 +206,18 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode }
         </div>
       }
       {
-        (boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") &&
+        ((boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") || queueItemId) &&
         <div
           className={menuItem}
-          onClick={() => handleMoveToTop()}>
+          onClick={queueItemId ? handleMoveToQueueTop : handleMoveToBoxTop}>
           Move to start of list
         </div>
       }
       {
-        (boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") &&
+        ((boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") || queueItemId) &&
         <div
           className={menuItem}
-          onClick={() => handleMoveToBottom()}>
+          onClick={queueItemId ? handleMoveToQueueBottom : handleMoveToBoxBottom}>
           Move to end of list
         </div>
       }

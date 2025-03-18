@@ -1,0 +1,100 @@
+#mainPanel {
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 25px 30px;
+    box-sizing: border-box;
+}
+
+.boxHeader {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.boxSquare {
+    height: 80px;
+    width: 80px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: gray;
+}
+
+.boxIcon {
+    width: 50px;
+}
+
+.boxInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+#boxName {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    line-height: 1.4em;
+}
+
+#boxDesc {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+#emptyMsgDiv {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#emptyMsg {
+    text-align: center;
+}
+
+.creator {
+    font-size: 12px;
+    color: hsl(0, 0%, 100%, .8)
+}
+
+.creatorName {
+    font-weight: 600;
+}
+
+.menuButtonWrapper {
+    height: 100%;
+}
+
+.menuButton {
+    margin-top: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+@media (max-width: 576px) {
+    #mainPanel {
+        padding: 15px;
+    }
+
+    .boxSquare {
+        display: none;
+    }
+
+    .boxInfo {
+        margin-left: 6px;
+    }
+
+    .menuButtonWrapper {
+        margin-right: 10px;
+    }
+}

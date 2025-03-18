@@ -1,0 +1,12 @@
+.queueSection {
+    padding: 0px 10px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.linkDragOver {
+    composes: queueSection;
+    background-color: rgb(54, 54, 54);
+}

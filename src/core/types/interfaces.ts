@@ -1,4 +1,4 @@
-import { BoxSections } from "./types"
+import { BoxSections, ItemData } from "./types"
 
 export interface ErrorWithMessage {
   message: string;
@@ -60,6 +60,13 @@ export interface UserAccountData {
   signUpDate: string
   emailVerified: boolean
   showTutorial: boolean
+}
+
+export interface QueueItem {
+  queueItemId: string;
+  isPlayed: boolean;
+  position: number;
+  itemData: ItemData;
 }
 
 export interface UserBox {

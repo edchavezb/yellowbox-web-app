@@ -12,6 +12,7 @@ import SidebarBoxList from "./SidebarBoxList/SidebarBoxList";
 import { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core";
 import { Text } from '@chakra-ui/react'
 import { DndContextTypesafeProps } from "./sidebarTypes";
+import SidebarQueue from "./SidebarQueue/SidebarQueue";
 
 interface IProps {
   user: YellowboxUser
@@ -155,6 +156,7 @@ function Sidebar({ user }: IProps) {
               }
             </div>
           }
+          <SidebarQueue />
           <div className={styles.folderBoxListWrapper}>
             <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "5px" }}>
               Your boxes
