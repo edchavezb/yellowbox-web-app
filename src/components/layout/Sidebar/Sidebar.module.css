@@ -41,6 +41,10 @@
     padding: 0px 10px;
 }
 
+.queueSection {
+    padding: 0px 10px;
+}
+
 .folderList {
     display: flex;
     flex-direction: column;

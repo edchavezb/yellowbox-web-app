@@ -17,6 +17,7 @@ import SpotifyDashboard from 'pages/Spotify/SpotifyDashboard';
 import Account from 'pages/Account/Account';
 import { useToast } from '@chakra-ui/react';
 import { setIsToastOpen } from 'core/features/toast/toastSlice';
+import QueuePage from 'pages/Queue/QueuePage';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -71,6 +72,7 @@ function App() {
         <Route path="/folder/:id" render={() => <FolderDetail />} />
         <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props} />} />
         <Route path="/linked-services/spotify" render={() => <SpotifyDashboard />} />
+        <Route path="/queue" render={() => <QueuePage />} />
         <Route path="/authsuccess" render={() => <SpotifyAuthSuccess />} />
       </Layout>
     </Router>

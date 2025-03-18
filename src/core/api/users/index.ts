@@ -87,6 +87,7 @@ export const getUserFoldersApi = async (userId: string) => {
     }
 }
 
+
 export const reorderDashboardBoxApi = async (userId: string, boxId: string, destinationId: string) => {
     try {
         return await api.put<{destinationId: string}, {message: string}>(`users/${userId}/boxes/${boxId}/reorder`, {destinationId})
