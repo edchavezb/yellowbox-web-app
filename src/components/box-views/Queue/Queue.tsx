@@ -6,6 +6,7 @@ import styles from "./Queue.module.css";
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import QueueRow from './QueueRow/QueueRow';
+import { reorderQueueItemThunk } from 'core/features/userQueue/userQueueSlice';
 
 interface IProps {
   data: QueueItem[]
@@ -13,6 +14,7 @@ interface IProps {
 }
 
 function Queue({ data, isReorderingMode }: IProps) {
+  const dispatch = useAppDispatch();
   const currentUser = useAppSelector(state => state.userData.authenticatedUser);
   const [elementDragging, setElementDragging] = useState(false)
 
@@ -28,11 +30,21 @@ function Queue({ data, isReorderingMode }: IProps) {
     )
   }
 
-  const handleDragEnd = (event: DragEndEvent) => {
+   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
-    const itemType = data[0].itemData.type;
-    // Implement reordering logic here
-  }
+  
+    // If there is no valid drop target, do nothing
+    if (!over) return;
+  
+    const activeIndex = data.findIndex(item => item.queueItemId === active.id);
+    const overIndex = data.findIndex(item => item.queueItemId === over.id);
+  
+    // If the indices are the same, no reordering is needed
+    if (activeIndex === overIndex) return;
+  
+    // Dispatch the reorderQueueThunk to handle the reordering
+    dispatch(reorderQueueItemThunk(activeIndex, overIndex));
+  };
 
   return (
     <>

@@ -67,6 +67,7 @@
 
 .menuButtonWrapper {
     height: 100%;
+    display: flex;
 }
 
 .menuButton {
@@ -79,6 +80,14 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+}
+
+.toggleButton {
+    cursor: pointer;
+    background-color: gray;
+    border-radius: 500px;
+    padding: 5px 8px;
+    font-size: .75em;
 }
 
 @media (max-width: 576px) {
