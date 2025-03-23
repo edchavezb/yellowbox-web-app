@@ -196,9 +196,29 @@ export const toggleQueueItemPlayedThunk = (itemData: ItemData, type: string, use
   }
 };
   
+export const reorderQueueItemThunk = (sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const userId = state.userData.authenticatedUser.userId;
+    const queue = [...state.userQueueData.userQueue];
 
-export const reorderQueueThunk = (itemId: string, sourceIndex: number, targetIndex: number): AppThunk => async (dispatch, getState) => {
+    if (sourceIndex < 0 || targetIndex < 0 || sourceIndex >= queue.length || targetIndex >= queue.length) {
+      throw new Error("Invalid source or target index");
+    }
 
+    const itemToReorder = queue[sourceIndex];
+    const targetItem = queue[targetIndex];
+
+    const updatedQueue = [...queue];
+    updatedQueue.splice(sourceIndex, 1);
+    updatedQueue.splice(targetIndex, 0, itemToReorder);
+    dispatch(setUserQueue(updatedQueue));
+
+    await reorderQueueItemApi(userId, itemToReorder.itemData.spotifyId, targetItem.itemData.spotifyId, itemToReorder.itemData.type);
+  } catch (err) {
+    console.log(err);
+    dispatch(initErrorToast({ error: "Failed to reorder queue item" }));
+  }
 };
 
 export default userQueueSlice.reducer;

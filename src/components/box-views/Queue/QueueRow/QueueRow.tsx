@@ -154,7 +154,7 @@ function QueueRow({ element, setElementDragging, itemIndex, reorderingMode, user
             {itemType.charAt(0).toUpperCase() + itemType.slice(1)}
           </div>
         </div>
-        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
+        <div className={`${styles.flexCentered} ${styles.mobileHidden}`}>
           <a href={`spotify:${itemType}:${spotifyId}`}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
@@ -162,10 +162,10 @@ function QueueRow({ element, setElementDragging, itemIndex, reorderingMode, user
             </div>
           </a>
         </div>
-        <div className={`${styles.colCentered} ${styles.mobileHidden}`}>
-          <div>
-            {itemType.charAt(0).toUpperCase() + itemType.slice(1)}
-          </div>
+        <div className={`${styles.flexCentered} ${styles.mobileHidden}`}>
+          <Button background={'none'} onClick={handlePlayedButtonClick}>
+            <img className={styles.dotsIcon} src={`/icons/${playedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+          </Button>
         </div>
       </div>
     )
@@ -216,7 +216,7 @@ function QueueRow({ element, setElementDragging, itemIndex, reorderingMode, user
           </div>
           <div className={`${styles.flexCentered} ${styles.mobileHidden}`}>
             <Button background={'none'} onClick={handlePlayedButtonClick}>
-            <img className={styles.dotsIcon} src={`/icons/${playedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+              <img className={styles.dotsIcon} src={`/icons/${playedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
             </Button>
           </div>
           <div className={styles.itemMenu} ref={queueRowRef} onClick={() => setIsMenuOpen(true)}>
@@ -224,7 +224,7 @@ function QueueRow({ element, setElementDragging, itemIndex, reorderingMode, user
           </div>
         </div>
         <PopperMenu referenceRef={queueRowRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={itemData} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={itemType} />
+          <BoxItemMenu itemData={itemData} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={itemType} page={"queue"} />
         </PopperMenu>
       </>
     )

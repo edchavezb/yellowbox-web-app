@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { BoxItemType, BoxSections } from "core/types/types";
 import { isAlbum, isArtist, isErrorWithMessage, isPlaylist, isTrack } from "core/helpers/typeguards";
 import { initAlreadyInBoxToast, initErrorToast } from "core/features/toast/toastSlice";
-import { addQueueAlbumThunk, addQueueArtistThunk, addQueuePlaylistThunk, addQueueTrackThunk, removeQueueAlbumThunk, removeQueueArtistThunk, removeQueuePlaylistThunk, removeQueueTrackThunk } from "core/features/userQueue/userQueueSlice";
+import { addQueueAlbumThunk, addQueueArtistThunk, addQueuePlaylistThunk, addQueueTrackThunk, removeQueueAlbumThunk, removeQueueArtistThunk, removeQueuePlaylistThunk, removeQueueTrackThunk, reorderQueueItemThunk } from "core/features/userQueue/userQueueSlice";
 
 interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
@@ -151,10 +151,18 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode, 
   }
 
   const handleMoveToQueueTop = () => {
-  }
-
+    if (queueItemId !== undefined && itemIndex !== undefined && itemIndex > 0) {
+      dispatch(reorderQueueItemThunk(itemIndex, 0));
+    }
+    setIsOpen(false);
+  };
+  
   const handleMoveToQueueBottom = () => {
-  }
+    if (queueItemId !== undefined && itemIndex !== undefined && itemIndex < userQueue.length - 1) {
+      dispatch(reorderQueueItemThunk(itemIndex, userQueue.length - 1));
+    }
+    setIsOpen(false);
+  };
 
   return (
     <div className={menuItemsList}>
@@ -223,18 +231,18 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode, 
         </div>
       }
       {
-        ((boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") || queueItemId) &&
+        ((boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") || page === "queue") &&
         <div
           className={menuItem}
-          onClick={queueItemId ? handleMoveToQueueTop : handleMoveToBoxTop}>
+          onClick={page === "queue" ? handleMoveToQueueTop : handleMoveToBoxTop}>
           Move to start of list
         </div>
       }
       {
-        ((boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") || queueItemId) &&
+        ((boxDetailViewing && isOwner && box.sectionSettings.find(section => section.type === `${itemData.type}s`)?.primarySorting === "custom") || page === "queue") &&
         <div
           className={menuItem}
-          onClick={queueItemId ? handleMoveToQueueBottom : handleMoveToBoxBottom}>
+          onClick={page === "queue" ? handleMoveToQueueBottom : handleMoveToBoxBottom}>
           Move to end of list
         </div>
       }

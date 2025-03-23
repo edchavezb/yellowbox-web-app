@@ -1,10 +1,6 @@
-import { getUserQueueApi } from 'core/api/userqueue';
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import { QueueItem } from 'core/types/interfaces';
 import { useEffect, useRef, useState } from 'react';
 import styles from "./QueuePage.module.css";
-import BoxMenu from 'components/menus/popper/BoxMenu/BoxMenu';
-import PopperMenu from 'components/menus/popper/PopperMenu';
 import { Text } from '@chakra-ui/react'
 import Queue from 'components/box-views/Queue/Queue';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
@@ -64,8 +60,8 @@ const QueuePage = () => {
               </div>
             </div>
             <div className={styles.menuButtonWrapper}>
-              <div className={styles.menuButton} onClick={() => setIsBoxMenuOpen(true)} ref={menuToggleRef}>
-                <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
+              <div className={styles.toggleButton} onClick={() => setIsReorderingMode(!isReorderingMode)}>
+                {`Reordering: ${isReorderingMode ? 'On' : 'Off'}`}
               </div>
             </div>
           </div>

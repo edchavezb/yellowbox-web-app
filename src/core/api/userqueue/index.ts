@@ -83,9 +83,9 @@ export const removePlaylistFromQueueApi = async (userId: string, spotifyId: stri
   }
 }
 
-export const reorderQueueItemApi = async (userId: string, itemId: string, destinationId: string) => {
+export const reorderQueueItemApi = async (userId: string, itemId: string, targetItemId: string, itemType: string) => {
   try {
-    return await api.put<{ destinationId: string }, { message: string }>(`users/${userId}/queue/${itemId}/reorder`, { destinationId });
+    return await api.put<{ itemId: string, itemType: string, targetItemId: string }, { message: string }>(`users/${userId}/queue/reorder`, { itemId, itemType, targetItemId });
   } catch (err) {
     console.log(err);
     throw err;
