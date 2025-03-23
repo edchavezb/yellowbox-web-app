@@ -103,7 +103,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
       if(!currentUser) return;
       dispatch(updateBoxItemPlayedByUserThunk(currentUser.userId, element, type, !!userPlays?.length));
     },
-    [dispatch, boxItemId, type]
+    [dispatch, boxItemId, type, userPlays]
   );
 
   function updateItemImagesInDb(updatedElement: T) {

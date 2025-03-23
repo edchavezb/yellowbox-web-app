@@ -89,7 +89,8 @@ function SortingMenu() {
                       {section !== "artists" && section !== "playlists" ? <option value="artist"> Artist </option> : ""}
                       {section === "tracks" ? <option value="album"> Album </option> : ""}
                       {section === "tracks" ? <option value="duration"> Duration </option> : ""}
-                      {section === "tracks" ? <option value="track_number"> Track Number </option> : ""}
+                      {section === "tracks" ? <option value="trackNumber"> Track Number </option> : ""}
+                      <option value="playedStatus"> Played Status </option>
                     </>
                   </AppSelect>
                 </FormControl>
@@ -113,7 +114,8 @@ function SortingMenu() {
                         {section !== "artists" && section !== "playlists" ? <option value="artist" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "artist"}> Artist </option> : ""}
                         {section === "tracks" ? <option value="album" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "album"}> Album </option> : ""}
                         {section === "tracks" ? <option value="duration" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "duration"}> Duration </option> : ""}
-                        {section === "tracks" ? <option value="track_number" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "track_number"}> Track Number </option> : ""}
+                        {section === "tracks" ? <option value="trackNumber" hidden={settingsMap[section as keyof typeof settingsMap].primarySorting === "track_number"}> Track Number </option> : ""}
+                        <option value="playedStatus"> Played Status </option>
                       </>
                     </AppSelect>
                   </FormControl>
@@ -122,16 +124,17 @@ function SortingMenu() {
                 <FormControl display={"inline-flex"} gap={"8px"} maxWidth={"fit-content"} alignItems={"center"}>
                   <FormLabel margin={"0px"}>Order</FormLabel>
                   <AppSelect
-                    value={(settingsMap[section as keyof typeof settingsMap].sortingOrder === 'ASCENDING').toString()}
+                    value={(settingsMap[section as keyof typeof settingsMap].sortingOrder).toString()}
                     onChange={e => {
-                      const booleanValue = e.target.value === "true"
-                      handleSelectChange(booleanValue, section, "ascendingOrder")
+                      const newValue = e.target.value
+                      console.log(newValue)
+                      handleSelectChange(newValue, section, "sortingOrder")
                     }}
                     disabled={settingsMap[section as keyof typeof settingsMap].primarySorting === "custom"}
                   >
                     <>
-                      <option value="true"> Ascending </option>
-                      <option value="false"> Descending </option>
+                      <option value="ASCENDING"> Ascending </option>
+                      <option value="DESCENDING"> Descending </option>
                     </>
                   </AppSelect>
                 </FormControl>

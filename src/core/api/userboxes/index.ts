@@ -1,7 +1,7 @@
 import { BoxCreateDTO, DashboardBox, SectionSettings, Subsection, UserBox, UserFolder, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
-export const getBoxByIdApi = async (boxId: string, viewingUserId: string) => {
+export const getBoxByIdApi = async (boxId: string) => {
   try {
     return await api.get<{ boxData: UserBox, creatorName: string }>(`boxes/${boxId}`, {})
   }

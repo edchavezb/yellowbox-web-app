@@ -13,7 +13,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { extractApiData, getElementImage } from "core/helpers/itemDataHandlers";
 import useWindowDimensions from "core/hooks/useWindowDimensions";
 import { updateAlbumImagesApi, updateArtistImagesApi, updateTrackImagesApi, updatePlaylistImagesApi } from "core/api/items";
-import { updateBoxItemPlayedByUser, updateBoxItemPlayedByUserThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { updateBoxItemPlayedByUserThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 
 interface IProps<T> {
   element: T
@@ -192,7 +192,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
       if (!currentUser) return;
       dispatch(updateBoxItemPlayedByUserThunk(currentUser.userId, element, type, isPlayedByUser));
     },
-    [dispatch, boxItemId, type]
+    [dispatch, boxItemId, type, isPlayedByUser]
   );
 
   function updateItemImagesInDb(updatedElement: T) {

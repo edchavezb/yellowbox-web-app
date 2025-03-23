@@ -69,7 +69,7 @@ function WallItem({ element, itemIndex, setElementDragging, reorderingMode, subI
       if (!currentUser) return;
       dispatch(updateBoxItemPlayedByUserThunk(currentUser.userId, element, type, !!userPlays?.length));
     },
-    [dispatch, boxItemId, type]
+    [dispatch, boxItemId, type, userPlays]
   );
 
   return (

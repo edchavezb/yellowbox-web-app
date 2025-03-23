@@ -81,7 +81,7 @@ function ListRowAlbum({ element, setElementDragging, itemIndex, offset = 0, reor
       if (!currentUser) return;
       dispatch(updateBoxItemPlayedByUserThunk(currentUser.userId, element, type, !!userPlays?.length));
     },
-    [dispatch, boxItemId, type]
+    [dispatch, boxItemId, type, userPlays]
   );
 
   if (reorderingMode) {

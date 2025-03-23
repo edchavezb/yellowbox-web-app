@@ -206,9 +206,9 @@ export const {
 } = currentBoxDetailSlice.actions;
 
 //Thunks for this slice
-export const fetchBoxDetailThunk = (boxId: string, viewingUserId: string): AppThunk => async (dispatch) => {
+export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch) => {
   try {
-    const currentBoxDetail = await getBoxByIdApi(boxId, viewingUserId);
+    const currentBoxDetail = await getBoxByIdApi(boxId);
     if (currentBoxDetail) {
       const { boxData, creatorName } = currentBoxDetail;
       dispatch(setCurrentBoxDetail({ ...boxData, creatorName }))
