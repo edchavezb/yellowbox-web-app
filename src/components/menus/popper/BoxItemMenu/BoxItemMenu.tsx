@@ -8,8 +8,7 @@ import { removeItemFromSubsectionThunk, reorderBoxItemsThunk, reorderSubsectionI
 import { useEffect, useState } from "react";
 import { BoxItemType, BoxSections } from "core/types/types";
 import { isAlbum, isArtist, isErrorWithMessage, isPlaylist, isTrack } from "core/helpers/typeguards";
-import { addAlbumToQueueApi, addArtistToQueueApi, addPlaylistToQueueApi, addTrackToQueueApi } from "core/api/userqueue";
-import { initAddToBoxToast, initAlreadyInBoxToast, initErrorToast } from "core/features/toast/toastSlice";
+import { initAlreadyInBoxToast, initErrorToast } from "core/features/toast/toastSlice";
 import { addQueueAlbumThunk, addQueueArtistThunk, addQueuePlaylistThunk, addQueueTrackThunk, removeQueueAlbumThunk, removeQueueArtistThunk, removeQueuePlaylistThunk, removeQueueTrackThunk } from "core/features/userQueue/userQueueSlice";
 
 interface BoxItemMenuProps {

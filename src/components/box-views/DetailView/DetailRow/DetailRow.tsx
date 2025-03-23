@@ -73,7 +73,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         </div>
         {
           isUserLoggedIn &&
-          <div className={styles.metaDataPill} onClick={() => handleTogglePlayedByUser()}>
+          <div className={styles.metaDataPill}>
             <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
             <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
           </div>
@@ -97,7 +97,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         })}
         {
           isUserLoggedIn &&
-          <div className={styles.metaDataPill} onClick={() => handleTogglePlayedByUser()}>
+          <div className={styles.metaDataPill}>
             <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
             <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
           </div>
@@ -120,7 +120,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         </div>
         {
           isUserLoggedIn &&
-          <div className={styles.metaDataPill} onClick={() => handleTogglePlayedByUser()}>
+          <div className={styles.metaDataPill}>
             <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
             <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
           </div>
@@ -145,7 +145,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         </div>
         {
           isUserLoggedIn &&
-          <div className={styles.metaDataPill} onClick={() => handleTogglePlayedByUser()}>
+          <div className={styles.metaDataPill}>
             <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
             <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
           </div>
