@@ -51,14 +51,16 @@ export const {
 } = userQueueSlice.actions;
 
 // Thunks for this slice
-export const fetchUserQueueThunk = (userId: string): AppThunk => async (dispatch) => {
+export const fetchUserQueueThunk = (userId: string): AppThunk<Promise<QueueItem[]>> => async (dispatch) => {
   try {
     const userQueue = await getUserQueueApi(userId);
     dispatch(setUserQueue(userQueue!));
+    return userQueue!;
   } catch (err) {
     dispatch(setUserQueue([]));
     dispatch(initErrorToast({ error: "Failed to fetch user queue" }));
   }
+  return [] as QueueItem[];
 };
 
 export const addQueueArtistThunk = (userId: string, itemData: ItemData): AppThunk => async (dispatch) => {

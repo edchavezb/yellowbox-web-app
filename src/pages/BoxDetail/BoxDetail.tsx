@@ -29,7 +29,7 @@ function BoxDetail() {
   const [isBoxMenuOpen, setIsBoxMenuOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchBoxDetailThunk(boxId, authenticatedUser?.userId));
+    dispatch(fetchBoxDetailThunk(boxId));
     dispatch(setIsUserViewing(true))
     return () => {
       dispatch(setIsUserViewing(false))
