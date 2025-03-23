@@ -220,6 +220,7 @@ function ItemDetail() {
         listComponent =
           <GridView
             data={removeDuplicatesByProperty<ApiAlbum>(itemContents.items, "name").filter((album: ApiAlbum) => album.album_type !== 'compilation').map(item => extractApiData(item))}
+            isSearch
           />
         break;
       case "track":
