@@ -224,7 +224,7 @@ function QueueRow({ element, setElementDragging, itemIndex, reorderingMode, user
           </div>
         </div>
         <PopperMenu referenceRef={queueRowRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={itemData} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={itemType} page={"queue"} />
+          <BoxItemMenu itemData={itemData} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={itemType} page={"queue"} isPlayedByUser={playedByUser} />
         </PopperMenu>
       </>
     )
