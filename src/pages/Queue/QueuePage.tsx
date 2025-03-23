@@ -37,11 +37,15 @@ const QueuePage = () => {
 
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div id={styles.mainPanel}>
+        <div>{error}</div>
+      </div>
+    )
   }
 
   return (
