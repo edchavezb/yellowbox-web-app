@@ -222,24 +222,26 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         <div className={styles.dragHandle}>
           <img className={styles.reorderIcon} src="/icons/reorder.svg" alt="reorder"></img>
         </div>
-        <div className={styles.imageContainer}>
-          <div className={styles.itemLink}>
+        <div className={styles.imageColumn}>
+          <div className={styles.imageContainer}>
             <a href={`spotify:${type}:${spotifyId}`}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
                 <span> Open </span>
               </div>
             </a>
-            <img
-              draggable="false"
-              className={styles.itemImage}
-              alt={name}
-              src={elementImage}
-              onError={handleImageError}
-            />
-            <div className={styles.positionMobile}>
-              {itemIndex + 1}
-            </div>
+            <Link to={`/detail/${type}/${spotifyId}`} className={styles.itemLink} draggable="false">
+              <img
+                draggable="false"
+                className={styles.itemImage}
+                alt={name}
+                src={elementImage}
+                onError={handleImageError}
+              />
+              <div className={styles.positionMobile}>
+                {itemIndex + 1}
+              </div>
+            </Link>
           </div>
         </div>
         <div className={styles.dataCol}>
