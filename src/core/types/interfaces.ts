@@ -64,7 +64,7 @@ export interface UserAccountData {
 
 export interface QueueItem {
   queueItemId: string;
-  isPlayed: boolean;
+  playedByUser: boolean;
   position: number;
   itemData: ItemData;
 }
@@ -170,6 +170,7 @@ export interface Album {
   subsections?: string[],
   note?: string
   subsectionId?: string
+  userPlays?: any[]
 }
 
 export interface Artist {
@@ -184,6 +185,7 @@ export interface Artist {
   subsections?: string[]
   note?: string
   subsectionId?: string
+  userPlays?: any[]
 }
 
 export interface Track {
@@ -204,6 +206,7 @@ export interface Track {
   subsections?: string[]
   note?: string
   subsectionId?: string
+  userPlays?: any[]
 }
 
 export interface Playlist {
@@ -220,6 +223,7 @@ export interface Playlist {
   subsections?: string[]
   note?: string
   subsectionId?: string
+  userPlays?: any[]
 }
 
 export interface ApiArtist {

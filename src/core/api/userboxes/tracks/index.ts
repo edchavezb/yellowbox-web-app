@@ -1,14 +1,5 @@
 import api from "core/api"
-import { ItemImage, Subsection, Track, UserBox } from "core/types/interfaces"
-
-export const updateTrackImagesApi = async (spotifyId: string, updatedImages: ItemImage[]) => {
-  try {
-    return await api.put<{ updatedImages: ItemImage[] }, { updatedBox: UserBox }>(`items/tracks/${spotifyId}/images`, { updatedImages });
-  } catch (err) {
-    console.log(err);
-    throw err; 
-  }
-};
+import { Subsection, Track, UserBox } from "core/types/interfaces"
 
 export const addTrackToBoxApi = async (boxId: string, track: Track) => {
   try {

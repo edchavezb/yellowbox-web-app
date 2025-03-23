@@ -13,8 +13,7 @@ interface IProps {
 }
 
 function Queue({ data, isReorderingMode }: IProps) {
-  const dispatch = useAppDispatch();
-  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+  const currentUser = useAppSelector(state => state.userData.authenticatedUser);
   const [elementDragging, setElementDragging] = useState(false)
 
   const ListHeader = () => {
@@ -51,7 +50,7 @@ function Queue({ data, isReorderingMode }: IProps) {
                 >
                   {data.map((element, index) => {
                     return (
-                      <QueueRow element={element} itemIndex={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} key={element.queueItemId} />
+                      <QueueRow element={element} userId={currentUser.userId} itemIndex={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} key={element.queueItemId} />
                     )
                   })}
                 </SortableContext>
@@ -63,7 +62,7 @@ function Queue({ data, isReorderingMode }: IProps) {
             <ListHeader />
             {data.map((element, index) => {
               return (
-                <QueueRow element={element} itemIndex={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} key={element.queueItemId} />
+                <QueueRow element={element} userId={currentUser.userId} itemIndex={index} setElementDragging={setElementDragging} reorderingMode={isReorderingMode ? isReorderingMode : false} key={element.queueItemId} />
               )
             })}
           </div>

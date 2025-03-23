@@ -13,9 +13,10 @@ interface IProps<T> {
   isSubsection?: boolean
   subId?: string
   isReorderingMode?: boolean
+  isSearch?: boolean
 }
 
-function GridView<T extends Artist | Album | Track | Playlist>({ data, isSubsection, subId, isReorderingMode }: IProps<T>) {
+function GridView<T extends Artist | Album | Track | Playlist>({ data, isSubsection, subId, isReorderingMode, isSearch }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const [elementDragging, setElementDragging] = useState(false)
@@ -88,6 +89,7 @@ function GridView<T extends Artist | Album | Track | Playlist>({ data, isSubsect
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode}
                   subId={subId}
+                  isSearch={isSearch}
                 />
               )
             })}

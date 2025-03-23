@@ -10,7 +10,7 @@ import { BoxItemType, BoxSections } from "core/types/types";
 import { isAlbum, isArtist, isErrorWithMessage, isPlaylist, isTrack } from "core/helpers/typeguards";
 import { addAlbumToQueueApi, addArtistToQueueApi, addPlaylistToQueueApi, addTrackToQueueApi } from "core/api/userqueue";
 import { initAddToBoxToast, initAlreadyInBoxToast, initErrorToast } from "core/features/toast/toastSlice";
-import { removeQueueAlbumThunk, removeQueueArtistThunk, removeQueuePlaylistThunk, removeQueueTrackThunk } from "core/features/userQueue/userQueueSlice";
+import { addQueueAlbumThunk, addQueueArtistThunk, addQueuePlaylistThunk, addQueueTrackThunk, removeQueueAlbumThunk, removeQueueArtistThunk, removeQueuePlaylistThunk, removeQueueTrackThunk } from "core/features/userQueue/userQueueSlice";
 
 interface BoxItemMenuProps {
   itemData: Artist | Album | Track | Playlist;
@@ -20,12 +20,16 @@ interface BoxItemMenuProps {
   itemType: string
   subId?: string
   viewMode?: string
-  queueItemId?: string
+  page?: string
+  isPlayedByUser?: boolean
+  togglePlayedCallback?: () => void
 }
 
-const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode, queueItemId }: BoxItemMenuProps) => {
+const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode, page, isPlayedByUser, togglePlayedCallback }: BoxItemMenuProps) => {
   const dispatch = useAppDispatch();
   const userData = useAppSelector(state => state.userData);
+  const userQueue = useAppSelector(state => state.userQueueData.userQueue);
+  const queueItemId = userQueue.find(item => item.itemData.spotifyId === itemData.spotifyId)?.queueItemId;
   const { isUserLoggedIn: isLoggedIn, authenticatedUser } = userData;
   const { isUserViewing: boxDetailViewing, box } = useAppSelector(state => state.currentBoxDetailData)
   const { boxId } = box || {};
@@ -42,22 +46,28 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode, 
     }
   }, [isOpen])
 
+  const handleTogglePlayed = async () => {
+    if (togglePlayedCallback) {
+      togglePlayedCallback();
+    }
+    setIsOpen(false);
+  }
+
   const handleAddToQueue = async () => {
     const userId = authenticatedUser?.userId;
     try {
       if (isArtist(itemData)) {
-        await addArtistToQueueApi(userId, itemData)
+        dispatch(addQueueArtistThunk(userId, itemData))
       }
       else if (isAlbum(itemData)) {
-        await addAlbumToQueueApi(userId, itemData)
+        dispatch(addQueueAlbumThunk(userId, itemData))
       }
       else if (isTrack(itemData)) {
-        await addTrackToQueueApi(userId, itemData)
+        dispatch(addQueueTrackThunk(userId, itemData))
       }
       else if (isPlaylist(itemData)) {
-        await addPlaylistToQueueApi(userId, itemData)
+        dispatch(addQueuePlaylistThunk(userId, itemData))
       }
-      dispatch(initAddToBoxToast({ itemType: itemData.type as BoxItemType, isQueue: true }));
     } catch (error) {
       if (isErrorWithMessage(error) && error.message === "Item already in queue") {
         dispatch(initAlreadyInBoxToast({ itemType: itemData.type as BoxItemType, isQueue: true }))
@@ -156,6 +166,14 @@ const BoxItemMenu = ({ itemData, itemIndex, isOpen, setIsOpen, subId, viewMode, 
             {`Navigate to ${itemData.type}`}
           </div>
         </Link>
+      }
+      {
+        ( isLoggedIn && isPlayedByUser !== undefined && page !== "search" ) &&
+        <div
+          className={menuItem}
+          onClick={() => handleTogglePlayed()}>
+          {isPlayedByUser ? 'Mark as unplayed' : 'Mark as played'}
+        </div>
       }
       {
         (isLoggedIn && !queueItemId) &&

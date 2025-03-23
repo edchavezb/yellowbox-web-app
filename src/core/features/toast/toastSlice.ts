@@ -101,6 +101,15 @@ const toastSlice = createSlice({
       };
       state.isOpen = true;
     },
+    initMarkedAsPlayedToast(state, action: PayloadAction<{itemType: string, newPlayedStatus: boolean}>) {
+      const {itemType, newPlayedStatus} = action.payload;
+      state.options = {
+        title: "Done!",
+        description: `1 ${itemType} was marked as ${newPlayedStatus ? "played" : "unplayed"} in your library`,
+        status: "info"
+      };
+      state.isOpen = true;
+    },
     initErrorToast(state, action: PayloadAction<ErrorToastPayload>) {
       const {error} = action.payload;
       state.options = {
@@ -124,6 +133,7 @@ export const {
   initAddToBoxToast,
   initRemoveFromBoxToast,
   initAlreadyInBoxToast,
+  initMarkedAsPlayedToast,
   initErrorToast,
   setIsToastOpen
 } = toastSlice.actions;

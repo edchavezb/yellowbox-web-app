@@ -12,6 +12,7 @@ import AppButton from 'components/styled/AppButton/AppButton';
 function SubsectionsMenu() {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+  const authenticatedUser = useAppSelector(state => state.userData.authenticatedUser);
   const artistSubsections = currentBox.subsections
     .filter(subsection => subsection.itemType === 'artists')
   const albumSubsections = currentBox.subsections
@@ -41,7 +42,7 @@ function SubsectionsMenu() {
 
   const handleSubmitChanges = () => {
     dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }));
-    dispatch(fetchBoxDetailThunk(currentBox.boxId));
+    dispatch(fetchBoxDetailThunk(currentBox.boxId, authenticatedUser?.userId));
   }
 
   return (

@@ -19,6 +19,7 @@ interface IProps<T> {
 function DetailView<T extends Artist | Album | Track | Playlist>({ data, isSubsection, subId, isReorderingMode }: IProps<T>) {
   const dispatch = useAppDispatch();
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+  const currentUser = useAppSelector(state => state.userData.authenticatedUser);
   const [elementDragging, setElementDragging] = useState(false)
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -70,6 +71,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isSubse
                         setElementDragging={setElementDragging}
                         reorderingMode={isReorderingMode}
                         subId={subId}
+                        isUserLoggedIn={!!currentUser}
                       />
                     )
                   })}
@@ -88,6 +90,7 @@ function DetailView<T extends Artist | Album | Track | Playlist>({ data, isSubse
                   setElementDragging={setElementDragging}
                   reorderingMode={isReorderingMode ? isReorderingMode : false}
                   subId={subId}
+                  isUserLoggedIn={!!currentUser}
                 />
               )
             })}

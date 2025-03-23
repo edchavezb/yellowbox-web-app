@@ -2,13 +2,15 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Playlist } from "core/types/interfaces";
 import styles from "./ListRowPlaylist.module.css";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { extractApiData, getElementImage, getUri } from "core/helpers/itemDataHandlers";
-import { updatePlaylistImagesApi } from "core/api/userboxes/playlists";
+import { updatePlaylistImagesApi } from "core/api/items";
+import { updateBoxItemPlayedByUserThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
 
 interface IProps {
   element: Playlist
@@ -20,13 +22,15 @@ interface IProps {
 }
 
 function ListRowPlaylist({ element, setElementDragging, itemIndex, offset = 0, reorderingMode, subId }: IProps) {
+  const dispatch = useAppDispatch();
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
+  const currentUser = useAppSelector(state => state.userData.authenticatedUser);
   const spotifyToken = spotifyLoginData?.genericToken;
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: { index: itemIndex } })
   const playlistRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [elementImage, setElementImage] = useState(getElementImage(element, "small"));
-  const { name, type, spotifyId, description, totalTracks, ownerDisplayName, ownerId } = element;
+  const { name, type, spotifyId, description, totalTracks, ownerDisplayName, ownerId, boxItemId, userPlays } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
@@ -46,12 +50,12 @@ function ListRowPlaylist({ element, setElementDragging, itemIndex, offset = 0, r
 
   const handleImageError = async () => {
     const itemResponse = await queryItemIdApi(element.type, element.spotifyId, spotifyToken!);
-      if (!itemResponse.error) {
-        const itemData = extractApiData(itemResponse);
-        const itemImage = getElementImage(itemData);
-        setElementImage(itemImage);
-        updatePlaylistImagesApi(itemData.spotifyId!, (itemData as Playlist).images);
-      }
+    if (!itemResponse.error) {
+      const itemData = extractApiData(itemResponse);
+      const itemImage = getElementImage(itemData);
+      setElementImage(itemImage);
+      updatePlaylistImagesApi(itemData.spotifyId!, (itemData as Playlist).images);
+    }
   }
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>, element: IProps["element"]) => {
@@ -62,6 +66,14 @@ function ListRowPlaylist({ element, setElementDragging, itemIndex, offset = 0, r
   const handleDragEnd = () => {
     setElementDragging(false)
   }
+
+  const handleTogglePlayedByUser = useCallback(
+    () => {
+      if (!currentUser) return;
+      dispatch(updateBoxItemPlayedByUserThunk(currentUser.userId, element, type, !!userPlays?.length));
+    },
+    [dispatch, boxItemId, type]
+  );
 
   if (reorderingMode) {
     return (
@@ -110,7 +122,7 @@ function ListRowPlaylist({ element, setElementDragging, itemIndex, offset = 0, r
           <a href={getUri(type, spotifyId)}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-              {type === "track" ? <span> Play </span> : <span> Open </span>}
+              <span> Open </span>
             </div>
           </a>
         </div>
@@ -158,7 +170,7 @@ function ListRowPlaylist({ element, setElementDragging, itemIndex, offset = 0, r
             <a href={getUri(type, spotifyId)}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-                {type === "track" ? <span> Play </span> : <span> Open </span>}
+                <span> Open </span>
               </div>
             </a>
           </div>
@@ -167,7 +179,16 @@ function ListRowPlaylist({ element, setElementDragging, itemIndex, offset = 0, r
           </div>
         </div>
         <PopperMenu referenceRef={playlistRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu
+            itemData={element}
+            itemIndex={itemIndex}
+            isOpen={isMenuOpen}
+            setIsOpen={setIsMenuOpen}
+            itemType={element.type}
+            subId={subId}
+            isPlayedByUser={!!userPlays?.length}
+            togglePlayedCallback={() => handleTogglePlayedByUser()}
+          />
         </PopperMenu>
       </>
     )

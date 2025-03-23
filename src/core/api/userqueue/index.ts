@@ -13,7 +13,7 @@ export const getUserQueueApi = async (userId: string) => {
 
 export const addArtistToQueueApi = async (userId: string, artist: Artist) => {
   try {
-    return await api.post<{ newArtist: Artist }, { message: string }>(`users/${userId}/queue/artists`, { newArtist: artist });
+    return await api.post<{ newArtist: Artist }, { newQueueItem: QueueItem }>(`users/${userId}/queue/artists`, { newArtist: artist });
   } catch (err) {
     console.log(err);
     throw err;
@@ -22,7 +22,7 @@ export const addArtistToQueueApi = async (userId: string, artist: Artist) => {
 
 export const addAlbumToQueueApi = async (userId: string, album: Album) => {
   try {
-    return await api.post<{ newAlbum: Album }, { message: string }>(`users/${userId}/queue/albums`, { newAlbum: album });
+    return await api.post<{ newAlbum: Album }, { newQueueItem: QueueItem }>(`users/${userId}/queue/albums`, { newAlbum: album });
   } catch (err) {
     console.log(err);
     throw err;
@@ -31,7 +31,7 @@ export const addAlbumToQueueApi = async (userId: string, album: Album) => {
 
 export const addTrackToQueueApi = async (userId: string, track: Track) => {
   try {
-    return await api.post<{ newTrack: Track }, { message: string }>(`users/${userId}/queue/tracks`, { newTrack: track });
+    return await api.post<{ newTrack: Track }, { newQueueItem: QueueItem }>(`users/${userId}/queue/tracks`, { newTrack: track });
   } catch (err) {
     console.log(err);
     throw err;
@@ -40,7 +40,7 @@ export const addTrackToQueueApi = async (userId: string, track: Track) => {
 
 export const addPlaylistToQueueApi = async (userId: string, playlist: Playlist) => {
   try {
-    return await api.post<{ newPlaylist: Playlist }, { message: string }>(`users/${userId}/queue/playlists`, { newPlaylist: playlist });
+    return await api.post<{ newPlaylist: Playlist }, { newQueueItem: QueueItem }>(`users/${userId}/queue/playlists`, { newPlaylist: playlist });
   } catch (err) {
     console.log(err);
     throw err;

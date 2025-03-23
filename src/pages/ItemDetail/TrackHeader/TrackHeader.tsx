@@ -8,9 +8,12 @@ import { extractApiData } from "core/helpers/itemDataHandlers";
 
 interface TrackHeaderProps {
   itemData: ApiTrack
+  isPlayedByUser: boolean
+  handleTogglePlayed: () => void
+  isUserLoggedIn: boolean
 }
 
-const TrackHeader = ({ itemData }: TrackHeaderProps) => {
+const TrackHeader = ({ itemData, isPlayedByUser, handleTogglePlayed, isUserLoggedIn }: TrackHeaderProps) => {
   const [isItemMenuOpen, setIsItemMenuOpen] = useState(false);
   const menuToggleRef = useRef(null);
 
@@ -50,10 +53,16 @@ const TrackHeader = ({ itemData }: TrackHeaderProps) => {
             <div className={styles.metaDataPill}>
               {` ${Math.floor(itemData.duration_ms / 60000)}`.padStart(2, "0") + ":" + `${Math.floor(itemData.duration_ms % 60000 / 1000)}`.padStart(2, "0")}
             </div>
+            { isUserLoggedIn &&
+              <div className={styles.metaDataPill}>
+                <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+                <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
+              </div>
+            }
             <a href={itemData.uri}>
               <div className={styles.metaDataPill}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
-                <span> Play </span>
+                <span> Open </span>
               </div>
             </a>
             <div className={styles.menuButtonMobile} onClick={() => setIsItemMenuOpen(true)} ref={menuToggleRef}>
@@ -63,7 +72,7 @@ const TrackHeader = ({ itemData }: TrackHeaderProps) => {
         </div>
       </div>
       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>
-        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} />
+        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} isPlayedByUser={isPlayedByUser} togglePlayedCallback={handleTogglePlayed}/>
       </PopperMenu>
     </>
   )

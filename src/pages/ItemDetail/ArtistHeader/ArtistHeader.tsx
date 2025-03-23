@@ -7,9 +7,12 @@ import { extractApiData } from "core/helpers/itemDataHandlers";
 
 interface ArtistHeaderProps {
   itemData: ApiArtist
+  isPlayedByUser: boolean
+  handleTogglePlayed: () => void
+  isUserLoggedIn: boolean
 }
 
-const ArtistHeader = ({ itemData }: ArtistHeaderProps) => {
+const ArtistHeader = ({ itemData, isPlayedByUser, handleTogglePlayed, isUserLoggedIn  }: ArtistHeaderProps) => {
   const [isItemMenuOpen, setIsItemMenuOpen] = useState(false);
   const menuToggleRef = useRef(null);
 
@@ -47,6 +50,12 @@ const ArtistHeader = ({ itemData }: ArtistHeaderProps) => {
                 <div className={styles.progressBar} style={{width: `${itemData.popularity}%`}}/>
               </div>
             </div>
+            { isUserLoggedIn &&
+              <div className={styles.metaDataPill}>
+                <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+                <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
+              </div>
+            }
             <a href={itemData.uri}>
               <div className={styles.metaDataPill}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
@@ -60,7 +69,7 @@ const ArtistHeader = ({ itemData }: ArtistHeaderProps) => {
         </div>
       </div>
       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>
-        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} />
+        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} isPlayedByUser={isPlayedByUser} togglePlayedCallback={handleTogglePlayed} />
       </PopperMenu>
     </>
   )
