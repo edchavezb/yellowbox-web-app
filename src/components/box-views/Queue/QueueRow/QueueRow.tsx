@@ -8,27 +8,29 @@ import { QueueItem } from "core/types/interfaces";
 import styles from "./QueueRow.module.css";
 import * as checkType from "core/helpers/typeguards";
 import { getUri, extractApiData, getElementImage } from "core/helpers/itemDataHandlers";
-import { updateAlbumImagesApi } from "core/api/userboxes/albums";
-import { updateArtistImagesApi } from "core/api/userboxes/artists";
-import { updatePlaylistImagesApi } from "core/api/userboxes/playlists";
-import { updateTrackImagesApi } from "core/api/userboxes/tracks";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { ItemData } from "core/types/types";
+import { Button } from "@chakra-ui/react";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
+import { updateAlbumImagesApi, updateArtistImagesApi, updatePlaylistImagesApi, updateTrackImagesApi } from "core/api/items";
+import { toggleQueueItemPlayedThunk } from "core/features/userQueue/userQueueSlice";
 
 interface IProps {
   element: QueueItem
   itemIndex: number
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
+  userId: string
 }
 
-function QueueRow({ element, setElementDragging, itemIndex, reorderingMode }: IProps) {
+function QueueRow({ element, setElementDragging, itemIndex, reorderingMode, userId }: IProps) {
+  const dispatch = useAppDispatch();
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.queueItemId!, data: { index: itemIndex } })
   const queueRowRef = useRef(null);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { itemData, isPlayed, queueItemId } = element;
+  const { itemData, playedByUser } = element;
   const { name, type: itemType, spotifyId } = itemData;
   const [elementImage, setElementImage] = useState(getElementImage(itemData));
   const draggableStyle = {
@@ -104,6 +106,10 @@ function QueueRow({ element, setElementDragging, itemIndex, reorderingMode }: IP
     else if (checkType.isPlaylist(updatedElement)) {
       updatePlaylistImagesApi(updatedElement.spotifyId, updatedElement.images)
     }
+  }
+
+  const handlePlayedButtonClick = () => {
+    dispatch(toggleQueueItemPlayedThunk(itemData, itemType, userId, !playedByUser));
   }
 
   if (reorderingMode) {
@@ -209,14 +215,16 @@ function QueueRow({ element, setElementDragging, itemIndex, reorderingMode }: IP
             </a>
           </div>
           <div className={`${styles.flexCentered} ${styles.mobileHidden}`}>
-            <img className={styles.dotsIcon} src={`/icons/${isPlayed ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+            <Button background={'none'} onClick={handlePlayedButtonClick}>
+            <img className={styles.dotsIcon} src={`/icons/${playedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+            </Button>
           </div>
           <div className={styles.itemMenu} ref={queueRowRef} onClick={() => setIsMenuOpen(true)}>
             <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
           </div>
         </div>
         <PopperMenu referenceRef={queueRowRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={itemData} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={itemType} queueItemId={queueItemId} />
+          <BoxItemMenu itemData={itemData} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={itemType} />
         </PopperMenu>
       </>
     )

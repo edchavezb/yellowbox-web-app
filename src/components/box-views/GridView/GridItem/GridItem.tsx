@@ -1,4 +1,4 @@
-import { ReactElement, useRef, useState } from "react";
+import { ReactElement, useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 import * as checkType from "core/helpers/typeguards";
@@ -9,10 +9,9 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { extractApiData, getElementImage, getUri } from "core/helpers/itemDataHandlers";
-import { updateAlbumImagesApi } from "core/api/userboxes/albums";
-import { updateArtistImagesApi } from "core/api/userboxes/artists";
-import { updatePlaylistImagesApi } from "core/api/userboxes/playlists";
-import { updateTrackImagesApi } from "core/api/userboxes/tracks";
+import { updateAlbumImagesApi, updateArtistImagesApi, updatePlaylistImagesApi, updateTrackImagesApi } from "core/api/items";
+import { updateBoxItemPlayedByUserThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
 
 interface IProps<T> {
   element: T
@@ -20,14 +19,18 @@ interface IProps<T> {
   setElementDragging: (dragging: boolean) => void
   reorderingMode?: boolean
   subId?: string
+  isSearch?: boolean
 }
 
-function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIndex, setElementDragging, reorderingMode, subId }: IProps<T>) {
+function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIndex, setElementDragging, reorderingMode, subId, isSearch }: IProps<T>) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: { index: itemIndex } })
   const gridItemRef = useRef(null);
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(state => state.userData.authenticatedUser);
+  const { isUserViewing } = useAppSelector(state => state.currentBoxDetailData);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
-  const { name, type, spotifyId } = element;
+  const { name, type, spotifyId, boxItemId, userPlays } = element;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [elementImage, setElementImage] = useState(getElementImage(element));
   const draggableStyle = {
@@ -86,12 +89,22 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
       const itemData = extractApiData(itemResponse);
       const itemImage = getElementImage(itemData as T);
       setElementImage(itemImage);
-      updateItemImagesInDb(itemData as T);
+      if (isUserViewing){
+        updateItemImagesInDb(itemData as T);
+      }
     }
     else {
       console.log("Error fetching item data")
     }
   }
+
+  const handleTogglePlayedByUser = useCallback(
+    () => {
+      if(!currentUser) return;
+      dispatch(updateBoxItemPlayedByUserThunk(currentUser.userId, element, type, !!userPlays?.length));
+    },
+    [dispatch, boxItemId, type, userPlays]
+  );
 
   function updateItemImagesInDb(updatedElement: T) {
     if (checkType.isAlbum(updatedElement)) {
@@ -121,7 +134,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
           <a href={getUri(type, spotifyId)}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
-              {type === "track" ? <span> Play </span> : <span> Open </span>}
+              <span> Open </span>
             </div>
           </a>
           <img
@@ -151,7 +164,7 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
             <a href={getUri(type, spotifyId)}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
-                {type === "track" ? <span> Play </span> : <span> Open </span>}
+                <span> Open </span>
               </div>
             </a>
             <div className={styles.itemMenu} onClick={() => setIsMenuOpen(true)}>
@@ -171,7 +184,17 @@ function GridItem<T extends Artist | Album | Track | Playlist>({ element, itemIn
           {authorNameLink}
         </div >
         <PopperMenu referenceRef={gridItemRef} placement={'right-start'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={type} subId={subId} />
+          <BoxItemMenu
+            itemData={element}
+            itemIndex={itemIndex}
+            isOpen={isMenuOpen}
+            setIsOpen={setIsMenuOpen}
+            itemType={type}
+            subId={subId}
+            page={isSearch ? 'search' : 'boxDetail'}
+            isPlayedByUser={!!userPlays?.length}
+            togglePlayedCallback={handleTogglePlayedByUser}
+          />
         </PopperMenu>
       </>
     )

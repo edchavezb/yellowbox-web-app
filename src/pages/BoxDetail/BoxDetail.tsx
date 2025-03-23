@@ -16,7 +16,7 @@ function BoxDetail() {
   const { id: boxId } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const menuToggleRef = useRef(null);
-  const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
+  const {isUserLoggedIn, authenticatedUser} = useAppSelector(state => state.userData);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
@@ -29,7 +29,7 @@ function BoxDetail() {
   const [isBoxMenuOpen, setIsBoxMenuOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchBoxDetailThunk(boxId))
+    dispatch(fetchBoxDetailThunk(boxId));
     dispatch(setIsUserViewing(true))
     return () => {
       dispatch(setIsUserViewing(false))
@@ -63,7 +63,7 @@ function BoxDetail() {
   return (
     <>
       {
-        (isLoggedIn !== null && currentBox.boxId === boxId) &&
+        (isUserLoggedIn !== null && currentBox.boxId === boxId) &&
         <div id={styles.mainPanel}>
           <div className={styles.boxHeader}>
             <div className={styles.boxSquare}>
@@ -104,7 +104,7 @@ function BoxDetail() {
               type="playlists"
               visible={visibility.playlists} />
           }
-          {isBoxEmpty &&
+          {(isBoxEmpty && currentBox?.creator.userId === authenticatedUser.userId) &&
             <div id={styles.emptyMsgDiv}>
               <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "20px", textAlign: "center" }}>
                 You have not added any items to this box yet. <br /> Start by searching some music you like!

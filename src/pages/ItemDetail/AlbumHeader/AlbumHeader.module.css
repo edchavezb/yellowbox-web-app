@@ -109,6 +109,11 @@
   align-items: center;
 }
 
+.playedIcon {
+  width: 15px;
+  margin-right: 3px;
+}
+
 .spotifyIcon {
   width: 10px;
   height: 10px;

@@ -13,7 +13,7 @@ function SearchResults<T extends Artist | Album | Track | Playlist>({data, type}
   return (
     <div className={styles.resultsSection}>
       <Text fontSize={"md"} fontWeight={"700"} sx={{marginTop: '20px', marginBottom: "10px"}}> {`${type}`} </Text>
-      <GridView<T> data={data} />
+      <GridView<T> data={data} isSearch />
     </div>
   )
 }

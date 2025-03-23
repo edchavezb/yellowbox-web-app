@@ -2,13 +2,15 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import BoxItemMenu from "components/menus/popper/BoxItemMenu/BoxItemMenu";
 import PopperMenu from "components/menus/popper/PopperMenu";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Track } from "../../../../core/types/interfaces";
 import styles from "./ListRowTrack.module.css";
 import { extractApiData, getElementImage, getUri } from "core/helpers/itemDataHandlers";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { updateTrackImagesApi } from "core/api/userboxes/tracks";
+import { updateTrackImagesApi } from "core/api/items";
+import { updateBoxItemPlayedByUserThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
 
 interface IProps {
   element: Track
@@ -21,13 +23,15 @@ interface IProps {
 }
 
 function ListRowTrack({ element, setElementDragging, itemIndex, offset = 0, reorderingMode, subId }: IProps) {
+  const dispatch = useAppDispatch();
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
+  const currentUser = useAppSelector(state => state.userData.authenticatedUser);
   const spotifyToken = spotifyLoginData?.genericToken;
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: element.boxItemId!, data: { index: itemIndex } })
   const trackRowRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [elementImage, setElementImage] = useState(getElementImage(element, "small"));
-  const { name, type, artists, albumId, albumName, duration, explicit, spotifyId } = element;
+  const { name, type, artists, albumId, albumName, duration, explicit, spotifyId, boxItemId, userPlays } = element;
   const draggableStyle = {
     transform: CSS.Transform.toString(transform),
     transition
@@ -71,6 +75,14 @@ function ListRowTrack({ element, setElementDragging, itemIndex, offset = 0, reor
   const handleDragEnd = () => {
     setElementDragging(false)
   }
+
+  const handleTogglePlayedByUser = useCallback(
+    () => {
+      if (!currentUser) return;
+      dispatch(updateBoxItemPlayedByUserThunk(currentUser.userId, element, type, !!userPlays?.length));
+    },
+    [dispatch, boxItemId, type, userPlays]
+  );
 
   if (reorderingMode) {
     return (
@@ -122,7 +134,7 @@ function ListRowTrack({ element, setElementDragging, itemIndex, offset = 0, reor
           <a href={getUri(type, spotifyId)}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-              {type === "track" ? <span> Play </span> : <span> Open </span>}
+              <span> Open </span>
             </div>
           </a>
         </div>
@@ -182,7 +194,7 @@ function ListRowTrack({ element, setElementDragging, itemIndex, offset = 0, reor
             <a href={getUri(type, spotifyId)}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-                {type === "track" ? <span> Play </span> : <span> Open </span>}
+                <span> Open </span>
               </div>
             </a>
           </div>
@@ -191,7 +203,16 @@ function ListRowTrack({ element, setElementDragging, itemIndex, offset = 0, reor
           </div>
         </div >
         <PopperMenu referenceRef={trackRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu
+            itemData={element}
+            itemIndex={itemIndex}
+            isOpen={isMenuOpen}
+            setIsOpen={setIsMenuOpen}
+            itemType={element.type}
+            subId={subId}
+            isPlayedByUser={!!userPlays?.length}
+            togglePlayedCallback={() => handleTogglePlayedByUser()}
+          />
         </PopperMenu>
       </>
     )

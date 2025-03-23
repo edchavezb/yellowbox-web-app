@@ -23,6 +23,11 @@
     margin-right: 3px;
 }
 
+.playedIcon {
+    width: 15px;
+    margin-right: 3px;
+}
+
 .colCentered {
     text-align: center;
 }
@@ -85,11 +90,6 @@
     visibility: visible;
 }
 
-.spotifyIcon {
-    width: 10px;
-    margin-right: 3px;
-}
-
 .itemMenu {
     width: 20px;
     height: 20px;
@@ -148,6 +148,7 @@
 }
 
 .metaDataPill {
+    display: flex;
     height: 22px;
     max-width: 100%;
     font-size: .8em;

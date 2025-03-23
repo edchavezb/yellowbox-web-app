@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import GridView from 'components/box-views/GridView/GridView';
 import ListView from 'components/box-views/ListView/ListView';
@@ -7,8 +7,6 @@ import styles from "./ItemDetail.module.css"
 import { ApiAlbum, ApiArtist, ApiPlaylist, ApiTrack } from 'core/types/interfaces';
 import * as checkType from 'core/helpers/typeguards';
 import { getSpotifyGenericTokenApi } from 'core/api/spotify';
-import PopperMenu from 'components/menus/popper/PopperMenu';
-import BoxItemMenu from 'components/menus/popper/BoxItemMenu/BoxItemMenu';
 import ArtistHeader from './ArtistHeader/ArtistHeader';
 import AlbumHeader from './AlbumHeader/AlbumHeader';
 import TrackHeader from './TrackHeader/TrackHeader';
@@ -16,18 +14,23 @@ import PlaylistHeader from './PlaylistHeader/PlaylistHeader';
 import TrackList from 'components/box-views/TrackList/TrackList';
 import { Text } from '@chakra-ui/react'
 import { extractApiData } from 'core/helpers/itemDataHandlers';
+import { useAppSelector } from 'core/hooks/useAppSelector';
+import { checkAlbumPlayedByUserApi, checkArtistPlayedByUserApi, checkPlaylistPlayedByUserApi, checkTrackPlayedByUserApi, markAlbumAsPlayedApi, markArtistAsPlayedApi, markPlaylistAsPlayedApi, markTrackAsPlayedApi, removeAlbumPlayApi, removeArtistPlayApi, removePlaylistPlayApi, removeTrackPlayApi } from 'core/api/items';
+import { useAppDispatch } from 'core/hooks/useAppDispatch';
+import { initErrorToast, initMarkedAsPlayedToast } from 'core/features/toast/toastSlice';
 
 type ApiMusicData = ApiArtist | ApiAlbum | ApiTrack | ApiPlaylist;
 
 function ItemDetail() {
   const history = useHistory();
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(state => state.userData.authenticatedUser);
   const params = useParams<{ id: string, type: string }>()
-  const menuToggleRef = useRef(null);
   const [itemData, setItemData] = useState<ApiMusicData>({} as ApiMusicData)
   const [itemContents, setItemContents] = useState({ items: [] })
   const [itemAlbum, setItemAlbum] = useState<ApiAlbum>({ name: "", release_date: "", album_id: "", album_type: "", artists: [], external_urls: { spotify: "" }, id: "", images: [], total_tracks: 0, type: "album", uri: "" } as ApiAlbum)
+  const [isPlayedByUser, setIsPlayedByUser] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [isItemMenuOpen, setIsItemMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleDetailData = async (typeParam: string, idParam: string) => {
@@ -61,11 +64,31 @@ function ItemDetail() {
         if (accessToken) {
           getItemData(typeParam, itemQuery, accessToken)
           getContents(contentsQuery, accessToken)
+          getCheckPlayedByUser(typeParam, idParam)
         }
       }
       catch (err) {
         console.log(err)
       }
+    }
+
+    const getCheckPlayedByUser = async (type: string, spotifyId: string) => {
+      let isItemPlayedByUser = false;
+      if (currentUser) {
+        if (type === 'artist') {
+          isItemPlayedByUser = (await checkArtistPlayedByUserApi(spotifyId, currentUser.userId)).played;
+        }
+        else if (type === 'album') {
+          isItemPlayedByUser = (await checkAlbumPlayedByUserApi(spotifyId, currentUser.userId)).played;
+        }
+        else if (type === 'track') {
+          isItemPlayedByUser = (await checkTrackPlayedByUserApi(spotifyId, currentUser.userId)).played;
+        }
+        else if (type === 'playlist') {
+          isItemPlayedByUser = (await checkPlaylistPlayedByUserApi(spotifyId, currentUser.userId)).played;
+        }
+      }
+      setIsPlayedByUser(isItemPlayedByUser);
     }
 
     const getItemData = async (type: string, query: string, token: string) => {
@@ -117,6 +140,49 @@ function ItemDetail() {
     }
   }, [itemData]);
 
+  const handleTogglePlayedByUser = async (newPlayedStatus: boolean) => {
+    try {
+      if (checkType.isApiArtist(itemData)) {
+        if (isPlayedByUser) {
+          await removeArtistPlayApi(itemData.id, currentUser?.userId!);
+        }
+        else {
+          await markArtistAsPlayedApi(extractApiData(itemData), currentUser?.userId!);
+        }
+      }
+      else if (checkType.isApiAlbum(itemData)) {
+        if (isPlayedByUser) {
+          await removeAlbumPlayApi(itemData.id, currentUser?.userId!);
+        }
+        else {
+          await markAlbumAsPlayedApi(extractApiData(itemData), currentUser?.userId!);
+        }
+      }
+      else if (checkType.isApiTrack(itemData)) {
+        if (isPlayedByUser) {
+          await removeTrackPlayApi(itemData.id, currentUser?.userId!);
+        }
+        else {
+          await markTrackAsPlayedApi(extractApiData(itemData), currentUser?.userId!);
+        }
+      }
+      else if (checkType.isApiPlaylist(itemData)) {
+        if (isPlayedByUser) {
+          await removePlaylistPlayApi(itemData.id, currentUser?.userId!);
+        }
+        else {
+          await markPlaylistAsPlayedApi(extractApiData(itemData), currentUser?.userId!);
+        }
+      }
+      dispatch(initMarkedAsPlayedToast({ itemType: itemData.type, newPlayedStatus }));
+    }
+    catch (err) {
+      console.log(err)
+      dispatch(initErrorToast({ error: `Failed to update played status` }))
+    }
+    setIsPlayedByUser(newPlayedStatus);
+  };
+
   const removeDuplicatesByProperty = <T extends ApiArtist | ApiAlbum | ApiTrack | ApiPlaylist>(arrayObj: T[], propertyName: string) => {
     const newArr = arrayObj.filter((element, index) => {
       return index === arrayObj.map(e => e[propertyName as keyof T]).indexOf(element[propertyName as keyof T]);
@@ -154,6 +220,7 @@ function ItemDetail() {
         listComponent =
           <GridView
             data={removeDuplicatesByProperty<ApiAlbum>(itemContents.items, "name").filter((album: ApiAlbum) => album.album_type !== 'compilation').map(item => extractApiData(item))}
+            isSearch
           />
         break;
       case "track":
@@ -177,29 +244,46 @@ function ItemDetail() {
     <>
       <div className={styles.itemDetailContainer}>
         {checkType.isApiArtist(itemData) &&
-          <ArtistHeader itemData={itemData} />
+          <ArtistHeader
+            itemData={itemData}
+            isPlayedByUser={isPlayedByUser}
+            handleTogglePlayed={() => handleTogglePlayedByUser(!isPlayedByUser)}
+            isUserLoggedIn={!!currentUser}
+          />
         }
         {checkType.isApiAlbum(itemData) &&
-          <AlbumHeader itemData={itemData} />
+          <AlbumHeader
+            itemData={itemData}
+            isPlayedByUser={isPlayedByUser}
+            handleTogglePlayed={() => handleTogglePlayedByUser(!isPlayedByUser)}
+            isUserLoggedIn={!!currentUser}
+          />
         }
         {checkType.isApiTrack(itemData) &&
-          <TrackHeader itemData={itemData} />
+          <TrackHeader
+            itemData={itemData}
+            isPlayedByUser={isPlayedByUser}
+            handleTogglePlayed={() => handleTogglePlayedByUser(!isPlayedByUser)}
+            isUserLoggedIn={!!currentUser}
+          />
         }
         {checkType.isApiPlaylist(itemData) &&
-          <PlaylistHeader itemData={itemData} />
+          <PlaylistHeader
+            itemData={itemData}
+            isPlayedByUser={isPlayedByUser}
+            handleTogglePlayed={() => handleTogglePlayedByUser(!isPlayedByUser)}
+            isUserLoggedIn={!!currentUser}
+          />
         }
         <div className={styles.separator} />
         {
           checkType.isApiArtist(itemData) &&
-          <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "10px"}}>
+          <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '15px', marginBottom: "10px" }}>
             Popular releases
           </Text>
         }
         {getListComponent()}
       </div>
-      <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>
-        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} />
-      </PopperMenu>
     </>
   );
 }

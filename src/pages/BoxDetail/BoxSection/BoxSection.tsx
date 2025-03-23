@@ -61,6 +61,9 @@ function BoxSection<T extends Artist | Album | Track | Playlist>({ type, visible
         date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) 
         : date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     }
+    else if (sorting === "playedStatus") {
+      return +group === 0 ? "Not Played" : "Played"
+    }
 
     return group;
   }

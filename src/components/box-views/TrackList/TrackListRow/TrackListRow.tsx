@@ -72,7 +72,7 @@ function TrackListRow({ element, setElementDragging, itemIndex, offset = 0, reor
           <a href={getUri(type, spotifyId)}>
             <div className={styles.instantPlay}>
               <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-              {type === "track" ? <span> Play </span> : <span> Open </span>}
+              <span> Open </span>
             </div>
           </a>
         </div>
@@ -105,7 +105,7 @@ function TrackListRow({ element, setElementDragging, itemIndex, offset = 0, reor
             <a href={getUri(type, spotifyId)}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-                {type === "track" ? <span> Play </span> : <span> Open </span>}
+                <span> Open </span>
               </div>
             </a>
           </div>

@@ -23,18 +23,22 @@ const QueuePage = () => {
   const { authenticatedUser, isUserLoggedIn } = userData;
 
   useEffect(() => {
-    try {
-      if (!isUserLoggedIn) {
-        throw new Error('User not logged in');
+    const fetchQueue = async () => {
+      try {
+        if (!isUserLoggedIn) {
+          throw new Error('User not logged in');
+        }
+        await dispatch(fetchUserQueueThunk(authenticatedUser.userId));
+      } catch (err) {
+        setError('Failed to fetch queue');
+        console.log(err);
+      } finally {
+        setLoading(false);
       }
-      dispatch(fetchUserQueueThunk(authenticatedUser.userId));
-    } catch (err) {
-      setError('Failed to fetch queue');
-      console.log(err);
-    } finally {
-      setLoading(false);
     }
+    fetchQueue();
   }, [authenticatedUser, dispatch])
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -68,12 +72,14 @@ const QueuePage = () => {
           {!!queueData.length &&
             <Queue data={queueData} isReorderingMode={isReorderingMode} />
           }
-          {queueData.length === 0 &&
+          {
+            (queueData.length === 0 && !loading) &&
             <div id={styles.emptyMsgDiv}>
               <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "20px", textAlign: "center" }}>
                 You have not added any items to your queue yet. <br /> Start by searching some music you like!
               </Text>
-            </div>}
+            </div>
+          }
         </div>
       }
     </>

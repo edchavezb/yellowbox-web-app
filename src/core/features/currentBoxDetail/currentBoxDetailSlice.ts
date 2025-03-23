@@ -9,9 +9,10 @@ import { Album, Artist, Playlist, SectionSettings, Subsection, Track, UserBox } 
 import { BoxSections, ItemData } from "core/types/types"
 import { updateBoxName } from "../userBoxes/userBoxesSlice"
 import { updateUserFolderBox } from "../userFolders/userFoldersSlice"
-import { initErrorToast, initRemoveFromBoxToast } from "../toast/toastSlice"
+import { initErrorToast, initMarkedAsPlayedToast, initRemoveFromBoxToast } from "../toast/toastSlice"
 import { reorderItems } from "core/helpers/reorderItems"
 import { ResponseError } from "core/api"
+import { markAlbumAsPlayedApi, markArtistAsPlayedApi, markPlaylistAsPlayedApi, markTrackAsPlayedApi, removeAlbumPlayApi, removeArtistPlayApi, removePlaylistPlayApi, removeTrackPlayApi } from "core/api/items"
 
 type MusicData = Artist | Album | Track | Playlist;
 
@@ -124,6 +125,40 @@ const currentBoxDetailSlice = createSlice({
           break;
       }
     },
+    updateBoxItemPlayedByUser(state, action: PayloadAction<{ boxItemId: string, type: string, newIsPlayed: boolean }>) {
+      const { boxItemId, type, newIsPlayed } = action.payload;
+      let targetIndex: number | null = null;
+
+      switch (type) {
+        case "album":
+          targetIndex = state.box.albums.findIndex(item => item.boxItemId === boxItemId);
+          if (targetIndex !== -1) {
+            state.box.albums[targetIndex].userPlays = newIsPlayed ? [1] : [];
+          }
+          break;
+        case "artist":
+          targetIndex = state.box.artists.findIndex(item => item.boxItemId === boxItemId);
+          if (targetIndex !== -1) {
+            state.box.artists[targetIndex].userPlays = newIsPlayed ? [1] : [];
+          }
+          break;
+        case "track":
+          targetIndex = state.box.tracks.findIndex(item => item.boxItemId === boxItemId);
+          if (targetIndex !== -1) {
+            state.box.tracks[targetIndex].userPlays = newIsPlayed ? [1] : [];
+          }
+          break;
+        case "playlist":
+          targetIndex = state.box.playlists.findIndex(item => item.boxItemId === boxItemId);
+          if (targetIndex !== -1) {
+            state.box.playlists[targetIndex].userPlays = newIsPlayed ? [1] : [];
+          }
+          break;
+        default:
+          console.error(`Unknown type: ${type}`);
+          break;
+      }
+    },
     updateSubsectionItemNote(
       state,
       action: PayloadAction<{
@@ -166,6 +201,7 @@ export const {
   updateBoxSubsectionById,
   updateBoxSubsectionItems,
   updateBoxItemNote,
+  updateBoxItemPlayedByUser,
   updateSubsectionItemNote
 } = currentBoxDetailSlice.actions;
 
@@ -345,6 +381,48 @@ export const updateSubsectionItemNoteThunk = (boxId: string, subsectionId: strin
     dispatch(updateSubsectionItemNote({ subsectionId, boxItemId, updatedNote: response?.updatedNote! }))
   } catch (err) {
     console.log(err)
+  }
+}
+
+export const updateBoxItemPlayedByUserThunk = (userId: string, itemData: ItemData, type: string, isPlayedByUser: boolean): AppThunk => async (dispatch) => {
+  try {
+    if (type === 'artist') {
+      if (isPlayedByUser) {
+        await removeArtistPlayApi(itemData.spotifyId, userId);
+      }
+      else {
+        await markArtistAsPlayedApi(itemData, userId);
+      }
+    }
+    else if (type === 'album') {
+      if (isPlayedByUser) {
+        await removeAlbumPlayApi(itemData.spotifyId, userId);
+      }
+      else {
+        await markAlbumAsPlayedApi(itemData, userId);
+      }
+    }
+    else if (type === 'track') {
+      if (isPlayedByUser) {
+        await removeTrackPlayApi(itemData.spotifyId, userId);
+      }
+      else {
+        await markTrackAsPlayedApi(itemData, userId);
+      }
+    }
+    else if (type === 'playlist') {
+      if (isPlayedByUser) {
+        await removePlaylistPlayApi(itemData.spotifyId, userId);
+      }
+      else {
+        await markPlaylistAsPlayedApi(itemData, userId);
+      }
+    }
+    dispatch(updateBoxItemPlayedByUser({ boxItemId: itemData.boxItemId!, type, newIsPlayed: !isPlayedByUser }))
+    dispatch(initMarkedAsPlayedToast({ itemType: type, newPlayedStatus: !isPlayedByUser }));
+  } catch (err) {
+    console.log(err)
+    dispatch(initErrorToast({ error: "Failed to update played status" }));
   }
 }
 

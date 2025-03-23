@@ -108,6 +108,11 @@
     text-overflow: ellipsis;
   }
 
+  .playedIcon {
+    width: 15px;
+    margin-right: 3px;
+  }
+
   .spotifyIcon {
     width: 10px;
     margin-right: 2px;

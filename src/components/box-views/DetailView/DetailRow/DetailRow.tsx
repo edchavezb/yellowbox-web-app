@@ -1,4 +1,4 @@
-import { ReactElement, useRef, useState } from "react";
+import { ReactElement, useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Artist, Album, Track, Playlist } from "core/types/interfaces";
 import * as checkType from "core/helpers/typeguards";
@@ -12,10 +12,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 import { extractApiData, getElementImage } from "core/helpers/itemDataHandlers";
 import useWindowDimensions from "core/hooks/useWindowDimensions";
-import { updateAlbumImagesApi } from "core/api/userboxes/albums";
-import { updateArtistImagesApi } from "core/api/userboxes/artists";
-import { updatePlaylistImagesApi } from "core/api/userboxes/playlists";
-import { updateTrackImagesApi } from "core/api/userboxes/tracks";
+import { updateAlbumImagesApi, updateArtistImagesApi, updateTrackImagesApi, updatePlaylistImagesApi } from "core/api/items";
+import { updateBoxItemPlayedByUserThunk } from "core/features/currentBoxDetail/currentBoxDetailSlice";
 
 interface IProps<T> {
   element: T
@@ -23,14 +21,17 @@ interface IProps<T> {
   setElementDragging: (dragging: boolean) => void
   reorderingMode: boolean
   subId?: string
+  isUserLoggedIn?: boolean
 }
 
-function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, itemIndex, reorderingMode, subId }: IProps<T>) {
-  const { name, type, spotifyId, note } = element;
+function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setElementDragging, itemIndex, reorderingMode, subId, isUserLoggedIn }: IProps<T>) {
+  const { name, type, spotifyId, note, userPlays, boxItemId } = element;
+  const isPlayedByUser = !!userPlays?.length;
   const dispatch = useAppDispatch();
   const detailRowRef = useRef(null);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
+  const currentUser = useAppSelector(state => state.userData.authenticatedUser);
   const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
   const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes);
   const isOwner = userBoxes.some(box => box.boxId === currentBox.boxId);
@@ -70,6 +71,13 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         <div className={styles.metaDataPill}>
           {`${totalTracks} tracks`}
         </div>
+        {
+          isUserLoggedIn &&
+          <div className={styles.metaDataPill}>
+            <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+            <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
+          </div>
+        }
       </div>
   }
 
@@ -87,6 +95,13 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
               })}
             </div>)
         })}
+        {
+          isUserLoggedIn &&
+          <div className={styles.metaDataPill}>
+            <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+            <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
+          </div>
+        }
       </div>
       : ""
   }
@@ -103,6 +118,13 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         <div className={styles.metaDataPill}>
           {`${Math.floor(duration / 60000)}`.padStart(2, '0') + ":" + `${Math.floor(duration % 60000 / 1000)}`.padStart(2, '0')}
         </div>
+        {
+          isUserLoggedIn &&
+          <div className={styles.metaDataPill}>
+            <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+            <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
+          </div>
+        }
       </div>
   }
 
@@ -121,6 +143,13 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
         <div className={styles.metaDataPill}>
           {`${totalTracks} tracks`}
         </div>
+        {
+          isUserLoggedIn &&
+          <div className={styles.metaDataPill}>
+            <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+            <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
+          </div>
+        }
       </div>
   }
 
@@ -153,7 +182,18 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
       setElementImage(itemImage);
       updateItemImagesInDb(itemData as T);
     }
+    else {
+      console.log("Error fetching item data")
+    }
   }
+
+  const handleTogglePlayedByUser = useCallback(
+    () => {
+      if (!currentUser) return;
+      dispatch(updateBoxItemPlayedByUserThunk(currentUser.userId, element, type, isPlayedByUser));
+    },
+    [dispatch, boxItemId, type, isPlayedByUser]
+  );
 
   function updateItemImagesInDb(updatedElement: T) {
     if (checkType.isAlbum(updatedElement)) {
@@ -187,7 +227,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
             <a href={`spotify:${type}:${spotifyId}`}>
               <div className={styles.instantPlay}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-                {type === "track" ? <span> Play </span> : <span> Open </span>}
+                <span> Open </span>
               </div>
             </a>
             <img
@@ -239,7 +279,7 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
               <a href={`spotify:${type}:${spotifyId}`}>
                 <div className={styles.instantPlay}>
                   <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify'></img>
-                  {type === "track" ? <span> Play </span> : <span> Open </span>}
+                  <span> Open </span>
                 </div>
               </a>
               <Link to={`/detail/${type}/${spotifyId}`} className={styles.itemLink} draggable="false">
@@ -286,7 +326,16 @@ function DetailRow<T extends Artist | Album | Track | Playlist>({ element, setEl
           </div>
         </div>
         <PopperMenu referenceRef={detailRowRef} placement={'left'} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen}>
-          <BoxItemMenu itemData={element} itemIndex={itemIndex} isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} itemType={element.type} subId={subId} />
+          <BoxItemMenu
+            itemData={element}
+            itemIndex={itemIndex}
+            isOpen={isMenuOpen}
+            setIsOpen={setIsMenuOpen}
+            itemType={element.type}
+            subId={subId}
+            isPlayedByUser={isPlayedByUser}
+            togglePlayedCallback={() => handleTogglePlayedByUser()}
+          />
         </PopperMenu>
       </>
     )

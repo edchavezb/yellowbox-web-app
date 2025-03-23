@@ -8,9 +8,12 @@ import { extractApiData, getUri } from "core/helpers/itemDataHandlers";
 
 interface AlbumHeaderProps {
   itemData: ApiAlbum
+  isPlayedByUser: boolean
+  handleTogglePlayed: () => void
+  isUserLoggedIn: boolean
 }
 
-const AlbumHeader = ({ itemData }: AlbumHeaderProps) => {
+const AlbumHeader = ({ itemData, isPlayedByUser, handleTogglePlayed, isUserLoggedIn }: AlbumHeaderProps) => {
   const [isItemMenuOpen, setIsItemMenuOpen] = useState(false);
   const menuToggleRef = useRef(null);
 
@@ -59,6 +62,12 @@ const AlbumHeader = ({ itemData }: AlbumHeaderProps) => {
             <div className={styles.metaDataPill}>
               {` ${getAlbumRuntime(itemData.tracks!.items)}`}
             </div>
+            { isUserLoggedIn &&
+              <div className={styles.metaDataPill}>
+                <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
+                <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
+              </div>
+            }
             <a href={getUri(itemData.type, itemData.id)}>
               <div className={styles.metaDataPill}>
                 <img className={styles.spotifyIcon} src='/icons/spotify_icon.png' alt='spotify' />
@@ -72,7 +81,7 @@ const AlbumHeader = ({ itemData }: AlbumHeaderProps) => {
         </div>
       </div>
       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen}>
-        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} />
+        <BoxItemMenu itemData={extractApiData(itemData)} itemType={itemData.type} isOpen={isItemMenuOpen} setIsOpen={setIsItemMenuOpen} isPlayedByUser={isPlayedByUser} togglePlayedCallback={handleTogglePlayed} />
       </PopperMenu>
     </>
   )
