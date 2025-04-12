@@ -18,6 +18,7 @@ import Account from 'pages/Account/Account';
 import { useToast } from '@chakra-ui/react';
 import { setIsToastOpen } from 'core/features/toast/toastSlice';
 import QueuePage from 'pages/Queue/QueuePage';
+import UserPage from 'pages/UserPage/UserPage';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -67,6 +68,7 @@ function App() {
       <Layout>
         <Route exact path="/" render={(props) => <Home {...props} />} />
         <Route path="/account" render={() => <Account />} />
+        <Route path="/user/:username" render={() => <UserPage />} />
         <Route path="/search/:query?" render={() => <Search />} />
         <Route path="/box/:id" render={() => <BoxDetail />} />
         <Route path="/folder/:id" render={() => <FolderDetail />} />
