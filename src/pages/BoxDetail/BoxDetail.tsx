@@ -5,7 +5,7 @@ import { Album, Artist, Playlist, Track, Visibility } from 'core/types/interface
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { fetchBoxDetailThunk, setIsUserViewing } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import BoxMenu from 'components/menus/popper/BoxMenu/BoxMenu';
 import { getSpotifyGenericTokenApi } from 'core/api/spotify';
@@ -75,7 +75,7 @@ function BoxDetail() {
                 {`${currentBox?.description}`}
               </div>
               <div className={styles.creator}>
-                Box by <span className={styles.creatorName}>{currentBox.creator.username}</span>
+                Box by <Link to={`/user/${currentBox.creator.username}`}><span className={styles.creatorName}>{currentBox.creator.username}</span></Link>
               </div>
             </div>
             <div className={styles.menuButtonWrapper}>

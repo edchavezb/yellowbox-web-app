@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import styles from "./FolderDetail.module.css";
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { fetchFolderDetailThunk, setIsUserViewing } from 'core/features/currentFolderDetail/currentFolderDetailSlice';
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
@@ -62,7 +62,7 @@ function FolderDetail() {
                 {currentFolder?.description}
               </div>
               <div className={styles.creator}>
-                Folder by <span className={styles.creatorName}>{currentFolder.creatorName}</span>
+                Folder by <Link to={`/user/${currentFolder.creatorName}`}><span className={styles.creatorName}>{currentFolder.creatorName}</span></Link>
               </div>
             </div>
             <div className={styles.menuButtonWrapper}>

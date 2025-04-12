@@ -67,6 +67,16 @@ export const updateUserBasicInfoApi = async (userId: string, userData: UserBasic
     }
 }
 
+export const getUserPageDataApi = async (username: string) => {
+    try {
+        return await api.get<{pageUser: YellowboxUser | null, isFollowed?: boolean}>(`users/user-page/${username}`, {})
+    }
+    catch(err) {
+        console.log(err)
+        throw err; 
+    }
+}
+
 export const getUserBoxesApi = async (userId: string) => {
     try {
         return await api.get<DashboardBox[]>(`users/${userId}/boxes`, {userId})
@@ -86,7 +96,6 @@ export const getUserFoldersApi = async (userId: string) => {
         throw err; 
     }
 }
-
 
 export const reorderDashboardBoxApi = async (userId: string, boxId: string, destinationId: string) => {
     try {

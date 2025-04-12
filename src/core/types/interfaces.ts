@@ -31,6 +31,7 @@ export interface YellowboxUser {
   email: string
   firstName?: string
   lastName?: string
+  bio?: string
   imageUrl?: string
   billing: UserBilling
   accountData: UserAccountData
@@ -122,6 +123,7 @@ export interface DashboardBox {
   position: number | null
   folderPosition: number | null
   folderId?: string | null
+  isPublic?: boolean
 }
 
 export interface SectionSettings {
