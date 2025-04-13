@@ -4,7 +4,7 @@ import styles from "./BoxTile.module.css";
 import { CSS } from '@dnd-kit/utilities';
 import { useAppSortable } from "components/layout/Sidebar/SidebarBox/SidebarBox";
 
-const BoxTile = ({ box }: { box: DashboardBox }) => {
+const BoxTile = ({ box, displayUser }: { box: DashboardBox, displayUser: boolean }) => {
   const history = useHistory();
   const {
     attributes,
@@ -42,6 +42,14 @@ const BoxTile = ({ box }: { box: DashboardBox }) => {
           {box.name}
         </Link>
       </div>
+      {
+        displayUser &&
+        <div className={styles.boxCreator}>
+          <Link to={`/user/${box?.creator!.username}`}>
+            {box.creator?.username}
+          </Link>
+        </div>
+      }
     </div>
   )
 }

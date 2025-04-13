@@ -40,6 +40,41 @@ export interface YellowboxUser {
   lastFmAccount?: UserSpotifyAccount | null
   boxes?: DashboardBox[]
   folders?: UserFolder[]
+  followedUsers?: FollowedUser[]
+  followedBoxes?: FollowedBox[]
+  followers?: Follower[]
+}
+
+export interface FollowedUser {
+  createdAt: string
+  followedUser: {
+    userId: string
+    username: string
+    imageUrl?: string
+  }
+}
+
+export interface Follower {
+  createdAt: string
+  follower: {
+    userId: string
+    username: string
+    imageUrl?: string
+  }
+}
+
+export interface FollowedBox {
+  createdAt: string
+  box: {
+    boxId: string
+    name: string
+    imageUrl?: string
+    position: number
+    creator: {
+      userId: string
+      username: string
+    }
+  }
 }
 
 export interface UserSpotifyAccount {
@@ -121,9 +156,13 @@ export interface DashboardBox {
   boxId: string,
   name: string
   position: number | null
-  folderPosition: number | null
+  folderPosition?: number | null
   folderId?: string | null
   isPublic?: boolean
+  creator?: {
+    userId: string
+    username: string
+  }
 }
 
 export interface SectionSettings {

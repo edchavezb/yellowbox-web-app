@@ -1,4 +1,4 @@
-import { DashboardBox, UserFolder, UserSpotifyAccount, YellowboxUser } from '../../types/interfaces'
+import { DashboardBox, FollowedBox, FollowedUser, Follower, UserFolder, UserSpotifyAccount, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
 export interface UserCreateDTO {
@@ -140,6 +140,34 @@ export const verifyUserEmailAddressApi = async (userId: string) => {
 export const toggleUserTutorialApi = async (userId: string) => {
     try {
         return await api.put<{}, YellowboxUser>(`users/${userId}/toggle-tutorial`, {})
+    }
+    catch(err) {
+        console.log(err)
+        throw err; 
+    }
+}
+
+export const followUserApi = async (targetUserId: string) => {
+    try {
+        return await api.post<{}, {pageUser: YellowboxUser | null, isFollowed?: boolean}>(`users/${targetUserId}/follow`, {});
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+};
+
+export const unfollowUserApi = async (targetUserId: string) => {
+    try {
+        return await api.delete<{pageUser: YellowboxUser | null, isFollowed?: boolean}>(`users/${targetUserId}/unfollow`);
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+};
+
+export const getFollowedPageDataApi = async () => {
+    try {
+        return await api.get<{followedUsers: FollowedUser[], followers: Follower[], followedBoxes: FollowedBox[]}>('users/me/followed-page', {})
     }
     catch(err) {
         console.log(err)

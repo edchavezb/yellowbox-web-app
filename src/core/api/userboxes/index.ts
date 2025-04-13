@@ -3,7 +3,7 @@ import api from '../index'
 
 export const getBoxByIdApi = async (boxId: string) => {
   try {
-    return await api.get<{ boxData: UserBox, creatorName: string }>(`boxes/${boxId}`, {})
+    return await api.get<{ boxData: UserBox, creatorName: string, isFollowedByUser: boolean | null }>(`boxes/${boxId}`, {})
   }
   catch (err) {
     console.log(err)
@@ -138,3 +138,21 @@ export const removeSubsectionApi = async (boxId: string, subsectionId: string) =
     throw err; 
   }
 }
+
+export const followBoxApi = async (boxId: string) => {
+  try {
+    return await api.post<{}, { message: string }>(`boxes/${boxId}/follow`, {});
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+export const unfollowBoxApi = async (boxId: string) => {
+  try {
+    return await api.delete<{ message: string }>(`boxes/${boxId}/unfollow`);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};

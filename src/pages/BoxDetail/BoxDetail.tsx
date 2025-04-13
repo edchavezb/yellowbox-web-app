@@ -4,22 +4,24 @@ import styles from "./BoxDetail.module.css";
 import { Album, Artist, Playlist, Track, Visibility } from 'core/types/interfaces';
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
-import { fetchBoxDetailThunk, setIsUserViewing } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
+import { fetchBoxDetailThunk, followBoxThunk, setIsUserViewing, unfollowBoxThunk } from 'core/features/currentBoxDetail/currentBoxDetailSlice';
 import { Link, useParams } from 'react-router-dom';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import BoxMenu from 'components/menus/popper/BoxMenu/BoxMenu';
 import { getSpotifyGenericTokenApi } from 'core/api/spotify';
 import { setGenericToken } from 'core/features/spotifyService/spotifyLoginSlice';
-import { Text } from '@chakra-ui/react'
+import { Button, Stack, Text } from '@chakra-ui/react'
 
 function BoxDetail() {
   const { id: boxId } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const menuToggleRef = useRef(null);
-  const {isUserLoggedIn, authenticatedUser} = useAppSelector(state => state.userData);
+  const { isUserLoggedIn, authenticatedUser } = useAppSelector(state => state.userData);
   const spotifyLoginData = useAppSelector(state => state.spotifyLoginData);
   const spotifyToken = spotifyLoginData?.genericToken;
-  const currentBox = useAppSelector(state => state.currentBoxDetailData.box);
+  const currentBoxDetailData = useAppSelector(state => state.currentBoxDetailData);
+  const { box: currentBox, isBoxFollowedByUser } = currentBoxDetailData;
+  const isOwner = useMemo(() => currentBox?.creator?.userId === authenticatedUser.userId, [currentBox, authenticatedUser]);
   const error = useAppSelector(state => state.currentBoxDetailData.boxError);
   const isBoxEmpty = useMemo(
     () => currentBox?.albums?.length === 0 && currentBox?.artists?.length === 0 && currentBox?.tracks?.length === 0 && currentBox?.playlists?.length === 0,
@@ -50,6 +52,14 @@ function BoxDetail() {
     }
   }
 
+  const handleToggleFollow = async () => {
+    if (isBoxFollowedByUser) {
+      dispatch(unfollowBoxThunk(boxId));
+    } else {
+      dispatch(followBoxThunk(boxId));
+    }
+  }
+
   if (error?.errorCode === 404) {
     return (
       <div id={styles.mainPanel}>
@@ -70,7 +80,13 @@ function BoxDetail() {
               <img className={styles.boxIcon} src="/icons/box.svg" alt="box" />
             </div>
             <div className={styles.boxInfo}>
-              <Text fontSize={"2xl"} fontWeight={"700"}> {currentBox?.name} </Text>
+              <Stack direction={"row"} width={"100%"} spacing={"20px"} alignItems={"center"}>
+                <Text fontSize={"2xl"} fontWeight={"700"}> {currentBox?.name} </Text>
+                {
+                  (isUserLoggedIn && !isOwner) &&
+                  <Button variant={"outline"} size={"xs"} onClick={handleToggleFollow}> {isBoxFollowedByUser ? "UNFOLLOW" : "FOLLOW"} </Button>
+                }
+              </Stack>
               <div id={styles.boxDesc}>
                 {`${currentBox?.description}`}
               </div>
@@ -113,7 +129,7 @@ function BoxDetail() {
         </div>
       }
       <PopperMenu referenceRef={menuToggleRef} placement={'bottom-start'} isOpen={isBoxMenuOpen} setIsOpen={setIsBoxMenuOpen}>
-        <BoxMenu setIsOpen={setIsBoxMenuOpen} />
+        <BoxMenu setIsOpen={setIsBoxMenuOpen} isOwner={isOwner} />
       </PopperMenu>
     </>
   )

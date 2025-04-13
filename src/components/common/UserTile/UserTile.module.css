@@ -1,30 +1,23 @@
-.folderBoxWrapper {
-    width: 12.5%;
+.userTileWrapper {
+    width: 10%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    align-items: center;
 }
 
-.boxSquare {
+.imageContainer {
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: 10px;
+    border-radius: 50%;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: gray;
     cursor: pointer;
 }
 
-.boxSquare:hover {
-    background-color: rgb(88, 88, 88);
-}
-
-.boxIcon {
-    width: 53%;
-}
-
-.boxName {
+.userName {
     margin-top: 6px;
     padding: 0px 5px;
     overflow: hidden;
@@ -34,29 +27,19 @@
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     font-weight: bold;
-}
-
-.boxCreator {
-    margin-top: 1px;
-    padding: 0px 5px;
-    overflow: hidden;
-    word-wrap: break-word;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-    font-weight: 400;
+    display: flex;
+    justify-content: center;
 }
 
 @media (max-width: 576px) {
-    .folderBoxWrapper {
+    .userTileWrapper {
         width: 100%;
         flex-direction: row;
     }
-    .boxSquare {
+    .imageContainer {
         width: 14%;
     }
-    .boxName {
+    .userName {
         margin-top: 0px;
         margin-left: 5px;
         display: flex;

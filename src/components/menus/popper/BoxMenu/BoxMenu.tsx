@@ -6,17 +6,16 @@ import { removeBoxFromFolderThunk } from "core/features/userFolders/userFoldersS
 
 interface BoxMenuProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  isOwner?: boolean
 }
 
-const BoxMenu = ({ setIsOpen }: BoxMenuProps) => {
+const BoxMenu = ({ setIsOpen, isOwner }: BoxMenuProps) => {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
   const boxDetailViewing = useAppSelector(state => state.currentBoxDetailData.isUserViewing)
   const { boxId, name: boxName, folder: boxFolder } = useAppSelector(state => state.currentBoxDetailData.box)
   const userFolders = useAppSelector(state => state.userFoldersData.folders)
   const isInFolder = !!boxFolder;
-  const userBoxes = useAppSelector(state => state.userBoxesData.userBoxes)
-  const isOwner = !!userBoxes.find(box => box.boxId === boxId);
   const { menuItemsList, menuItem } = styles;
 
   const handleOpenModal = (modalType: ModalType) => {
