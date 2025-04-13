@@ -65,7 +65,7 @@ function UserPage() {
         {
           !!pageUser?.folders?.length &&
           <>
-            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName ?? pageUser.username}'s`} public folders </Text>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName || pageUser.username}'s`} public folders </Text>
             <div className={styles.folderList}>
               {
                 pageUser?.folders?.filter(fol => fol.isPublic).map(folder => {
@@ -80,7 +80,7 @@ function UserPage() {
         {
           !!pageUser?.boxes?.length &&
           <>
-            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName ?? pageUser.username}'s`} public boxes </Text>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName || pageUser.username}'s`} public boxes </Text>
             <div className={styles.boxList}>
               {
                 pageUser?.boxes?.filter(box => box.isPublic).map(box => {
