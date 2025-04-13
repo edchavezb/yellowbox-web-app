@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import SpotifyUser from './UserSummary/SpotifyUser';
 import UserAlbums from './UserAlbums/UserAlbums';

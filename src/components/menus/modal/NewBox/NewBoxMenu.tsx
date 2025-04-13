@@ -31,8 +31,7 @@ function NewBoxMenu({ action }: NewBoxMenuProps) {
   )
 
   const newUserBox = () => {
-    const maxBoxPosition = Math.max(...userDashboardBoxes.map(box => box.position!)) ?? 0;
-    console.log(maxBoxPosition)
+    const maxBoxPosition = Math.max(0, ...userDashboardBoxes.map(box => box.position!));
     const blankBox: BoxCreateDTO = {
       name: boxDetails.boxName,
       description: boxDetails.boxDesc,

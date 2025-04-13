@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { addSubsectionToBoxApi, getBoxByIdApi, removeSubsectionApi, reorderSubsectionsApi, updateAllSectionSettingsApi, updateBoxInfoApi, updateBoxSectionSettingsApi, updateSubsectionNameApi } from "core/api/userboxes"
+import { addSubsectionToBoxApi, followBoxApi, getBoxByIdApi, removeSubsectionApi, reorderSubsectionsApi, unfollowBoxApi, updateAllSectionSettingsApi, updateBoxInfoApi, updateBoxSectionSettingsApi, updateSubsectionNameApi } from "core/api/userboxes"
 import { removeBoxAlbumApi, addAlbumToSubsectionApi, removeAlbumFromSubsectionApi, reorderBoxAlbumApi, reorderSubsectionAlbumApi, updateBoxAlbumNoteApi, updateSubsectionAlbumNoteApi, moveAlbumBetweenSubsectionsApi } from "core/api/userboxes/albums"
 import { removeBoxArtistApi, addArtistToSubsectionApi, removeArtistFromSubsectionApi, reorderBoxArtistApi, reorderSubsectionArtistApi, updateBoxArtistNoteApi, updateSubsectionArtistNoteApi, moveArtistBetweenSubsectionsApi } from "core/api/userboxes/artists"
 import { removeBoxPlaylistApi, addPlaylistToSubsectionApi, removePlaylistFromSubsectionApi, reorderBoxPlaylistApi, reorderSubsectionPlaylistApi, updateBoxPlaylistNoteApi, updateSubsectionPlaylistNoteApi, movePlaylistBetweenSubsectionsApi } from "core/api/userboxes/playlists"
@@ -18,6 +18,7 @@ type MusicData = Artist | Album | Track | Playlist;
 
 interface CurrentBoxDetailState {
   box: UserBox & { creatorName?: string }
+  isBoxFollowedByUser: boolean | null
   boxError: { errorCode: number | null; error: string } | null
   isUserViewing: boolean
   isDataFetching: boolean
@@ -25,6 +26,7 @@ interface CurrentBoxDetailState {
 
 const initialState: CurrentBoxDetailState = {
   box: {} as UserBox,
+  isBoxFollowedByUser: null,
   boxError: null,
   isUserViewing: false,
   isDataFetching: false
@@ -36,6 +38,9 @@ const currentBoxDetailSlice = createSlice({
   reducers: {
     setCurrentBoxDetail(state, action: PayloadAction<UserBox & { creatorName?: string }>) {
       state.box = action.payload
+    },
+    setIsBoxFollowedByUser(state, action: PayloadAction<boolean | null>) {
+      state.isBoxFollowedByUser = action.payload
     },
     setCurrentBoxError(state, action: PayloadAction<{ errorCode: number | null; error: string }>) {
       state.boxError = action.payload
@@ -190,6 +195,7 @@ export const {
   setIsBoxDataFetching,
   setCurrentBoxError,
   setCurrentBoxDetail,
+  setIsBoxFollowedByUser,
   updateCurrentBoxDetail,
   updateBoxSectionSettings,
   updateAllSectionSettings,
@@ -210,8 +216,9 @@ export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch)
   try {
     const currentBoxDetail = await getBoxByIdApi(boxId);
     if (currentBoxDetail) {
-      const { boxData, creatorName } = currentBoxDetail;
+      const { boxData, creatorName, isFollowedByUser } = currentBoxDetail;
       dispatch(setCurrentBoxDetail({ ...boxData, creatorName }))
+      dispatch(setIsBoxFollowedByUser(isFollowedByUser))
       dispatch(setCurrentBoxError({ errorCode: null, error: '' }))
       dispatch(setIsUserViewing(true))
     }
@@ -220,6 +227,26 @@ export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch)
     dispatch(setCurrentBoxError({ errorCode: (err as ResponseError).status || null, error: (err as ResponseError).message }));
   }
 }
+
+export const followBoxThunk = (boxId: string): AppThunk => async (dispatch) => {
+  try {
+    await followBoxApi(boxId);
+    dispatch(setIsBoxFollowedByUser(true));
+  } catch (err) {
+    console.log(err);
+    dispatch(initErrorToast({ error: "Failed to follow the box" }));
+  }
+};
+
+export const unfollowBoxThunk = (boxId: string): AppThunk => async (dispatch) => {
+  try {
+    await unfollowBoxApi(boxId);
+    dispatch(setIsBoxFollowedByUser(false));
+  } catch (err) {
+    console.log(err);
+    dispatch(initErrorToast({ error: "Failed to unfollow the box" }));
+  }
+};
 
 export const updateCurrentBoxDetailThunk = (boxId: string, name: string, description: string, isPublic: boolean): AppThunk => async (dispatch, getState) => {
   try {

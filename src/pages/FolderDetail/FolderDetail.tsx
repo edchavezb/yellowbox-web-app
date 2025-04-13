@@ -84,7 +84,7 @@ function FolderDetail() {
               >
                 {currentFolder.boxes.map(box => {
                   return (
-                    <BoxTile box={box} key={box.boxId} />
+                    <BoxTile box={box} key={box.boxId} displayUser={false} />
                   )
                 })}
               </SortableContext>

@@ -4,7 +4,7 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import FolderTile from "components/common/FolderTile/FolderTile";
 import BoxTile from "components/common/BoxTile/BoxTile";
 import { Button, Stack, Text } from '@chakra-ui/react'
-import { getUserPageDataApi } from "core/api/users";
+import { followUserApi, getUserPageDataApi, unfollowUserApi } from "core/api/users";
 import { useEffect, useState } from "react";
 import { YellowboxUser } from "core/types/interfaces";
 
@@ -32,6 +32,16 @@ function UserPage() {
     fetchUserData();
   }, [username]);
 
+  const handleToggleFollow = async () => {
+    if (isFollowed) {
+      const response = await unfollowUserApi(pageUser?.userId!);
+      setUserPageData(response);
+    } else {
+      const response = await followUserApi(pageUser?.userId!);
+      setUserPageData(response);
+    }
+  }
+
   const handleImageError = async () => {
     setUserImage("/user.png");
   }
@@ -46,7 +56,7 @@ function UserPage() {
               <Text className={styles.userName} fontSize={'2xl'} fontWeight={'700'}> {pageUser?.username} </Text>
               {
                 (isLoggedIn && userData?.userId !== pageUser?.userId) &&
-                <Button variant={"outline"} size={"xs"}> {isFollowed ? "UNFOLLOW" : "FOLLOW"} </Button>
+                <Button variant={"outline"} size={"xs"} onClick={handleToggleFollow}> {isFollowed ? "UNFOLLOW" : "FOLLOW"} </Button>
               }
             </Stack>
             <Text className={styles.userName} color={"brandgray.400"} fontSize={'md'} fontWeight={'400'}> {pageUser?.firstName && `${pageUser?.firstName} ${pageUser?.lastName} •`} {`${pageUser?.boxes?.length} boxes`} </Text>
@@ -55,7 +65,7 @@ function UserPage() {
         {
           !!pageUser?.folders?.length &&
           <>
-            <Text fontSize={"xl"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName ?? pageUser.username}'s`} public folders </Text>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName ?? pageUser.username}'s`} public folders </Text>
             <div className={styles.folderList}>
               {
                 pageUser?.folders?.filter(fol => fol.isPublic).map(folder => {
@@ -70,12 +80,12 @@ function UserPage() {
         {
           !!pageUser?.boxes?.length &&
           <>
-            <Text fontSize={"xl"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName ?? pageUser.username}'s`} public boxes </Text>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName ?? pageUser.username}'s`} public boxes </Text>
             <div className={styles.boxList}>
               {
                 pageUser?.boxes?.filter(box => box.isPublic).map(box => {
                   return (
-                    <BoxTile box={box} />
+                    <BoxTile box={box} displayUser={false} />
                   )
                 })
               }

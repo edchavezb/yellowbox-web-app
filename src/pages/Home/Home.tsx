@@ -53,7 +53,7 @@ function Home({ location }: RouteComponentProps) {
               {
                 dashboardBoxes.map(box => {
                   return (
-                    <BoxTile box={box} />
+                    <BoxTile box={box} displayUser={false} />
                   )
                 })
               }
