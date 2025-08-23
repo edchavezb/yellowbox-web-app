@@ -24,7 +24,7 @@ const ProfileInfo = () => {
   const history = useHistory();
   const user = useAppSelector(state => state.userData.authenticatedUser);
   const [userImage, setUserImage] = useState<string | null>(user.imageUrl!);
-  const [isImageHovered, setIsImageHovered] = useState(false); // State to track hover
+  const [isImageHovered, setIsImageHovered] = useState(false);
   const [validData, setValidData] = useState<{ username: string, email: string, firstName?: string, lastName?: string } | null>(null);
   const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
   const [password, setPassword] = useState('');
@@ -171,7 +171,7 @@ const ProfileInfo = () => {
               <img
                 className={styles.userImage}
                 id={styles.userImage}
-                src={userImage || "/user.png"}
+                src={userImage}
                 alt="user"
                 onError={handleImageError}
               />
