@@ -13,6 +13,7 @@ import { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core";
 import { Text } from '@chakra-ui/react'
 import { DndContextTypesafeProps } from "./sidebarTypes";
 import SidebarQueue from "./SidebarQueue/SidebarQueue";
+import DefaultUserImage from "components/common/DefaultUserImage/DefaultUserImage";
 
 interface IProps {
   user: YellowboxUser
@@ -36,7 +37,7 @@ function Sidebar({ user }: IProps) {
   const highestDashboardBoxPosition = Math.max(...userDashboardBoxes.map(box => box.position!));
   const accountWidgetRef = useRef(null);
 
-  const [userImage, setUserImage] = useState(user.imageUrl);
+  const [userImage, setUserImage] = useState<string | null>(user.imageUrl!);
   const [activeDraggable, setActiveDraggable] = useState<null | { name: string, id: string }>(null);
   const [dragOverFolder, setDragOverFolder] = useState<null | string>(null);
   const sensors = useSensors(
@@ -62,8 +63,8 @@ function Sidebar({ user }: IProps) {
   }, [user.imageUrl]);
 
   const handleImageError = async () => {
-    setUserImage("/user.png");
-  }
+    setUserImage(null);
+  };
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -139,7 +140,18 @@ function Sidebar({ user }: IProps) {
         <>
           <Link className={styles.serviceLink} to={`/account`}>
             <div id={styles.user}>
-              <img id={styles.userImage} src={userImage || "/user.png"} alt="user" onError={handleImageError} />
+              {
+                userImage &&
+                <img
+                  id={styles.userImage}
+                  src={userImage}
+                  alt="user"
+                  onError={handleImageError}
+                />
+              }
+              {!userImage &&
+                <DefaultUserImage width={28} />
+              }
               <span id={styles.userName} ref={accountWidgetRef}> {user.username} </span>
             </div>
           </Link>
