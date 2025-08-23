@@ -1,11 +1,11 @@
 import { useAppSelector } from 'core/hooks/useAppSelector';
-import styles from './ProfileInfo.module.css'
+import styles from './ProfileInfo.module.css';
 import { Box, FormControl, FormErrorMessage, FormLabel, Input, Text } from '@chakra-ui/react';
 import AppButton from 'components/styled/AppButton/AppButton';
 import { EmailAuthProvider, reauthenticateWithCredential, signOut, updateEmail } from "firebase/auth";
 import { firebaseAuth } from "core/services/firebase";
 import { useHistory } from "react-router-dom";
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { dbEmailCheckApi, dbUsernameCheckApi, updateUserBasicInfoApi } from 'core/api/users';
 import useDebouncePromise from 'core/hooks/useDebouncePromise';
 import * as yup from "yup";
@@ -16,18 +16,27 @@ import { useForm } from 'react-hook-form';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
 import { updateUserBasicInfo } from 'core/features/user/userSlice';
+import DefaultUserImage from 'components/common/DefaultUserImage/DefaultUserImage';
+import { setModalState } from 'core/features/modal/modalSlice';
 
 const ProfileInfo = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const user = useAppSelector(state => state.userData.authenticatedUser);
-  const [userImage, setUserImage] = useState(user.imageUrl);
+  const [userImage, setUserImage] = useState<string | null>(user.imageUrl!);
+  const [isImageHovered, setIsImageHovered] = useState(false); // State to track hover
   const [validData, setValidData] = useState<{ username: string, email: string, firstName?: string, lastName?: string } | null>(null);
   const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [creationSuccessMessage, setCreationSuccessMessage] = useState('');
   const [creationError, setCreationError] = useState('');
   const submitButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (user.imageUrl) {
+      setUserImage(user.imageUrl);
+    }
+  }, [user.imageUrl]);
 
   const schema = yup.object({
     username: yup.string()
@@ -62,7 +71,7 @@ const ProfileInfo = () => {
 
   const debouncedUsernameCheck = useDebouncePromise(
     async (oldUsername: string, newUsername: string) => {
-      if (oldUsername === newUsername){
+      if (oldUsername === newUsername) {
         return true;
       }
       const response = await dbUsernameCheckApi(newUsername.toLowerCase().trim());
@@ -76,7 +85,7 @@ const ProfileInfo = () => {
 
   const debouncedEmailCheck = useDebouncePromise(
     async (oldEmail: string, newEmail: string) => {
-      if (oldEmail === newEmail){
+      if (oldEmail === newEmail) {
         return true;
       }
       const response = await dbEmailCheckApi(newEmail.toLowerCase().trim());
@@ -89,23 +98,22 @@ const ProfileInfo = () => {
   );
 
   const handleImageError = async () => {
-    setUserImage("/user.png");
-  }
+    setUserImage(null);
+  };
 
   const handleLogOut = async () => {
     try {
       await signOut(firebaseAuth);
       history.push('/');
+    } catch (err) {
+      console.log(err);
     }
-    catch (err) {
-      console.log(err)
-    }
-  }
+  };
 
   const handleValidateData = (data: FormData) => {
     setValidData(data);
     setIsPasswordPromptOpen(true);
-  }
+  };
 
   const handleSubmitChanges = async () => {
     const { email, username, firstName, lastName } = validData!;
@@ -113,11 +121,11 @@ const ProfileInfo = () => {
       const credential = EmailAuthProvider.credential(
         firebaseAuth.currentUser!.email!,
         password
-      )
+      );
       await reauthenticateWithCredential(
         firebaseAuth.currentUser!,
         credential
-      )
+      );
       if (email !== firebaseAuth.currentUser!.email!) {
         await updateEmail(
           firebaseAuth?.currentUser!,
@@ -129,30 +137,57 @@ const ProfileInfo = () => {
         username,
         firstName,
         lastName
-      }
+      };
       const updatedUser = await updateUserBasicInfoApi(user.userId, userWithChanges);
       if (updatedUser) {
-        dispatch(updateUserBasicInfo({username, firstName: firstName || "", lastName: lastName || "", email}))
+        dispatch(updateUserBasicInfo({ username, firstName: firstName || "", lastName: lastName || "", email }));
         setValidData(null);
         setCreationError('');
         setCreationSuccessMessage('Your account information has been updated.');
         setPassword('');
         setIsPasswordPromptOpen(false);
       }
-    }
-    catch (err) {
+    } catch (err) {
       setCreationError('Failed to update account information, please check your inputs.');
       setPassword('');
       setIsPasswordPromptOpen(false);
     }
-  }
+  };
 
+  const handleOpenEditImageModal = () => {
+    dispatch(setModalState({ visible: true, type: "Update User Image", boxId: "", itemData: undefined, page: "" }));
+  };
+  
   return (
     <div className={styles.container}>
       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
         <div className={styles.userWrapper}>
-          <img className={styles.userImage} id={styles.userImage} src={userImage || "/user.png"} alt="user" onError={handleImageError} />
-          <Text className={styles.userName} fontSize={'md'} fontWeight={'700'}> Signed in as {user.username} </Text>
+          <div className={styles.imageContainer}
+            onMouseEnter={() => setIsImageHovered(true)}
+            onMouseLeave={() => setIsImageHovered(false)}
+          >
+            {
+              userImage &&
+              <img
+                className={styles.userImage}
+                id={styles.userImage}
+                src={userImage || "/user.png"}
+                alt="user"
+                onError={handleImageError}
+              />
+            }
+            {!userImage &&
+              <DefaultUserImage width={75} />
+            }
+            {isImageHovered && (
+              <div className={styles.imageOverlay} onClick={handleOpenEditImageModal}>
+                <img src="/icons/edit.svg" alt="Edit" className={styles.editIcon} />
+              </div>
+            )}
+          </div>
+          <Text className={styles.userName} fontSize={'md'} fontWeight={'700'}>
+            Signed in as {user.username}
+          </Text>
         </div>
         <AppButton text={'Log Out'} onClick={handleLogOut} />
       </Box>
@@ -184,7 +219,7 @@ const ProfileInfo = () => {
         <Box color={"brandyellow.600"} fontSize={'sm'} marginTop={'10px'}>
           {creationError || creationSuccessMessage}
         </Box>
-        <Box marginTop={"15px"} display={'flex'} justifyContent={'flex-end'} >
+        <Box marginTop={"15px"} display={'flex'} justifyContent={'flex-end'}>
           <Box ref={submitButtonRef}>
             <SubmitButton text={"Update information"} />
           </Box>
