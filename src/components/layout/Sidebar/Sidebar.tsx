@@ -55,6 +55,12 @@ function Sidebar({ user }: IProps) {
     }
   }, [user, dispatch])
 
+  useEffect(() => {
+    if (user.imageUrl) {
+      setUserImage(user.imageUrl);
+    }
+  }, [user.imageUrl]);
+
   const handleImageError = async () => {
     setUserImage("/user.png");
   }

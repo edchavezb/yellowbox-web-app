@@ -19,6 +19,7 @@ export type ModalType =
     | "Item Note" 
     | "Box Subsections"
     | "New Folder"
+    | "Update User Image"
     | "";
 
 interface IModal {

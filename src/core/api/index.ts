@@ -95,6 +95,27 @@ const api = {
       throw new Error(responseData.error || response.statusText);
     }
     return responseData;
+  },
+  uploadFile: async <R>(endpoint: string, file: File, fieldName: string): Promise<R> => {
+    const currentUser = firebaseAuth?.currentUser;
+    const authToken = await currentUser?.getIdToken();
+    const formData = new FormData();
+    formData.append(fieldName, file);
+
+    const response = await fetch(`${apiURL}/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: formData
+    });
+
+    const responseData = await response.json()
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    return responseData;
   }
 }
 

@@ -13,6 +13,7 @@ import SignUpMenu from "components/menus/modal/SignUp/SignUpMenu";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
+import UpdateImageMenu from "components/menus/modal/UpdateUserImage/UpdateImageMenu";
 
 function Modal() {
   const dispatch = useAppDispatch();
@@ -67,6 +68,9 @@ function Modal() {
       break;
     case "Box Subsections":
       modalBody = <SubsectionsMenu />
+      break;
+    case "Update User Image":
+      modalBody = <UpdateImageMenu />
       break;
     default:
       modalBody = ""

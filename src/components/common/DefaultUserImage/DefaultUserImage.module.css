@@ -1,0 +1,14 @@
+.container {
+  background-color: black;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.icon {
+  width: 50%;
+  height: 50%;
+  object-fit: contain;
+}

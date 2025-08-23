@@ -174,3 +174,13 @@ export const getFollowedPageDataApi = async () => {
         throw err; 
     }
 }
+
+export const uploadUserImageApi = async (imageFile: File) => {
+    try {
+        return await api.uploadFile<{message: string, url: string}>(`users/upload-user-image`, imageFile, 'avatar')
+    }
+    catch(err) {
+        console.log(err)
+        throw err; 
+    }
+}
