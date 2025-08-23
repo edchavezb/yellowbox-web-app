@@ -24,7 +24,7 @@ const UserTile = ({ user }: { user: FollowedUser["followedUser"] }) => {
               onError={handleImageError}
             />
           ) : (
-            <DefaultUserImage width={45} />
+            <DefaultUserImage />
           )}
         </div>
       </Link>
