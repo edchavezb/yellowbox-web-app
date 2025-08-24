@@ -3,10 +3,11 @@ import { useParams, withRouter } from "react-router-dom";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import FolderTile from "components/common/FolderTile/FolderTile";
 import BoxTile from "components/common/BoxTile/BoxTile";
-import { Button, Stack, Text } from '@chakra-ui/react'
+import { Button, Stack, Text } from '@chakra-ui/react';
 import { followUserApi, getUserPageDataApi, unfollowUserApi } from "core/api/users";
 import { useEffect, useState } from "react";
 import { YellowboxUser } from "core/types/interfaces";
+import DefaultUserImage from "components/common/DefaultUserImage/DefaultUserImage";
 
 function UserPage() {
   const { username } = useParams<{ username: string }>();
@@ -22,7 +23,7 @@ function UserPage() {
       try {
         const response = await getUserPageDataApi(username);
         setUserPageData(response);
-        setUserImage(response.pageUser?.imageUrl || "/user.png");
+        setUserImage(response.pageUser?.imageUrl || null);
       }
       catch (err) {
         console.log(err);
@@ -43,14 +44,24 @@ function UserPage() {
   }
 
   const handleImageError = async () => {
-    setUserImage("/user.png");
+    setUserImage(null);
   }
 
   if (!error && userPageData) {
     return (
       <div className={styles.homeContainer}>
         <div className={styles.userWrapper}>
-          <img className={styles.userImage} id={styles.userImage} src={userImage || "/user.png"} alt="user" onError={handleImageError} />
+          {userImage ? (
+            <img
+              className={styles.userImage}
+              id={styles.userImage}
+              src={userImage}
+              alt="user"
+              onError={handleImageError}
+            />
+          ) : (
+            <DefaultUserImage width={120} />
+          )}
           <Stack spacing={0} width={"100%"}>
             <Stack direction={"row"} width={"100%"} spacing={"20px"} alignItems={"center"}>
               <Text className={styles.userName} fontSize={'2xl'} fontWeight={'700'}> {pageUser?.username} </Text>
