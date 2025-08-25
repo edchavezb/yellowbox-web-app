@@ -157,7 +157,7 @@ function Sidebar({ user }: IProps) {
           </Link>
           {
             <div id={styles.servicesList}>
-              <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "5px" }}>
+              <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "4px" }}>
                 Linked services
               </Text>
               {
@@ -174,14 +174,14 @@ function Sidebar({ user }: IProps) {
               }
             </div>
           }
-          <Link className={styles.serviceLink} to={`/followed/users`}>
-            <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "5px" }} className={styles.sidebarSection}>
-              Followed list
+          <SidebarQueue />
+          <Link className={styles.serviceLink} to={`/favorites`}>
+            <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '6px', marginBottom: "4px" }} className={styles.sidebarSection}>
+              Favorites
             </Text>
           </Link>
-          <SidebarQueue />
           <div className={styles.folderBoxListWrapper}>
-            <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '10px', marginBottom: "5px" }}>
+            <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '6px', marginBottom: "4px" }}>
               Your boxes
             </Text>
             <AppDndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd} sensors={sensors}>

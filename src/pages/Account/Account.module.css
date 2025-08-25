@@ -21,6 +21,7 @@
   display: flex;
   border-radius: 10px;
   flex-grow: 1;
+  max-height: calc(100% - 35px);
 }
 
 .content {

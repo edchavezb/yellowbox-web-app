@@ -19,7 +19,7 @@ import { useToast } from '@chakra-ui/react';
 import { setIsToastOpen } from 'core/features/toast/toastSlice';
 import QueuePage from 'pages/Queue/QueuePage';
 import UserPage from 'pages/UserPage/UserPage';
-import FollowedPage from 'pages/FollowedPage/FollowedPage';
+import FollowedBoxesPage from 'pages/FollowedBoxesPage/FollowedBoxesPage';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -75,7 +75,7 @@ function App() {
         <Route path="/folder/:id" render={() => <FolderDetail />} />
         <Route path="/detail/:type/:id" render={(props) => <ItemDetail key={props.match.params.id} {...props} />} />
         <Route path="/linked-services/spotify" render={() => <SpotifyDashboard />} />
-        <Route path="/followed" render={() => <FollowedPage />} />
+        <Route path="/favorites" render={() => <FollowedBoxesPage />} />
         <Route path="/queue" render={() => <QueuePage />} />
         <Route path="/authsuccess" render={() => <SpotifyAuthSuccess />} />
       </Layout>

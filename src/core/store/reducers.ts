@@ -7,6 +7,7 @@ import spotifyLoginReducer from "core/features/spotifyService/spotifyLoginSlice"
 import modalReducer from "core/features/modal/modalSlice";
 import toastReducer from "core/features/toast/toastSlice";
 import currentFolderDetailSlice from "core/features/currentFolderDetail/currentFolderDetailSlice";
+import currentUserDetailSlice from "core/features/currentUserDetail/currentUserDetailSlice";
 
 const rootReducer = {
     userData: userReducer,
@@ -15,6 +16,7 @@ const rootReducer = {
     userQueueData: userQueueReducer,
     currentBoxDetailData: currentBoxDetailReducer,
     currentFolderDetailData: currentFolderDetailSlice,
+    currentUserDetailData: currentUserDetailSlice,
     spotifyLoginData: spotifyLoginReducer,
     modalData: modalReducer,
     toastData: toastReducer

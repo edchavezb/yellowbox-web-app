@@ -13,12 +13,12 @@ function FollowedBoxes({ followedBoxes }: { followedBoxes: FollowedBox[] }) {
         {
           !!followedBoxes.length &&
           <>
-            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "5px", marginBottom: "10px" }}> Your followed boxes </Text>
+            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "5px", marginBottom: "10px" }}> Your liked boxes </Text>
             <div className={styles.boxList}>
               {
                 followedBoxes.map(item => {
                   return (
-                    <BoxTile box={item.box} key={item.box.boxId} displayUser />
+                    <BoxTile box={item} key={item.boxId} displayUser />
                   )
                 })
               }
@@ -27,7 +27,7 @@ function FollowedBoxes({ followedBoxes }: { followedBoxes: FollowedBox[] }) {
         }
         {
           !followedBoxes.length &&
-          <Text fontSize={"md"} fontWeight={"400"} textAlign={"center"} sx={{ marginTop: "5px", marginBottom: "10px" }}> You don't follow any boxes yet! </Text>
+          <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "5px", marginBottom: "10px" }}> You haven't liked any boxes yet! </Text>
         }
       </div>
     );

@@ -9,6 +9,7 @@ import Subscription from './Subscription/Subscription';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import { useState, useRef } from 'react';
 import SettingsNav from 'components/menus/popper/SettingsNav/SettingsNav';
+import Friends from './Friends/Friends';
 
 const Account = () => {
   const { path, url } = useRouteMatch();
@@ -28,6 +29,7 @@ const Account = () => {
           <Box className={`${styles.tabSwitcher} ${styles.mobileHidden}`} borderRight={"1px solid"} borderColor={"brandgray.600"}>
             <Link to={`${url}`} className={`${styles.tab} ${window.location.pathname === `${url}` ? styles.active : ''}`}>Profile</Link>
             <Link to={`${url}/authentication`} className={`${styles.tab} ${window.location.pathname === `${url}/authentication` ? styles.active : ''}`}>Authentication</Link>
+            <Link to={`${url}/friends`} className={`${styles.tab} ${window.location.pathname === `${url}/friends` ? styles.active : ''}`}>Friends</Link>
             <Link to={`${url}/linked-services`} className={`${styles.tab} ${window.location.pathname === `${url}/linked-services` ? styles.active : ''}`}>Linked Services</Link>
             <Link to={`${url}/notifications`} className={`${styles.tab} ${window.location.pathname === `${url}/notifications` ? styles.active : ''}`}>Notifications</Link>
             <Link to={`${url}/subscription`} className={`${styles.tab} ${window.location.pathname === `${url}/subscription` ? styles.active : ''}`}>Subscription</Link>
@@ -36,6 +38,7 @@ const Account = () => {
             <Switch>
               <Route exact path={`${path}`} component={ProfileInfo} />
               <Route exact path={`${path}/authentication`} component={Authentication} />
+              <Route exact path={`${path}/friends`} component={Friends} />
               <Route exact path={`${path}/linked-services`} component={LinkedServices} />
               <Route exact path={`${path}/notifications`} component={Notifications} />
               <Route exact path={`${path}/subscription`} component={Subscription} />

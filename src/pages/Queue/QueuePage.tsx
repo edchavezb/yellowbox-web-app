@@ -58,7 +58,7 @@ const QueuePage = () => {
               <img className={styles.boxIcon} src="/icons/library.svg" alt="box" />
             </div>
             <div className={styles.boxInfo}>
-              <Text fontSize={"2xl"} fontWeight={"700"}> {"Your library queue"} </Text>
+              <Text fontSize={"2xl"} fontWeight={"700"}> {"Your listening queue"} </Text>
               <div id={styles.boxDesc}>
                 {"What do you want to play next?"}
               </div>

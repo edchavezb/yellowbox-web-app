@@ -73,7 +73,7 @@ const SidebarQueue = () => {
       onDragOver={(e) => handleDragOver(e)}
       onDrop={(e) => handleDrop(e)}
     >
-      Your queue
+      Listening queue
     </Link>
   )
 }
