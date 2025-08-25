@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { UserSpotifyAccount, YellowboxUser } from "core/types/interfaces"
+import { FollowedBox, FollowedUser, UserSpotifyAccount, YellowboxUser } from "core/types/interfaces"
 
 interface UserState {
   authenticatedUser: YellowboxUser
@@ -33,6 +33,14 @@ const userSlice = createSlice({
     },
     updateUserImageUrl(state, action: PayloadAction<string>) {
       state.authenticatedUser.imageUrl = action.payload;
+    },
+    updateUserFollowedList(state, action: PayloadAction<{ followedUsers: FollowedUser[] }>) {
+      const { followedUsers } = action.payload;
+      state.authenticatedUser.followedUsers = followedUsers;
+    },
+    updateUserFollowedBoxes(state, action: PayloadAction<{ followedBoxes: FollowedBox[] }>) {
+      const { followedBoxes } = action.payload;
+      state.authenticatedUser.followedBoxes = followedBoxes;
     }
   }
 })
@@ -42,7 +50,9 @@ export const {
   setIsUserLoggedIn,
   updateUserSpotifyAccount,
   updateUserBasicInfo,
-  updateUserImageUrl
+  updateUserImageUrl,
+  updateUserFollowedList,
+  updateUserFollowedBoxes
 } = userSlice.actions;
 
 export default userSlice.reducer;

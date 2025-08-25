@@ -26,6 +26,7 @@ const ProfileInfo = () => {
   const [userImage, setUserImage] = useState<string | null>(user.imageUrl!);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [validData, setValidData] = useState<{ username: string, email: string, firstName?: string, lastName?: string } | null>(null);
+  const [isEditingEnabled, setIsEditingEnabled] = useState(false);
   const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [creationSuccessMessage, setCreationSuccessMessage] = useState('');
@@ -157,7 +158,7 @@ const ProfileInfo = () => {
   const handleOpenEditImageModal = () => {
     dispatch(setModalState({ visible: true, type: "Update User Image", boxId: "", itemData: undefined, page: "" }));
   };
-  
+
   return (
     <div className={styles.container}>
       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
@@ -194,7 +195,7 @@ const ProfileInfo = () => {
       <form id={styles.newBoxForm} onSubmit={handleSubmit(handleValidateData)}>
         <FormControl isInvalid={!!errors.username} sx={{ marginTop: "25px" }}>
           <FormLabel>{"Username"}</FormLabel>
-          <Input defaultValue={user.username} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("username")} />
+          <Input defaultValue={user.username} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} disabled={!isEditingEnabled} {...register("username")} />
           <FormErrorMessage>
             {errors.username?.message}
           </FormErrorMessage>
@@ -202,16 +203,16 @@ const ProfileInfo = () => {
         <Box marginTop={"15px"} display={'flex'} gap={'10px'}>
           <FormControl isInvalid={!!errors.email}>
             <FormLabel>{"First Name"}</FormLabel>
-            <Input defaultValue={user.firstName} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("firstName")} />
+            <Input defaultValue={user.firstName} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} disabled={!isEditingEnabled} {...register("firstName")} />
           </FormControl>
           <FormControl isInvalid={!!errors.email}>
             <FormLabel>{"Last Name"}</FormLabel>
-            <Input defaultValue={user.lastName} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("lastName")} />
+            <Input defaultValue={user.lastName} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} disabled={!isEditingEnabled} {...register("lastName")} />
           </FormControl>
         </Box>
         <FormControl isInvalid={!!errors.email} sx={{ marginTop: "15px" }}>
           <FormLabel>{"Email Address"}</FormLabel>
-          <Input defaultValue={user.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} {...register("email")} />
+          <Input defaultValue={user.email} borderColor={"brandgray.500"} focusBorderColor={"brandblue.600"} disabled={!isEditingEnabled} {...register("email")} />
           <FormErrorMessage>
             {errors.email?.message}
           </FormErrorMessage>
@@ -219,10 +220,20 @@ const ProfileInfo = () => {
         <Box color={"brandyellow.600"} fontSize={'sm'} marginTop={'10px'}>
           {creationError || creationSuccessMessage}
         </Box>
-        <Box marginTop={"15px"} display={'flex'} justifyContent={'flex-end'}>
-          <Box ref={submitButtonRef}>
-            <SubmitButton text={"Update information"} />
+        <Box marginTop={"15px"} display={'flex'} justifyContent={'flex-end'} gap={'10px'}>
+          <Box onClick={() => history.push(`/user/${user.username}`)}>
+            <SubmitButton text={"View my profile page"} />
           </Box>
+          {!isEditingEnabled &&
+            <Box onClick={() => setIsEditingEnabled(true)}>
+              <SubmitButton text={"Update information"} />
+            </Box>
+          }
+          {isEditingEnabled &&
+            <Box ref={submitButtonRef}>
+              <SubmitButton text={"Save changes"} />
+            </Box>
+          }
         </Box>
         <PopperMenu referenceRef={submitButtonRef} placement={'bottom-start'} isOpen={isPasswordPromptOpen} setIsOpen={setIsPasswordPromptOpen}>
           <Box backgroundColor={"brandgray.900"} padding={'15px'} borderRadius={'10px'}>

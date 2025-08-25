@@ -14,6 +14,7 @@ import { useAppSelector } from "core/hooks/useAppSelector";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setModalState } from "core/features/modal/modalSlice";
 import UpdateImageMenu from "components/menus/modal/UpdateUserImage/UpdateImageMenu";
+import UserFriendsMenu from "components/menus/modal/UserFriends/UserFriendsMenu";
 
 function Modal() {
   const dispatch = useAppDispatch();
@@ -72,6 +73,9 @@ function Modal() {
     case "Update User Image":
       modalBody = <UpdateImageMenu />
       break;
+    case "User Friends List":
+      modalBody = <UserFriendsMenu />
+      break;
     default:
       modalBody = ""
   }
@@ -82,7 +86,7 @@ function Modal() {
       <div id={styles.modalDiv}>
         <div id={styles.modalPanel}>
           <div id={styles.modalHeader}>
-            <div id={styles.modalTitle}> {modalData.type} </div>
+            <div id={styles.modalTitle}> {modalData.customTitle || modalData.type} </div>
             <div id={styles.closeModal} onClick={() => dispatch(setModalState({ visible: false, type: "", boxId: "", page: "", itemData: undefined }))}>
               <img id={styles.closeIcon} alt="Close modal" src="/icons/close.svg" />
             </div>

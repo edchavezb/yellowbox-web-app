@@ -46,26 +46,20 @@ export interface YellowboxUser {
 }
 
 export interface FollowedUser {
-  createdAt: string
-  followedUser: {
-    userId: string
-    username: string
-    imageUrl?: string
-  }
+  createdAt?: string
+  userId: string
+  username: string
+  imageUrl?: string
 }
 
 export interface Follower {
-  createdAt: string
-  follower: {
-    userId: string
-    username: string
-    imageUrl?: string
-  }
+  createdAt?: string
+  userId: string
+  username: string
+  imageUrl?: string
 }
 
 export interface FollowedBox {
-  createdAt: string
-  box: {
     boxId: string
     name: string
     imageUrl?: string
@@ -74,7 +68,6 @@ export interface FollowedBox {
       userId: string
       username: string
     }
-  }
 }
 
 export interface UserSpotifyAccount {

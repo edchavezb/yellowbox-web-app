@@ -69,7 +69,7 @@ export const updateUserBasicInfoApi = async (userId: string, userData: UserBasic
 
 export const getUserPageDataApi = async (username: string) => {
     try {
-        return await api.get<{pageUser: YellowboxUser | null, isFollowed?: boolean}>(`users/user-page/${username}`, {})
+        return await api.get<{pageUser: YellowboxUser | null}>(`users/user-page/${username}`, {})
     }
     catch(err) {
         console.log(err)
@@ -149,7 +149,7 @@ export const toggleUserTutorialApi = async (userId: string) => {
 
 export const followUserApi = async (targetUserId: string) => {
     try {
-        return await api.post<{}, {pageUser: YellowboxUser | null, isFollowed?: boolean}>(`users/${targetUserId}/follow`, {});
+        return await api.post<{}, {followedUsers: FollowedUser[]}>(`users/${targetUserId}/follow`, {});
     } catch (err) {
         console.log(err);
         throw err;
@@ -158,16 +158,16 @@ export const followUserApi = async (targetUserId: string) => {
 
 export const unfollowUserApi = async (targetUserId: string) => {
     try {
-        return await api.delete<{pageUser: YellowboxUser | null, isFollowed?: boolean}>(`users/${targetUserId}/unfollow`);
+        return await api.delete<{followedUsers: FollowedUser[]}>(`users/${targetUserId}/unfollow`);
     } catch (err) {
         console.log(err);
         throw err;
     }
 };
 
-export const getFollowedPageDataApi = async () => {
+export const getFollowedBoxesDataApi = async () => {
     try {
-        return await api.get<{followedUsers: FollowedUser[], followers: Follower[], followedBoxes: FollowedBox[]}>('users/me/followed-page', {})
+        return await api.get<{followedBoxes: FollowedBox[]}>('users/me/followed-boxes', {})
     }
     catch(err) {
         console.log(err)

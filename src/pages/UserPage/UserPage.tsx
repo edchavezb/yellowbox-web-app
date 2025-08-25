@@ -3,26 +3,31 @@ import { useParams, withRouter } from "react-router-dom";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import FolderTile from "components/common/FolderTile/FolderTile";
 import BoxTile from "components/common/BoxTile/BoxTile";
-import { Button, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Stack, Text } from '@chakra-ui/react';
 import { followUserApi, getUserPageDataApi, unfollowUserApi } from "core/api/users";
-import { useEffect, useState } from "react";
-import { YellowboxUser } from "core/types/interfaces";
+import { useEffect, useRef, useState } from "react";
 import DefaultUserImage from "components/common/DefaultUserImage/DefaultUserImage";
+import { useAppDispatch } from "core/hooks/useAppDispatch";
+import { setCurrentUserDetail } from "core/features/currentUserDetail/currentUserDetailSlice";
+import { setModalState } from "core/features/modal/modalSlice";
+import { updateUserFollowedList } from "core/features/user/userSlice";
 
 function UserPage() {
+  const dispatch = useAppDispatch();
   const { username } = useParams<{ username: string }>();
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
-  const userData = useAppSelector(state => state.userData.authenticatedUser);
+  const viewingUserData = useAppSelector(state => state.userData.authenticatedUser);
+  const followedUsers = viewingUserData?.followedUsers || [];
+  const pageUser = useAppSelector(state => state.currentUserDetailData.user);
+  const isFollowed = followedUsers?.some(followedUser => followedUser.userId === pageUser?.userId);
   const [error, setError] = useState<string | null>(null);
-  const [userPageData, setUserPageData] = useState<{ pageUser: YellowboxUser | null, isFollowed?: boolean } | null>(null);
   const [userImage, setUserImage] = useState<string | null>(null);
-  const { pageUser, isFollowed } = userPageData || { pageUser: null, isFollowed: false };
-
+  
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await getUserPageDataApi(username);
-        setUserPageData(response);
+        dispatch(setCurrentUserDetail(response));
         setUserImage(response.pageUser?.imageUrl || null);
       }
       catch (err) {
@@ -31,23 +36,37 @@ function UserPage() {
       }
     }
     fetchUserData();
-  }, [username]);
+  }, [username, followedUsers]);
 
   const handleToggleFollow = async () => {
-    if (isFollowed) {
-      const response = await unfollowUserApi(pageUser?.userId!);
-      setUserPageData(response);
-    } else {
-      const response = await followUserApi(pageUser?.userId!);
-      setUserPageData(response);
+    try {
+      if (isFollowed) {
+        const response = await unfollowUserApi(pageUser?.userId!);
+        dispatch(updateUserFollowedList(response));
+      } else {
+        const response = await followUserApi(pageUser?.userId!);
+        dispatch(updateUserFollowedList(response));
+      }
+    } catch (err) {
+      console.error("Failed to toggle follow status:", err);
     }
+  };
+
+  const handleViewFollowers = () => {
+    const modalTitle = `${pageUser!.username}'s followers`;
+    dispatch(setModalState({ visible: true, type: "User Friends List", page: "User Page", viewingFriendsList: "followers", customTitle: modalTitle }));
+  }
+
+  const handleViewFollowedUsers = () => {
+    const modalTitle = `${pageUser!.username}'s followed users`;
+    dispatch(setModalState({ visible: true, type: "User Friends List", page: "User Page", viewingFriendsList: "followedUsers", customTitle: modalTitle }));
   }
 
   const handleImageError = async () => {
     setUserImage(null);
   }
 
-  if (!error && userPageData) {
+  if (!error && pageUser) {
     return (
       <div className={styles.homeContainer}>
         <div className={styles.userWrapper}>
@@ -66,11 +85,22 @@ function UserPage() {
             <Stack direction={"row"} width={"100%"} spacing={"20px"} alignItems={"center"}>
               <Text className={styles.userName} fontSize={'2xl'} fontWeight={'700'}> {pageUser?.username} </Text>
               {
-                (isLoggedIn && userData?.userId !== pageUser?.userId) &&
+                (isLoggedIn && viewingUserData?.userId !== pageUser?.userId) &&
                 <Button variant={"outline"} size={"xs"} onClick={handleToggleFollow}> {isFollowed ? "UNFOLLOW" : "FOLLOW"} </Button>
               }
             </Stack>
-            <Text className={styles.userName} color={"brandgray.400"} fontSize={'md'} fontWeight={'400'}> {pageUser?.firstName && `${pageUser?.firstName} ${pageUser?.lastName} •`} {`${pageUser?.boxes?.length} boxes`} </Text>
+            <Text className={styles.userName} color={"brandgray.400"} fontSize={'md'} fontWeight={'400'}>
+              {pageUser?.firstName && `${pageUser?.firstName} ${pageUser?.lastName}`}
+            </Text>
+            <Box display={"flex"} gap={"15px"} alignItems={"center"}>
+              <Button variant={"plain"} size={"sm"} padding={'0px'} cursor={'default'}> {` ${pageUser?.boxes?.length} boxes`} </Button>
+              <Button variant={"plain"} size={"sm"} onClick={handleViewFollowers} padding={'0px'} _hover={{ textDecoration: 'underline' }}>
+                {` ${pageUser?.followers?.length} followers`}
+              </Button>
+              <Button variant={"plain"} size={"sm"} onClick={handleViewFollowedUsers} padding={'0px'} _hover={{ textDecoration: 'underline' }} >
+                {` ${pageUser?.followedUsers?.length} following`}
+              </Button>
+            </Box>
           </Stack>
         </div>
         {
