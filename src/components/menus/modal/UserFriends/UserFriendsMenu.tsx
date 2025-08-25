@@ -1,12 +1,8 @@
 import { Stack } from "@chakra-ui/react";
 import UserFriendList from "components/common/UserFriendList/UserFriendList";
-import { followUserApi, unfollowUserApi } from "core/api/users";
-import { updateUserFollowedList } from "core/features/user/userSlice";
-import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { useAppSelector } from "core/hooks/useAppSelector";
 
 function UserFriendsMenu() {
-  const dispatch = useAppDispatch();
   const pageUser = useAppSelector(state => state.currentUserDetailData.user);
   const viewingFriendsList = useAppSelector(state => state.modalData.modalState.viewingFriendsList);
   const { followers, followedUsers } = pageUser!;
