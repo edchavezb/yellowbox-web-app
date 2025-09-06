@@ -31,7 +31,7 @@ const UserFriendList = ({ friendList }: UserFriendListProps) => {
       {
         friendList.map(user => (
           <Stack direction={"row"} justifyContent={"space-between"} key={user.userId} width={"100%"}>
-            <UserTile user={user} direction="row" />
+            <UserTile user={user} direction="row" isNameDisplayed />
             {followedUserIds.has(user.userId) &&
               <Button variant={"solid"} size={"sm"} onClick={() => handleUnfollowUser(user.userId)}>Following</Button>
             }

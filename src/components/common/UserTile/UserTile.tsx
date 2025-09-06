@@ -10,9 +10,10 @@ import { setModalState } from "core/features/modal/modalSlice";
 interface UserTileProps {
   user: FollowedUser;
   direction?: "row" | "column";
+  isNameDisplayed?: boolean;
 }
 
-const UserTile = ({ user, direction }: UserTileProps) => {
+const UserTile = ({ user, direction, isNameDisplayed }: UserTileProps) => {
   const dispatch = useAppDispatch();
   const [userImage, setUserImage] = useState<string | null>(user.imageUrl!);
 
@@ -37,6 +38,11 @@ const UserTile = ({ user, direction }: UserTileProps) => {
         <Box className={styles.userName} marginTop={direction === 'column' ? '8px' : '0'}>
           {user.username}
         </Box>
+        {isNameDisplayed && direction !== "column" && (user.firstName || user.lastName) &&
+          <Box className={styles.displayName} color={'brandgray.400'}>
+            {user.firstName || ''} {user.lastName || ''}
+          </Box>
+        }
       </Box>
     </Link>
   );

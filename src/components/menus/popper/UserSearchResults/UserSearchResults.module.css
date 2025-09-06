@@ -1,0 +1,19 @@
+.menuItemsList {
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(61, 61, 61);
+    color: #ffffff;
+    font-weight: 400;
+    font-size: .8em;
+    min-width: 350px;
+}
+
+.menuItem {
+    padding: 4px 10px;
+    cursor: pointer;
+}
+
+.menuItem:hover {
+    background-color: rgb(44, 44, 44);
+}
