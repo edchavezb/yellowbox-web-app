@@ -50,6 +50,8 @@ export interface FollowedUser {
   userId: string
   username: string
   imageUrl?: string
+  firstName?: string
+  lastName?: string
 }
 
 export interface Follower {
@@ -57,6 +59,8 @@ export interface Follower {
   userId: string
   username: string
   imageUrl?: string
+  firstName?: string
+  lastName?: string
 }
 
 export interface FollowedBox {

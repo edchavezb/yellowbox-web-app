@@ -222,7 +222,7 @@ const ProfileInfo = () => {
         </Box>
         <Box marginTop={"15px"} display={'flex'} justifyContent={'flex-end'} gap={'10px'}>
           <Box onClick={() => history.push(`/user/${user.username}`)}>
-            <SubmitButton text={"View my profile page"} />
+            <SubmitButton text={"View profile page"} />
           </Box>
           {!isEditingEnabled &&
             <Box onClick={() => setIsEditingEnabled(true)}>
