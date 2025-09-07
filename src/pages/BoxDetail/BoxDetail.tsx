@@ -10,7 +10,7 @@ import PopperMenu from 'components/menus/popper/PopperMenu';
 import BoxMenu from 'components/menus/popper/BoxMenu/BoxMenu';
 import { getSpotifyGenericTokenApi } from 'core/api/spotify';
 import { setGenericToken } from 'core/features/spotifyService/spotifyLoginSlice';
-import { Button, Stack, Text } from '@chakra-ui/react'
+import { Button, IconButton, Stack, Text } from '@chakra-ui/react'
 
 function BoxDetail() {
   const { id: boxId } = useParams<{ id: string }>();
@@ -82,10 +82,6 @@ function BoxDetail() {
             <div className={styles.boxInfo}>
               <Stack direction={"row"} width={"100%"} spacing={"20px"} alignItems={"center"}>
                 <Text fontSize={"2xl"} fontWeight={"700"}> {currentBox?.name} </Text>
-                {
-                  (isUserLoggedIn && !isOwner) &&
-                  <Button variant={"outline"} size={"xs"} onClick={handleToggleFollow}> {isBoxFollowedByUser ? "UNFOLLOW" : "FOLLOW"} </Button>
-                }
               </Stack>
               <div id={styles.boxDesc}>
                 {`${currentBox?.description}`}
@@ -95,6 +91,34 @@ function BoxDetail() {
               </div>
             </div>
             <div className={styles.menuButtonWrapper}>
+              {
+                (isUserLoggedIn && !isOwner) &&
+                <div >
+                  {
+                    isBoxFollowedByUser &&
+                    <IconButton
+                      onClick={handleToggleFollow}
+                      aria-label='Unfollow box'
+                      variant={'ghost'}
+                      icon={
+                        <img className={styles.heartIcon} src="/icons/heart.svg" alt='menu' />
+                      }
+                    />
+                  }
+                  {
+                    !isBoxFollowedByUser &&
+                    <IconButton
+                      onClick={handleToggleFollow}
+                      aria-label='Follow box'
+                      variant={'ghost'}
+                      icon={
+                        <img className={styles.heartIcon} src="/icons/heart-outline.svg" alt='menu' />
+                      }
+                    />
+                  }
+                </div>
+              }
+
               <div className={styles.menuButton} onClick={() => setIsBoxMenuOpen(true)} ref={menuToggleRef}>
                 <img className={styles.dotsIcon} src="/icons/ellipsis.svg" alt='menu' />
               </div>

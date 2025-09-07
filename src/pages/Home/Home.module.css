@@ -36,6 +36,10 @@
     gap: 20px;
 }
 
+.boxList {
+    margin-top: 20px;
+}
+
 @media (max-width: 576px) {
     .homeContainer {
         padding: 10px 20px;

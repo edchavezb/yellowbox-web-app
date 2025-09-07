@@ -1,6 +1,7 @@
 import { UserFolder } from "core/types/interfaces"
 import { Link, useHistory } from "react-router-dom"
 import styles from "./FolderTile.module.css";
+import { Box, Stack } from "@chakra-ui/react";
 
 const FolderTile = ({ folder }: { folder: UserFolder }) => {
   const history = useHistory();
@@ -10,16 +11,18 @@ const FolderTile = ({ folder }: { folder: UserFolder }) => {
   }
 
   return (
-    <div className={styles.folderBoxWrapper} >
-      <div className={styles.folderSquare} onClick={navigateToBox}>
+    <Box className={styles.folderBoxWrapper}>
+      <Box className={styles.folderSquare} onClick={navigateToBox}>
         <img className={styles.folderIcon} src="/icons/folder.svg" alt="folder" />
-      </div>
-      <div className={styles.folderName}>
-        <Link to={`/folder/${folder.folderId}`}>
-          {folder.name}
-        </Link>
-      </div>
-    </div>
+      </Box>
+      <Box className={styles.folderName}>
+        <Box className={styles.folderNameText}>
+          <Link to={`/folder/${folder.folderId}`}>
+            {folder.name}
+          </Link>
+        </Box>
+      </Box>
+    </Box>
   )
 }
 

@@ -9,7 +9,7 @@ import { Album, Artist, Playlist, SectionSettings, Subsection, Track, UserBox } 
 import { BoxSections, ItemData } from "core/types/types"
 import { updateBoxName } from "../userBoxes/userBoxesSlice"
 import { updateUserFolderBox } from "../userFolders/userFoldersSlice"
-import { initErrorToast, initMarkedAsPlayedToast, initRemoveFromBoxToast } from "../toast/toastSlice"
+import { initAddToBoxToast, initAddToFavoritesToast, initErrorToast, initMarkedAsPlayedToast, initRemoveFromBoxToast, initRemoveFromFavoritesToast } from "../toast/toastSlice"
 import { reorderItems } from "core/helpers/reorderItems"
 import { ResponseError } from "core/api"
 import { markAlbumAsPlayedApi, markArtistAsPlayedApi, markPlaylistAsPlayedApi, markTrackAsPlayedApi, removeAlbumPlayApi, removeArtistPlayApi, removePlaylistPlayApi, removeTrackPlayApi } from "core/api/items"
@@ -230,8 +230,9 @@ export const fetchBoxDetailThunk = (boxId: string): AppThunk => async (dispatch)
 
 export const followBoxThunk = (boxId: string): AppThunk => async (dispatch) => {
   try {
-    await followBoxApi(boxId);
+    const { boxName } = await followBoxApi(boxId);
     dispatch(setIsBoxFollowedByUser(true));
+    dispatch(initAddToFavoritesToast({ boxName }));
   } catch (err) {
     console.log(err);
     dispatch(initErrorToast({ error: "Failed to follow the box" }));
@@ -240,8 +241,9 @@ export const followBoxThunk = (boxId: string): AppThunk => async (dispatch) => {
 
 export const unfollowBoxThunk = (boxId: string): AppThunk => async (dispatch) => {
   try {
-    await unfollowBoxApi(boxId);
+    const { boxName } = await unfollowBoxApi(boxId);
     dispatch(setIsBoxFollowedByUser(false));
+    dispatch(initRemoveFromFavoritesToast({ boxName }));
   } catch (err) {
     console.log(err);
     dispatch(initErrorToast({ error: "Failed to unfollow the box" }));

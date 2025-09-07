@@ -72,6 +72,11 @@
     margin-top: 2px;
 }
 
+.favIcon {
+    width: 15px;
+    height: 15px;
+}
+
 .linkServiceWrapper {
     margin-top: 15px;
 }
