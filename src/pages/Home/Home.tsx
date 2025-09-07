@@ -1,14 +1,12 @@
 import styles from "./Home.module.css"
-import { RouteComponentProps, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { useAppSelector } from "core/hooks/useAppSelector";
-import { spotifyLoginApi } from "core/api/spotify";
 import FolderTile from "components/common/FolderTile/FolderTile";
 import BoxTile from "components/common/BoxTile/BoxTile";
 import { Text } from '@chakra-ui/react'
 
-function Home({ location }: RouteComponentProps) {
+function Home() {
   const isLoggedIn = useAppSelector(state => state.userData.isUserLoggedIn);
-  const userData = useAppSelector(state => state.userData.authenticatedUser);
   const userFolders = useAppSelector(state => state.userFoldersData.folders);
   const sortedFolders = [...userFolders].sort((folderA, folderB) => {
     if (folderA.name > folderB.name) return 1
@@ -19,47 +17,28 @@ function Home({ location }: RouteComponentProps) {
   })
   const dashboardBoxes = useAppSelector(state => state.userBoxesData.dashboardBoxes);
 
-  const handleLogin = async () => {
-    const response = await spotifyLoginApi();
-    if (response) {
-      window.location.replace(response.url)
-    }
-  }
-
   if (isLoggedIn) {
     return (
       <div className={styles.homeContainer}>
-        <Text fontSize={"xl"} fontWeight={"700"}> Welcome {userData.username} </Text>
-        {
-          !!sortedFolders.length &&
-          <>
-            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> Your folders </Text>
-            <div className={styles.folderList}>
-              {
-                sortedFolders.map(folder => {
-                  return (
-                    <FolderTile folder={folder} />
-                  )
-                })
-              }
-            </div>
-          </>
-        }
-        {
-          !!dashboardBoxes.length &&
-          <>
-            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> Your boxes </Text>
-            <div className={styles.boxList}>
-              {
-                dashboardBoxes.map(box => {
-                  return (
-                    <BoxTile box={box} displayUser={false} />
-                  )
-                })
-              }
-            </div>
-          </>
-        }
+        <Text fontSize={"2xl"} fontWeight={"700"} marginTop={'5px'}> Home </Text>
+        <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "30px", marginBottom: "10px" }}> My Collection </Text>
+        <div className={styles.folderList}>
+          {!!sortedFolders.length &&
+            sortedFolders.map(folder => {
+              return (
+                <FolderTile folder={folder} />
+              )
+            })
+          }
+          {
+            !!dashboardBoxes.length &&
+            dashboardBoxes.map(box => {
+              return (
+                <BoxTile box={box} displayUser={false} />
+              )
+            })
+          }
+        </div>
       </div>
     );
   }

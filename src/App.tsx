@@ -19,7 +19,7 @@ import { useToast } from '@chakra-ui/react';
 import { setIsToastOpen } from 'core/features/toast/toastSlice';
 import QueuePage from 'pages/Queue/QueuePage';
 import UserPage from 'pages/UserPage/UserPage';
-import FollowedBoxesPage from 'pages/FollowedBoxesPage/FollowedBoxesPage';
+import FollowedBoxesPage from 'pages/Favorites/FavoritesPage';
 
 function App() {
   const dispatch = useAppDispatch();

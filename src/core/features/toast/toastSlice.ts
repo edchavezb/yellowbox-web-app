@@ -110,6 +110,24 @@ const toastSlice = createSlice({
       };
       state.isOpen = true;
     },
+    initAddToFavoritesToast(state, action: PayloadAction<{boxName: string}>) {
+      const {boxName} = action.payload;
+      state.options = {
+        title: "Done!",
+        description: `${boxName} was added to your favorites`,
+        status: "info"
+      };
+      state.isOpen = true;
+    },
+    initRemoveFromFavoritesToast(state, action: PayloadAction<{boxName: string}>) {
+      const {boxName} = action.payload;  
+      state.options = {
+        title: "Done!",
+        description: `${boxName} was removed from your favorites`,
+        status: "info"
+      };
+      state.isOpen = true;
+    },
     initErrorToast(state, action: PayloadAction<ErrorToastPayload>) {
       const {error} = action.payload;
       state.options = {
@@ -134,6 +152,8 @@ export const {
   initRemoveFromBoxToast,
   initAlreadyInBoxToast,
   initMarkedAsPlayedToast,
+  initAddToFavoritesToast,
+  initRemoveFromFavoritesToast,
   initErrorToast,
   setIsToastOpen
 } = toastSlice.actions;

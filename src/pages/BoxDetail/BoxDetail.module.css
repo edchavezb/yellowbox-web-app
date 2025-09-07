@@ -66,19 +66,32 @@
 }
 
 .menuButtonWrapper {
+    margin-top: 8px;
     height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .menuButton {
-    margin-top: 8px;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background-color: gray;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+}
+
+.dotsIcon {
+    width: 18px;
+    height: 18px;
+}
+
+.heartIcon {
+    width: 26px;
+    height: 26px;
 }
 
 @media (max-width: 576px) {

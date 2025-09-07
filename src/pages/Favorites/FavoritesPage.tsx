@@ -1,5 +1,5 @@
-import styles from "./FollowedBoxesPage.module.css";
-import FollowedBoxes from "./FollowedBoxes/FollowedBoxes";
+import styles from "./FavoritesPage.module.css";
+import FollowedBoxes from "./FavoriteBoxes/FavoriteBoxes";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import { useEffect, useState } from "react";
 import { FollowedBox } from "core/types/interfaces";

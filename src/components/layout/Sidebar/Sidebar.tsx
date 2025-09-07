@@ -10,7 +10,7 @@ import { DndContext, DndContextProps, DragOverlay, PointerSensor, useSensor, use
 import SidebarFolder from "./SidebarFolder/SidebarFolder";
 import SidebarBoxList from "./SidebarBoxList/SidebarBoxList";
 import { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core";
-import { Text } from '@chakra-ui/react'
+import { Stack, Text } from '@chakra-ui/react'
 import { DndContextTypesafeProps } from "./sidebarTypes";
 import SidebarQueue from "./SidebarQueue/SidebarQueue";
 import DefaultUserImage from "components/common/DefaultUserImage/DefaultUserImage";
@@ -175,15 +175,18 @@ function Sidebar({ user }: IProps) {
             </div>
           }
           <SidebarQueue />
-          <Link className={styles.serviceLink} to={`/favorites`}>
-            <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '6px', marginBottom: "4px" }} className={styles.sidebarSection}>
-              Favorites
-            </Text>
-          </Link>
           <div className={styles.folderBoxListWrapper}>
             <Text fontSize={"md"} fontWeight={"700"} sx={{ marginTop: '6px', marginBottom: "4px" }}>
-              Your boxes
+              Your collection
             </Text>
+            <Stack direction={"row"} alignItems={"center"} gap={"6px"} marginBottom={"4px"}>
+              <img className={styles.favIcon} src="/icons/heart-outline.svg" alt="folder"></img>
+              <Link className={styles.serviceLink} to={`/favorites`}>
+                <Text fontSize={"md"}>
+                  Favorites
+                </Text>
+              </Link>
+            </Stack>
             <AppDndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd} sensors={sensors}>
               <div className={styles.folderList}>
                 {!!sortedFolders.length && sortedFolders.map(folder => {

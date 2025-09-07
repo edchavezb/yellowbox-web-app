@@ -1,4 +1,4 @@
-import styles from "./FollowedBoxes.module.css"
+import styles from "./FavoriteBoxes.module.css"
 import { useAppSelector } from "core/hooks/useAppSelector";
 import BoxTile from "components/common/BoxTile/BoxTile";
 import { Text } from '@chakra-ui/react'
@@ -13,7 +13,7 @@ function FollowedBoxes({ followedBoxes }: { followedBoxes: FollowedBox[] }) {
         {
           !!followedBoxes.length &&
           <>
-            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "5px", marginBottom: "10px" }}> Your liked boxes </Text>
+            <Text fontSize={"2xl"} fontWeight={"700"} sx={{ marginTop: "5px", marginBottom: "10px" }}> Favorites </Text>
             <div className={styles.boxList}>
               {
                 followedBoxes.map(item => {

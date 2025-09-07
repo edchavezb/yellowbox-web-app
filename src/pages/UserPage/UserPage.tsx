@@ -5,7 +5,7 @@ import FolderTile from "components/common/FolderTile/FolderTile";
 import BoxTile from "components/common/BoxTile/BoxTile";
 import { Box, Button, Stack, Text } from '@chakra-ui/react';
 import { followUserApi, getUserPageDataApi, unfollowUserApi } from "core/api/users";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import DefaultUserImage from "components/common/DefaultUserImage/DefaultUserImage";
 import { useAppDispatch } from "core/hooks/useAppDispatch";
 import { setCurrentUserDetail } from "core/features/currentUserDetail/currentUserDetailSlice";
@@ -22,7 +22,7 @@ function UserPage() {
   const isFollowed = followedUsers?.some(followedUser => followedUser.userId === pageUser?.userId);
   const [error, setError] = useState<string | null>(null);
   const [userImage, setUserImage] = useState<string | null>(null);
-  
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -103,35 +103,27 @@ function UserPage() {
             </Box>
           </Stack>
         </div>
+        <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "30px", marginBottom: "10px" }}> {`${pageUser.firstName || pageUser.username}'s`} public collection </Text>
         {
-          !!pageUser?.folders?.length &&
-          <>
-            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName || pageUser.username}'s`} public folders </Text>
-            <div className={styles.folderList}>
-              {
-                pageUser?.folders?.filter(fol => fol.isPublic).map(folder => {
-                  return (
-                    <FolderTile folder={folder} />
-                  )
-                })
-              }
-            </div>
-          </>
-        }
-        {
-          !!pageUser?.boxes?.length &&
-          <>
-            <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "20px", marginBottom: "10px" }}> {`${pageUser.firstName || pageUser.username}'s`} public boxes </Text>
-            <div className={styles.boxList}>
-              {
-                pageUser?.boxes?.filter(box => box.isPublic).map(box => {
-                  return (
-                    <BoxTile box={box} displayUser={false} />
-                  )
-                })
-              }
-            </div>
-          </>
+
+          <div className={styles.folderList}>
+            {
+              !!pageUser?.folders?.length &&
+              pageUser?.folders?.filter(fol => fol.isPublic).map(folder => {
+                return (
+                  <FolderTile folder={folder} />
+                )
+              })
+            }
+            {
+              !!pageUser?.boxes?.length &&
+              pageUser?.boxes?.filter(box => box.isPublic && !box.folderId).map(box => {
+                return (
+                  <BoxTile box={box} displayUser={false} />
+                )
+              })
+            }
+          </div>
         }
       </div>
     );

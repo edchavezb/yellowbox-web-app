@@ -12,12 +12,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: gray;
+    background-color: rgb(88, 88, 88);
     cursor: pointer;
 }
 
 .folderSquare:hover {
-    background-color: rgb(88, 88, 88);
+    background-color: rgb(68, 68, 68);
 }
 
 .folderIcon {
@@ -42,13 +42,22 @@
         width: 100%;
         flex-direction: row;
     }
+
     .folderSquare {
         width: 14%;
     }
+
     .folderName {
         margin-top: 0px;
         margin-left: 5px;
         display: flex;
         align-items: center;
+    }
+}
+
+@media (min-width: 1400px) {
+    .folderBoxWrapper {
+        width: 9.09%;
+        /* Adjusted to fit 11 items */
     }
 }

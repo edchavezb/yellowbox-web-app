@@ -141,7 +141,7 @@ export const removeSubsectionApi = async (boxId: string, subsectionId: string) =
 
 export const followBoxApi = async (boxId: string) => {
   try {
-    return await api.post<{}, { message: string }>(`boxes/${boxId}/follow`, {});
+    return await api.post<{}, { message: string, boxName: string, boxId: string }>(`boxes/${boxId}/follow`, {});
   } catch (err) {
     console.log(err);
     throw err;
@@ -150,7 +150,7 @@ export const followBoxApi = async (boxId: string) => {
 
 export const unfollowBoxApi = async (boxId: string) => {
   try {
-    return await api.delete<{ message: string }>(`boxes/${boxId}/unfollow`);
+    return await api.delete<{ message: string, boxName: string, boxId: string }>(`boxes/${boxId}/unfollow`);
   } catch (err) {
     console.log(err);
     throw err;
