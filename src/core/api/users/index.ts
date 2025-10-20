@@ -1,4 +1,4 @@
-import { DashboardBox, FollowedBox, FollowedUser, Follower, UserFolder, UserSpotifyAccount, YellowboxUser } from '../../types/interfaces'
+import { DashboardBox, FeedActivity, FollowedBox, FollowedUser, UserFolder, UserSpotifyAccount, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
 export interface UserCreateDTO {
@@ -30,6 +30,20 @@ export const getAuthenticatedUserDataApi = async () => {
 export const getFollowedBoxesDataApi = async () => {
   try {
     return await api.get<{ followedBoxes: FollowedBox[] }>('users/me/followed-boxes', {})
+  }
+  catch (err) {
+    console.log(err)
+    throw err;
+  }
+}
+
+export const getActivityFeedApi = async (source?: 'boxes' | 'users') => {
+  try {
+    const queryParams: { [key: string]: string } = {};
+    if (source) {
+      queryParams.source = source;
+    }
+    return await api.get<{ activities: FeedActivity[] }>('users/me/feed', queryParams)
   }
   catch (err) {
     console.log(err)
@@ -181,7 +195,7 @@ export const searchUsersApi = async (query: string) => {
   } catch (err) {
     console.log(err);
     throw err;
-  } 
+  }
 };
 
 export const uploadUserImageApi = async (imageFile: File) => {

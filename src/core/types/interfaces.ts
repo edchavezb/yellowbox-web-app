@@ -1,4 +1,4 @@
-import { BoxSections, ItemData } from "./types"
+import { BoxItemType, BoxSections, ItemData } from "./types"
 
 export interface ErrorWithMessage {
   message: string;
@@ -72,6 +72,23 @@ export interface FollowedBox {
       userId: string
       username: string
     }
+}
+
+export interface FeedActivity {
+  type: 'USER_FOLLOW' | 'BOX_FOLLOW' | 'BIO_UPDATE' | 'IMAGE_UPDATE' | 'TOP_ALBUM_UPDATE' | 'BOX_CREATE' | 'BOX_ITEM_ADD',
+  actor: FollowedUser,
+  timestamp: string,
+  followedUser?: FollowedUser,
+  box?: {
+    boxId: string,
+    name: string,
+    creator: {
+      userId: string,
+      username: string
+    }
+  },
+  item?: ItemData | null,
+  itemType?: BoxItemType | null,
 }
 
 export interface UserSpotifyAccount {
