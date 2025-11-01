@@ -63,7 +63,7 @@ const AlbumHeader = ({ itemData, isPlayedByUser, handleTogglePlayed, isUserLogge
               {` ${getAlbumRuntime(itemData.tracks!.items)}`}
             </div>
             { isUserLoggedIn &&
-              <div className={styles.metaDataPill}>
+              <div className={`${styles.metaDataPill} ${styles.mobileHidden}`}>
                 <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
                 <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
               </div>

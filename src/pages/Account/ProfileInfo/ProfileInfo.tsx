@@ -274,27 +274,20 @@ const ProfileInfo = () => {
           />
         </FormControl>
         <Box marginTop={"20px"}>
-          <Text fontSize="md" fontWeight="600" mb={2}>Top Albums</Text>
+          <Text fontSize="md" fontWeight="600" mb={2}>Album Picks</Text>
           <Box display="flex" gap={2} justifyContent={'space-evenly'}>
             {[...Array(5)].map((_, index) => {
               const albumAtIndex = userTopAlbums?.find(topAlbum => topAlbum.position === index + 1);
               return (
                 <Box
                   key={index}
-                  width="100px"
-                  height="100px"
-                  borderRadius="2px"
+                  className={styles.albumBox}
                   bg={albumAtIndex ? "transparent" : "gray.300"}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
                   cursor="pointer"
                   _hover={{ bg: albumAtIndex ? "rgba(0,0,0,0.1)" : "gray.400" }}
                   transition="background-color 0.2s"
                   onClick={() => handleAlbumButtonClick(index)}
                   ref={el => albumButtonsRef.current[index] = el}
-                  position="relative"
-                  overflow="hidden"
                 >
                   {albumAtIndex ? (
                     <img 
