@@ -3,6 +3,7 @@ import { useParams, withRouter } from "react-router-dom";
 import { useAppSelector } from "core/hooks/useAppSelector";
 import FolderTile from "components/common/FolderTile/FolderTile";
 import BoxTile from "components/common/BoxTile/BoxTile";
+import ContextSearchResult from "components/common/ContextSearchResult/ContextSearchResult";
 import { Box, Button, Stack, Text } from '@chakra-ui/react';
 import { followUserApi, getUserPageDataApi, unfollowUserApi } from "core/api/users";
 import { useEffect, useState } from "react";
@@ -91,6 +92,16 @@ function UserPage() {
             </Stack>
             <Text className={styles.userName} color={"brandgray.400"} fontSize={'md'} fontWeight={'400'}>
               {pageUser?.firstName && `${pageUser?.firstName} ${pageUser?.lastName}`}
+              {pageUser?.bio && (
+                pageUser?.firstName ? (
+                  <>
+                    <Box as="span" display="inline" mx={2}>&bull;</Box>
+                    <Text as="span" fontStyle="italic" display="inline">{pageUser.bio}</Text>
+                  </>
+                ) : (
+                  <Text as="span" fontStyle="italic" display="inline">{pageUser.bio}</Text>
+                )
+              )}
             </Text>
             <Box display={"flex"} gap={"15px"} alignItems={"center"}>
               <Button variant={"plain"} size={"sm"} padding={'0px'} cursor={'default'}> {` ${pageUser?.boxes?.length} boxes`} </Button>
@@ -103,27 +114,52 @@ function UserPage() {
             </Box>
           </Stack>
         </div>
-        <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "30px", marginBottom: "10px" }}> {`${pageUser.firstName || pageUser.username}'s`} public collection </Text>
         {
-
-          <div className={styles.folderList}>
-            {
-              !!pageUser?.folders?.length &&
-              pageUser?.folders?.filter(fol => fol.isPublic).map(folder => {
-                return (
-                  <FolderTile folder={folder} />
-                )
-              })
-            }
-            {
-              !!pageUser?.boxes?.length &&
-              pageUser?.boxes?.filter(box => box.isPublic && !box.folderId).map(box => {
-                return (
-                  <BoxTile box={box} displayUser={false} />
-                )
-              })
-            }
-          </div>
+          <Box display="flex" gap={4} alignItems="flex-start">
+            <Box flex={1} minWidth={0}>
+              <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "30px", marginBottom: "10px" }}> {`${pageUser.firstName || pageUser.username}'s`} public collection </Text>
+              <div className={styles.folderList}>
+                {
+                  !!pageUser?.folders?.length &&
+                  pageUser?.folders?.filter(fol => fol.isPublic).map(folder => {
+                    return (
+                      <FolderTile folder={folder} />
+                    )
+                  })
+                }
+                {
+                  !!pageUser?.boxes?.length &&
+                  pageUser?.boxes?.filter(box => box.isPublic && !box.folderId).map(box => {
+                    return (
+                      <BoxTile box={box} displayUser={false} />
+                    )
+                  })
+                }
+              </div>
+            </Box>
+            <Box width="300px"  style={{ marginTop: '30px' }}>
+              <Text fontSize="lg" fontWeight={700} mb={2}>Top Albums</Text>
+              <Box display="flex" flexDirection="column" gap={2} backgroundColor={'brandgray.600'} borderRadius="10px" style={{ padding: '16px 10px', minHeight: '100px' }}>
+                {(!pageUser?.topAlbums || pageUser.topAlbums.length === 0) ? (
+                  <Text textAlign="center" color="gray.300" padding={6} fontSize={'sm'}>
+                    {`${pageUser?.firstName || pageUser?.username} has not added any albums to their top 5 yet`}
+                  </Text>
+                ) : (
+                  pageUser.topAlbums.slice().sort((a, b) => (a.position || 0) - (b.position || 0)).map(top => (
+                    <ContextSearchResult
+                      key={top.topAlbumId || top.albumId}
+                      imageUrl={top.album.images?.[0]?.url || '/icons/music.svg'}
+                      name={top.album.name}
+                      owner={top.album.artists?.[0]?.name || ''}
+                      itemId={top.album.spotifyId}
+                      ownerId={top.album.artists?.[0]?.spotifyId || ''}
+                      itemType={"album"}
+                    />
+                  ))
+                )}
+              </Box>
+            </Box>
+          </Box>
         }
       </div>
     );

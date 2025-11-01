@@ -1,5 +1,5 @@
 .folderBoxWrapper {
-    width: 12.5%;
+    width: 16.666%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -57,7 +57,7 @@
 
 @media (min-width: 1400px) {
     .folderBoxWrapper {
-        width: 9.09%;
-        /* Adjusted to fit 11 items */
+        width: 12.5%;
+        /* Adjusted to fit 8 items */
     }
 }
