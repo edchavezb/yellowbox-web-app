@@ -41,6 +41,11 @@
     width: 15px;
 }
 
+.collectionTitle, .albumPicksTitle {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
 .folderList,
 .boxList {
     display: flex;
@@ -48,12 +53,33 @@
     gap: 20px;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     .homeContainer {
         padding: 10px 20px;
     }
 
     .userImage {
         width: 80px;
+    }
+
+    .profileContent {
+        flex-direction: column-reverse !important;
+    }
+
+    .profileContent > div {
+        width: 100% !important;
+    }
+
+    .collectionContainer {
+        margin-bottom: 20px;
+    }
+
+    .albumPicksTitle {
+        margin-top: 25px;
+    }
+
+    .collectionTitle {
+        margin-top: 10px;
+        margin-bottom: 15px;
     }
 }

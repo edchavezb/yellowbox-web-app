@@ -51,7 +51,7 @@ const PlaylistHeader = ({ itemData, isPlayedByUser, handleTogglePlayed, isUserLo
               {` ${getPlaylistRuntime(itemData.tracks!.items!.map(item => item.track))}`}
             </div>
             { isUserLoggedIn &&
-              <div className={styles.metaDataPill}>
+              <div className={`${styles.metaDataPill} ${styles.mobileHidden}`}>
                 <img className={styles.playedIcon} src={`/icons/${isPlayedByUser ? "checkcirclegreen" : "checkcirclegray"}.svg`} alt='menu' />
                 <span> {isPlayedByUser ? "Played" : "Not Played"} </span>
               </div>

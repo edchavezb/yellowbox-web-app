@@ -132,6 +132,10 @@
     .menuButtonWrapper {
       display: none;
     }
+
+    .mobileHidden {
+      display: none;
+    }
   
     
   }

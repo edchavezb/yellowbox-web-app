@@ -115,9 +115,9 @@ function UserPage() {
           </Stack>
         </div>
         {
-          <Box display="flex" gap={4} alignItems="flex-start">
-            <Box flex={1} minWidth={0}>
-              <Text fontSize={"lg"} fontWeight={"700"} sx={{ marginTop: "30px", marginBottom: "10px" }}> {`${pageUser.firstName || pageUser.username}'s`} public collection </Text>
+          <Box className={styles.profileContent} display="flex" gap={4} alignItems="flex-start">
+            <Box flex={1} minWidth={0} className={styles.collectionContainer}>
+              <Text fontSize={"lg"} fontWeight={"700"} className={styles.collectionTitle}> {`${pageUser.firstName || pageUser.username}'s`} public collection </Text>
               <div className={styles.folderList}>
                 {
                   !!pageUser?.folders?.length &&
@@ -137,12 +137,12 @@ function UserPage() {
                 }
               </div>
             </Box>
-            <Box width="300px"  style={{ marginTop: '30px' }}>
-              <Text fontSize="lg" fontWeight={700} mb={2}>Top Albums</Text>
+            <Box width="350px">
+              <Text fontSize="lg" fontWeight={700} className={styles.albumPicksTitle}>Album Picks</Text>
               <Box display="flex" flexDirection="column" gap={2} backgroundColor={'brandgray.600'} borderRadius="10px" style={{ padding: '16px 10px', minHeight: '100px' }}>
                 {(!pageUser?.topAlbums || pageUser.topAlbums.length === 0) ? (
                   <Text textAlign="center" color="gray.300" padding={6} fontSize={'sm'}>
-                    {`${pageUser?.firstName || pageUser?.username} has not added any albums to their top 5 yet`}
+                    {`${pageUser?.firstName || pageUser?.username} has not added any albums to their picks yet`}
                   </Text>
                 ) : (
                   pageUser.topAlbums.slice().sort((a, b) => (a.position || 0) - (b.position || 0)).map(top => (

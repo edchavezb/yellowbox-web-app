@@ -50,3 +50,25 @@
   height: 35px;
   opacity: 0.8;
 }
+
+.albumBox {
+  width: 100px;
+  height: 100px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px 5px;
+  }
+
+  .albumBox {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
