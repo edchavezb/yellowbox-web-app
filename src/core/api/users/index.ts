@@ -1,4 +1,4 @@
-import { DashboardBox, FeedActivity, FollowedBox, FollowedUser, UserFolder, UserSpotifyAccount, YellowboxUser } from '../../types/interfaces'
+import { Album, DashboardBox, FeedActivity, FollowedBox, FollowedUser, UserFolder, UserSpotifyAccount, YellowboxUser } from '../../types/interfaces'
 import api from '../index'
 
 export interface UserCreateDTO {
@@ -201,6 +201,16 @@ export const searchUsersApi = async (query: string) => {
 export const uploadUserImageApi = async (imageFile: File) => {
   try {
     return await api.uploadFile<{ message: string, url: string }>(`users/upload-user-image`, imageFile, 'avatar')
+  }
+  catch (err) {
+    console.log(err)
+    throw err;
+  }
+}
+
+export const updateUserTopAlbumApi = async (albumData: Album, position: number) => {
+  try {
+    return await api.post<{ albumData: Album, position: number }, { topAlbum: YellowboxUser['topAlbums'] extends (infer U)[] ? U : any }>('users/me/top-albums', { albumData, position })
   }
   catch (err) {
     console.log(err)

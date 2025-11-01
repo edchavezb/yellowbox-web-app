@@ -124,7 +124,7 @@ const LinkedServices = () => {
           <AppButton text={'Remove'} onClick={handleUninkLastFm} />
         </Box>
       }
-      <Text fontSize={'md'} fontWeight={'700'} marginTop={user?.spotifyAccount && user?.appleMusicAccount && user.lastFmAccount? '35px' : '0px'}> Add a new service </Text>
+      <Text fontSize={'md'} fontWeight={'700'} marginTop={user?.spotifyAccount || user?.appleMusicAccount || user.lastFmAccount? '35px' : '0px'}> Add a new service </Text>
       <Box display={'flex'} alignItems={'center'} gap={'20px'} width={'100%'} marginTop={'15px'} flexWrap={'wrap'}>
         {
           !user?.spotifyAccount &&

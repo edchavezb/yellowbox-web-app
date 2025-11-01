@@ -41,6 +41,10 @@ const userSlice = createSlice({
     updateUserFollowedBoxes(state, action: PayloadAction<{ followedBoxes: FollowedBox[] }>) {
       const { followedBoxes } = action.payload;
       state.authenticatedUser.followedBoxes = followedBoxes;
+    },
+    updateUserTopAlbums(state, action: PayloadAction<{ topAlbums: YellowboxUser["topAlbums"] }>) {
+      const { topAlbums } = action.payload;
+      state.authenticatedUser.topAlbums = topAlbums;
     }
   }
 })
@@ -52,7 +56,8 @@ export const {
   updateUserBasicInfo,
   updateUserImageUrl,
   updateUserFollowedList,
-  updateUserFollowedBoxes
+  updateUserFollowedBoxes,
+  updateUserTopAlbums
 } = userSlice.actions;
 
 export default userSlice.reducer;

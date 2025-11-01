@@ -1,12 +1,12 @@
 import { useAppSelector } from 'core/hooks/useAppSelector';
 import styles from './ProfileInfo.module.css';
-import { Box, FormControl, FormErrorMessage, FormLabel, Input, Text } from '@chakra-ui/react';
+import { Box, FormControl, FormErrorMessage, FormLabel, Input, Text, Textarea } from '@chakra-ui/react';
 import AppButton from 'components/styled/AppButton/AppButton';
 import { EmailAuthProvider, reauthenticateWithCredential, signOut, updateEmail } from "firebase/auth";
 import { firebaseAuth } from "core/services/firebase";
 import { useHistory } from "react-router-dom";
-import { useEffect, useRef, useState } from 'react';
-import { dbEmailCheckApi, dbUsernameCheckApi, updateUserBasicInfoApi } from 'core/api/users';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { dbEmailCheckApi, dbUsernameCheckApi, updateUserBasicInfoApi, updateUserTopAlbumApi } from 'core/api/users';
 import useDebouncePromise from 'core/hooks/useDebouncePromise';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,23 +15,39 @@ import { cacheYupTest } from 'core/helpers/cacheYupTest';
 import { useForm } from 'react-hook-form';
 import PopperMenu from 'components/menus/popper/PopperMenu';
 import { useAppDispatch } from 'core/hooks/useAppDispatch';
-import { updateUserBasicInfo } from 'core/features/user/userSlice';
+import { updateUserBasicInfo, updateUserTopAlbums } from 'core/features/user/userSlice';
 import DefaultUserImage from 'components/common/DefaultUserImage/DefaultUserImage';
+import ContextSearch from 'components/menus/popper/ContextSearch/ContextSearch';
 import { setModalState } from 'core/features/modal/modalSlice';
+import { Album } from 'core/types/interfaces';
 
 const ProfileInfo = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const user = useAppSelector(state => state.userData.authenticatedUser);
+  const userTopAlbums = user.topAlbums;
   const [userImage, setUserImage] = useState<string | null>(user.imageUrl!);
   const [isImageHovered, setIsImageHovered] = useState(false);
-  const [validData, setValidData] = useState<{ username: string, email: string, firstName?: string, lastName?: string } | null>(null);
+  const [validData, setValidData] = useState<{ username: string, email: string, firstName?: string, lastName?: string, bio?: string } | null>(null);
   const [isEditingEnabled, setIsEditingEnabled] = useState(false);
   const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
+  const [isAlbumSearchOpen, setIsAlbumSearchOpen] = useState(false);
+  const [activeButtonIndex, setActiveButtonIndex] = useState<number | null>(null);
   const [password, setPassword] = useState('');
   const [creationSuccessMessage, setCreationSuccessMessage] = useState('');
   const [creationError, setCreationError] = useState('');
   const submitButtonRef = useRef(null);
+  const albumButtonsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  const handleAlbumButtonClick = (index: number) => {
+    setActiveButtonIndex(index);
+  };
+
+  useLayoutEffect(() => {
+    if (activeButtonIndex !== null && albumButtonsRef.current[activeButtonIndex]) {
+      setIsAlbumSearchOpen(true);
+    }
+  }, [activeButtonIndex]);
 
   useEffect(() => {
     if (user.imageUrl) {
@@ -60,7 +76,8 @@ const ProfileInfo = () => {
           return valid as boolean;
         })),
     firstName: yup.string(),
-    lastName: yup.string()
+    lastName: yup.string(),
+    bio: yup.string().max(500, 'Bio cannot exceed 500 characters')
   }).required();
 
   type FormData = yup.InferType<typeof schema>;
@@ -117,7 +134,7 @@ const ProfileInfo = () => {
   };
 
   const handleSubmitChanges = async () => {
-    const { email, username, firstName, lastName } = validData!;
+    const { email, username, firstName, lastName, bio } = validData!;
     try {
       const credential = EmailAuthProvider.credential(
         firebaseAuth.currentUser!.email!,
@@ -137,7 +154,8 @@ const ProfileInfo = () => {
         email,
         username,
         firstName,
-        lastName
+        lastName,
+        bio
       };
       const updatedUser = await updateUserBasicInfoApi(user.userId, userWithChanges);
       if (updatedUser) {
@@ -154,6 +172,32 @@ const ProfileInfo = () => {
       setIsPasswordPromptOpen(false);
     }
   };
+
+  const handleAddTopAlbum = async (album: Album, position: number) => {
+    try {
+      const response = await updateUserTopAlbumApi(album, position);
+      const createdTopAlbum = response?.topAlbum;
+
+      const existing = userTopAlbums || [];
+      const withoutPosition = existing.filter(t => t.position !== position);
+
+      const newEntry = createdTopAlbum ? createdTopAlbum : {
+        topAlbumId: '',
+        createdAt: new Date().toISOString(),
+        position,
+        albumId: album.spotifyId,
+        album
+      };
+
+      const merged = [...withoutPosition, newEntry];
+
+      merged.sort((a, b) => (a.position || 0) - (b.position || 0));
+
+      dispatch(updateUserTopAlbums({ topAlbums: merged }));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const handleOpenEditImageModal = () => {
     dispatch(setModalState({ visible: true, type: "Update User Image", boxId: "", itemData: undefined, page: "" }));
@@ -217,16 +261,87 @@ const ProfileInfo = () => {
             {errors.email?.message}
           </FormErrorMessage>
         </FormControl>
+        <FormControl sx={{ marginTop: "15px" }}>
+          <FormLabel>{"Bio"}</FormLabel>
+          <Textarea
+            defaultValue={user.bio}
+            borderColor={"brandgray.500"}
+            focusBorderColor={"brandblue.600"}
+            disabled={!isEditingEnabled}
+            rows={2}
+            resize="none"
+            {...register("bio")}
+          />
+        </FormControl>
+        <Box marginTop={"20px"}>
+          <Text fontSize="md" fontWeight="600" mb={2}>Top Albums</Text>
+          <Box display="flex" gap={2} justifyContent={'space-evenly'}>
+            {[...Array(5)].map((_, index) => {
+              const albumAtIndex = userTopAlbums?.find(topAlbum => topAlbum.position === index + 1);
+              return (
+                <Box
+                  key={index}
+                  width="100px"
+                  height="100px"
+                  borderRadius="2px"
+                  bg={albumAtIndex ? "transparent" : "gray.300"}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  cursor="pointer"
+                  _hover={{ bg: albumAtIndex ? "rgba(0,0,0,0.1)" : "gray.400" }}
+                  transition="background-color 0.2s"
+                  onClick={() => handleAlbumButtonClick(index)}
+                  ref={el => albumButtonsRef.current[index] = el}
+                  position="relative"
+                  overflow="hidden"
+                >
+                  {albumAtIndex ? (
+                    <img 
+                      src={albumAtIndex.album.images?.[0]?.url} 
+                      alt={albumAtIndex.album.name}
+                      style={{ 
+                        width: '100%', 
+                        height: '100%', 
+                        objectFit: 'cover' 
+                      }} 
+                    />
+                  ) : (
+                    <img src="/icons/plus.svg" alt="Add album" style={{ width: '20px', height: '20px' }} />
+                  )}
+                </Box>
+              );
+            })}
+          </Box>
+          {activeButtonIndex !== null && (
+            <PopperMenu
+              referenceRef={{ current: albumButtonsRef.current[activeButtonIndex] }}
+              placement="top"
+              isOpen={isAlbumSearchOpen}
+              setIsOpen={setIsAlbumSearchOpen}
+            >
+              <ContextSearch
+                type="album"
+                targetIndex={activeButtonIndex}
+                onItemSelect={(album) => {
+                  handleAddTopAlbum(album as Album, activeButtonIndex + 1);
+                  setIsAlbumSearchOpen(false);
+                  setActiveButtonIndex(null);
+                }}
+              />
+            </PopperMenu>
+          )}
+        </Box>
         <Box color={"brandyellow.600"} fontSize={'sm'} marginTop={'10px'}>
           {creationError || creationSuccessMessage}
         </Box>
-        <Box marginTop={"15px"} display={'flex'} justifyContent={'flex-end'} gap={'10px'}>
+        <Box marginTop={"30px"} display={'flex'} justifyContent={'flex-end'} gap={'10px'}>
           <Box onClick={() => history.push(`/user/${user.username}`)}>
             <SubmitButton text={"View profile page"} />
           </Box>
           {!isEditingEnabled &&
             <Box onClick={() => setIsEditingEnabled(true)}>
-              <SubmitButton text={"Update information"} />
+              <SubmitButton text={"Edit information"} />
             </Box>
           }
           {isEditingEnabled &&
