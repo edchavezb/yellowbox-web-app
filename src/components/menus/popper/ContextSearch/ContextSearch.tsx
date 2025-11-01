@@ -34,6 +34,12 @@ const getItemOwner = (item: SpotifyItem): string => {
   return '';
 };
 
+const getItemOwnerId = (item: SpotifyItem): string | undefined => {
+  if (isTrack(item) || isAlbum(item)) return item.artists[0]?.spotifyId;
+  if (isPlaylist(item)) return item.ownerId;
+  return undefined;
+}
+
 const ContextSearch = ({ type, targetIndex, onItemSelect }: ContextSearchProps) => {
   const [query, setQuery] = useState('');
   const [searchData, setSearchData] = useState<SpotifyItem[]>([]);
@@ -120,6 +126,9 @@ const ContextSearch = ({ type, targetIndex, onItemSelect }: ContextSearchProps) 
                 owner={getItemOwner(item)}
                 buttonText={onItemSelect ? "Add" : undefined}
                 onButtonClick={() => onResultClick(item)}
+                itemId={item.spotifyId}
+                ownerId={getItemOwnerId(item)}
+                itemType={type}
               />
             ))}
           </Box>
