@@ -43,6 +43,13 @@ export interface YellowboxUser {
   followedUsers?: FollowedUser[]
   followedBoxes?: FollowedBox[]
   followers?: Follower[]
+  topAlbums?: {
+    topAlbumId: string
+    createdAt: string
+    position: number
+    albumId: string
+    album: Album
+  }[]
 }
 
 export interface FollowedUser {
